@@ -1,30 +1,29 @@
 package com.wgroup.woooo_app.woooo.theme
 
 import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = CustomColorTheme.Purple80,
-    secondary =CustomColorTheme. PurpleGrey80,
-    tertiary = CustomColorTheme.Pink80
+    primary = CustomColorTheme.primary,
+    secondary = CustomColorTheme.PurpleGrey80,
+    tertiary = CustomColorTheme.Pink80,
+    background = CustomColorTheme.backgroundColor
+
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary =CustomColorTheme. Purple40,
+    primary = CustomColorTheme.primary,
     secondary = CustomColorTheme.PurpleGrey40,
-    tertiary =CustomColorTheme. Pink40
+    tertiary = CustomColorTheme.Pink40,
+    background = CustomColorTheme.backgroundColor
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -41,14 +40,13 @@ private val LightColorScheme = lightColorScheme(
 fun Woooo_androidTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    dynamicColor: Boolean = true, content: @Composable () -> Unit
 ) {
     val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
+//        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+//            val context = LocalContext.current
+//            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+//        }
 
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
@@ -67,5 +65,6 @@ fun Woooo_androidTheme(
         typography = Typography,
         content = content,
         shapes = Shapes
+        colorScheme = colorScheme, typography = Typography, content = content
     )
 }
