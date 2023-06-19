@@ -32,18 +32,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
                     ) {
-                        CustomButton(
-                            onClick = {},
-                            shape = Shapes.extraLarge,
-                            contentPadding = PaddingValues(all = 10.dp),
-                            content = {
-                                Text(text = "Hi ", style = MaterialTheme.typography.bodyLarge)
-                                Text(text = "Woooo", style = MaterialTheme.typography.bodyLarge)
-                            },
-                            modifier = Modifier.background(Color.Cyan),
-                        )
                         CustomTextField()
                     }
                 }

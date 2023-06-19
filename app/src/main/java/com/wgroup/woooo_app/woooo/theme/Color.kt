@@ -9,7 +9,7 @@ object CustomColorTheme {
     val PurpleGrey40 = Color(0xFF625b71)
     val Pink40 = Color(0xFF7D5260)
     var Cyan = Color.Cyan
-    var primary = Color(0xff075475)
+    var primary =  Color(0xff1B85C1)
     var backgroundColor = Color(0xff3E7EB9)
     var attachmentCardOuterColor = Color(0xff071D8F);
     var attachmentCardInnerColor = Color(0xff006389);
