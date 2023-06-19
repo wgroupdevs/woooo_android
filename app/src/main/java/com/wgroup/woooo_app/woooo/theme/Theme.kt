@@ -65,6 +65,5 @@ fun Woooo_androidTheme(
         typography = Typography,
         content = content,
         shapes = Shapes
-        colorScheme = colorScheme, typography = Typography, content = content
     )
 }
