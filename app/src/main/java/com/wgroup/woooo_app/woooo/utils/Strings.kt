@@ -8,7 +8,7 @@ object Strings {
     var pleaseEnterText = "Please Enter"
     var entrValidEmailText = "Please Enter Valid Email"
     var pleaseSelectText = "Please Select"
-    var varenterPasswordText = "Enter Password"
+    var enterPasswordText = "Enter Password"
     var enterNumberText = "Enter Number"
     var otpSntText = "OTP SENT"
     var orText = "Or"

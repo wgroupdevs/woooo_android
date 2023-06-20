@@ -1,15 +1,20 @@
-
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.rounded.VisibilityOff
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -20,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,6 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.wgroup.woooo_app.R
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.CustomDivider
+import com.wgroup.woooo_app.woooo.shared.components.CustomSpacer
 import com.wgroup.woooo_app.woooo.shared.components.CustomTextField
 import com.wgroup.woooo_app.woooo.theme.CustomColorTheme
 import com.wgroup.woooo_app.woooo.utils.Strings
@@ -39,7 +44,8 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 @Preview
 @Composable
 fun LoginView() {
-//    val withEmail by remember { mutableStateOf(true) }
+    val withEmail by remember { mutableStateOf(true) }
+
 
     Column(
         modifier = Modifier
@@ -47,8 +53,7 @@ fun LoginView() {
             .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(30.dp))
-
+        CustomSpacer(30)
         // ap logo On top
 
         Image(
@@ -56,39 +61,62 @@ fun LoginView() {
             contentDescription = "",
             modifier = Modifier.size(200.dp)
         )
-        Spacer(modifier = Modifier.height(30.dp))
-
-//        if (withEmail) {
-/// Login with Email
-        LoginWithEmail()
-//        } else {
-//            LoginWithPhone()
-//        }
+        CustomSpacer(30)
+        if (withEmail) {
+            LoginWithEmail()
+        } else {
+            LoginWithPhoneNumber()
+        }
     }
 }
 
 @Composable
-fun LoginWithPhone() {
-    TODO("Not yet implemented")
-}
+fun LoginWithPhoneNumber() {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-@Composable
-fun LoginWithEmail() {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        CustomTextField(placeholder = {
+        // Country picker
+        CustomTextField(textStyle = MaterialTheme.typography.displayMedium, placeholder = {
             Text(
-                text = Strings.enterEmailText,
+                text = "Japan",
                 style = MaterialTheme.typography.titleSmall,
             )
-        }, textStyle = MaterialTheme.typography.displayMedium)
-        Spacer(modifier = Modifier.height(25.dp))
-
-        // password
+        }, trailingIcon = {
+            Icon(
+                imageVector = Icons.Default.ArrowDropDown,
+                contentDescription = "",
+                tint = Color.White
+            )
+        })
+        CustomSpacer(25)
+        // Phone Number
+        CustomTextField(textStyle = MaterialTheme.typography.displayMedium, placeholder = {
+            Text(
+                text = "Enter Number", fontSize = 13.sp,
+                style = MaterialTheme.typography.titleSmall,
+            )
+        }, leadingIcon = {
+            Row(
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "+81", fontSize = 13.sp,
+                    style = MaterialTheme.typography.titleSmall,
+                )
+                CustomSpacer(10)
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(1.dp)
+                        .background(CustomColorTheme.hintText)
+                        .padding(5.dp)
+                )
+            }
+        })
+        CustomSpacer(15)
         CustomTextField(placeholder = {
             Text(
-                text = Strings.pleaseEnterText,
+                text = Strings.enterPasswordText,
                 style = MaterialTheme.typography.titleSmall,
             )
         }, trailingIcon = {
@@ -99,7 +127,11 @@ fun LoginWithEmail() {
             )
 
         }, textStyle = MaterialTheme.typography.displayMedium)
-        Spacer(modifier = Modifier.height(25.dp))
+
+
+
+
+        CustomSpacer(35)
         // login button
         CustomButton(
             border = BorderStroke(1.dp, Color.White),
@@ -118,11 +150,106 @@ fun LoginWithEmail() {
                 .height(50.dp),
             colors = ButtonDefaults.outlinedButtonColors(containerColor = CustomColorTheme.textBox)
         )
-        Spacer(modifier = Modifier.height(25.dp))
-        // divider
+        CustomSpacer(25)        // divider
         CustomDivider()
-        Spacer(modifier = Modifier.height(25.dp))
-        //  Login With Phone Button
+        CustomSpacer(25)        //  Login With Phone Button
+        CustomButton(
+            border = BorderStroke(1.dp, Color.White),
+            onClick = {},
+            shape = MaterialTheme.shapes.large,
+            content = {
+                Text(
+                    text = Strings.LogWithPhoneText,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    fontSize = 16.sp
+                )
+            },
+            modifier = Modifier
+                .wrapContentWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.outlinedButtonColors(containerColor = CustomColorTheme.textBox)
+        )
+
+        // forgot text
+        TextButton(onClick = { }) {
+            Row {
+                Text(text = Strings.forgotText, style = MaterialTheme.typography.displayMedium)
+            }
+        }
+        Spacer(modifier = Modifier.weight(1f))
+
+        //  last Button
+        CustomButton(
+            border = BorderStroke(1.dp, Color.White),
+            onClick = {},
+            shape = MaterialTheme.shapes.large,
+            content = {
+                Text(
+                    text = Strings.dontHaveAcntText,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    fontSize = 16.sp
+                )
+            },
+            modifier = Modifier
+                .wrapContentWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.outlinedButtonColors(containerColor = CustomColorTheme.textBox)
+        )
+
+    }
+}
+
+@Composable
+fun LoginWithEmail() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CustomTextField(placeholder = {
+            Text(
+                text = Strings.enterEmailText,
+                style = MaterialTheme.typography.titleSmall,
+            )
+        }, textStyle = MaterialTheme.typography.displayMedium)
+        CustomSpacer(25)
+
+        // password
+        CustomTextField(placeholder = {
+            Text(
+                text = Strings.enterPasswordText,
+                style = MaterialTheme.typography.titleSmall,
+            )
+        }, trailingIcon = {
+            Icon(
+                imageVector = Icons.Rounded.VisibilityOff,
+                contentDescription = "",
+                tint = Color.White
+            )
+
+        }, textStyle = MaterialTheme.typography.displayMedium)
+        CustomSpacer(35)
+        // login button
+        CustomButton(
+            border = BorderStroke(1.dp, Color.White),
+            onClick = {},
+            shape = MaterialTheme.shapes.large,
+            content = {
+                Text(
+                    text = Strings.login,
+                    style = MaterialTheme.typography.bodyMedium,
+                    textAlign = TextAlign.Center,
+                    fontSize = 16.sp
+                )
+            },
+            modifier = Modifier
+                .wrapContentWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.outlinedButtonColors(containerColor = CustomColorTheme.textBox)
+        )
+        CustomSpacer(25)        // divider
+        CustomDivider()
+        CustomSpacer(25)        //  Login With Phone Button
         CustomButton(
             border = BorderStroke(1.dp, Color.White),
             onClick = {},
