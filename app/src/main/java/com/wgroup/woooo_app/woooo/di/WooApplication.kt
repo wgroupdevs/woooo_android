@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app
+package com.wgroup.woooo_app.woooo.di
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.wgroup.woooo_app.woooo.presentation.login.LoginButton
+import com.wgroup.woooo_app.woooo.feature.auth.screen.LoginScreen
 import com.wgroup.woooo_app.woooo.theme.Woooo_androidTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -28,7 +28,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    LoginButton()
+                    LoginScreen()
                 }
             }
         }
@@ -37,12 +37,15 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
-   Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-       Text(
-           text = "Hello $name!",
-           modifier = modifier
-       )
-   }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = "Hello $name!",
+            modifier = modifier
+        )
+    }
 }
 
 @Preview(showBackground = true)
