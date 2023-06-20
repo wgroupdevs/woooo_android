@@ -15,7 +15,8 @@ private val DarkColorScheme = darkColorScheme(
     primary = CustomColorTheme.primary,
     secondary = CustomColorTheme.PurpleGrey80,
     tertiary = CustomColorTheme.Pink80,
-    background = CustomColorTheme.backgroundColor
+    background = CustomColorTheme.backgroundColor,
+    
 
 )
 
