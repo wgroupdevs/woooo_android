@@ -1,6 +1,7 @@
 package com.wgroup.woooo_app.woooo.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -15,7 +16,8 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 30.sp,
         lineHeight = 24.sp,
-        letterSpacing = 0.5.sp
+        letterSpacing = 0.5.sp,
+        color = Color.White
     ), bodySmall = TextStyle(
         fontFamily = FontFamily(Font(R.font.nasalization)),
         fontWeight = FontWeight.Normal,
@@ -33,7 +35,7 @@ val Typography = Typography(
         fontWeight = FontWeight.Normal,
         fontSize = 15.sp,
         lineHeight = 12.sp,
-        letterSpacing = 0.5.sp
-    )
+        letterSpacing = 0.5.sp, color = Color.White
+    ),
 
 )
