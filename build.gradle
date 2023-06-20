@@ -12,13 +12,20 @@ buildscript {
         lifecycle_version = "2.6.1"
     }
     repositories {
+        mavenCentral()
+        maven {
+            url = uri("https://jitpack.io")
+        }
         google()
+
     }
+
 
     dependencies {
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
     }
 }
+
 
 
 

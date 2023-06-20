@@ -1,5 +1,6 @@
 package com.wgroup.woooo_app
 
+import LoginView
 import ShowAlertDialog
 import ShowCircularProgressIndicator
 import TopAppBarComposable
@@ -14,7 +15,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.wgroup.woooo_app.woooo.presentation.login.LoginView
 import com.wgroup.woooo_app.woooo.theme.Woooo_androidTheme
 
 class MainActivity : ComponentActivity() {
