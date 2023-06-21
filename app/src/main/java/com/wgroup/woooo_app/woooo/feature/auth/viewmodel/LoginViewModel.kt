@@ -23,9 +23,9 @@ class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase)
     fun login() = viewModelScope.launch {
         loginUseCase.invoke(
             LoginRequestParams(
-                email = "hamzaf875@gmail.com",
+                email = "hamzaf875@gmail.commm",
                 deviceName = "Mobile",
-                password = "1234343"
+                password = "Hamza@123"
             )
         ).doOnSuccess {
             _loginResponse.value = LoginState(

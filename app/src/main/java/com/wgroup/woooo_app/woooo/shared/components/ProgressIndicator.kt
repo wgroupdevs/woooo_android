@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.wgroup.woooo_app.woooo.theme.CustomColorTheme
+import com.wgroup.woooo_app.woooo.theme.WooColor
 
 @Preview
 @Composable
@@ -28,7 +28,7 @@ fun ShowCircularProgressIndicator() {
             horizontalArrangement = Arrangement.Start, modifier = Modifier
 //                .fillMaxWidth()
                 .padding(50.dp)
-                .background(color = CustomColorTheme.primary)
+                .background(color = WooColor.primary)
         ) {
             CircularProgressIndicator()
             Text("Please Wait.......", style = TextStyle(color = Color.Blue))

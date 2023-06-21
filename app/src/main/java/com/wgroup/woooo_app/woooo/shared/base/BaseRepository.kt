@@ -18,7 +18,12 @@ abstract class BaseRepository {
         emit(APIResult.Loading)
         val response = apiCall()
 
-        Log.d("SafeAPICall",response.toString())
+        Log.d("SafeAPICall Message",response.message())
+        Log.d("SafeAPICall isSuccessful",response.isSuccessful.toString())
+        Log.d("SafeAPICall headers",response.headers().toString())
+        Log.d("SafeAPICall raw",response.raw().toString())
+        Log.d("SafeAPICall",response.body().toString())
+        Log.d("SafeAPICall Error",response.errorBody().toString())
         if (response.isSuccessful){
             val data = response.body()
             if(data != null){

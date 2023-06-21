@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.wgroup.woooo_app.woooo.theme.CustomColorTheme
+import com.wgroup.woooo_app.woooo.theme.WooColor
 
 @Preview
 @Composable
@@ -26,7 +26,7 @@ fun CustomDivider(withOr: Boolean = true) {
         Box(
             modifier = Modifier
                 .height(0.5.dp)
-                .background(CustomColorTheme.hintText)
+                .background(WooColor.hintText)
                 .weight(1f)
         ) {}
         if (withOr) {
@@ -39,7 +39,7 @@ fun CustomDivider(withOr: Boolean = true) {
         Box(
             modifier = Modifier
                 .height(0.5.dp)
-                .background(CustomColorTheme.hintText)
+                .background(WooColor.hintText)
                 .weight(1f)
         ) {}
     }

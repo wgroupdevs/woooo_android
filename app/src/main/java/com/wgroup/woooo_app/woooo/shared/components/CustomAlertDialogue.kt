@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.wgroup.woooo_app.woooo.theme.CustomColorTheme
+import com.wgroup.woooo_app.woooo.theme.WooColor
 
 @Preview
 @Composable
@@ -26,7 +26,7 @@ fun ShowAlertDialog() {
     if (openDialog.value) {
         AlertDialog(confirmButton = { Text(text = "") },
             onDismissRequest = { openDialog.value = false },
-            containerColor = CustomColorTheme.textBox,
+            containerColor = WooColor.textBox,
             text = {
                 Row(
                     modifier = Modifier.padding(top = 10.dp),

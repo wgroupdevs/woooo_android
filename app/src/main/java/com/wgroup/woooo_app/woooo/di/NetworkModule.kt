@@ -7,8 +7,10 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -26,10 +28,20 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun providesApiService(moshi: Moshi): ApiService = Retrofit
+    fun providesOkHttp(): OkHttpClient = OkHttpClient.Builder().run {
+        interceptors()
+        connectTimeout(50, TimeUnit.SECONDS)
+        readTimeout(50, TimeUnit.SECONDS)
+        build()
+    }
+
+    @Provides
+    @Singleton
+    fun providesApiService(okHttpClient: OkHttpClient, moshi: Moshi): ApiService = Retrofit
         .Builder()
         .run {
             baseUrl(ApiService.BASE_URL)
+            client(okHttpClient)
             addConverterFactory(MoshiConverterFactory.create(moshi))
             build()
         }.create(ApiService::class.java)

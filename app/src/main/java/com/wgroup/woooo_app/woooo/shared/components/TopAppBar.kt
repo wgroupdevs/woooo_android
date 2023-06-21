@@ -1,7 +1,6 @@
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -28,7 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wgroup.woooo_app.R
-import com.wgroup.woooo_app.woooo.theme.CustomColorTheme
+import com.wgroup.woooo_app.woooo.theme.WooColor
 
 @Preview
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,7 +37,7 @@ fun TopAppBarComposable() {
     val maxLength = 110
     val lightBlue = Color(0xffd8e6ff)
     TopAppBar(
-        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor =CustomColorTheme.primary),
+        colors = TopAppBarDefaults.smallTopAppBarColors(containerColor =WooColor.primary),
 //        modifier = Modifier.wrapContentSize(),
         title = {
             TextField(

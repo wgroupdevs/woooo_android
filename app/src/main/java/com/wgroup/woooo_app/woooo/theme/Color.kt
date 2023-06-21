@@ -2,7 +2,7 @@ package com.wgroup.woooo_app.woooo.theme
 
 import androidx.compose.ui.graphics.Color
 
-object CustomColorTheme {
+object WooColor {
 
     val PurpleGrey80 = Color(0xFFCCC2DC)
     val Pink80 = Color(0xFFEFB8C8)
@@ -18,5 +18,6 @@ object CustomColorTheme {
     var textBox = Color(0xff45ACDB)
     var textFieldBackGround = Color(0xff195E91)
     var colorForTextFieldHint = Color(0xCCFFFFFF)
-var     hintText = Color(0xffB8E0F2);
+    var hintText = Color(0xffB8E0F2);
+    val white=Color(0xffFFFFFF);
 }
