@@ -73,5 +73,12 @@ val Typography = Typography(
         lineHeight = 5.sp, shadow = shadow,
         letterSpacing = 0.5.sp, color = Color.White,
     )
+, displaySmall = TextStyle(
+        fontFamily = FontFamily(Font(R.font.nasalization)),
+        fontWeight = FontWeight.Normal,
+        fontSize = 10.sp,
+        lineHeight = 10.sp, shadow = shadow,
+        letterSpacing = 0.5.sp, color = Color.White,
+    )
 
 )

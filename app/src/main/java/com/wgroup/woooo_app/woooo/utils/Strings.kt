@@ -349,9 +349,8 @@ object Strings {
 //    "rstPassText"= "Reset Password"
 //    "verifyCode"= "Verify Code"
 //    "resendCode"= "Resend Code"
-//    "recoverText"= "Recover"
-//    "emailNotFoundDes"=
-//    "If you don"t see the email in your inbox\ncheck your spam folder."
+   var  recoverText= "Recover"
+var    emailNotFoundDes= "If you don't see the email in your inbox\ncheck your spam folder."
 //    "continueText"= "Continue"
 //    "checkEmailDes"=
 //    "An email with reset password instructions has been sent to your email address."
