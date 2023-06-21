@@ -25,10 +25,10 @@ fun CustomButton(
     Button(
         onClick = onClick,
         elevation = ButtonDefaults.buttonElevation(
-            defaultElevation = 20.dp,
-            pressedElevation = 15.dp,
+            defaultElevation = 10.dp,
+            pressedElevation = 10.dp,
             disabledElevation = 0.dp,
-            hoveredElevation = 15.dp,
+            hoveredElevation = 10.dp,
             focusedElevation = 10.dp
         ),
         content = content,
