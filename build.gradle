@@ -3,6 +3,7 @@
 buildscript {
     ext {
         compose_bom = '2023.04.01'
+        nav_version = '2.5.3'
         kotlin_bom = '1.8.20'
         coroutine_android = '1.6.1'
         coroutine_core = '1.6.4'

@@ -11,4 +11,6 @@ object Dimension {
     val dimen_30=30.dp
     val dimen_40=40.dp
     val dimen_50=50.dp
+    val dimen_100=100.dp
+    val dimen_130=130.dp
 }
