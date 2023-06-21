@@ -1,13 +1,11 @@
 package com.wgroup.woooo_app.woooo.shared.components
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -17,11 +15,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.theme.Shapes
-import com.wgroup.woooo_app.woooo.utils.Strings
+import com.wgroup.woooo_app.woooo.theme.WooColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,7 +31,7 @@ fun WooTextField(
 //    textStyle: TextStyle = LocalTextStyle.current,
 //    label: @Composable (() -> Unit)? = null,
 //    placeholder: @Composable (() -> Unit)? = null,
-    hint: String="",
+    hint: String = "",
     trailingIcon: @Composable (() -> Unit)? = null,
 //    supportingText: @Composable (() -> Unit)? = null,
 //    isError: Boolean = false,
@@ -53,31 +49,31 @@ fun WooTextField(
     val lightBlue = Color(0xffd8e6ff)
 
 
-    TextField(
+    OutlinedTextField(
         textStyle = MaterialTheme.typography.labelMedium.copy(color = WooColor.white),
         placeholder = {
             Text(
                 text = hint,
-                style = MaterialTheme.typography.labelMedium,
+                style = MaterialTheme.typography.labelSmall,
             )
         },
         leadingIcon = leadingIcon,
         modifier = Modifier
             .fillMaxWidth()
-            .height(54.dp)
-            .border(
-                width = 1.dp,
-                color = Color.Black,
-                shape = RoundedCornerShape(18.dp)
-            ),
+            .height(54.dp),
         value = textState,
-        colors = TextFieldDefaults.textFieldColors(
+
+        colors = TextFieldDefaults.outlinedTextFieldColors(
             cursorColor = WooColor.primary,
             disabledLabelColor = lightBlue,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
+//            focusedIndicatorColor = Color.Transparent,
+//            unfocusedIndicatorColor = Color.Transparent,
+            unfocusedBorderColor = Color.Black,
+            focusedBorderColor = WooColor.white,
             containerColor = WooColor.textFieldBackGround,
-        ),
+            disabledTextColor = Color.Transparent,
+
+            ),
         onValueChange = {
             if (it.length <= maxLength) textState = it
         },

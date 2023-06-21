@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,7 +16,6 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CustomButton(
     onClick: () -> Unit,
-    shape: Shape,
     colors: ButtonColors = ButtonDefaults.outlinedButtonColors(),
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     content: @Composable RowScope.() -> Unit,
@@ -32,7 +32,7 @@ fun CustomButton(
             focusedElevation = 10.dp
         ),
         content = content,
-        shape = shape,
+        shape =  MaterialTheme.shapes.large,
         colors = colors,
         contentPadding = contentPadding,
         modifier = modifier,

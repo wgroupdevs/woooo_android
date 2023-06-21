@@ -127,7 +127,6 @@ fun LoginWithPhoneNumber() {
         CustomButton(
             border = BorderStroke(1.dp, Color.White),
             onClick = {},
-            shape = MaterialTheme.shapes.large,
             content = {
                 Text(
                     text = Strings.login,
@@ -146,7 +145,6 @@ fun LoginWithPhoneNumber() {
         CustomButton(
             border = BorderStroke(1.dp, Color.White),
             onClick = {},
-            shape = MaterialTheme.shapes.large,
             content = {
                 Text(
                     text = Strings.LogWithPhoneText,
@@ -172,7 +170,6 @@ fun LoginWithPhoneNumber() {
         CustomButton(
             border = BorderStroke(1.dp, Color.White),
             onClick = {},
-            shape = MaterialTheme.shapes.large,
             content = {
                 Text(
                     text = Strings.dontHaveAcntText,
@@ -216,7 +213,6 @@ fun LoginWithEmail() {
                 loginViewModel.login()
 
             },
-            shape = MaterialTheme.shapes.large,
             content = {
                 Text(
                     text = Strings.login,
@@ -237,7 +233,6 @@ fun LoginWithEmail() {
         CustomButton(
             border = BorderStroke(1.dp, Color.White),
             onClick = {},
-            shape = MaterialTheme.shapes.large,
             content = {
                 Text(
                     text = Strings.LogWithPhoneText,
@@ -263,7 +258,6 @@ fun LoginWithEmail() {
         CustomButton(
             border = BorderStroke(1.dp, Color.White),
             onClick = {},
-            shape = MaterialTheme.shapes.large,
             content = {
                 Text(
                     text = Strings.dontHaveAcntText,

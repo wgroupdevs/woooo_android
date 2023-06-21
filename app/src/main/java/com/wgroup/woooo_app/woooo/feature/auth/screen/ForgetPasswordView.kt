@@ -24,6 +24,7 @@ import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.WooColor
+import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 
 @Composable
@@ -36,7 +37,7 @@ fun ForgetPassword() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        VerticalSpacer()
+        VerticalSpacer(Dimension.dimen_30)
         // ap logo On top
 
         Image(
@@ -44,15 +45,17 @@ fun ForgetPassword() {
             contentDescription = "",
             modifier = Modifier.size(200.dp)
         )
-        VerticalSpacer()
-        Text(text = Strings.forgotTextNewPassView, style = MaterialTheme.typography.displayMedium)
-        VerticalSpacer()
+        VerticalSpacer(Dimension.dimen_30)
+        // forgot text
+        Text(text = Strings.forgotTextNewPassView, style = MaterialTheme.typography.bodyLarge)
+        VerticalSpacer(Dimension.dimen_40)
+        // enter email
         WooTextField(hint = Strings.enterEmailText)
-        VerticalSpacer()
+        VerticalSpacer(Dimension.dimen_30)
+        // recover button
         CustomButton(
             border = BorderStroke(1.dp, Color.White),
             onClick = {},
-            shape = MaterialTheme.shapes.large,
             content = {
                 Text(
                     text = Strings.recoverText,
@@ -66,9 +69,13 @@ fun ForgetPassword() {
                 .height(50.dp),
             colors = ButtonDefaults.outlinedButtonColors(containerColor = WooColor.textBox)
         )
-        VerticalSpacer()
-
-        Text(text = Strings.emailNotFoundDes, style = MaterialTheme.typography.displaySmall, textAlign = TextAlign.Center)
+        VerticalSpacer(Dimension.dimen_30)
+        //Last text
+        Text(
+            text = Strings.emailNotFoundDes,
+            style = MaterialTheme.typography.bodySmall,
+            textAlign = TextAlign.Center
+        )
 
     }
 }

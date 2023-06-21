@@ -81,98 +81,98 @@ val Typography = Typography(
         fontFamily = FontFamily(Font(R.font.nasalization)),
         fontWeight = FontWeight.Bold,
         fontSize = 36.sp,
-        color=WooColor.white,
+        color = WooColor.white,
         shadow = shadow
     ),
     displayMedium = TextStyle(
         fontFamily = FontFamily(Font(R.font.nasalization)),
         fontWeight = FontWeight.Bold,
         fontSize = 24.sp,
-        color=WooColor.white,
+        color = WooColor.white,
         shadow = shadow
     ),
     displaySmall = TextStyle(
         fontFamily = FontFamily(Font(R.font.nasalization)),
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
-        color=WooColor.white,
+        color = WooColor.white,
         shadow = shadow
     ),
     headlineLarge = TextStyle(
         fontFamily = FontFamily(Font(R.font.nasalization)),
         fontWeight = FontWeight.Bold,
         fontSize = 28.sp,
-        color=WooColor.white,
+        color = WooColor.white,
         shadow = shadow
     ),
     headlineMedium = TextStyle(
         fontFamily = FontFamily(Font(R.font.nasalization)),
         fontWeight = FontWeight.Bold,
         fontSize = 20.sp,
-        color=WooColor.white,
+        color = WooColor.white,
         shadow = shadow
     ),
     headlineSmall = TextStyle(
         fontFamily = FontFamily(Font(R.font.nasalization)),
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
-        color=WooColor.white,
+        color = WooColor.white,
         shadow = shadow
     ),
     titleLarge = TextStyle(
         fontFamily = FontFamily(Font(R.font.nasalization)),
         fontWeight = FontWeight.Bold,
         fontSize = 24.sp,
-        color=WooColor.white,
+        color = WooColor.white,
         shadow = shadow
     ),
     titleMedium = TextStyle(
         fontFamily = FontFamily(Font(R.font.nasalization)),
         fontWeight = FontWeight.Bold,
         fontSize = 18.sp,
-        color=WooColor.white,
+        color = WooColor.white,
         shadow = shadow
     ),
     titleSmall = TextStyle(
         fontFamily = FontFamily(Font(R.font.nasalization)),
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
-        color=WooColor.white,
+        color = WooColor.white,
         shadow = shadow
     ),
     bodyLarge = TextStyle(
         fontFamily = FontFamily(Font(R.font.nasalization)),
         fontWeight = FontWeight.Normal,
         fontSize = 18.sp,
-        color=WooColor.white,
+        color = WooColor.white,
         shadow = shadow
     ),
     bodyMedium = TextStyle(
         fontFamily = FontFamily(Font(R.font.nasalization)),
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        color=WooColor.white,
+        color = WooColor.white,
         shadow = shadow
     ),
     bodySmall = TextStyle(
         fontFamily = FontFamily(Font(R.font.nasalization)),
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
-        color=WooColor.white,
+        color = WooColor.white,
         shadow = shadow
     ),
     labelLarge = TextStyle(
         fontFamily = FontFamily(Font(R.font.nasalization)),
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        color=WooColor.white,
+        color = WooColor.white,
         shadow = shadow
     ),
     labelMedium = TextStyle(
         fontFamily = FontFamily(Font(R.font.nasalization)),
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
-        color=WooColor.colorForTextFieldHint,
+        color = WooColor.colorForTextFieldHint,
         shadow = shadow,
         textDecoration = TextDecoration.None
     ),
@@ -180,7 +180,7 @@ val Typography = Typography(
         fontFamily = FontFamily(Font(R.font.nasalization)),
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
-        color=WooColor.white,
+        color = WooColor.colorForTextFieldHint,
         shadow = shadow
     ),
 )

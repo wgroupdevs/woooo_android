@@ -20,34 +20,26 @@ object Strings {
     var otpSentEmailText = "Your Account is not verified.An OTP is sent on your email "
 
     // signup view keys
-//
-//
+
     var firstNameText = "First Name"
 
-    //    signUpText
-//    = "Sign Up"
-//
-//    lastNameText
-//    = "Last Name"
-//
-//    phoneNmbrText
-//    = "Phone Number"
-//
-//    emailText
-//    = "Email"
-//
-//    passwordText
-//    = "Password"
-//
-//    confirmpasswordText
-//    = "Confirm Password"
-//
-//    referralCodeText
-//    = "Referral Code"
-//
-//    alreadyAccount
-//    = "Already have an account？"
-//
+    var signUpText = "Sign Up"
+
+    var lastNameText = "Last Name"
+
+    var phoneNmbrText = "Phone Number"
+
+    var emailText = "Email"
+
+    var passwordText = "Password"
+
+    var confirmpasswordText = "Confirm Password"
+
+    var referralCodeText = "Referral Code"
+
+    var alreadyAccount = "Already have an account？ Login"
+
+    //
 //    inldPassText
 //    = "Invalid Password"
 //
@@ -308,7 +300,7 @@ object Strings {
 //    // new pass view keys
 //
 //    "mismtchPassText"= "Password mismatched enter password again"
-//    "resetText"= "Reset"
+var     resetText= "Reset"
 //
 //    // settings views keys
 //    "shortText"= "Short"
@@ -348,7 +340,8 @@ object Strings {
 //    "myContactText"= "My Contacts"
 //    "noBodyText"= "No Body"
 //    "rstPassText"= "Reset Password"
-//    "verifyCode"= "Verify Code"
+    var resentOTP = "Resend OTP"
+    var verifyCode= "Verify Code"
 //    "resendCode"= "Resend Code"
     var recoverText = "Recover"
     var emailNotFoundDes = "If you don't see the email in your inbox\ncheck your spam folder."
@@ -356,10 +349,10 @@ object Strings {
 //    "checkEmailDes"=
 //    "An email with reset password instructions has been sent to your email address."
 //    "createNewPswd"= "Create New Strong Password "
-//    "pleaseEnterOtp"= "Please Enter OTP"
-//    "newPswdText"= "New Password"
-//    "reTypePswdText"= "Re-type Password"
-//    "reTypePswdDes"= "Password Must Match"
+    var pleaseEnterOtp= "Please Enter OTP"
+var    newPswdText= "New Password"
+var  reTypePswdText= "Re-type Password"
+var    reTypePswdDes= "Password Must Match"
 //    "newPswdDes"=
 //    "Please enter At least one Capital Letter\nNumbersmall Letter and Minimum 8 Characters"
 //    "lastBackupText"= "Last Backup"
