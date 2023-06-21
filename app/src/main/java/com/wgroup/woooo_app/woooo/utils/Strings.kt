@@ -22,8 +22,9 @@ object Strings {
     // signup view keys
 //
 //
-//    var firstNameText = "First Name"
-//    signUpText
+    var firstNameText = "First Name"
+
+    //    signUpText
 //    = "Sign Up"
 //
 //    lastNameText
@@ -349,8 +350,8 @@ object Strings {
 //    "rstPassText"= "Reset Password"
 //    "verifyCode"= "Verify Code"
 //    "resendCode"= "Resend Code"
-   var  recoverText= "Recover"
-var    emailNotFoundDes= "If you don't see the email in your inbox\ncheck your spam folder."
+    var recoverText = "Recover"
+    var emailNotFoundDes = "If you don't see the email in your inbox\ncheck your spam folder."
 //    "continueText"= "Continue"
 //    "checkEmailDes"=
 //    "An email with reset password instructions has been sent to your email address."

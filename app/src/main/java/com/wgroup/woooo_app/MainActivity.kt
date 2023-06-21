@@ -1,9 +1,5 @@
 package com.wgroup.woooo_app
 
-import LoginView
-import ShowAlertDialog
-import ShowCircularProgressIndicator
-import TopAppBarComposable
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.WindowManager
@@ -16,7 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.wgroup.woooo_app.woooo.feature.auth.screen.ForgetPassword
+import com.wgroup.woooo_app.woooo.feature.auth.screen.SignUpView
 import com.wgroup.woooo_app.woooo.theme.Woooo_androidTheme
 
 class MainActivity : ComponentActivity() {
@@ -30,13 +26,14 @@ class MainActivity : ComponentActivity() {
             Woooo_androidTheme {
                 Scaffold()
 //                    topBar = { TopAppBarComposable() })
-                    {
+                {
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        Column (){
-                            ForgetPassword()                        }
+                        Column() {
+                            SignUpView()
+                        }
                     }
                 }
             }
