@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -13,17 +15,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.theme.Shapes
+import com.wgroup.woooo_app.woooo.utils.Strings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomTextField(
+fun WooTextField(
 //    value: String? = "",
 //    text: String,
 //    onValueChange: (String) -> Unit,
@@ -32,7 +34,8 @@ fun CustomTextField(
 //    readOnly: Boolean = false,
 //    textStyle: TextStyle = LocalTextStyle.current,
 //    label: @Composable (() -> Unit)? = null,
-    placeholder: @Composable (() -> Unit)? = null,
+//    placeholder: @Composable (() -> Unit)? = null,
+    hint: String="",
     trailingIcon: @Composable (() -> Unit)? = null,
 //    supportingText: @Composable (() -> Unit)? = null,
 //    isError: Boolean = false,
@@ -42,7 +45,6 @@ fun CustomTextField(
 //    singleLine: Boolean = false,
 //    maxLines: Int = Int.MAX_VALUE,
     shape: Shape = Shapes.extraLarge,
-    textStyle: TextStyle,
 //    colors: TextFieldColors = TextFieldDefaults.textFieldColors()
     leadingIcon: @Composable (() -> Unit)? = null,
 ) {
@@ -52,13 +54,22 @@ fun CustomTextField(
 
 
     TextField(
-        textStyle = textStyle, placeholder = placeholder,
+        textStyle = MaterialTheme.typography.labelMedium.copy(color = WooColor.white),
+        placeholder = {
+            Text(
+                text = hint,
+                style = MaterialTheme.typography.labelMedium,
+            )
+        },
         leadingIcon = leadingIcon,
         modifier = Modifier
-            .clip(RoundedCornerShape(18.dp))
             .fillMaxWidth()
-            .height(56.dp)
-            .border(1.dp, Color.Black),
+            .height(54.dp)
+            .border(
+                width = 1.dp,
+                color = Color.Black,
+                shape = RoundedCornerShape(18.dp)
+            ),
         value = textState,
         colors = TextFieldDefaults.textFieldColors(
             cursorColor = WooColor.primary,

@@ -21,9 +21,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wgroup.woooo_app.R
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
-import com.wgroup.woooo_app.woooo.shared.components.CustomSpacer
-import com.wgroup.woooo_app.woooo.shared.components.CustomTextField
-import com.wgroup.woooo_app.woooo.theme.CustomColorTheme
+import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
+import com.wgroup.woooo_app.woooo.shared.components.WooTextField
+import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
 
 @Composable
@@ -36,7 +36,7 @@ fun ForgetPassword() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        CustomSpacer(30)
+        VerticalSpacer()
         // ap logo On top
 
         Image(
@@ -44,16 +44,11 @@ fun ForgetPassword() {
             contentDescription = "",
             modifier = Modifier.size(200.dp)
         )
-        CustomSpacer(30)
+        VerticalSpacer()
         Text(text = Strings.forgotTextNewPassView, style = MaterialTheme.typography.displayMedium)
-        CustomSpacer(40)
-        CustomTextField(placeholder = {
-            Text(
-                text = Strings.enterEmailText,
-                style = MaterialTheme.typography.titleSmall,
-            )
-        }, textStyle = MaterialTheme.typography.displayMedium)
-        CustomSpacer(30)
+        VerticalSpacer()
+        WooTextField(hint = Strings.enterEmailText)
+        VerticalSpacer()
         CustomButton(
             border = BorderStroke(1.dp, Color.White),
             onClick = {},
@@ -69,9 +64,9 @@ fun ForgetPassword() {
             modifier = Modifier
                 .wrapContentWidth()
                 .height(50.dp),
-            colors = ButtonDefaults.outlinedButtonColors(containerColor = CustomColorTheme.textBox)
+            colors = ButtonDefaults.outlinedButtonColors(containerColor = WooColor.textBox)
         )
-        CustomSpacer(30)
+        VerticalSpacer()
 
         Text(text = Strings.emailNotFoundDes, style = MaterialTheme.typography.displaySmall, textAlign = TextAlign.Center)
 

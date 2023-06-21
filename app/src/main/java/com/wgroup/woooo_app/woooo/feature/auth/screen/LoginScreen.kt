@@ -37,8 +37,8 @@ import com.wgroup.woooo_app.R
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.CustomDivider
-import com.wgroup.woooo_app.woooo.shared.components.CustomSpacer
-import com.wgroup.woooo_app.woooo.shared.components.CustomTextField
+import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
+import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
 import com.wgroup.woooo_app.woooo.utils.Dimension
@@ -56,7 +56,7 @@ fun LoginView() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        CustomSpacer(30)
+        VerticalSpacer(Dimension.dimen_30)
         // ap logo On top
 
         Image(
@@ -64,7 +64,7 @@ fun LoginView() {
             contentDescription = "",
             modifier = Modifier.size(200.dp)
         )
-        CustomSpacer(30)
+        VerticalSpacer(Dimension.dimen_30)
         if (withEmail) {
             LoginWithEmail()
         } else {
@@ -78,63 +78,51 @@ fun LoginWithPhoneNumber() {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
         // Country picker
-        CustomTextField(textStyle = MaterialTheme.typography.displayMedium, placeholder = {
-            Text(
-                text = "Japan",
-                style = MaterialTheme.typography.titleSmall,
-            )
-        }, trailingIcon = {
+        WooTextField("Japan", trailingIcon = {
             Icon(
                 imageVector = Icons.Default.ArrowDropDown,
                 contentDescription = "",
                 tint = Color.White
             )
         })
-        CustomSpacer(25)
+        VerticalSpacer(Dimension.dimen_25)
         // Phone Number
-        CustomTextField(textStyle = MaterialTheme.typography.displayMedium, placeholder = {
-            Text(
-                text = "Enter Number", fontSize = 13.sp,
-                style = MaterialTheme.typography.titleSmall,
-            )
-        }, leadingIcon = {
+        WooTextField("Enter Number", leadingIcon = {
             Row(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "+81", fontSize = 13.sp,
+                    text = "+81",
                     style = MaterialTheme.typography.titleSmall,
                 )
-                CustomSpacer(10)
+                VerticalSpacer()
                 Box(
                     modifier = Modifier
                         .fillMaxHeight()
                         .width(1.dp)
-                        .background(CustomColorTheme.hintText)
+                        .background(WooColor.hintText)
                         .padding(5.dp)
                 )
             }
         })
-        CustomSpacer(15)
-        CustomTextField(placeholder = {
-            Text(
-                text = Strings.enterPasswordText,
-                style = MaterialTheme.typography.titleSmall,
-            )
-        }, trailingIcon = {
-            Icon(
-                imageVector = Icons.Rounded.VisibilityOff,
-                contentDescription = "",
-                tint = Color.White
-            )
+        VerticalSpacer(Dimension.dimen_15)
+        WooTextField(
+            hint = Strings.enterPasswordText,
+            trailingIcon = {
+                Icon(
+                    imageVector = Icons.Rounded.VisibilityOff,
+                    contentDescription = "",
+                    tint = Color.White
+                )
 
-        }, textStyle = MaterialTheme.typography.displayMedium)
+            },
+        )
 
 
 
 
-        CustomSpacer(35)
+        VerticalSpacer(Dimension.dimen_30)
         // login button
         CustomButton(
             border = BorderStroke(1.dp, Color.White),
@@ -145,17 +133,16 @@ fun LoginWithPhoneNumber() {
                     text = Strings.login,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
-                    fontSize = 16.sp
                 )
             },
             modifier = Modifier
                 .wrapContentWidth()
                 .height(50.dp),
-            colors = ButtonDefaults.outlinedButtonColors(containerColor = CustomColorTheme.textBox)
+            colors = ButtonDefaults.outlinedButtonColors(containerColor = WooColor.textBox)
         )
-        CustomSpacer(25)        // divider
+        VerticalSpacer(Dimension.dimen_25)       // divider
         CustomDivider()
-        CustomSpacer(25)        //  Login With Phone Button
+        VerticalSpacer(Dimension.dimen_25)       //  Login With Phone Button
         CustomButton(
             border = BorderStroke(1.dp, Color.White),
             onClick = {},
@@ -165,13 +152,12 @@ fun LoginWithPhoneNumber() {
                     text = Strings.LogWithPhoneText,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
-                    fontSize = 16.sp
                 )
             },
             modifier = Modifier
                 .wrapContentWidth()
                 .height(50.dp),
-            colors = ButtonDefaults.outlinedButtonColors(containerColor = CustomColorTheme.textBox)
+            colors = ButtonDefaults.outlinedButtonColors(containerColor = WooColor.textBox)
         )
 
         // forgot text
@@ -192,13 +178,12 @@ fun LoginWithPhoneNumber() {
                     text = Strings.dontHaveAcntText,
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center,
-                    fontSize = 16.sp
                 )
             },
             modifier = Modifier
                 .wrapContentWidth()
                 .height(50.dp),
-            colors = ButtonDefaults.outlinedButtonColors(containerColor = CustomColorTheme.textBox)
+            colors = ButtonDefaults.outlinedButtonColors(containerColor = WooColor.textBox)
         )
 
     }
@@ -207,32 +192,22 @@ fun LoginWithPhoneNumber() {
 @Composable
 fun LoginWithEmail() {
 
-    val loginViewModel:LoginViewModel = hiltViewModel()
+    val loginViewModel: LoginViewModel = hiltViewModel()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CustomTextField(placeholder = {
-            Text(
-                text = Strings.enterEmailText,
-                style = MaterialTheme.typography.labelMedium,
-            )
-        }, textStyle = MaterialTheme.typography.labelMedium.copy(color = WooColor.white))
+        WooTextField(hint = Strings.enterEmailText)
         Spacer(modifier = Modifier.height(Dimension.dimen_25))
         // password
-        CustomTextField(placeholder = {
-            Text(
-                text = Strings.enterPasswordText,
-                style = MaterialTheme.typography.labelMedium,
-            )
-        }, trailingIcon = {
+        WooTextField(Strings.enterPasswordText, trailingIcon = {
             Icon(
                 imageVector = Icons.Rounded.VisibilityOff,
                 contentDescription = "",
                 tint = Color.White
             )
 
-        }, textStyle = MaterialTheme.typography.labelMedium.copy(color = WooColor.white))
+        })
         Spacer(modifier = Modifier.height(25.dp))
         // login button
         CustomButton(
@@ -256,9 +231,9 @@ fun LoginWithEmail() {
         )
         Spacer(modifier = Modifier.height(Dimension.dimen_25))
         // divider
-        CustomSpacer(25)        // divider
+        VerticalSpacer(Dimension.dimen_25)        // divider
         CustomDivider()
-        CustomSpacer(25)        //  Login With Phone Button
+        VerticalSpacer(Dimension.dimen_25)       //  Login With Phone Button
         CustomButton(
             border = BorderStroke(1.dp, Color.White),
             onClick = {},

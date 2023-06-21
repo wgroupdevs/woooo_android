@@ -1,5 +1,6 @@
 package com.wgroup.woooo_app
 
+import LoginView
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.WindowManager
@@ -12,7 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.wgroup.woooo_app.woooo.feature.auth.screen.SignUpView
 import com.wgroup.woooo_app.woooo.theme.Woooo_androidTheme
 import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
                         color = MaterialTheme.colorScheme.background
                     ) {
                         Column() {
-                            SignUpView()
+                            LoginView()
                         }
                     }
                 }
