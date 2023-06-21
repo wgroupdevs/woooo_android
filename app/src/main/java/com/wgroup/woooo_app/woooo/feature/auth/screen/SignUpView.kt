@@ -166,11 +166,7 @@ fun SignUpView() {
                     fontSize = 16.sp
                 )
             },
-            modifier = Modifier
-                .wrapContentWidth()
-                .height(50.dp),
-            colors = ButtonDefaults.outlinedButtonColors(containerColor = WooColor.textBox)
-        )
+              )
 
         VerticalSpacer(Dimension.dimen_40)
         CustomButton(
@@ -184,11 +180,7 @@ fun SignUpView() {
                     fontSize = 16.sp
                 )
             },
-            modifier = Modifier
-                .wrapContentWidth()
-                .height(50.dp),
-            colors = ButtonDefaults.outlinedButtonColors(containerColor = WooColor.textBox)
-        )
+             )
     }
 
 

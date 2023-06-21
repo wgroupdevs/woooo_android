@@ -82,12 +82,7 @@ fun VerifyOtpView() {
                         fontSize = 16.sp
                     )
                 },
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .height(50.dp)
-                    .align(Alignment.CenterHorizontally),
-                colors = ButtonDefaults.outlinedButtonColors(containerColor = WooColor.textBox)
-            )
+                      )
         }
     }
 }

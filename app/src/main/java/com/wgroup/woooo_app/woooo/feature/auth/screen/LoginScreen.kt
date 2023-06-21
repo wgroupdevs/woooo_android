@@ -128,11 +128,7 @@ fun LoginWithPhoneNumber() {
                     textAlign = TextAlign.Center,
                 )
             },
-            modifier = Modifier
-                .wrapContentWidth()
-                .height(50.dp),
-            colors = ButtonDefaults.outlinedButtonColors(containerColor = WooColor.textBox)
-        )
+           )
         VerticalSpacer(Dimension.dimen_25)       // divider
         CustomDivider()
         VerticalSpacer(Dimension.dimen_25)       //  Login With Phone Button
@@ -146,11 +142,7 @@ fun LoginWithPhoneNumber() {
                     textAlign = TextAlign.Center,
                 )
             },
-            modifier = Modifier
-                .wrapContentWidth()
-                .height(50.dp),
-            colors = ButtonDefaults.outlinedButtonColors(containerColor = WooColor.textBox)
-        )
+            )
 
         // forgot text
         TextButton(onClick = { }) {
@@ -171,11 +163,7 @@ fun LoginWithPhoneNumber() {
                     textAlign = TextAlign.Center,
                 )
             },
-            modifier = Modifier
-                .wrapContentWidth()
-                .height(50.dp),
-            colors = ButtonDefaults.outlinedButtonColors(containerColor = WooColor.textBox)
-        )
+            )
 
     }
 }
@@ -251,10 +239,7 @@ fun LoginWithEmail() {
                         textAlign = TextAlign.Center,
                     )
                 },
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .height(Dimension.dimen_50),
-                colors = ButtonDefaults.outlinedButtonColors(containerColor = WooColor.textBox)
+
             )
             // divider
             VerticalSpacer(Dimension.dimen_25)        // divider
@@ -270,11 +255,7 @@ fun LoginWithEmail() {
                         textAlign = TextAlign.Center,
                     )
                 },
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .height(50.dp),
-                colors = ButtonDefaults.outlinedButtonColors(containerColor = WooColor.textBox)
-            )
+              )
             VerticalSpacer(Dimension.dimen_130)       //  Login With Phone Button
 
         }

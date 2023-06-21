@@ -75,10 +75,6 @@ fun ForgetPassword() {
                     fontSize = 16.sp
                 )
             },
-            modifier = Modifier
-                .wrapContentWidth()
-                .height(50.dp),
-            colors = ButtonDefaults.outlinedButtonColors(containerColor = WooColor.textBox)
         )
         VerticalSpacer(Dimension.dimen_30)
         //Last text
@@ -91,7 +87,6 @@ fun ForgetPassword() {
         if (loaderViewModel.getLoaderShow.value)
             ShowLoader(onClick = {
                 loaderViewModel.setLoaderValue(!loaderViewModel.getLoaderShow.value)
-
             })
 
     }
