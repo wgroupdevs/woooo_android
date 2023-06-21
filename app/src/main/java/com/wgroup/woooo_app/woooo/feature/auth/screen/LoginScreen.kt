@@ -293,6 +293,7 @@ fun LoginWithEmail() {
             modifier = Modifier
                 .wrapContentWidth()
                 .height(50.dp),
+//                .weight(1f),
             colors = ButtonDefaults.outlinedButtonColors(containerColor = CustomColorTheme.textBox)
         )
     }
