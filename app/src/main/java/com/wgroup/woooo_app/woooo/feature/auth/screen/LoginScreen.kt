@@ -37,15 +37,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wgroup.woooo_app.R
-import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.ForgotPasswordViewModel
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.CustomDivider
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import com.wgroup.woooo_app.woooo.utils.Strings
 import com.wgroup.woooo_app.woooo.utils.Dimension
+import com.wgroup.woooo_app.woooo.utils.Strings
 
 @Preview
 @Composable
@@ -58,8 +57,7 @@ fun LoginView() {
             .fillMaxSize()
             .padding(10.dp),
 
-
-    ) {
+        ) {
 
         if (withEmail) {
             LoginWithEmail()
@@ -187,12 +185,10 @@ fun LoginWithEmail() {
 
     val loginViewModel: LoginViewModel = hiltViewModel()
 
-    val forgotViewModel: ForgotPasswordViewModel = hiltViewModel()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
 
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -224,14 +220,21 @@ fun LoginWithEmail() {
 
             })
             // forgot text
-            Box(modifier = Modifier.align(alignment = Alignment.Start).padding(start = Dimension.dimen_5)) {
+            Box(
+                modifier = Modifier
+                    .align(alignment = Alignment.Start)
+                    .padding(start = Dimension.dimen_5)
+            ) {
                 TextButton(
 
                     onClick = { },
                     contentPadding = PaddingValues(0.dp)
 
                 ) {
-                    Text(text = Strings.forgotText, style = MaterialTheme.typography.labelSmall.copy(color = WooColor.white))
+                    Text(
+                        text = Strings.forgotText,
+                        style = MaterialTheme.typography.labelSmall.copy(color = WooColor.white)
+                    )
                 }
             }
             // login button
@@ -277,6 +280,7 @@ fun LoginWithEmail() {
         }
 
 
+
         TextButton(
             onClick = { },
             contentPadding = PaddingValues(0.dp)
@@ -284,12 +288,6 @@ fun LoginWithEmail() {
         ) {
             Text(text = Strings.dontHaveAcntText, style = MaterialTheme.typography.labelLarge)
         }
-        if (forgotViewModel.enabledState.value)
-            ShowAlertDialog(onClick ={
-                forgotViewModel.setEnabledState(!forgotViewModel.enabledState.value)
-
-            } )
-
 
 //        //  last Button
 //        CustomButton(
