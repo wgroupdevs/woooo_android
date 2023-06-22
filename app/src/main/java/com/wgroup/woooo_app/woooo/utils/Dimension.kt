@@ -13,4 +13,21 @@ object Dimension {
     val dimen_50=50.dp
     val dimen_100=100.dp
     val dimen_130=130.dp
+
+
+    var circleWheelHeight = 340.0.dp
+    var circleWheelSectorRadius = 45.0.dp
+    var circleWheelTextHeight = 56.0.dp
+    var offsetForCircleText = 56.0.dp
+    var chatTextOffset_X = 56.0.dp
+    var chatTextOffset_Y = 56.0.dp
+    var chatTextRotation = 3F
+    var callTextOffset_Y = 56.0.dp
+    var callTextOffset_X = 56.0.dp
+    var meetingTextOffset_X = 56.0.dp
+    var meetingTextOffset_Y = 56.0.dp
+    var walletTextOffset_Y = 56.0.dp
+    var walletTextOffset_X = 56.0.dp
+
+
 }

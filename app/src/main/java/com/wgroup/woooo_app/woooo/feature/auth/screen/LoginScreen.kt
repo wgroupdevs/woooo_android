@@ -33,10 +33,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.R
+import com.wgroup.woooo_app.woooo.destinations.SignUpScreenDestination
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.ForgotPasswordViewModel
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
@@ -44,12 +45,12 @@ import com.wgroup.woooo_app.woooo.shared.components.CustomDivider
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import com.wgroup.woooo_app.woooo.utils.Strings
 import com.wgroup.woooo_app.woooo.utils.Dimension
+import com.wgroup.woooo_app.woooo.utils.Strings
 
-@Preview
+
 @Composable
-fun LoginView() {
+fun LoginView(navigator: DestinationsNavigator) {
     val withEmail by remember { mutableStateOf(true) }
 
 
@@ -62,7 +63,7 @@ fun LoginView() {
     ) {
 
         if (withEmail) {
-            LoginWithEmail()
+            LoginWithEmail(navigator)
         } else {
             LoginWithPhoneNumber()
         }
@@ -183,7 +184,7 @@ fun LoginWithPhoneNumber() {
 }
 
 @Composable
-fun LoginWithEmail() {
+fun LoginWithEmail(navigator: DestinationsNavigator) {
 
     val loginViewModel: LoginViewModel = hiltViewModel()
 
@@ -224,7 +225,9 @@ fun LoginWithEmail() {
 
             })
             // forgot text
-            Box(modifier = Modifier.align(alignment = Alignment.Start).padding(start = Dimension.dimen_5)) {
+            Box(modifier = Modifier
+                .align(alignment = Alignment.Start)
+                .padding(start = Dimension.dimen_5)) {
                 TextButton(
 
                     onClick = { },
@@ -238,7 +241,8 @@ fun LoginWithEmail() {
             CustomButton(
                 border = BorderStroke(1.dp, Color.White),
                 onClick = {
-                    loginViewModel.login()
+                    navigator.navigate(SignUpScreenDestination)
+//                    loginViewModel.login()
 
                 },
                 content = {

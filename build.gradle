@@ -2,7 +2,7 @@
 
 buildscript {
     ext {
-        compose_bom = '2023.04.01'
+        compose_bom = '2023.05.01'
         nav_version = '2.5.3'
         kotlin_bom = '1.8.20'
         coroutine_android = '1.6.1'
@@ -11,6 +11,7 @@ buildscript {
         hilt_version = '2.45'
         retrofit = '2.9.0'
         lifecycle_version = "2.6.1"
+        kotlin_version = '1.8.20'
     }
     repositories {
         mavenCentral()
@@ -24,6 +25,7 @@ buildscript {
 
     dependencies {
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 
