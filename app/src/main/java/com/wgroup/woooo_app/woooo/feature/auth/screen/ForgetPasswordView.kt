@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wgroup.woooo_app.R
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
+import com.wgroup.woooo_app.woooo.shared.components.CustomDialog
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.shared.components.view_models.LoaderViewModel
@@ -85,9 +86,12 @@ fun ForgetPassword() {
             )
 
         if (loaderViewModel.getLoaderShow.value)
-            ShowLoader(onClick = {
-                loaderViewModel.setLoaderValue(!loaderViewModel.getLoaderShow.value)
-            })
+//            ShowLoader(onClick = {
+//                loaderViewModel.setLoaderValue(!loaderViewModel.getLoaderShow.value)
+//            })
+            CustomDialog("Hi Ervry ", {
+                                loaderViewModel.setLoaderValue(!loaderViewModel.getLoaderShow.value)
 
+            }, { } )
     }
 }
