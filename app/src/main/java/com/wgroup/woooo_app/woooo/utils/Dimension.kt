@@ -1,5 +1,6 @@
 package com.wgroup.woooo_app.woooo.utils
 
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.ui.unit.dp
 
 object Dimension {
@@ -28,6 +29,8 @@ object Dimension {
     var meetingTextOffset_Y = 56.0.dp
     var walletTextOffset_Y = 56.0.dp
     var walletTextOffset_X = 56.0.dp
+
+    lateinit var boxWithConstraintsScope: BoxWithConstraintsScope
 
 
 }
