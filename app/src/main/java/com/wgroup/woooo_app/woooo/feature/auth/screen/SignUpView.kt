@@ -10,12 +10,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -23,7 +21,6 @@ import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.JoinInner
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,8 +32,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.wgroup.woooo_app.R
+import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
+import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageSignUpView
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.TextLabel
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
@@ -47,7 +47,7 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 
 @Composable
 fun SignUpView() {
-
+    val signUpViewModel: SignUpViewModel = hiltViewModel()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -73,28 +73,57 @@ fun SignUpView() {
         )
 
         {
+
             // first name
             TextLabel(label = Strings.firstNameText)
             VerticalSpacer()
-            WooTextField(hint = Strings.firstNameText, leadingIcon = {
-                Icon(
-                    imageVector = Icons.Rounded.Person, contentDescription = "", tint = Color.White
-                )
-            })
+            WooTextField(onValueChange = {
+                signUpViewModel.setNameControllerValue(it)
+                signUpViewModel.setNameErrorValue(false)
+            },
+                value = signUpViewModel.getNameController.value,
+                isError = signUpViewModel.getNameError.value,
+                supportingText = {
+                    if (signUpViewModel.getNameError.value) {
+                        ErrorMessageSignUpView()
+                    }
+                },
+                hint = Strings.firstNameText,
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Rounded.Person,
+                        contentDescription = "",
+                        tint = Color.White
+                    )
+                })
             VerticalSpacer()
             // last name
             TextLabel(label = Strings.lastNameText)
             VerticalSpacer()
-            WooTextField(hint = Strings.lastNameText, leadingIcon = {
-                Icon(
-                    imageVector = Icons.Rounded.Person, contentDescription = "", tint = Color.White
-                )
-            })
+            WooTextField(onValueChange = {
+                signUpViewModel.setLastNameControllerValue(it)
+                signUpViewModel.setLastNameErrorValue(false)
+            },
+                value = signUpViewModel.getLastNameController.value,
+                isError = signUpViewModel.getLastNameError.value,
+                supportingText = {
+                    if (signUpViewModel.getLastNameError.value) {
+                        ErrorMessageSignUpView()
+                    }
+                },
+                hint = Strings.lastNameText,
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Rounded.Person,
+                        contentDescription = "",
+                        tint = Color.White
+                    )
+                })
             VerticalSpacer()
             //phone number
             TextLabel(label = Strings.phoneNmbrText)
             VerticalSpacer()
-            WooTextField(Strings.enterNumberText, leadingIcon = {
+            WooTextField(hint = Strings.enterNumberText,leadingIcon = {
                 Row(
                     horizontalArrangement = Arrangement.Start,
                     verticalAlignment = Alignment.CenterVertically
@@ -118,46 +147,77 @@ fun SignUpView() {
             //email
             TextLabel(label = Strings.emailText)
             VerticalSpacer()
-            WooTextField(hint = Strings.emailText, leadingIcon = {
-                Icon(
-                    imageVector = Icons.Rounded.Email, contentDescription = "", tint = Color.White
-                )
-            })
+            WooTextField(onValueChange = {
+                signUpViewModel.setEmailControllerValue(it)
+                signUpViewModel.setEmailErrorValue(false)
+            },value = signUpViewModel.getEmailController.value,
+                isError = signUpViewModel.getEmailError.value,
+                supportingText = {
+                    if (signUpViewModel.getEmailError.value) {
+                        ErrorMessageSignUpView()
+                    }
+                },
+                hint = Strings.emailText,
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Rounded.Email,contentDescription = "",tint = Color.White
+                    )
+                })
             VerticalSpacer()
             //Password
             TextLabel(label = Strings.passwordText)
             VerticalSpacer()
-            WooTextField(hint = Strings.passwordText, leadingIcon = {
-                Icon(
-                    imageVector = Icons.Rounded.Lock, contentDescription = "", tint = Color.White
-                )
-            })
+            WooTextField(onValueChange = {
+                signUpViewModel.setPasswordControllerValue(it)
+                signUpViewModel.setPasswordErrorValue(false)
+            },value = signUpViewModel.getPasswordController.value,
+                isError = signUpViewModel.getPasswordError.value,
+                supportingText = {
+                    if (signUpViewModel.getPasswordError.value) {
+                        ErrorMessageSignUpView()
+                    }
+                },
+                hint = Strings.passwordText,
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Rounded.Lock,contentDescription = "",tint = Color.White
+                    )
+                })
             VerticalSpacer()
             //Confirm Password
             TextLabel(label = Strings.confirmpasswordText)
             VerticalSpacer()
-            WooTextField(hint = Strings.confirmpasswordText, leadingIcon = {
-                Icon(
-                    imageVector = Icons.Rounded.Lock, contentDescription = "", tint = Color.White
-                )
-            })
+            WooTextField(onValueChange = {  signUpViewModel.setConfirmPasswordControllerValue(it)
+                signUpViewModel.setConfirmPasswordErrorValue(false)}, value = signUpViewModel.getConfirmPasswordController.value,
+                isError = signUpViewModel.getConfirmPasswordError.value,
+                supportingText = {
+                    if (signUpViewModel.getConfirmPasswordError.value) {
+                        ErrorMessageSignUpView()
+                    }
+                },
+                hint = Strings.confirmpasswordText,
+                leadingIcon = {
+                    Icon(
+                        imageVector = Icons.Rounded.Lock,contentDescription = "",tint = Color.White
+                    )
+                })
             VerticalSpacer()
             //Referral Code
             TextLabel(label = Strings.referralCodeText)
             VerticalSpacer()
-            WooTextField(hint = Strings.referralCodeText, leadingIcon = {
+            WooTextField(hint = Strings.referralCodeText,leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.JoinInner,
-                    contentDescription = "",
-                    tint = Color.White
+                    imageVector = Icons.Rounded.JoinInner,contentDescription = "",tint = Color.White
                 )
             })
 
         }
         VerticalSpacer(Dimension.dimen_40)
         CustomButton(
-            border = BorderStroke(1.dp, Color.White),
-            onClick = {},
+            border = BorderStroke(1.dp,Color.White),
+            onClick = {
+                signUpViewModel.validateSignUpFields()
+            },
             content = {
                 Text(
                     text = Strings.signUpText,
@@ -166,11 +226,11 @@ fun SignUpView() {
                     fontSize = 16.sp
                 )
             },
-              )
+        )
 
         VerticalSpacer(Dimension.dimen_40)
         CustomButton(
-            border = BorderStroke(1.dp, Color.White),
+            border = BorderStroke(1.dp,Color.White),
             onClick = {},
             content = {
                 Text(
@@ -180,7 +240,7 @@ fun SignUpView() {
                     fontSize = 16.sp
                 )
             },
-             )
+        )
     }
 
 

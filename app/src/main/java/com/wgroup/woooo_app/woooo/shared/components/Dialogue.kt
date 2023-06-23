@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -13,11 +12,11 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,13 +49,6 @@ fun CustomDialog(value: String, setShowDialog: (Boolean) -> Unit, setValue: (Str
                         horizontalArrangement = Arrangement.End,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-//                        Text(
-//                            text = "Set value",
-//                            style = TextStyle(
-//                                fontSize = 24.sp,
-//                                fontWeight = FontWeight.Bold
-//                            )
-//                        )
                         Icon(imageVector = Icons.Filled.Cancel,
                             contentDescription = "",
                             tint = WooColor.white,
@@ -65,12 +57,11 @@ fun CustomDialog(value: String, setShowDialog: (Boolean) -> Unit, setValue: (Str
                                 .height(30.dp)
                                 .clickable { setShowDialog(false) })
                     }
-                    VerticalSpacer(Dimension.dimen_20)
+                    VerticalSpacer(Dimension.dimen_10)
                     Text(
                         text = "iniasncsdjc \n asdkjncsd",
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
-
 
 //
 //                    TextField(
@@ -104,26 +95,43 @@ fun CustomDialog(value: String, setShowDialog: (Boolean) -> Unit, setValue: (Str
 //                            txtField.value = it.take(10)
 //                        })
 
-                    Spacer(modifier = Modifier.height(20.dp))
+                    VerticalSpacer(Dimension.dimen_20)
+                    Row(
+                        horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()
+                    ) {
 
-                    Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
-                        Button(
-                            onClick = {
-                                if (txtField.value.isEmpty()) {
-                                    txtFieldError.value = "Field can not be empty"
-                                    return@Button
-                                }
-                                setValue(txtField.value)
-                                setShowDialog(false)
-                            },
-                            shape = RoundedCornerShape(50.dp),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(50.dp)
-                        ) {
-                            Text(text = "Done")
+                        TextButton(onClick = {
+                            setShowDialog(false)
+                        }) {
+                            Text(text = "Cancel")
+                        }
+                        HorizontalSpacer()
+                        TextButton(onClick = {
+                            setShowDialog(false)
+                        }) {
+                            Text(text = "Ok")
                         }
                     }
+
+//                    Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
+//
+//                        Button(
+//                            onClick = {
+//                                if (txtField.value.isEmpty()) {
+//                                    txtFieldError.value = "Field can not be empty"
+//                                    return@Button
+//                                }
+//                                setValue(txtField.value)
+//                                setShowDialog(false)
+//                            },
+//                            shape = RoundedCornerShape(50.dp),
+//                            modifier = Modifier
+//                                .fillMaxWidth()
+//                                .height(50.dp)
+//                        ) {
+//                            Text(text = "Done")
+//                        }
+//                    }
                 }
             }
         }

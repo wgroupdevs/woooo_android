@@ -1,17 +1,13 @@
 package com.wgroup.woooo_app.woooo.feature.auth.screen
 
-import ShowLoader
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,20 +21,21 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wgroup.woooo_app.R
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
-import com.wgroup.woooo_app.woooo.shared.components.CustomDialog
+import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageForgetPasswordView
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
-import com.wgroup.woooo_app.woooo.shared.components.view_models.LoaderViewModel
-import com.wgroup.woooo_app.woooo.theme.WooColor
+import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.ForgotViewModel
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 
 @Composable
 fun ForgetPassword() {
 
-    val loaderViewModel: LoaderViewModel = hiltViewModel()
+//    val loaderViewModel: LoaderViewModel = hiltViewModel()
+    val forgotPassViewModel: ForgotViewModel = hiltViewModel()
 
     Column(
+
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
@@ -56,17 +53,32 @@ fun ForgetPassword() {
         )
         VerticalSpacer(Dimension.dimen_30)
         // forgot text
-        Text(text = Strings.forgotTextNewPassView, style = MaterialTheme.typography.bodyLarge)
+        Text(text = Strings.forgotTextNewPassView,style = MaterialTheme.typography.bodyLarge)
         VerticalSpacer(Dimension.dimen_40)
         // enter email
-        WooTextField(hint = Strings.enterEmailText)
+        WooTextField(
+            onValueChange = {
+                forgotPassViewModel.setEmailControllerValue(it)
+                forgotPassViewModel.setErrorValueForEmail(false)
+            },
+            value = forgotPassViewModel.getEmailController.value,
+            isError = forgotPassViewModel.getErrorEmailController.value,
+            supportingText = {
+                if (forgotPassViewModel.getErrorEmailController.value) {
+                    ErrorMessageForgetPasswordView()
+                }
+            },
+            hint = Strings.enterEmailText
+        )
         VerticalSpacer(Dimension.dimen_30)
         // recover button
         CustomButton(
-            border = BorderStroke(1.dp, Color.White),
+            border = BorderStroke(1.dp,Color.White),
             onClick = {
 
-                loaderViewModel.setLoaderValue(!loaderViewModel.getLoaderShow.value)
+                if (forgotPassViewModel.validateEmail()) {
+
+                }
             },
             content = {
                 Text(
@@ -79,19 +91,19 @@ fun ForgetPassword() {
         )
         VerticalSpacer(Dimension.dimen_30)
         //Last text
-         Text(
-                text = Strings.emailNotFoundDes,
-                style = MaterialTheme.typography.bodySmall,
-                textAlign = TextAlign.Center
-            )
+        Text(
+            text = Strings.emailNotFoundDes,
+            style = MaterialTheme.typography.bodySmall,
+            textAlign = TextAlign.Center
+        )
 
-        if (loaderViewModel.getLoaderShow.value)
-//            ShowLoader(onClick = {
+//        if (loaderViewModel.getLoaderShow.value)
+////            ShowLoader(onClick = {
+////                loaderViewModel.setLoaderValue(!loaderViewModel.getLoaderShow.value)
+////            })
+//            CustomDialog("Hi Ervry ",{
 //                loaderViewModel.setLoaderValue(!loaderViewModel.getLoaderShow.value)
-//            })
-            CustomDialog("Hi Ervry ", {
-                                loaderViewModel.setLoaderValue(!loaderViewModel.getLoaderShow.value)
 
-            }, { } )
+//            },{ })
     }
 }
