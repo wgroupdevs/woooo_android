@@ -18,7 +18,7 @@ object Strings {
     var forgotTextNewPassView = "Forgot Password"
     var dontHaveAcntText = "Don't have an account? Sign Up"
     var otpSentEmailText = "Your Account is not verified.An OTP is sent on your email "
-
+var slctCountry = "Select Country"
     // signup view keys
 
     var firstNameText = "First Name"
@@ -155,7 +155,7 @@ object Strings {
     var plzEntrFirstName = "Please Enter First Name"
     var plzEntrLstName = "Please Enter Last Name"
     var plzEnterEmail = "Please Enter Email"
-var plzEntrPass = "Please Enter Password"
+var plzEntrNewPass = "Please Enter New Password"
 var plzEntrConPass = "Please Enter Confirm Password"
     //    // group main view keys
 //

@@ -138,37 +138,37 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
 //    }
 
     fun validateSignUpFields(): Boolean {
-        if (getNameController.value == "") {
+        if (getNameController.value.trim() == "") {
             // pass error text to show below in text field
             setErrorValueText(Strings.plzEntrFirstName)
             // enabled value of error in text field
             setNameErrorValue(true)
             return false
-        } else if (getLastNameController.value == "") {
+        } else if (getLastNameController.value.trim() == "") {
             // pass error text to show below in text field
             setErrorValueText(Strings.plzEntrLstName)
             // enabled value of error in text field
             setLastNameErrorValue(true)
             return false
-        } else if (getEmailController.value == "") {
+        } else if (getEmailController.value.trim() == "") {
             // pass error text to show below in text field
             setErrorValueText(Strings.plzEnterEmail)
             // enabled value of error in text field
             setEmailErrorValue(true)
             return false
-        } else if (!Validators.isValidEmail(getEmailController.value)) {
+        } else if (!Validators.isValidEmail(getEmailController.value.trim())) {
             // pass error text to show below in text field
             setErrorValueText(Strings.entrValidEmailText)
             // enabled value of error in text field
             setEmailErrorValue(true)
             return false
-        } else if (getPasswordController.value == "") {
+        } else if (getPasswordController.value.trim() == "") {
             // pass error text to show below in text field
-            setErrorValueText(Strings.plzEntrPass)
+            setErrorValueText(Strings.plzEntrNewPass)
             // enabled value of error in text field
             setPasswordErrorValue(true)
             return false
-        } else if (getConfirmPasswordController.value == "") {
+        } else if (getConfirmPasswordController.value.trim() == "") {
             // pass error text to show below in text field
             setErrorValueText(Strings.plzEntrConPass)
             // enabled value of error in text field

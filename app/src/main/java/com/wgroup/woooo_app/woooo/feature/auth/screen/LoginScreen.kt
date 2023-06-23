@@ -1,3 +1,5 @@
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.rounded.VisibilityOff
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,18 +38,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.maxkeppeker.sheets.core.models.base.UseCaseState
 import com.wgroup.woooo_app.R
-import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginViewModel
+import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginViewModelWithEmail
+import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.CustomDivider
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageForLoginWithEmail
+import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageLoginWithPhone
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
+import com.wgroup.woooo_app.woooo.shared.components.view_models.DateTimerPickerViewModel
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun LoginView() {
@@ -68,9 +76,14 @@ fun LoginView() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginWithPhoneNumber() {
-    val loginViewModel:LoginViewModel = hiltViewModel()
+
+    val loginWithEmailViewModel: LoginViewModelWithEmail = hiltViewModel()
+    val dateTimeViewModel: DateTimerPickerViewModel = hiltViewModel()
+    val loginWithPhoneViewModel: LoginWithPhoneViewModel = hiltViewModel()
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -89,48 +102,81 @@ fun LoginWithPhoneNumber() {
                 contentDescription = "",
                 modifier = Modifier.size(200.dp)
             )
-            VerticalSpacer(Dimension.dimen_15)
+            VerticalSpacer(Dimension.dimen_25)
 
             // Country picker
-            WooTextField("Japan",trailingIcon = {
-                Icon(
-                    imageVector = Icons.Default.ArrowDropDown,
-                    contentDescription = "",
-                    tint = Color.White
-                )
-            })
-            VerticalSpacer(Dimension.dimen_25)
+            WooTextField(
+                hint = "Japan",
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.Default.ArrowDropDown,
+                        contentDescription = "",
+                        tint = Color.White
+                    )
+                },
+                onValueChange = {
+                    loginWithPhoneViewModel.setCountryText(it)
+                    loginWithPhoneViewModel.setPhoneError(false)
+                },
+                value = loginWithPhoneViewModel.getCountryText.value,
+                isError = loginWithPhoneViewModel.getCountryError.value,
+                supportingText = {
+                    if (loginWithPhoneViewModel.getCountryError.value) {
+                        ErrorMessageLoginWithPhone()
+                    }
+                },
+            )
+            VerticalSpacer(Dimension.dimen_15)
             // Phone Number
-            WooTextField("Enter Number",leadingIcon = {
-                Row(
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.height(Dimension.dimen_50)
-                ) {
-                    Text(
-                        text = "+81",
-                        style = MaterialTheme.typography.titleSmall,
-                    )
-                    HorizontalSpacer()
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .width(1.dp)
-                            .background(WooColor.hintText)
-                            .padding(5.dp)
-                    )
-                }
-            })
+            WooTextField(
+                hint = Strings.enterNumberText,
+                leadingIcon = {
+
+                    Row(
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.height(Dimension.dimen_50)
+                    ) {
+                        HorizontalSpacer()
+                        Text(
+                            text = "+81",
+                            style = MaterialTheme.typography.titleSmall,
+                        )
+                        HorizontalSpacer()
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .width(1.dp)
+                                .background(WooColor.hintText)
+                                .padding(10.dp)
+
+                        )
+                        HorizontalSpacer(Dimension.dimen_5)
+
+                    }
+                },
+                onValueChange = {
+                    loginWithPhoneViewModel.setPhoneText(it)
+                    loginWithPhoneViewModel.setPhoneError(false)
+                },
+                value = loginWithPhoneViewModel.getPhoneText.value,
+                isError = loginWithPhoneViewModel.getPhoneError.value,
+                supportingText = {
+                    if (loginWithPhoneViewModel.getPhoneError.value) {
+                        ErrorMessageForLoginWithEmail()
+                    }
+                },
+            )
             VerticalSpacer(Dimension.dimen_15)
             WooTextField(
                 onValueChange = {
-                    loginViewModel.setPasswordControllerValue(it)
-                    loginViewModel.setErrorValueForPassword(false)
+                    loginWithEmailViewModel.setPasswordControllerValue(it)
+                    loginWithEmailViewModel.setErrorValueForPassword(false)
                 },
-                value = loginViewModel.getPasswordController.value,
-                isError = loginViewModel.getErrorPasswordController.value,
+                value = loginWithEmailViewModel.getPasswordController.value,
+                isError = loginWithEmailViewModel.getErrorPasswordController.value,
                 supportingText = {
-                    if (loginViewModel.getErrorPasswordController.value) {
+                    if (loginWithEmailViewModel.getErrorPasswordController.value) {
                         ErrorMessageForLoginWithEmail()
                     }
                 },
@@ -139,17 +185,19 @@ fun LoginWithPhoneNumber() {
                     Icon(imageVector = Icons.Rounded.VisibilityOff,
 
                         contentDescription = "",tint = Color.White,modifier = Modifier.clickable {
-                            loginViewModel.setEyeValueForPassword(!loginViewModel.getEyeForPassword.value)
+                            loginWithEmailViewModel.setEyeValueForPassword(!loginWithEmailViewModel.getEyeForPassword.value)
                         })
 
                 },
-                obscusePass = loginViewModel.getEyeForPassword.value
+                obscusePass = loginWithEmailViewModel.getEyeForPassword.value
             )
             VerticalSpacer(Dimension.dimen_30)
             // login button
             CustomButton(
                 border = BorderStroke(1.dp,Color.White),
-                onClick = {},
+                onClick = {
+                    loginWithPhoneViewModel.validateEmailWithPhoneFields()
+                },
                 content = {
                     Text(
                         text = Strings.login,
@@ -158,12 +206,14 @@ fun LoginWithPhoneNumber() {
                     )
                 },
             )
-            VerticalSpacer(Dimension.dimen_25)       // divider
+            VerticalSpacer(Dimension.dimen_15)       // divider
             CustomDivider()
-            VerticalSpacer(Dimension.dimen_25)       //  Login With Phone Button
+            VerticalSpacer(Dimension.dimen_15)       //  Login With Phone Button
             CustomButton(
                 border = BorderStroke(1.dp,Color.White),
-                onClick = {},
+                onClick = {
+                    dateTimeViewModel.setDatePickerShowValue(value = UseCaseState())
+                },
                 content = {
                     Text(
                         text = Strings.LogWithPhoneText,
@@ -182,7 +232,9 @@ fun LoginWithPhoneNumber() {
             //  last Button
             CustomButton(
                 border = BorderStroke(1.dp,Color.White),
-                onClick = {},
+                onClick = {
+                    print("${dateTimeViewModel.getDatePickerShow.show()}" + "uhwslckalksnciodc")
+                },
                 content = {
                     Text(
                         text = Strings.dontHaveAcntText,
@@ -198,10 +250,7 @@ fun LoginWithPhoneNumber() {
 
 @Composable
 fun LoginWithEmail() {
-
-    val loginViewModel:LoginViewModel = hiltViewModel()
-
-
+    val loginWithEmailViewModel: LoginViewModelWithEmail = hiltViewModel()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -225,29 +274,29 @@ fun LoginWithEmail() {
             // email
             WooTextField(
                 onValueChange = {
-                    loginViewModel.setEmailControllerValue(it)
-                    loginViewModel.setErrorValueForEmail(false)
+                    loginWithEmailViewModel.setEmailControllerValue(it)
+                    loginWithEmailViewModel.setErrorValueForEmail(false)
                 },
-                value = loginViewModel.getEmailController.value,
-                isError = loginViewModel.getErrorEmailController.value,
+                value = loginWithEmailViewModel.getEmailController.value,
+                isError = loginWithEmailViewModel.getErrorEmailController.value,
                 supportingText = {
-                    if (loginViewModel.getErrorEmailController.value) {
+                    if (loginWithEmailViewModel.getErrorEmailController.value) {
                         ErrorMessageForLoginWithEmail()
                     }
                 },
                 hint = Strings.enterEmailText
             )
-            VerticalSpacer(Dimension.dimen_25)
+            VerticalSpacer(Dimension.dimen_15)
             // password
             WooTextField(
                 onValueChange = {
-                    loginViewModel.setPasswordControllerValue(it)
-                    loginViewModel.setErrorValueForPassword(false)
+                    loginWithEmailViewModel.setPasswordControllerValue(it)
+                    loginWithEmailViewModel.setErrorValueForPassword(false)
                 },
-                value = loginViewModel.getPasswordController.value,
-                isError = loginViewModel.getErrorPasswordController.value,
+                value = loginWithEmailViewModel.getPasswordController.value,
+                isError = loginWithEmailViewModel.getErrorPasswordController.value,
                 supportingText = {
-                    if (loginViewModel.getErrorPasswordController.value) {
+                    if (loginWithEmailViewModel.getErrorPasswordController.value) {
                         ErrorMessageForLoginWithEmail()
                     }
                 },
@@ -256,11 +305,11 @@ fun LoginWithEmail() {
                     Icon(imageVector = Icons.Rounded.VisibilityOff,
 
                         contentDescription = "",tint = Color.White,modifier = Modifier.clickable {
-                            loginViewModel.setEyeValueForPassword(!loginViewModel.getEyeForPassword.value)
+                            loginWithEmailViewModel.setEyeValueForPassword(!loginWithEmailViewModel.getEyeForPassword.value)
                         })
 
                 },
-                obscusePass = loginViewModel.getEyeForPassword.value
+                obscusePass = loginWithEmailViewModel.getEyeForPassword.value
             )
             // forgot text
             Box(
@@ -286,8 +335,8 @@ fun LoginWithEmail() {
                 border = BorderStroke(1.dp,Color.White),
                 onClick = {
 
-                    if (loginViewModel.validateEmailPass()) {
-                        loginViewModel.login()
+                    if (loginWithEmailViewModel.validateEmailPass()) {
+                        loginWithEmailViewModel.login()
                     }
 
                 },
@@ -301,9 +350,9 @@ fun LoginWithEmail() {
 
                 )
             // divider
-            VerticalSpacer(Dimension.dimen_25)        // divider
+            VerticalSpacer(Dimension.dimen_15)        // divider
             CustomDivider()
-            VerticalSpacer(Dimension.dimen_25)       //  Login With Phone Button
+            VerticalSpacer(Dimension.dimen_15)       //  Login With Phone Button
             CustomButton(
                 border = BorderStroke(1.dp,Color.White),
                 onClick = {},
@@ -319,9 +368,13 @@ fun LoginWithEmail() {
 
         }
         TextButton(
-            onClick = { },contentPadding = PaddingValues(0.dp)
+            onClick = {
+//                datePickerDialog.show()
+            },contentPadding = PaddingValues(0.dp)
         ) {
             Text(text = Strings.dontHaveAcntText,style = MaterialTheme.typography.labelLarge)
         }
     }
+
+
 }

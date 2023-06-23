@@ -73,6 +73,7 @@ fun WooTextField(
             focusedBorderColor = WooColor.white,
             containerColor = WooColor.textFieldBackGround,
             disabledTextColor = Color.Transparent,
+            errorContainerColor = WooColor.textFieldBackGround
 
             ),
         shape = shape,
