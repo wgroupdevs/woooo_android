@@ -2,11 +2,16 @@ package com.wgroup.woooo_app.woooo.shared.components
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.ForgotViewModel
+import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginViewModel
+import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import com.wgroup.woooo_app.woooo.utils.Dimension
 
 @Composable
@@ -15,6 +20,30 @@ fun VerticalSpacer(height: Dp = Dimension.dimen_10) {
 }
 
 @Composable
-fun HorizontalSpacer(size: Int = 10) {
-    Spacer(modifier = Modifier.size(size.dp))
+fun HorizontalSpacer(width: Dp = Dimension.dimen_10) {
+    Spacer(modifier = Modifier.width(width))
+}
+
+@Composable
+fun ErrorMessageForLoginWithEmail() {
+    val loginViewModel: LoginViewModel = hiltViewModel()
+    Text(
+        text = loginViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
+    )
+}
+
+@Composable
+fun ErrorMessageForgetPasswordView() {
+    val forgotViewModel: ForgotViewModel = hiltViewModel()
+    Text(
+        text = forgotViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
+    )
+}
+
+@Composable
+fun ErrorMessageSignUpView() {
+    val signUpViewModel: SignUpViewModel = hiltViewModel()
+    Text(
+        text = signUpViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
+    )
 }

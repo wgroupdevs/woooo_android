@@ -18,6 +18,9 @@ object WooColor {
     var textBox = Color(0xff45ACDB)
     var textFieldBackGround = Color(0xff195E91)
     var colorForTextFieldHint = Color(0xCCFFFFFF)
-    var hintText = Color(0xffB8E0F2);
-    val white=Color(0xffFFFFFF);
+    var hintText = Color(0xffB8E0F2)
+    val white=Color(0xffFFFFFF)
+    val loaderColorBackGround =Color(0xE6327DA0)
+    val red =  Color(0xD9FF0000)
+
 }

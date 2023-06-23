@@ -45,8 +45,9 @@ object Strings {
 //
 //    // signup controller keys
 //
-//    "entrVldEml"= "Enter Valid Email"
-//
+    var entrVldEml = "Enter Valid Email"
+
+    //
 //    // home view keys
 //
 //
@@ -151,8 +152,12 @@ object Strings {
 //    "claimText"= "Claim"
 //    "invitationCodeText"= "Add the invitation code and clam your reward"
 //    "invitationFrndText"= "Invite friends and earn rewards"
-//
-//    // group main view keys
+    var plzEntrFirstName = "Please Enter First Name"
+    var plzEntrLstName = "Please Enter Last Name"
+    var plzEnterEmail = "Please Enter Email"
+var plzEntrPass = "Please Enter Password"
+var plzEntrConPass = "Please Enter Confirm Password"
+    //    // group main view keys
 //
 //    "grpInfoText"= "Group Info"
 //    "grpStngText"= "Group Settings"
@@ -300,8 +305,9 @@ object Strings {
 //    // new pass view keys
 //
 //    "mismtchPassText"= "Password mismatched enter password again"
-var     resetText= "Reset"
-//
+    var resetText = "Reset"
+
+    //
 //    // settings views keys
 //    "shortText"= "Short"
 //    "highText"= "High"
@@ -341,18 +347,20 @@ var     resetText= "Reset"
 //    "noBodyText"= "No Body"
 //    "rstPassText"= "Reset Password"
     var resentOTP = "Resend OTP"
-    var verifyCode= "Verify Code"
-//    "resendCode"= "Resend Code"
+    var verifyCode = "Verify Code"
+
+    //    "resendCode"= "Resend Code"
     var recoverText = "Recover"
     var emailNotFoundDes = "If you don't see the email in your inbox\ncheck your spam folder."
-//    "continueText"= "Continue"
+
+    //    "continueText"= "Continue"
 //    "checkEmailDes"=
 //    "An email with reset password instructions has been sent to your email address."
 //    "createNewPswd"= "Create New Strong Password "
-    var pleaseEnterOtp= "Please Enter OTP"
-var    newPswdText= "New Password"
-var  reTypePswdText= "Re-type Password"
-var    reTypePswdDes= "Password Must Match"
+    var pleaseEnterOtp = "Please Enter OTP"
+    var newPswdText = "New Password"
+    var reTypePswdText = "Re-type Password"
+    var reTypePswdDes = "Password Must Match"
 //    "newPswdDes"=
 //    "Please enter At least one Capital Letter\nNumbersmall Letter and Minimum 8 Characters"
 //    "lastBackupText"= "Last Backup"
