@@ -11,7 +11,7 @@ import com.wgroup.woooo_app.woooo.feature.home.screen.HomeView
 
 @Composable
 fun LoginScreen(navigator: DestinationsNavigator) {
-    LoginView(navigator)
+    LoginView()
 }
 
 @Destination(start = true)
