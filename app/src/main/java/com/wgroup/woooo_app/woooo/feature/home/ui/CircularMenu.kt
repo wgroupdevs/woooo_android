@@ -32,10 +32,10 @@ fun CircularMenu() {
 
     val circularMenuViewModel: CircularMenuViewModel = hiltViewModel()
     val inner_wheel = painterResource(id = R.drawable.inner_wheel)
-    val meeting_text_active = painterResource(id = R.drawable.meeting_text_active)
-    val chat_text_active = painterResource(id = R.drawable.chat_text_active)
-    val call_text_active = painterResource(id = R.drawable.call_text_active)
-    val wallet_text_active = painterResource(id = R.drawable.wallet_text_active)
+    val meeting_text_active = painterResource(id = R.drawable.meeting_text_disable)
+    val chat_text_active = painterResource(id = R.drawable.chat_text_disable)
+    val call_text_active = painterResource(id = R.drawable.call_text_disable)
+    val wallet_text_active = painterResource(id = R.drawable.wallet_text_disable)
     val scopeClockWise = rememberCoroutineScope()
     val scopeAntiClockWise = rememberCoroutineScope()
 
