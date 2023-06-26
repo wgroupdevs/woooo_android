@@ -18,7 +18,7 @@ object Strings {
     var forgotTextNewPassView = "Forgot Password"
     var dontHaveAcntText = "Don't have an account? Sign Up"
     var otpSentEmailText = "Your Account is not verified.An OTP is sent on your email "
-
+    var slctCountry = "Select Country"
     // signup view keys
 
     var firstNameText = "First Name"
@@ -40,50 +40,43 @@ object Strings {
     var alreadyAccount = "Already have an account？ Login"
 
     //
-//    inldPassText
-//    = "Invalid Password"
-//
-//    // signup controller keys
+    var inldPassText = "Invalid Password"
+
+    //
+    // signup controller keys
 //
     var entrVldEml = "Enter Valid Email"
 
+    // home view keys
+//
+//
+    var hloText = "Hello"
+
     //
-//    // home view keys
+    var progressText = "Your Daily Progress"
+
+    //
+    var toCompleteText = "% to Complete"
+
+    //
+    var chatText = "Chat"
+
+    //
+//    meetingText= "Meeting"
 //
+    var callText = "Call"
+
+    //    walletText   = "Wallet"
 //
-//    hloText
-//    = "Hello"
+//    dailyRewardText    = "Daily Reward"
 //
-//    progressText
-//    = "Your Daily Progress"
+//    7days = "Complete 7 day\"s to claim woo Asset"
 //
-//    toCompleteText
-//    = "% to Complete"
-//
-//    chatText
-//    = "Chat"
-//
-//    meetingText
-//    = "Meeting"
-//
-//    callText
-//    = "Call"
-//
-//    walletText
-//    = "Wallet"
-//
-//    dailyRewardText
-//    = "Daily Reward"
-//
-//    7days
-//    = "Complete 7 day\"s to claim woo Asset"
-//
-//    msgsText
-//    = "Messages"
-//
-//    grpText
-//    = "Groups"
-//    "noCLlogFond"= "No call logs found"
+    var msgsText = "Messages"
+
+    var grpText = "Groups"
+
+    //    "noCLlogFond"= "No call logs found"
 //    "adCnctText"= "Add Contacts"
 //    // bottom Nav View Keys
 //
@@ -117,8 +110,9 @@ object Strings {
 //    "delText"= "Delete"
 //    "blockText"= "Block"
 //    "transText"= "Translate Settings"
-//    "audioText"= "Audio"
-//    "documentText"= "Documents"
+    var audioText = "Audio"
+
+    //    "documentText"= "Documents"
 //    "locationText"= "Location"
 //    "galleryText"= "Gallery"
 //    "contactText"= "Contact"
@@ -126,8 +120,9 @@ object Strings {
 //
 //    // contact details view keys
 //
-//    "videoText"= "Video"
-//    "voiceClText"= "Voice Call"
+    var videoText = "Video"
+
+    //    "voiceClText"= "Voice Call"
 //    "videoClText"= "Video Call"
 //    "removeCallLogText"= "Remove Call Log"
 //    "blockContactText"= "Block Contact"
@@ -135,8 +130,9 @@ object Strings {
 //    // drawer view keys
 //
 //    "edtProfileText"= "Edit profile"
-//    "stngText"= "Setting"
-//    "shareLinkText"= "Share link"
+    var stngText = "Setting"
+
+    //    "shareLinkText"= "Share link"
 //    "shareWithContctText"= "Share With Contact"
 //    "inviteViaText"= "Invite Via"
 //    "copyLinkText"= "Copy Link"
@@ -155,8 +151,9 @@ object Strings {
     var plzEntrFirstName = "Please Enter First Name"
     var plzEntrLstName = "Please Enter Last Name"
     var plzEnterEmail = "Please Enter Email"
-var plzEntrPass = "Please Enter Password"
-var plzEntrConPass = "Please Enter Confirm Password"
+    var plzEntrNewPass = "Please Enter New Password"
+    var plzEntrConPass = "Please Enter Confirm Password"
+
     //    // group main view keys
 //
 //    "grpInfoText"= "Group Info"
@@ -253,10 +250,11 @@ var plzEntrConPass = "Please Enter Confirm Password"
 //
 //    // profile update view keys
 //
-//    "abtText"= "About"
+var abtText= "About"
 //    "dobText"= "Date Of Birth"
-//    "lanText"= "Language"
-//    "ctyText"= "City"
+    var lanText = "Language"
+
+    //    "ctyText"= "City"
 //    "stateText"= "State"
 //    "pstlCodeText"= "Postal Code"
 //    "cntryText"= "Country"
@@ -320,31 +318,36 @@ var plzEntrConPass = "Please Enter Confirm Password"
 //    "remoteLogOutText"= "Remote Log-out"
 //    "changePasswordText"= "Change Password"
 //    "fingerPrintText"= "Finger Print"
-//    "permissionsText"= "Permission"
-//    "offText"= "Off"
+    var permissionsText = "Permission"
+
+    //    "offText"= "Off"
 //    "wifiText"= "Wifi"
-//    "onText"= "On"
-//    "audioAndVideoText"= "Audio and Video"
-//    "cameraSettingText"= "Camera setting"
-//    "successText"= "Success"
+    var onText = "On"
+    var audioAndVideoText = "Audio and Video"
+    var cameraSettingText = "Camera setting"
+
+    //    "successText"= "Success"
 //    "successPswdDesc"= "Password changed Successfully."
 //    "readTextDes"= "Read"
-//    "microPhoneText"= "MicroPhone"
-//    "noiseCancellationText"= "Noise Cancellation"
-//    "changeNumberText"= "Change Number"
-//    "deleteAccountText"= "Delete Account"
-//    "enterPhn"= "Please Enter Phone Number"
+    var MicroPhoneText = "MicroPhone"
+
+    //    "noiseCancellationText"= "Noise Cancellation"
+    var changeNumberText = "Change Number"
+    var deleteAccountText = "Delete Account"
+
+    //    "enterPhn"= "Please Enter Phone Number"
 //    "enterValidPhn"= "Please Enter Valid Phone Number"
 //    "deliverText"= "Deliver"
-//    "profilePhotoText"= "Profile Photo"
-//    "lastSeenText"= "Last Seen"
-//    "connectContactsText"= "Connect Contacts"
-//    "clearHistoryText"= "Clear History"
+    var profilePhotoText = "Profile Photo"
+    var lastSeenText = "Last Seen"
+    var connectContactsText = "Connect Contacts"
+
+    //    "clearHistoryText"= "Clear History"
 //    "clearAllChatsText"= "Clear All Chats"
 //    "deleteAllChatsText"= "Delete All Chats"
 //    "everyoneText"= "EveryOne"
-//    "myContactText"= "My Contacts"
-//    "noBodyText"= "No Body"
+var myContactText= "My Contacts"
+var     noBodyText= "No Body"
 //    "rstPassText"= "Reset Password"
     var resentOTP = "Resend OTP"
     var verifyCode = "Verify Code"
@@ -361,37 +364,43 @@ var plzEntrConPass = "Please Enter Confirm Password"
     var newPswdText = "New Password"
     var reTypePswdText = "Re-type Password"
     var reTypePswdDes = "Password Must Match"
-//    "newPswdDes"=
+
+    //    "newPswdDes"=
 //    "Please enter At least one Capital Letter\nNumbersmall Letter and Minimum 8 Characters"
 //    "lastBackupText"= "Last Backup"
-//    "backupText"= "Backup"
-//    "backupOverText"= "Backup Over"
+    var backupText = "Backup"
+
+    //    "backupOverText"= "Backup Over"
 //    "backupGoogleDrvText"= "Backup to Google Drive"
 //    "googlcACText"= "Google Account"
 //    "longText"= "Long"
 //    "fullHdText"= "Full HD"
 //    "hdText"= "HD"
-//    "displyText"= "Display"
-//    "speakerText"= "Speaker"
-//    "wallpaperText"= "Wallpaper"
-//    "themeText"= "Theme"
-//    "weeklyText"= "Weekly"
+    var displyText = "Display"
+    var speakerText = "Speaker"
+    var wallpaperText = "Wallpaper"
+    var themeText = "Theme"
+
+    //    "weeklyText"= "Weekly"
 //    "dailyText"= "Daily"
 //    "monthlyText"= "Monthly"
 //    "adAcntText"= "Add Account"
-//    "accountText"= "Account"
-//    "defaultText"= "Default"
+    var accountText = "Account"
+
+    //    "defaultText"= "Default"
 //    "gmailComText"= "Gmail.com"
 //    "instagramText"= "Instagram"
 //    "gmailText"= "Gmail"
 //    "skypeText"= "Skype"
 //    "facebookText"= "Facebook"
 //    "autoText"= "Auto"
-//    "privacyText"= "Privacy"
-//    "securityText"= "Security"
-//    "ultraHdOr4kText"= "Ultra HD or 4k"
-//    "communicationDeviceText"= "Communication Device"
-//    "conntTimeOutText"= "Connection time outplease try again"
+    var privacyText = "Privacy"
+    var securityText = "Security"
+
+    //    "ultraHdOr4kText"= "Ultra HD or 4k"
+    var communicationDeviceText = "Communication Device"
+
+    //    "conntTimeOutText"= "Connection time outplease try again"
 //
 //    //languages
 //    "englishText"= "English"
@@ -464,18 +473,20 @@ var plzEntrConPass = "Please Enter Confirm Password"
 //
 //    // setting views
 //
-//    "AppText"= "Application"
-//    "SoundText"= "Sound and Vibration"
-//    "audioVideoText"= "Audio and Video Testing"
-//    "walletPinText"= "Wallet pin"
-//    "rptText"= "Report"
-//
-//    "MuteNotiText"= "Mute Notification"
-//    "MuteNotiSubTiText"= "Turn on to mute the whole woooo App"
-//    "notiTuneText"= "Notification Tone"
-//    "vibText"= "Vibrate"
-//    "PopText"= "Popup Notification"
-//    "ringText"= "Ringtone"
+    var connectLongString = "Your Contacts are periodically synced and store on your device"
+    var appText = "Application"
+    var soundText = "Sound and Vibration"
+    var audioVideoText = "Audio and Video Testing"
+    var walletPinText = "Wallet pin"
+    var rptText = "Report"
+
+    //
+    var MuteNotiText = "Mute Notification"
+    var muteNotiSubTiText = "Turn on to mute the whole woooo App"
+    var notiTuneText = "Notification Tone"
+    var vibText = "Vibrate"
+    var PopText = "Popup Notification"
+    var ringText = "Ringtone"
 //
 //    // remaining view
 //    "HelpText"= "Help And Feedback"

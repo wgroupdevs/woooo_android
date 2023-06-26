@@ -10,8 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.ForgotViewModel
-import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginViewModel
+import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginViewModelWithEmail
+import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
+import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.VerifyOtpViewModel
 import com.wgroup.woooo_app.woooo.utils.Dimension
 
 @Composable
@@ -26,9 +28,9 @@ fun HorizontalSpacer(width: Dp = Dimension.dimen_10) {
 
 @Composable
 fun ErrorMessageForLoginWithEmail() {
-    val loginViewModel: LoginViewModel = hiltViewModel()
+    val loginWithEmailViewModel: LoginViewModelWithEmail = hiltViewModel()
     Text(
-        text = loginViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
+        text = loginWithEmailViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
     )
 }
 
@@ -45,5 +47,21 @@ fun ErrorMessageSignUpView() {
     val signUpViewModel: SignUpViewModel = hiltViewModel()
     Text(
         text = signUpViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
+    )
+}
+
+@Composable
+fun ErrorMessageVerifyOtp() {
+    val otpViewModel: VerifyOtpViewModel = hiltViewModel()
+    Text(
+        text = otpViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
+    )
+}
+
+@Composable
+fun ErrorMessageLoginWithPhone() {
+    val loginWithPhoneViewModel: LoginWithPhoneViewModel = hiltViewModel()
+    Text(
+        text = loginWithPhoneViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
     )
 }

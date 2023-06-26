@@ -33,14 +33,14 @@ class ForgotViewModel @Inject constructor() : ViewModel() {
     }
 
     fun validateEmail(): Boolean {
-        if (getEmailController.value == "") {
+        if (getEmailController.value.trim() == "") {
             // pass error text to show below in text field
             setErrorTextValue(Strings.enterEmailText)
             // enabled value of error in text field
             setErrorValueForEmail(true)
             return false
         }
-        if (!Validators.isValidEmail(getEmailController.value)) {
+        if (!Validators.isValidEmail(getEmailController.value.trim())) {
             // pass error text to show below in text field
             setErrorTextValue(Strings.entrVldEml)
             // enabled value of error in text field

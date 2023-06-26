@@ -5,6 +5,7 @@ import androidx.compose.ui.unit.dp
 
 object Dimension {
     val dimen_5=5.dp
+    val dimen_8=8.dp
     val dimen_10=10.dp
     val dimen_15=15.dp
     val dimen_20=20.dp
