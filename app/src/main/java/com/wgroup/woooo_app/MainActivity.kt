@@ -1,6 +1,5 @@
 package com.wgroup.woooo_app
 
-import LoginView
 import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
@@ -13,8 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.wgroup.woooo_app.woooo.feature.auth.screen.SignUpView
-import com.wgroup.woooo_app.woooo.feature.auth.screen.VerifyOtpView
+import com.wgroup.woooo_app.woooo.feature.settings.screen.account.AccountMainView
 import com.wgroup.woooo_app.woooo.theme.Woooo_androidTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -34,7 +32,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        LoginView()
+                        AccountMainView()
                     }
                 }
             }

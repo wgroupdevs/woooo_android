@@ -107,10 +107,11 @@ val Typography = Typography(
     ),
     headlineMedium = TextStyle(
         fontFamily = FontFamily(Font(R.font.nasalization)),
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.Normal,
         fontSize = 20.sp,
         color = WooColor.white,
-        shadow = shadow
+        shadow = shadow,
+        letterSpacing = 1.5.sp
     ),
     headlineSmall = TextStyle(
         fontFamily = FontFamily(Font(R.font.nasalization)),
