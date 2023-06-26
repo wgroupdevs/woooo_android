@@ -40,27 +40,31 @@ object Strings {
     var alreadyAccount = "Already have an account？ Login"
 
     //
-var     inldPassText   = "Invalid Password"
-//
-   // signup controller keys
+    var inldPassText = "Invalid Password"
+
+    //
+    // signup controller keys
 //
     var entrVldEml = "Enter Valid Email"
 
+    // home view keys
+//
+//
+    var hloText = "Hello"
 
-   // home view keys
-//
-//
-var     hloText   = "Hello"
-//
-var     progressText  = "Your Daily Progress"
-//
-var     toCompleteText= "% to Complete"
-//
-var     chatText= "Chat"
-//
+    //
+    var progressText = "Your Daily Progress"
+
+    //
+    var toCompleteText = "% to Complete"
+
+    //
+    var chatText = "Chat"
+
+    //
 //    meetingText= "Meeting"
 //
-var     callText    = "Call"
+    var callText = "Call"
 
     //    walletText   = "Wallet"
 //
@@ -70,8 +74,9 @@ var     callText    = "Call"
 //
     var msgsText = "Messages"
 
-    var grpText= "Groups"
-//    "noCLlogFond"= "No call logs found"
+    var grpText = "Groups"
+
+    //    "noCLlogFond"= "No call logs found"
 //    "adCnctText"= "Add Contacts"
 //    // bottom Nav View Keys
 //
@@ -245,7 +250,7 @@ var     callText    = "Call"
 //
 //    // profile update view keys
 //
-//    "abtText"= "About"
+var abtText= "About"
 //    "dobText"= "Date Of Birth"
     var lanText = "Language"
 
@@ -313,8 +318,9 @@ var     callText    = "Call"
 //    "remoteLogOutText"= "Remote Log-out"
 //    "changePasswordText"= "Change Password"
 //    "fingerPrintText"= "Finger Print"
-//    "permissionsText"= "Permission"
-//    "offText"= "Off"
+    var permissionsText = "Permission"
+
+    //    "offText"= "Off"
 //    "wifiText"= "Wifi"
     var onText = "On"
     var audioAndVideoText = "Audio and Video"
@@ -326,20 +332,22 @@ var     callText    = "Call"
     var MicroPhoneText = "MicroPhone"
 
     //    "noiseCancellationText"= "Noise Cancellation"
-var changeNumberText= "Change Number"
- var deleteAccountText = "Delete Account"
-//    "enterPhn"= "Please Enter Phone Number"
+    var changeNumberText = "Change Number"
+    var deleteAccountText = "Delete Account"
+
+    //    "enterPhn"= "Please Enter Phone Number"
 //    "enterValidPhn"= "Please Enter Valid Phone Number"
 //    "deliverText"= "Deliver"
-//    "profilePhotoText"= "Profile Photo"
-//    "lastSeenText"= "Last Seen"
-//    "connectContactsText"= "Connect Contacts"
-//    "clearHistoryText"= "Clear History"
+    var profilePhotoText = "Profile Photo"
+    var lastSeenText = "Last Seen"
+    var connectContactsText = "Connect Contacts"
+
+    //    "clearHistoryText"= "Clear History"
 //    "clearAllChatsText"= "Clear All Chats"
 //    "deleteAllChatsText"= "Delete All Chats"
 //    "everyoneText"= "EveryOne"
-//    "myContactText"= "My Contacts"
-//    "noBodyText"= "No Body"
+var myContactText= "My Contacts"
+var     noBodyText= "No Body"
 //    "rstPassText"= "Reset Password"
     var resentOTP = "Resend OTP"
     var verifyCode = "Verify Code"
@@ -360,8 +368,9 @@ var changeNumberText= "Change Number"
     //    "newPswdDes"=
 //    "Please enter At least one Capital Letter\nNumbersmall Letter and Minimum 8 Characters"
 //    "lastBackupText"= "Last Backup"
-var backupText= "Backup"
-//    "backupOverText"= "Backup Over"
+    var backupText = "Backup"
+
+    //    "backupOverText"= "Backup Over"
 //    "backupGoogleDrvText"= "Backup to Google Drive"
 //    "googlcACText"= "Google Account"
 //    "longText"= "Long"
@@ -385,9 +394,10 @@ var backupText= "Backup"
 //    "skypeText"= "Skype"
 //    "facebookText"= "Facebook"
 //    "autoText"= "Auto"
-var privacyText= "Privacy"
-var   securityText= "Security"
-//    "ultraHdOr4kText"= "Ultra HD or 4k"
+    var privacyText = "Privacy"
+    var securityText = "Security"
+
+    //    "ultraHdOr4kText"= "Ultra HD or 4k"
     var communicationDeviceText = "Communication Device"
 
     //    "conntTimeOutText"= "Connection time outplease try again"
@@ -463,6 +473,7 @@ var   securityText= "Security"
 //
 //    // setting views
 //
+    var connectLongString = "Your Contacts are periodically synced and store on your device"
     var appText = "Application"
     var soundText = "Sound and Vibration"
     var audioVideoText = "Audio and Video Testing"
@@ -475,7 +486,7 @@ var   securityText= "Security"
     var notiTuneText = "Notification Tone"
     var vibText = "Vibrate"
     var PopText = "Popup Notification"
-var     ringText= "Ringtone"
+    var ringText = "Ringtone"
 //
 //    // remaining view
 //    "HelpText"= "Help And Feedback"

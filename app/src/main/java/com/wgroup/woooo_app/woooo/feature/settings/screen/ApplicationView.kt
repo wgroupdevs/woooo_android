@@ -5,13 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ContactPhone
-import androidx.compose.material.icons.filled.DisplaySettings
-import androidx.compose.material.icons.filled.WbSunny
-import androidx.compose.material.icons.outlined.Key
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Mic
-import androidx.compose.material.icons.outlined.Report
 import androidx.compose.material.icons.outlined.VolumeUp
 import androidx.compose.material.icons.outlined.WbSunny
 import androidx.compose.material3.Icon
@@ -21,7 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.wgroup.woooo_app.woooo.shared.components.CustomListViewForSetting
-import com.wgroup.woooo_app.woooo.shared.components.TopBarTextFieldForSetting
+import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
@@ -31,7 +26,7 @@ fun ApplicationMainScreen() {
 
 
     Column() {
-        TopBarTextFieldForSetting(){}
+        TopBarForSetting(){}
 
     Column(modifier = Modifier.padding(12.dp)) {
 

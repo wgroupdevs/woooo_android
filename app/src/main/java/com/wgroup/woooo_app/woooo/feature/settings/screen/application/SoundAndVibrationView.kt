@@ -11,7 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wgroup.woooo_app.woooo.shared.components.CustomListViewForSetting
-import com.wgroup.woooo_app.woooo.shared.components.TopBarTextFieldForSetting
+import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 
@@ -19,7 +19,7 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 fun SoundAndVibrationView() {
 
     Column(modifier = Modifier.padding(10.dp)) {
-        TopBarTextFieldForSetting(onBackPressed = {})
+        TopBarForSetting(onBackPressed = {})
         Text(
             modifier = Modifier.padding(top = Dimension.dimen_5, start = Dimension.dimen_5),
             text = Strings.soundText,

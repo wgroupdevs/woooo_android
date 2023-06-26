@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.wgroup.woooo_app.woooo.shared.components.CustomListViewForSetting
+import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
@@ -31,8 +32,7 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 @Composable
 fun AccountMainView() {
     Column() {
-CustomListViewForSetting(leadingIcon = {}, onClick = {  })
-
+        TopBarForSetting(onBackPressed = {})
         Column(modifier = Modifier.padding(12.dp)) {
             Text(
                 modifier = Modifier.padding(Dimension.dimen_10),

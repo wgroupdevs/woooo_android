@@ -9,7 +9,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowBackIosNew
 import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemColors
@@ -67,10 +66,9 @@ fun CustomListViewForSetting(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 
-fun TopBarTextFieldForSetting(
+fun TopBarForSetting(
     value: String = "",
     onValueChange: (String) -> Unit = {},
     trailingIcon: @Composable (() -> Unit)? = null,
@@ -82,14 +80,15 @@ fun TopBarTextFieldForSetting(
     Column() {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .padding(end = 10.dp)
-                .clickable(onClick = onBackPressed)
+
         ) {
             Icon(
                 imageVector = Icons.Outlined.ArrowBackIosNew,
                 contentDescription = "",
-                tint = WooColor.white
+                tint = WooColor.white,
+                        modifier = Modifier
+                        .padding(end = 10.dp)
+                    .clickable(onClick = onBackPressed)
             )
             HorizontalSpacer(Dimension.dimen_5)
             OutlinedTextField(

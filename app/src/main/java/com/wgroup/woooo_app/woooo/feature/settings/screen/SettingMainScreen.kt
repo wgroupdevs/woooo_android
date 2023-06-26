@@ -21,7 +21,7 @@ import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 
 @Composable
-fun SettingMainScreen() {
+fun SettingMainView() {
     Column(modifier = Modifier.padding(10.dp)) {
         Text(
             modifier = Modifier.padding(Dimension.dimen_10),

@@ -8,14 +8,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.wgroup.woooo_app.woooo.shared.components.CustomListViewForSetting
-import com.wgroup.woooo_app.woooo.shared.components.TopBarTextFieldForSetting
+import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 
 @Composable
 fun DisplayView() {
     Column(modifier = Modifier.padding(10.dp)) {
-        TopBarTextFieldForSetting(onBackPressed = {})
+        TopBarForSetting(onBackPressed = {})
         Text(
             modifier = Modifier.padding(Dimension.dimen_10),
             text = Strings.displyText,
