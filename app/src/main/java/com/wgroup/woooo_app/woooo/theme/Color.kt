@@ -9,7 +9,8 @@ object WooColor {
     val Pink80 = Color(0xFFEFB8C8)
     val PurpleGrey40 = Color(0xFF625b71)
     val Pink40 = Color(0xFF7D5260)
-    var Cyan = Color.Cyan
+    var Cyan = Color(0xFF34ACE6)
+    val selectedButtonColor = Color(0XFF34ACE6)
     var primary = Color(0xff3E7EB9)
     var backgroundColor = Color(0xff3E7EB9)
     var attachmentCardOuterColor = Color(0xff071D8F)
@@ -22,6 +23,7 @@ object WooColor {
     var colorForTextFieldHint = Color(0xCCFFFFFF)
     var hintText = Color(0xffB8E0F2)
     val white = Color(0xffFFFFFF)
+    val yellow = Color(0xFFFFFF00)
     val loaderColorBackGround = Color(0xE6327DA0)
     val red = Color(0xD9FF0000)
 }

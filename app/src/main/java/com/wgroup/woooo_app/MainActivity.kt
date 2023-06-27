@@ -11,15 +11,18 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.ui.Modifier
-import com.wgroup.woooo_app.woooo.feature.settings.screen.SettingMainView
-import com.wgroup.woooo_app.woooo.feature.settings.screen.account.AccountMainView
-import com.wgroup.woooo_app.woooo.feature.settings.screen.account.PrivacyView
+import com.wgroup.woooo_app.woooo.feature.wallet.views.SendCurrencyView
+import com.wgroup.woooo_app.woooo.feature.wallet.views.TransactionsView
+import com.wgroup.woooo_app.woooo.feature.wallet.views.WalletMainView
 import com.wgroup.woooo_app.woooo.theme.Woooo_androidTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,13 +30,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             Woooo_androidTheme {
                 Scaffold()
-//                    topBar = { TopAppBarComposable() })
                 {
                     Surface(
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
-                        SettingMainView()
+                        SendCurrencyView()
                     }
                 }
             }

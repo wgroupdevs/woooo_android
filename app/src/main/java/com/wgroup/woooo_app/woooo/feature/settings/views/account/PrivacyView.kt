@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.feature.settings.screen.account
+package com.wgroup.woooo_app.woooo.feature.settings.views.account
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding

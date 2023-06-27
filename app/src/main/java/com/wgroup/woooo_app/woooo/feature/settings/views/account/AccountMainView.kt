@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.feature.settings.screen.account
+package com.wgroup.woooo_app.woooo.feature.settings.views.account
 
 
 import androidx.compose.foundation.layout.Column
@@ -6,17 +6,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Compare
-import androidx.compose.material.icons.outlined.Backpack
 import androidx.compose.material.icons.outlined.Backup
-import androidx.compose.material.icons.outlined.Compare
 import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Lock
-import androidx.compose.material.icons.outlined.Mic
-import androidx.compose.material.icons.outlined.NoTransfer
 import androidx.compose.material.icons.outlined.Security
-import androidx.compose.material.icons.outlined.VolumeUp
-import androidx.compose.material.icons.outlined.WbSunny
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
