@@ -26,7 +26,6 @@ object WooColor {
     var colorForTextFieldHint = Color(0xCCFFFFFF)
     var hintText = Color(0xffB8E0F2)
     val white = Color(0xffFFFFFF)
-    val yellow = Color(0xFFFFFF00)
     val loaderColorBackGround = Color(0xE6327DA0)
     val red = Color(0xD9FF0000)
 }

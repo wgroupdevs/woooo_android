@@ -254,7 +254,7 @@ fun PieChart(
     }
 
     val colors = listOf(
-        WooColor.yellow,WooColor.Cyan
+        WooColor.Yellow,WooColor.Cyan
     )
 
     var animationPlayed by remember { mutableStateOf(false) }

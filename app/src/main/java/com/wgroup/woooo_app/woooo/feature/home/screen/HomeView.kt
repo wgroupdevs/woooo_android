@@ -176,14 +176,6 @@ fun SimpleBottomSheetScaffoldSample() {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-
-
-
-
-
-
-
-
             ViewDivider()
             VerticalSpacer()
             //Name Text
