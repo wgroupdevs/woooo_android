@@ -1,6 +1,5 @@
 package com.wgroup.woooo_app.woooo.feature.home.screen
 
-import CustomTextField
 import TopAppBarComposable
 import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
@@ -15,7 +14,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.material3.BottomSheetScaffold
@@ -23,9 +21,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.*
@@ -39,14 +35,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.skydoves.cloudy.Cloudy
 import com.wgroup.woooo_app.woooo.feature.home.ui.CircularMenu
-import com.wgroup.woooo_app.woooo.shared.components.ViewDivider
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
+import com.wgroup.woooo_app.woooo.shared.components.ViewDivider
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
-import kotlinx.coroutines.launch
 
 @Composable
 fun HomeView() {
@@ -55,7 +49,6 @@ fun HomeView() {
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomePage() {
     SimpleBottomSheetScaffoldSample()

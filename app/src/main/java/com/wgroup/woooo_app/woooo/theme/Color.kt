@@ -1,6 +1,5 @@
 package com.wgroup.woooo_app.woooo.theme
 
-import androidx.compose.material3.SwitchColors
 import androidx.compose.ui.graphics.Color
 
 object WooColor {
