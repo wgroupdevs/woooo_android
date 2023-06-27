@@ -6,6 +6,9 @@ import androidx.compose.ui.graphics.Color
 object WooColor {
 
     val PurpleGrey80 = Color(0xFFCCC2DC)
+    val Yellow = Color(0xFFFFEB3B)
+    val OrangeAccent = Color(0xFFFFAB40)
+    val Orange = Color(0xFFFF9800)
     val Pink80 = Color(0xFFEFB8C8)
     val PurpleGrey40 = Color(0xFF625b71)
     val Pink40 = Color(0xFF7D5260)

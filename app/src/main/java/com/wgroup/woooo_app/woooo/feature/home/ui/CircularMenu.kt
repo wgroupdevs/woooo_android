@@ -42,7 +42,7 @@ fun CircularMenu() {
 
     BoxWithConstraints(
         Modifier
-            .padding(top = Dimension.dimen_25)
+            .padding(top = Dimension.dimen_10)
 
 
     ) {
