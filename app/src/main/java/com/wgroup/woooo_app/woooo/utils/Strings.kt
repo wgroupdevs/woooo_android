@@ -66,7 +66,7 @@ object Strings {
 //
     var callText = "Call"
 
-    //    walletText   = "Wallet"
+    var     walletText   = "Wallet"
 //
 //    dailyRewardText    = "Daily Reward"
 //
@@ -224,16 +224,17 @@ object Strings {
 //
 //    "buyWoText"= "Buy Woooo"
 //    "wooText"= "Woooo"
-//    "trnscetgText"= "Transactions"
+var trnscetgText= "Transactions"
 //
 //    // wallet all transactions view keys
 //
 //    "30days"= "Last 30 days"
-//    "rcntTransText"= "Recent Transactions"
+var rcntTransText= "Recent Transactions"
 //    "dateText"= "Date"
 //    "currencyText"= "Currency"
 //    "typeText"= "Type"
-//    "amountText"= "Amount"
+var amountText= "Amount"
+var entrAmountText= "Enter Amount"
 //    "noTranstngText"= "There is no transactions."
 //
 //    // wallet currencies view keys
@@ -242,11 +243,12 @@ object Strings {
 //
 //    // wallet send currency view keys
 //
-//    "addressText"= "Address"
+var addressText= "Address"
+var enterAddressText= " Enter Address"
 //    "waltacesText"= "Wallet Access"
 //    "tpCopyText"= "Tap to copy"
-//    "receiveText"= "Receive"
-//    "sndText"= "Send"
+var receiveText= "Receive"
+var sndText= "Send"
 //
 //    // profile update view keys
 //

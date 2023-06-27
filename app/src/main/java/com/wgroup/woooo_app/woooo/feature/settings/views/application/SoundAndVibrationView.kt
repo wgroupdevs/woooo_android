@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.feature.settings.screen.application
+package com.wgroup.woooo_app.woooo.feature.settings.views.application
 
 import android.widget.ToggleButton
 import androidx.compose.foundation.layout.Column

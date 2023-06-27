@@ -67,8 +67,6 @@ fun WooTextField(
         colors = TextFieldDefaults.outlinedTextFieldColors(
             cursorColor = WooColor.primary,
             disabledLabelColor = Color(0xffd8e6ff),
-//            focusedIndicatorColor = Color.Transparent,
-//            unfocusedIndicatorColor = Color.Transparent,
             unfocusedBorderColor = Color.Black,
             focusedBorderColor = WooColor.white,
             containerColor = WooColor.textFieldBackGround,
