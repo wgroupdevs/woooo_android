@@ -7,7 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.wgroup.woooo_app.woooo.shared.components.CustomListViewForSetting
+import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
@@ -23,12 +23,12 @@ fun DisplayView() {
         )
 
 
-        CustomListViewForSetting(
+        CustomListTile(
             leadingIcon = {},
             title = Strings.wallpaperText, onClick = {},
             trailingContent = { Text(text = "Default") }
         )
-        CustomListViewForSetting(
+        CustomListTile(
             leadingIcon = {},
             title = Strings.themeText,
             onClick = {},

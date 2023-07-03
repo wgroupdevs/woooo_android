@@ -28,7 +28,7 @@ import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
 
 @Composable
-fun CustomListViewForSetting(
+fun CustomListTile(
     headlineContent: @Composable (() -> Unit)? = null,
 //    modifier: Modifier,
 //    overlineContent: @Composable (() -> Unit)? = null,
@@ -53,8 +53,7 @@ fun CustomListViewForSetting(
             colors = colors,
             headlineContent = {
                 Text(
-                    fontSize = fontSize.sp,
-                    text = title, style = MaterialTheme.typography.headlineMedium
+                    text = title, style = MaterialTheme.typography.titleMedium
                 )
             },
             leadingContent = leadingIcon,
@@ -62,7 +61,7 @@ fun CustomListViewForSetting(
             supportingContent = supportingContent
         )
         VerticalSpacer(Dimension.dimen_8)
-        CustomDivider(false)
+       ViewDivider()
     }
 }
 
@@ -87,8 +86,8 @@ fun TopBarForSetting(
                 contentDescription = "",
                 tint = WooColor.white,
                         modifier = Modifier
-                        .padding(end = 10.dp)
-                    .clickable(onClick = onBackPressed)
+                            .padding(end = 10.dp)
+                            .clickable(onClick = onBackPressed)
             )
             HorizontalSpacer(Dimension.dimen_5)
             OutlinedTextField(

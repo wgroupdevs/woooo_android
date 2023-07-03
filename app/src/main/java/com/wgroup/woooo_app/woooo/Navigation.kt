@@ -5,10 +5,11 @@ import androidx.compose.runtime.Composable
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.feature.auth.screen.SignUpView
-import com.wgroup.woooo_app.woooo.feature.home.screen.HomeView
+import com.wgroup.woooo_app.woooo.feature.home.screen.HomePage
+import com.wgroup.woooo_app.woooo.feature.home.viewmodel.HomeViewModel
 
 
-
+@Destination
 @Composable
 fun LoginScreen(navigator: DestinationsNavigator) {
     LoginView()
@@ -17,8 +18,9 @@ fun LoginScreen(navigator: DestinationsNavigator) {
 @Destination(start = true)
 @Composable
 fun HomeScreen(navigator: DestinationsNavigator) {
-    HomeView()
+    HomePage(navigator = navigator)
 }
+
 @Destination
 @Composable
 fun SignUpScreen(navigator: DestinationsNavigator) {

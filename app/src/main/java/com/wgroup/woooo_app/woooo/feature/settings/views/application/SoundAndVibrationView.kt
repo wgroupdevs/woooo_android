@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.wgroup.woooo_app.woooo.shared.components.CustomListViewForSetting
+import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
@@ -25,7 +25,7 @@ fun SoundAndVibrationView() {
             text = Strings.soundText,
             style = MaterialTheme.typography.headlineMedium
         )
-        CustomListViewForSetting(
+        CustomListTile(
             leadingIcon = {},
             title = Strings.MuteNotiText,
             onClick = {},
@@ -46,7 +46,7 @@ fun SoundAndVibrationView() {
             text = Strings.msgsText,
             style = MaterialTheme.typography.headlineMedium
         )
-        CustomListViewForSetting(
+        CustomListTile(
             leadingIcon = {},
             title = Strings.notiTuneText,
             onClick = {},
@@ -54,7 +54,7 @@ fun SoundAndVibrationView() {
                 Text(text = Strings.onText)
             },
         )
-        CustomListViewForSetting(
+        CustomListTile(
             leadingIcon = {},
             title = Strings.vibText,
             onClick = {},
@@ -62,7 +62,7 @@ fun SoundAndVibrationView() {
                 Text(text = Strings.onText)
             },
         )
-        CustomListViewForSetting(
+        CustomListTile(
             leadingIcon = {},
             title = Strings.PopText,
             onClick = {},
@@ -73,7 +73,7 @@ fun SoundAndVibrationView() {
             text = Strings.callText,
             style = MaterialTheme.typography.headlineMedium
         )
-        CustomListViewForSetting(
+        CustomListTile(
             leadingIcon = {},
             title = Strings.ringText,
             onClick = {},
@@ -81,7 +81,7 @@ fun SoundAndVibrationView() {
                 Text(text = Strings.onText)
             },
         )
-        CustomListViewForSetting(
+        CustomListTile(
             leadingIcon = {},
             title = Strings.vibText,
             onClick = {},
@@ -94,7 +94,7 @@ fun SoundAndVibrationView() {
             text = Strings.callText,
             style = MaterialTheme.typography.headlineMedium
         )
-        CustomListViewForSetting(
+        CustomListTile(
             leadingIcon = {},
             title = Strings.ringText,
             onClick = {},
@@ -102,7 +102,7 @@ fun SoundAndVibrationView() {
                 Text(text = Strings.onText)
             },
         )
-        CustomListViewForSetting(
+        CustomListTile(
             leadingIcon = {},
             title = Strings.grpText,
             onClick = {},

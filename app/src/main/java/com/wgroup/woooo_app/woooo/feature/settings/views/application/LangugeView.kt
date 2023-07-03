@@ -7,7 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.wgroup.woooo_app.woooo.shared.components.CustomListViewForSetting
+import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 
@@ -21,12 +21,12 @@ fun LanguageView() {
         )
 
 
-        CustomListViewForSetting(
+        CustomListTile(
             leadingIcon = {},
             title = "Woooo", onClick = {},
             trailingContent = { Text(text = "English") }
         )
-        CustomListViewForSetting(
+        CustomListTile(
             leadingIcon = {},
             title = Strings.lanText,
             onClick = {},

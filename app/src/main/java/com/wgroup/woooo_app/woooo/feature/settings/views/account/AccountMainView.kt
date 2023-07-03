@@ -16,7 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.wgroup.woooo_app.woooo.shared.components.CustomListViewForSetting
+import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
@@ -32,7 +32,7 @@ fun AccountMainView() {
                 text = Strings.accountText,
                 style = MaterialTheme.typography.headlineMedium
             )
-            CustomListViewForSetting(
+            CustomListTile(
                 leadingIcon = {
                     Icon(
                         tint = WooColor.white,
@@ -45,14 +45,14 @@ fun AccountMainView() {
                 },
                 title = Strings.privacyText, onClick = {},
             )
-            CustomListViewForSetting(leadingIcon = {
+            CustomListTile(leadingIcon = {
                 Icon(
                     tint = WooColor.white, modifier = Modifier.size(
                         36.dp
                     ), imageVector = Icons.Outlined.Security, contentDescription = ""
                 )
             }, title = Strings.securityText, onClick = {})
-            CustomListViewForSetting(leadingIcon = {
+            CustomListTile(leadingIcon = {
                 Icon(
                     tint = WooColor.white,
 
@@ -61,7 +61,7 @@ fun AccountMainView() {
                     ), imageVector = Icons.Default.Compare, contentDescription = ""
                 )
             }, title = Strings.changeNumberText, onClick = {})
-            CustomListViewForSetting(leadingIcon = {
+            CustomListTile(leadingIcon = {
                 Icon(
                     tint = WooColor.white,
 
@@ -70,7 +70,7 @@ fun AccountMainView() {
                     ), imageVector = Icons.Outlined.Delete, contentDescription = ""
                 )
             }, title = Strings.deleteAccountText, onClick = {})
-            CustomListViewForSetting(leadingIcon = {
+            CustomListTile(leadingIcon = {
                 Icon(
                     tint = WooColor.white,
 

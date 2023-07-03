@@ -15,7 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.wgroup.woooo_app.woooo.shared.components.CustomListViewForSetting
+import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
@@ -38,7 +38,7 @@ fun ApplicationMainScreen() {
         )
 
 
-        CustomListViewForSetting(
+        CustomListTile(
             leadingIcon = {
                 Icon(
                     tint = WooColor.white,
@@ -51,14 +51,14 @@ fun ApplicationMainScreen() {
             },
             title = Strings.soundText, onClick = {},
         )
-        CustomListViewForSetting(leadingIcon = {
+        CustomListTile(leadingIcon = {
             Icon(
                 tint = WooColor.white, modifier = Modifier.size(
                     36.dp
                 ), imageVector = Icons.Outlined.WbSunny, contentDescription = ""
             )
         }, title = Strings.displyText, onClick = {})
-        CustomListViewForSetting(leadingIcon = {
+        CustomListTile(leadingIcon = {
             Icon(
                 tint = WooColor.white,
 
@@ -67,7 +67,7 @@ fun ApplicationMainScreen() {
                 ), imageVector = Icons.Outlined.Mic, contentDescription = ""
             )
         }, title = Strings.audioVideoText, onClick = {})
-        CustomListViewForSetting(leadingIcon = {
+        CustomListTile(leadingIcon = {
             Icon(
                 tint = WooColor.white,
 

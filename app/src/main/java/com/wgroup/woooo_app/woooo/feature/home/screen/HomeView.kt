@@ -7,13 +7,17 @@ import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -23,12 +27,16 @@ import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,24 +48,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModel
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.wgroup.woooo_app.R
+import com.wgroup.woooo_app.woooo.destinations.SignUpScreenDestination
+import com.wgroup.woooo_app.woooo.feature.home.ui.AppDrawer
 import com.wgroup.woooo_app.woooo.feature.home.ui.CircularMenu
+import com.wgroup.woooo_app.woooo.feature.home.viewmodel.HomeViewModel
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.ViewDivider
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
+import kotlinx.coroutines.launch
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeView() {
-
-    HomePage()
-
-}
-
-@Composable
-fun HomePage() {
+fun HomePage(navigator: DestinationsNavigator, homeViewModel: HomeViewModel = hiltViewModel()) {
     BoxWithConstraints(
         Modifier
             .padding(top = Dimension.dimen_10)
@@ -65,8 +77,98 @@ fun HomePage() {
 
     ) {
         Dimension.boxWithConstraintsScope = this
+        val scope = rememberCoroutineScope()
+        val scaffoldState = rememberBottomSheetScaffoldState()
+        val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-        SimpleBottomSheetScaffoldSample()
+        ModalNavigationDrawer(drawerContent = {
+            AppDrawer()
+        }, drawerState = drawerState) {
+            Scaffold(
+                topBar = {
+                    TopAppBarComposable(navigationIcon = {
+                        Image(
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(
+                                    50.dp
+                                )
+                                .clickable {
+                                    scope.launch {
+                                        drawerState.open()
+                                    }
+
+                                },
+                            painter = painterResource(id = R.drawable.app_logo),
+                            contentDescription = ""
+                        )
+
+                    })
+                },
+
+                ) { upperPadding ->
+                BottomSheetScaffold(
+                    scaffoldState = scaffoldState,
+                    containerColor = Color.Transparent,
+                    sheetContainerColor = Color.Transparent,
+                    sheetDragHandle = {},
+                    sheetTonalElevation = 0.dp,
+                    sheetShadowElevation = 0.dp,
+                    sheetContent = { BottomSheetContent() },
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(upperPadding),
+                )
+                { innerPadding ->
+                    Column(
+                        Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+
+                        ViewDivider()
+                        VerticalSpacer()
+                        //Name Text
+                        Text(
+                            text = "Hi, Mac27",
+                            modifier = Modifier
+                                .align(
+                                    alignment = Alignment.Start
+                                )
+                                .padding(start = Dimension.dimen_20)
+                                .clickable {
+                                    navigator.navigate(SignUpScreenDestination)
+                                },
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+
+                        CircularMenu()
+                        Column(
+                            Modifier
+                                .fillMaxSize()
+                                .padding(top = Dimension.dimen_20),
+                            Arrangement.spacedBy(Dimension.dimen_20)
+
+                        ) {
+                            //DailyProgress Label
+                            DailyProgress()
+                            //DailyProgressBarIndicator
+
+                            GradientProgressbar()
+                            //Pending Call,Chat,Meeting
+                            PendingChatCallMeeting()
+
+
+                        }
+
+
+                    }
+
+                }
+            }
+
+        }
 
 
     }
@@ -122,207 +224,50 @@ enum class ExpandedType {
     HALF, FULL, COLLAPSED
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SimpleBottomSheetScaffoldSample() {
-    val scope = rememberCoroutineScope()
-    val scaffoldState = rememberBottomSheetScaffoldState()
-
-
-    val configuration = LocalConfiguration.current
-    val screenHeight = configuration.screenHeightDp
-    var expandedType by remember {
-        mutableStateOf(ExpandedType.COLLAPSED)
-    }
-    val height by animateIntAsState(
-        when (expandedType) {
-            ExpandedType.HALF -> screenHeight / 2
-            ExpandedType.FULL -> screenHeight
-            ExpandedType.COLLAPSED -> 70
-        }
-    )
-
-
-
-
-
-
-    BottomSheetScaffold(
-        topBar = {
-            TopAppBarComposable()
-        },
-        scaffoldState = scaffoldState,
-        containerColor = Color.Transparent,
-        sheetContainerColor = Color.Transparent,
-        sheetDragHandle = {},
-        sheetTonalElevation = 0.dp,
-        sheetShadowElevation = 0.dp,
-        sheetContent = { BottomSheetContent() }
-
-
-//        sheetContent = {
-//            Box(
-//                modifier = Modifier
-//                    .clip(RoundedCornerShape(Dimension.dimen_20))
-//            ) {
-//
-//                Box(
-//                    modifier = Modifier
-//                        .fillMaxSize()
-//                        .alpha(0.5f)
-//                        .background(WooColor.textFieldBackGround)
-//                )
-//
-//                Column(
-//                    modifier = Modifier
-//                        .verticalScroll(rememberScrollState())
-//                ) {
-//
-//                    Button(
-//                        modifier = Modifier
-//                            .align(
-//                                alignment = Alignment.CenterHorizontally
-//                            ),
-//                        onClick = { /*TODO*/ }) {
-//                        Text(text = "Show more",style = MaterialTheme.typography.bodyMedium)
-//                    }
-//
-//
-//                    BottomSheetCard("Chat")
-//                    VerticalSpacer()
-//                    BottomSheetCard("Call")
-//                    VerticalSpacer()
-//                    BottomSheetCard("Meeting")
-//                    VerticalSpacer()
-//                    BottomSheetCard("Wallet")
-//                    VerticalSpacer()
-//                    BottomSheetCard("Daily Reward")
-//                    VerticalSpacer()
-//                }
-//
-//
-//            }
-//
-//        }
-////
-
-
-    )
-
-
-    { innerPadding ->
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-
-            ViewDivider()
-            VerticalSpacer()
-            //Name Text
-            Text(
-                text = "Hi, Mac27",
-                modifier = Modifier
-                    .align(
-                        alignment = Alignment.Start
-                    )
-                    .padding(start = Dimension.dimen_20),
-                style = MaterialTheme.typography.bodyLarge
-            )
-
-            CircularMenu()
-            Column(
-                Modifier
-                    .fillMaxSize()
-                    .padding(top = Dimension.dimen_20),
-                Arrangement.spacedBy(Dimension.dimen_20)
-
-            ) {
-                //DailyProgress Label
-                DailyProgress()
-                //DailyProgressBarIndicator
-
-                GradientProgressbar()
-                //Pending Call,Chat,Meeting
-                PendingChatCallMeeting()
-
-
-            }
-
-
-        }
-
-    }
-}
-
 
 @Composable
 fun BottomSheetContent(
-    modifier: Modifier = Modifier,
 ) {
-
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .fillMaxHeight(0.8f)
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(Dimension.dimen_20))
     ) {
-        Row {
 
-            Box(
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .alpha(0.5f)
+                .background(WooColor.textFieldBackGround)
+        )
+
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+        ) {
+
+            Button(
                 modifier = Modifier
-                    .weight(1f)
-                    .draggable(
-                        orientation = Orientation.Vertical,
-                        state = rememberDraggableState {
-//                            Toast.makeText(context, "Non Draggable Area", Toast.LENGTH_SHORT).show()
-
-                        }
-                    )
-                    .fillMaxWidth()
-                    .height(Dimension.boxWithConstraintsScope.maxHeight / 2)
-                    .background(Color.Yellow)) {
+                    .align(
+                        alignment = Alignment.CenterHorizontally
+                    ),
+                onClick = { /*TODO*/ }) {
+                Text(text = "Show more", style = MaterialTheme.typography.bodyMedium)
             }
 
-            Box(
-                modifier = modifier
-                    .padding(end = 8.dp)
-                    .clip(
-                        RoundedCornerShape(
-                            topStart = 12.dp,
-                            topEnd = 12.dp
-                        )
-                    )
-                    .height(Dimension.boxWithConstraintsScope.maxHeight / 2)
-                    .background(Color.Transparent),
-                contentAlignment = Alignment.BottomCenter
-            ) {
 
-                Icon(
-                    modifier = modifier,
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "",
-                )
-            }
+            BottomSheetCard("Chat")
+            VerticalSpacer()
+            BottomSheetCard("Call")
+            VerticalSpacer()
+            BottomSheetCard("Meeting")
+            VerticalSpacer()
+            BottomSheetCard("Wallet")
+            VerticalSpacer()
+            BottomSheetCard("Daily Reward")
+            VerticalSpacer()
         }
 
 
-        Text(
-            modifier = modifier
-                .fillMaxWidth()
-                .background(WooColor.primary)
-                .padding(
-                    start = 8.dp,
-                    end = 8.dp,
-                    bottom = 4.dp
-                ),
-            text = "Scan Serial With QR",
-        )
-        Box(
-            modifier = modifier
-                .fillMaxSize()
-                .background(color = Color.DarkGray)
-        )
     }
 }
 

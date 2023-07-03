@@ -53,7 +53,7 @@ import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Preview
 @Composable
 fun LoginView() {
@@ -75,8 +75,7 @@ fun LoginView() {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun LoginWithPhoneNumber() {
 

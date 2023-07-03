@@ -14,7 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.wgroup.woooo_app.woooo.shared.components.CustomListViewForSetting
+import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
@@ -29,7 +29,7 @@ fun SettingMainView() {
         )
 
 
-        CustomListViewForSetting(
+        CustomListTile(
             leadingIcon = {
                 Icon(
                     tint = WooColor.white,
@@ -42,14 +42,14 @@ fun SettingMainView() {
             },
             title = Strings.appText, onClick = {},
         )
-        CustomListViewForSetting(leadingIcon = {
+        CustomListTile(leadingIcon = {
             Icon(
                 tint = WooColor.white, modifier = Modifier.size(
                     36.dp
                 ), imageVector = Icons.Outlined.ContactPhone, contentDescription = ""
             )
         }, title = Strings.accountText, onClick = {})
-        CustomListViewForSetting(leadingIcon = {
+        CustomListTile(leadingIcon = {
             Icon(
                 tint = WooColor.white,
 
@@ -58,7 +58,7 @@ fun SettingMainView() {
                 ), imageVector = Icons.Outlined.Key, contentDescription = ""
             )
         }, title = Strings.walletPinText, onClick = {})
-        CustomListViewForSetting(leadingIcon = {
+        CustomListTile(leadingIcon = {
             Icon(
                 tint = WooColor.white,
 

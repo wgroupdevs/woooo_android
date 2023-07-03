@@ -46,7 +46,9 @@ import com.wgroup.woooo_app.woooo.theme.WooColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopAppBarComposable() {
+fun TopAppBarComposable(
+   navigationIcon: @Composable () -> Unit
+) {
     TopAppBar(
         colors = topAppBarColors(
         containerColor = WooColor.primary,
@@ -55,10 +57,6 @@ fun TopAppBarComposable() {
 
         title = {
             var text by remember { mutableStateOf("500") }
-            val interactionSource = remember { MutableInteractionSource() }
-            val enabled = true
-            val singleLine = true
-
 
             BasicTextField(
                 value = "hifdfdxz",
@@ -122,18 +120,7 @@ fun TopAppBarComposable() {
 
 
         },
-        navigationIcon = {
-            Image(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .size(
-                        50.dp
-                    ),
-                painter = painterResource(id = R.drawable.app_logo),
-                contentDescription = ""
-            )
-
-        },
+        navigationIcon = navigationIcon,
         actions = {
 
             IconButton(onClick = {}) {
