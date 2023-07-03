@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,7 +24,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.R
+import com.wgroup.woooo_app.woooo.destinations.SettingsScreenDestination
+import com.wgroup.woooo_app.woooo.feature.settings.views.SettingMainView
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.theme.WooColor
 
@@ -31,6 +35,7 @@ import com.wgroup.woooo_app.woooo.theme.WooColor
 @Composable
 fun AppDrawer(
     modifier: Modifier = Modifier,
+    navigator: DestinationsNavigator,
     navigateToSettings: () -> Unit = {},
     closeDrawer: () -> Unit = {}
 ) {
@@ -45,10 +50,14 @@ fun AppDrawer(
         DrawerHeader(modifier)
 //        Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.spacer_padding)))
         CustomListTile(
-            title = "Home",
+            title = "Settings",
             leadingIcon = {
-                Icon(imageVector = Icons.Default.Home, contentDescription = "Home")
-            }, onClick = {})
+                Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
+            }, onClick = {
+                navigator.navigate(SettingsScreenDestination)
+
+
+            })
 
     }
 }

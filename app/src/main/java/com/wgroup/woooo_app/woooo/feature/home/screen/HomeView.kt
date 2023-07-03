@@ -82,7 +82,7 @@ fun HomePage(navigator: DestinationsNavigator, homeViewModel: HomeViewModel = hi
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
         ModalNavigationDrawer(drawerContent = {
-            AppDrawer()
+            AppDrawer(navigator=navigator)
         }, drawerState = drawerState) {
             Scaffold(
                 topBar = {
