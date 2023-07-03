@@ -40,13 +40,10 @@ fun CircularMenu() {
     val scopeAntiClockWise = rememberCoroutineScope()
 
 
-    BoxWithConstraints(
+    Box(
         Modifier
             .padding(top = Dimension.dimen_10)
-
-
     ) {
-        Dimension.boxWithConstraintsScope = this
 
         initCircleTextOffset(Dimension.boxWithConstraintsScope.maxWidth)
 

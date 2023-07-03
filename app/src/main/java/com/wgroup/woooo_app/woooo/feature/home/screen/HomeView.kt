@@ -3,17 +3,22 @@ package com.wgroup.woooo_app.woooo.feature.home.screen
 import TopAppBarComposable
 import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.ArrowForward
 import androidx.compose.material3.BottomSheetScaffold
@@ -33,6 +38,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.wgroup.woooo_app.woooo.feature.home.ui.CircularMenu
@@ -51,8 +58,18 @@ fun HomeView() {
 
 @Composable
 fun HomePage() {
-    SimpleBottomSheetScaffoldSample()
+    BoxWithConstraints(
+        Modifier
+            .padding(top = Dimension.dimen_10)
 
+
+    ) {
+        Dimension.boxWithConstraintsScope = this
+
+        SimpleBottomSheetScaffoldSample()
+
+
+    }
 
 }
 
@@ -101,11 +118,34 @@ fun initCircleTextOffset(width: Dp) {
     // print("Text Height: ${Dimension.circleWheelTextHeight}");
 }
 
+enum class ExpandedType {
+    HALF, FULL, COLLAPSED
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SimpleBottomSheetScaffoldSample() {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
+
+
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp
+    var expandedType by remember {
+        mutableStateOf(ExpandedType.COLLAPSED)
+    }
+    val height by animateIntAsState(
+        when (expandedType) {
+            ExpandedType.HALF -> screenHeight / 2
+            ExpandedType.FULL -> screenHeight
+            ExpandedType.COLLAPSED -> 70
+        }
+    )
+
+
+
+
+
 
     BottomSheetScaffold(
         topBar = {
@@ -117,54 +157,63 @@ fun SimpleBottomSheetScaffoldSample() {
         sheetDragHandle = {},
         sheetTonalElevation = 0.dp,
         sheetShadowElevation = 0.dp,
-        sheetPeekHeight = 50.dp,
-        sheetContent = {
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(Dimension.dimen_20))
-            ) {
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .alpha(0.5f)
-                        .background(WooColor.textFieldBackGround)
-                )
-
-                Column(
-                    modifier = Modifier
-                        .verticalScroll(rememberScrollState())
-                ) {
-
-                    Button(
-                        modifier = Modifier
-                            .align(
-                                alignment = Alignment.CenterHorizontally
-                            ),
-                        onClick = { /*TODO*/ }) {
-                        Text(text = "Show more",style = MaterialTheme.typography.bodyMedium)
-                    }
+        sheetContent = { BottomSheetContent() }
 
 
-                    BottomSheetCard("Chat")
-                    VerticalSpacer()
-                    BottomSheetCard("Call")
-                    VerticalSpacer()
-                    BottomSheetCard("Meeting")
-                    VerticalSpacer()
-                    BottomSheetCard("Wallet")
-                    VerticalSpacer()
-                    BottomSheetCard("Daily Reward")
-                    VerticalSpacer()
-                }
+//        sheetContent = {
+//            Box(
+//                modifier = Modifier
+//                    .clip(RoundedCornerShape(Dimension.dimen_20))
+//            ) {
+//
+//                Box(
+//                    modifier = Modifier
+//                        .fillMaxSize()
+//                        .alpha(0.5f)
+//                        .background(WooColor.textFieldBackGround)
+//                )
+//
+//                Column(
+//                    modifier = Modifier
+//                        .verticalScroll(rememberScrollState())
+//                ) {
+//
+//                    Button(
+//                        modifier = Modifier
+//                            .align(
+//                                alignment = Alignment.CenterHorizontally
+//                            ),
+//                        onClick = { /*TODO*/ }) {
+//                        Text(text = "Show more",style = MaterialTheme.typography.bodyMedium)
+//                    }
+//
+//
+//                    BottomSheetCard("Chat")
+//                    VerticalSpacer()
+//                    BottomSheetCard("Call")
+//                    VerticalSpacer()
+//                    BottomSheetCard("Meeting")
+//                    VerticalSpacer()
+//                    BottomSheetCard("Wallet")
+//                    VerticalSpacer()
+//                    BottomSheetCard("Daily Reward")
+//                    VerticalSpacer()
+//                }
+//
+//
+//            }
+//
+//        }
+////
 
 
-            }
+    )
 
-        }) { innerPadding ->
+
+    { innerPadding ->
         Column(
             Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -183,21 +232,100 @@ fun SimpleBottomSheetScaffoldSample() {
             )
 
             CircularMenu()
+            Column(
+                Modifier
+                    .fillMaxSize()
+                    .padding(top = Dimension.dimen_20),
+                Arrangement.spacedBy(Dimension.dimen_20)
 
-            //DailyProgress Label
-            VerticalSpacer(Dimension.dimen_25)
-            DailyProgress()
-            //DailyProgressBarIndicator
-            VerticalSpacer(Dimension.dimen_30)
-            GradientProgressbar()
-            //Pending Call,Chat,Meeting
-            VerticalSpacer(Dimension.dimen_5)
-            PendingChatCallMeeting()
+            ) {
+                //DailyProgress Label
+                DailyProgress()
+                //DailyProgressBarIndicator
+
+                GradientProgressbar()
+                //Pending Call,Chat,Meeting
+                PendingChatCallMeeting()
+
+
+            }
+
 
         }
 
     }
 }
+
+
+@Composable
+fun BottomSheetContent(
+    modifier: Modifier = Modifier,
+) {
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .fillMaxHeight(0.8f)
+    ) {
+        Row {
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .draggable(
+                        orientation = Orientation.Vertical,
+                        state = rememberDraggableState {
+//                            Toast.makeText(context, "Non Draggable Area", Toast.LENGTH_SHORT).show()
+
+                        }
+                    )
+                    .fillMaxWidth()
+                    .height(Dimension.boxWithConstraintsScope.maxHeight / 2)
+                    .background(Color.Yellow)) {
+            }
+
+            Box(
+                modifier = modifier
+                    .padding(end = 8.dp)
+                    .clip(
+                        RoundedCornerShape(
+                            topStart = 12.dp,
+                            topEnd = 12.dp
+                        )
+                    )
+                    .height(Dimension.boxWithConstraintsScope.maxHeight / 2)
+                    .background(Color.Transparent),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+
+                Icon(
+                    modifier = modifier,
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "",
+                )
+            }
+        }
+
+
+        Text(
+            modifier = modifier
+                .fillMaxWidth()
+                .background(WooColor.primary)
+                .padding(
+                    start = 8.dp,
+                    end = 8.dp,
+                    bottom = 4.dp
+                ),
+            text = "Scan Serial With QR",
+        )
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .background(color = Color.DarkGray)
+        )
+    }
+}
+
 
 @Composable
 fun DailyProgress() {
