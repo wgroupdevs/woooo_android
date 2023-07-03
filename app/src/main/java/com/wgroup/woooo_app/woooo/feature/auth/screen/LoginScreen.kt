@@ -38,7 +38,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.maxkeppeker.sheets.core.models.base.UseCaseState
 import com.wgroup.woooo_app.R
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginViewModelWithEmail
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
@@ -49,7 +48,7 @@ import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageLoginWithPhone
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
-import com.wgroup.woooo_app.woooo.shared.components.view_models.DateTimerPickerViewModel
+//import com.wgroup.woooo_app.woooo.shared.components.view_models.DateTimerPickerViewModel
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
@@ -82,7 +81,7 @@ fun LoginView() {
 fun LoginWithPhoneNumber() {
 
     val loginWithEmailViewModel: LoginViewModelWithEmail = hiltViewModel()
-    val dateTimeViewModel: DateTimerPickerViewModel = hiltViewModel()
+//    val dateTimeViewModel: DateTimerPickerViewModel = hiltViewModel()
     val loginWithPhoneViewModel: LoginWithPhoneViewModel = hiltViewModel()
 
     Column(
@@ -212,7 +211,7 @@ fun LoginWithPhoneNumber() {
             CustomButton(
                 border = BorderStroke(1.dp,Color.White),
                 onClick = {
-                    dateTimeViewModel.setDatePickerShowValue(value = UseCaseState())
+             //       dateTimeViewModel.setDatePickerShowValue(value = UseCaseState())
                 },
                 content = {
                     Text(
@@ -233,7 +232,7 @@ fun LoginWithPhoneNumber() {
             CustomButton(
                 border = BorderStroke(1.dp,Color.White),
                 onClick = {
-                    print("${dateTimeViewModel.getDatePickerShow.show()}" + "uhwslckalksnciodc")
+//                    print("${dateTimeViewModel.getDatePickerShow.show()}" + "uhwslckalksnciodc")
                 },
                 content = {
                     Text(
