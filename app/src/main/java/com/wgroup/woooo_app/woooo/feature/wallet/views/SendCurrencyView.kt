@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
-import com.google.android.gms.vision.barcode.Barcode
 import com.wgroup.woooo_app.woooo.feature.wallet.viewmodel.SendCurrencyViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageSendCurrencyView
@@ -160,14 +159,7 @@ fun SendByAddress() {
 fun SendByScan() {
     val URL = "https://www.example.com"
     Column {
-        Barcode(
-//            modifier = Modifier.align(Alignment.CenterHorizontally)
-//                .width(150.dp)
-//                .height(150.dp),
-//            resolutionFactor = 10,
-//            type = BarcodeType.QR_CODE,
-//            value = URL
-        )
+
     }
 }
 
