@@ -1,5 +1,7 @@
 package com.wgroup.woooo_app.woooo.feature.auth.screen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,7 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Email
@@ -26,23 +27,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.marosseleng.compose.material3.datetimepickers.date.ui.dialog.DatePickerDialog
 import com.wgroup.woooo_app.R
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
@@ -54,19 +46,12 @@ import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
-import java.time.LocalDate
 
-@OptIn(ExperimentalComposeUiApi::class)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun SignUpView() {
     val signUpViewModel: SignUpViewModel = hiltViewModel()
 
-    var isDialogShown: Boolean by rememberSaveable {
-        mutableStateOf(false)
-    }
-    var date: LocalDate? by remember {
-        mutableStateOf(null)
-    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -92,18 +77,6 @@ fun SignUpView() {
         )
 
         {
-
-
-            DatePickerDialog(
-                modifier=Modifier.clip(RoundedCornerShape(10.dp)).alpha(0.5f).background(WooColor.primary),
-                containerColor=WooColor.primary,
-                onDismissRequest = {  },     onDateChange = {
-                date = it
-                isDialogShown = false
-            },)
-
-
-
             // first name
             TextLabel(label = Strings.firstNameText)
             VerticalSpacer()
@@ -180,7 +153,8 @@ fun SignUpView() {
             WooTextField(onValueChange = {
                 signUpViewModel.setEmailControllerValue(it)
                 signUpViewModel.setEmailErrorValue(false)
-            },value = signUpViewModel.getEmailController.value,
+            },
+                value = signUpViewModel.getEmailController.value,
                 isError = signUpViewModel.getEmailError.value,
                 supportingText = {
                     if (signUpViewModel.getEmailError.value) {
@@ -200,7 +174,8 @@ fun SignUpView() {
             WooTextField(onValueChange = {
                 signUpViewModel.setPasswordControllerValue(it)
                 signUpViewModel.setPasswordErrorValue(false)
-            },value = signUpViewModel.getPasswordController.value,
+            },
+                value = signUpViewModel.getPasswordController.value,
                 isError = signUpViewModel.getPasswordError.value,
                 supportingText = {
                     if (signUpViewModel.getPasswordError.value) {
@@ -217,8 +192,11 @@ fun SignUpView() {
             //Confirm Password
             TextLabel(label = Strings.confirmpasswordText)
             VerticalSpacer()
-            WooTextField(onValueChange = {  signUpViewModel.setConfirmPasswordControllerValue(it)
-                signUpViewModel.setConfirmPasswordErrorValue(false)}, value = signUpViewModel.getConfirmPasswordController.value,
+            WooTextField(onValueChange = {
+                signUpViewModel.setConfirmPasswordControllerValue(it)
+                signUpViewModel.setConfirmPasswordErrorValue(false)
+            },
+                value = signUpViewModel.getConfirmPasswordController.value,
                 isError = signUpViewModel.getConfirmPasswordError.value,
                 supportingText = {
                     if (signUpViewModel.getConfirmPasswordError.value) {
