@@ -41,6 +41,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -82,9 +83,12 @@ fun HomePage(navigator: DestinationsNavigator, homeViewModel: HomeViewModel = hi
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
         ModalNavigationDrawer(drawerContent = {
+
             AppDrawer(navigator=navigator)
         }, drawerState = drawerState) {
             Scaffold(
+                modifier = Modifier.then(if(drawerState.isOpen) Modifier.blur(5.dp) else Modifier.blur(0.dp)),
+
                 topBar = {
                     TopAppBarComposable(navigationIcon = {
                         Image(
@@ -143,7 +147,7 @@ fun HomePage(navigator: DestinationsNavigator, homeViewModel: HomeViewModel = hi
                             style = MaterialTheme.typography.bodyLarge
                         )
 
-                        CircularMenu()
+                        CircularMenu(navigator)
                         Column(
                             Modifier
                                 .fillMaxSize()

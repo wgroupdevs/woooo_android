@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
@@ -47,13 +48,14 @@ fun CustomListTile(
     Column {
         ListItem(
             modifier = Modifier
+                .clip(RoundedCornerShape(15.dp))
                 .clickable(onClick = onClick)
 //                .padding(5.dp),
                     ,
             colors = colors,
             headlineContent = {
                 Text(
-                    text = title, style = MaterialTheme.typography.titleMedium
+                    text = title, style = MaterialTheme.typography.titleSmall
                 )
             },
             leadingContent = leadingIcon,
@@ -61,7 +63,7 @@ fun CustomListTile(
             supportingContent = supportingContent
         )
         VerticalSpacer(Dimension.dimen_8)
-       ViewDivider()
+//       ViewDivider()
     }
 }
 

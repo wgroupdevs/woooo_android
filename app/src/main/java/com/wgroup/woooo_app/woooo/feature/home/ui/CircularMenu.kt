@@ -20,15 +20,19 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.R
+import com.wgroup.woooo_app.woooo.DashboardScreen
+import com.wgroup.woooo_app.woooo.destinations.DashboardScreenDestination
 import com.wgroup.woooo_app.woooo.feature.home.screen.initCircleTextOffset
 import com.wgroup.woooo_app.woooo.feature.home.viewmodel.CircularMenuViewModel
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 
 @Composable
-fun CircularMenu() {
+fun CircularMenu(navigator: DestinationsNavigator) {
 
     val circularMenuViewModel: CircularMenuViewModel = hiltViewModel()
     val inner_wheel = painterResource(id = R.drawable.inner_wheel)
@@ -54,7 +58,11 @@ fun CircularMenu() {
                 .align(Alignment.Center)
                 .clickable(
                     interactionSource = MutableInteractionSource(),
-                    indication = rememberRipple(bounded = false, color = WooColor.white, radius = 100.dp),
+                    indication = rememberRipple(
+                        bounded = false,
+                        color = WooColor.white,
+                        radius = 100.dp
+                    ),
                 ) {
 
                     scopeClockWise.launch {
@@ -63,6 +71,9 @@ fun CircularMenu() {
                     scopeAntiClockWise.launch {
                         circularMenuViewModel.rotateMiddleCircleAntiClockWise()
                     }
+
+
+
                 },
             contentScale = ContentScale.FillBounds
         )
@@ -80,7 +91,7 @@ fun CircularMenu() {
         OuterCircle(viewModel = circularMenuViewModel)
 
 
-//                    /Text
+//         ChatText
         Box(
             modifier = Modifier
                 .absoluteOffset(
@@ -94,6 +105,8 @@ fun CircularMenu() {
                     }
                     scopeAntiClockWise.launch {
                         circularMenuViewModel.rotateMiddleCircleAntiClockWise()
+                        navigator.navigate(DashboardScreenDestination)
+
                     }
 
                 },

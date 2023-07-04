@@ -110,6 +110,11 @@ dependencies {
     //glassy
     implementation "com.github.skydoves:cloudy:0.1.2"
 
+    //SDP-SSP
+    implementation 'com.intuit.sdp:sdp-android:1.1.0'
+    implementation 'com.intuit.ssp:ssp-android:1.1.0'
+
+
     implementation "androidx.compose.material:material-icons-extended"
     // date time picker
     implementation("com.marosseleng.android:compose-material3-datetime-pickers:0.7.2")
