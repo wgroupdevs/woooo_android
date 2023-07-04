@@ -8,16 +8,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 
 @Composable
-fun AudioVideoView() {
+fun AudioVideoView(navigator: DestinationsNavigator) {
 
     Column(modifier = Modifier.padding(10.dp)) {
-        TopBarForSetting(onBackPressed = {})
+        TopBarForSetting(onBackPressed = { navigator.popBackStack() })
         Text(
             modifier = Modifier.padding(Dimension.dimen_10),
             text = Strings.audioAndVideoText,
@@ -32,7 +33,7 @@ fun AudioVideoView() {
         CustomListTile(leadingIcon = {},
             title = Strings.MicroPhoneText,
             onClick = {},
-            trailingContent = { Text(text = Strings.communicationDeviceText, fontSize = 10.sp) },
+            trailingContent = { Text(text = Strings.communicationDeviceText,fontSize = 10.sp) },
             fontSize = 16
         )
         CustomListTile(leadingIcon = {},
@@ -41,7 +42,7 @@ fun AudioVideoView() {
             onClick = {},
             trailingContent = {
                 Text(
-                    fontSize = 10.sp, text = "Default", style = MaterialTheme.typography.labelSmall
+                    fontSize = 10.sp,text = "Default",style = MaterialTheme.typography.labelSmall
                 )
             })
         CustomListTile(leadingIcon = {},
@@ -64,7 +65,7 @@ fun AudioVideoView() {
         CustomListTile(leadingIcon = {},
             title = Strings.cameraSettingText,
             onClick = {},
-            trailingContent = { Text(text = Strings.communicationDeviceText, fontSize = 10.sp) },
+            trailingContent = { Text(text = Strings.communicationDeviceText,fontSize = 10.sp) },
             fontSize = 16
         )
     }

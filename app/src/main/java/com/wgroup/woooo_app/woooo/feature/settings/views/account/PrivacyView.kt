@@ -2,6 +2,10 @@ package com.wgroup.woooo_app.woooo.feature.settings.views.account
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.RemoveCircleOutline
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
@@ -13,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.theme.WooColor
@@ -20,10 +25,10 @@ import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 
 @Composable
-fun PrivacyView() {
+fun PrivacyMainView(navigator: DestinationsNavigator) {
 
     Column(modifier = Modifier.padding(10.dp)) {
-        TopBarForSetting(onBackPressed = {})
+        TopBarForSetting(onBackPressed = {navigator.popBackStack()})
         Text(
             modifier = Modifier.padding(Dimension.dimen_10),
             text = Strings.privacyText,
@@ -93,9 +98,15 @@ fun PrivacyView() {
 
             )
         CustomListTile(leadingIcon = {},
-            title = Strings.cameraSettingText,
+            title = Strings.clearAllChatsText,
             onClick = {},
-            trailingContent = { Text(text = Strings.communicationDeviceText,fontSize = 10.sp) },
+            trailingContent = { Icon(imageVector = Icons.Outlined.RemoveCircleOutline,contentDescription = "")},
+            fontSize = 16
+        ) 
+        CustomListTile(leadingIcon = {},
+            title = Strings.deleteAllChatsText,
+            onClick = {},
+            trailingContent = { Icon(imageVector = Icons.Outlined.Delete,contentDescription = "") },
             fontSize = 16
         )
     }
