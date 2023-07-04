@@ -76,7 +76,7 @@ fun TopBarForSetting(
     shape: Shape = RoundedCornerShape(30.dp),
     onBackPressed: () -> Unit,
 ) {
-    Column() {
+    Column(modifier = Modifier.padding(horizontal = 10.dp)) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
 
@@ -126,5 +126,5 @@ fun TopBarForSetting(
     }
 
     VerticalSpacer()
-    CustomDivider(false)
+    ViewDivider()
 }

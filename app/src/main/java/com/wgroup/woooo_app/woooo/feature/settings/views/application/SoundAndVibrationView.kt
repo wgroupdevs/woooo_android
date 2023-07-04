@@ -10,16 +10,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 
 @Composable
-fun SoundAndVibrationView() {
+fun SoundAndVibrationView(navigator: DestinationsNavigator) {
 
     Column(modifier = Modifier.padding(10.dp)) {
-        TopBarForSetting(onBackPressed = {})
+        TopBarForSetting(onBackPressed = {navigator.popBackStack()})
         Text(
             modifier = Modifier.padding(top = Dimension.dimen_5, start = Dimension.dimen_5),
             text = Strings.soundText,

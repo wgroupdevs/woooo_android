@@ -15,6 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.wgroup.woooo_app.woooo.destinations.AccountMainScreenDestination
+import com.wgroup.woooo_app.woooo.destinations.ApplicationMainScreenDestination
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
@@ -38,35 +40,41 @@ fun SettingMainView(navigator: DestinationsNavigator) {
                     modifier = Modifier.size(
                         36.dp
                     ),
-                    imageVector = Icons.Outlined.Settings, contentDescription = "",
+                    imageVector = Icons.Outlined.Settings,contentDescription = "",
                 )
             },
-            title = Strings.appText, onClick = {},
+            title = Strings.appText,
+            onClick = {
+                navigator.navigate(ApplicationMainScreenDestination)
+            },
         )
-        CustomListTile(leadingIcon = {
-            Icon(
-                tint = WooColor.white, modifier = Modifier.size(
-                    36.dp
-                ), imageVector = Icons.Outlined.ContactPhone, contentDescription = ""
-            )
-        }, title = Strings.accountText, onClick = {})
-        CustomListTile(leadingIcon = {
-            Icon(
-                tint = WooColor.white,
-
-                modifier = Modifier.size(
-                    36.dp
-                ), imageVector = Icons.Outlined.Key, contentDescription = ""
-            )
-        }, title = Strings.walletPinText, onClick = {})
+        CustomListTile(
+            leadingIcon = {
+                Icon(
+                    tint = WooColor.white,modifier = Modifier.size(
+                        36.dp
+                    ),imageVector = Icons.Outlined.ContactPhone,contentDescription = ""
+                )
+            },
+            title = Strings.accountText,
+            onClick = { navigator.navigate(AccountMainScreenDestination) })
         CustomListTile(leadingIcon = {
             Icon(
                 tint = WooColor.white,
 
                 modifier = Modifier.size(
                     36.dp
-                ), imageVector = Icons.Outlined.Report, contentDescription = ""
+                ),imageVector = Icons.Outlined.Key,contentDescription = ""
             )
-        }, title = Strings.rptText, onClick = {})
+        },title = Strings.walletPinText,onClick = {})
+        CustomListTile(leadingIcon = {
+            Icon(
+                tint = WooColor.white,
+
+                modifier = Modifier.size(
+                    36.dp
+                ),imageVector = Icons.Outlined.Report,contentDescription = ""
+            )
+        },title = Strings.rptText,onClick = {})
     }
 }

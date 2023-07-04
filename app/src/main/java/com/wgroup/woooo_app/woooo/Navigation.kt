@@ -6,9 +6,15 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.feature.auth.screen.SignUpView
 import com.wgroup.woooo_app.woooo.feature.home.screen.HomePage
-import com.wgroup.woooo_app.woooo.feature.home.viewmodel.HomeViewModel
+import com.wgroup.woooo_app.woooo.feature.settings.views.ApplicationMainView
 import com.wgroup.woooo_app.woooo.feature.settings.views.SettingMainView
-
+import com.wgroup.woooo_app.woooo.feature.settings.views.account.AccountMainView
+import com.wgroup.woooo_app.woooo.feature.settings.views.account.PrivacyMainView
+import com.wgroup.woooo_app.woooo.feature.settings.views.account.SecurityMainView
+import com.wgroup.woooo_app.woooo.feature.settings.views.application.AudioVideoView
+import com.wgroup.woooo_app.woooo.feature.settings.views.application.DisplayView
+import com.wgroup.woooo_app.woooo.feature.settings.views.application.LanguageView
+import com.wgroup.woooo_app.woooo.feature.settings.views.application.SoundAndVibrationView
 
 @Destination
 @Composable
@@ -33,6 +39,61 @@ fun SignUpScreen(navigator: DestinationsNavigator) {
 fun SettingsScreen(navigator: DestinationsNavigator) {
     SettingMainView(navigator)
 }
+
+@Destination
+@Composable
+fun ApplicationMainScreen(navigator: DestinationsNavigator) {
+    ApplicationMainView(navigator)
+}
+
+@Destination
+@Composable
+fun AccountMainScreen(navigator: DestinationsNavigator) {
+    AccountMainView(navigator)
+}
+
+@Destination
+@Composable
+fun PrivacyMainScreen(navigator: DestinationsNavigator) {
+    PrivacyMainView(navigator)
+}
+
+@Destination
+@Composable
+fun SecurityMainScreen(navigator: DestinationsNavigator) {
+    SecurityMainView(navigator)
+}
+
+@Destination
+@Composable
+fun SoundAndVibrationMainScreen(navigator: DestinationsNavigator) {
+    SoundAndVibrationView(navigator)
+}
+
+@Destination
+@Composable
+fun DisplayMainScreen(navigator: DestinationsNavigator) {
+    DisplayView(navigator)
+}
+
+@Destination
+@Composable
+fun AudioVideoMainScreen(navigator: DestinationsNavigator) {
+    AudioVideoView(navigator)
+}
+
+@Destination
+@Composable
+fun LanguageMainScreen(navigator: DestinationsNavigator) {
+    LanguageView(navigator)
+}
+
+
+
+
+
+
+
 
 
 //@Destination

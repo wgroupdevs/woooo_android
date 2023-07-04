@@ -62,14 +62,16 @@ object Strings {
     var chatText = "Chat"
 
     //
-//    meetingText= "Meeting"
+var  meetingText= "Meeting"
 //
     var callText = "Call"
 
-    var     walletText   = "Wallet"
-//
-//    dailyRewardText    = "Daily Reward"
-//
+    var walletText = "Wallet"
+
+    //
+    var dailyRewardText = "Daily Reward"
+
+    //
 //    7days = "Complete 7 day\"s to claim woo Asset"
 //
     var msgsText = "Messages"
@@ -171,8 +173,9 @@ object Strings {
 //    "muteText"= "Mute"
 //    "cstmNotiText"= "Custom Notification"
 //    "mediaText"= "Media"
-//    "encryptionText"= "Encryption"
-//    "disappearingText"= "Message Disappearing"
+    var encryptionText = "Encryption"
+
+    //    "disappearingText"= "Message Disappearing"
 //    "ParticipantsText"= "Participants"
 //    "viewAllText"= "View All"
 //    "addParticipantsText"= "Add Participants"
@@ -194,20 +197,22 @@ object Strings {
 //
 //    // Mining view keys
 //
-//    "todays"= "Today"s Mined Asset"
-//    "dlyRewrd"= "Daily Reward"
-//    "D1"= "Day 1"
-//    "D2"= "Day 2"
-//    "D3"= "Day 3"
-//    "D4"= "Day 4"
-//    "D5"= "Day 5"
-//    "D6"= "Day 6"
-//    "D7"= "Day 7"
-//    "collectText"= "Collect"
+    var todays = "Today's Mined Asset"
+
+    //    "dlyRewrd"= "Daily Reward"
+    var D1 = "Day 1"
+    var D2 = "Day 2"
+    var D3 = "Day 3"
+    var D4 = "Day 4"
+    var D5 = "Day 5"
+    var D6 = "Day 6"
+    var D7 = "Day 7"
+
+    var collectText= "Collect"
 //    "collectedText"= "Collected"
-//    "claimAssetText"= "Complete 7 day"s to claim woo Asset"
-//    "timeLeftText"= "Time Left"
-//    "mHstryText"= "Mining History"
+var claimAssetText= "Complete 7 day's to claim woo Asset"
+var timeLeftText= "Time Left"
+var mHstryText= "Mining History"
 //
 //    // call main view keys
 //
@@ -224,18 +229,21 @@ object Strings {
 //
 //    "buyWoText"= "Buy Woooo"
 //    "wooText"= "Woooo"
-var trnscetgText= "Transactions"
-//
+    var trnscetgText = "Transactions"
+
+    //
 //    // wallet all transactions view keys
 //
 //    "30days"= "Last 30 days"
-var rcntTransText= "Recent Transactions"
-//    "dateText"= "Date"
+    var rcntTransText = "Recent Transactions"
+
+    //    "dateText"= "Date"
 //    "currencyText"= "Currency"
 //    "typeText"= "Type"
-var amountText= "Amount"
-var entrAmountText= "Enter Amount"
-//    "noTranstngText"= "There is no transactions."
+    var amountText = "Amount"
+    var entrAmountText = "Enter Amount"
+
+    //    "noTranstngText"= "There is no transactions."
 //
 //    // wallet currencies view keys
 //
@@ -243,17 +251,20 @@ var entrAmountText= "Enter Amount"
 //
 //    // wallet send currency view keys
 //
-var addressText= "Address"
-var enterAddressText= " Enter Address"
-//    "waltacesText"= "Wallet Access"
+    var addressText = "Address"
+    var enterAddressText = " Enter Address"
+
+    //    "waltacesText"= "Wallet Access"
 //    "tpCopyText"= "Tap to copy"
-var receiveText= "Receive"
-var sndText= "Send"
-//
+    var receiveText = "Receive"
+    var sndText = "Send"
+
+    //
 //    // profile update view keys
 //
-var abtText= "About"
-//    "dobText"= "Date Of Birth"
+    var abtText = "About"
+
+    //    "dobText"= "Date Of Birth"
     var lanText = "Language"
 
     //    "ctyText"= "City"
@@ -317,9 +328,9 @@ var abtText= "About"
 //    "yesText"= "Yes"
 //    "onlyWhenScreenOnText"= "Only when Screen ${"on"}"
 //    "onlyWhenScreenOffText"= "Only when Screen ${"off"}"
-//    "remoteLogOutText"= "Remote Log-out"
-//    "changePasswordText"= "Change Password"
-//    "fingerPrintText"= "Finger Print"
+    var remoteLogOutText = "Remote Log-out"
+    var changePasswordText = "Change Password"
+    var fingerPrintText = "Finger Print"
     var permissionsText = "Permission"
 
     //    "offText"= "Off"
@@ -345,12 +356,14 @@ var abtText= "About"
     var connectContactsText = "Connect Contacts"
 
     //    "clearHistoryText"= "Clear History"
-//    "clearAllChatsText"= "Clear All Chats"
-//    "deleteAllChatsText"= "Delete All Chats"
-//    "everyoneText"= "EveryOne"
-var myContactText= "My Contacts"
-var     noBodyText= "No Body"
-//    "rstPassText"= "Reset Password"
+    var clearAllChatsText = "Clear All Chats"
+    var deleteAllChatsText = "Delete All Chats"
+
+    //    "everyoneText"= "EveryOne"
+    var myContactText = "My Contacts"
+    var noBodyText = "No Body"
+
+    //    "rstPassText"= "Reset Password"
     var resentOTP = "Resend OTP"
     var verifyCode = "Verify Code"
 
@@ -489,7 +502,8 @@ var     noBodyText= "No Body"
     var vibText = "Vibrate"
     var PopText = "Popup Notification"
     var ringText = "Ringtone"
-//
+
+    //
 //    // remaining view
 //    "HelpText"= "Help And Feedback"
 //    "termText"= "Terms and Privacy"
@@ -531,6 +545,6 @@ var     noBodyText= "No Body"
 //    "subTileText"= "C.C Subtitle"
 //    "liveTransText"= "Live Transcript"
 //    "upDatePassText"= "Update Password"
-//    "setPasscodeLockText"= "Set Passcode Lock"
+    var setPasscodeLockText = "Set Passcode Lock"
 //    "backText"="Back"
 }
