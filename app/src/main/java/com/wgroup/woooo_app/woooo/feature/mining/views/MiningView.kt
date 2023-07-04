@@ -1,6 +1,7 @@
 package com.wgroup.woooo_app.woooo.feature.mining.views
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,7 +16,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.outlined.CardGiftcard
+import androidx.compose.material.icons.outlined.Send
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -28,8 +31,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.BarGraph
 import com.wgroup.woooo_app.woooo.shared.components.BarType
+import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.ViewDivider
@@ -39,23 +44,20 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 
 @Composable
 fun MiningMainView(
-//    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator
 ) {
-    val dataList = mutableListOf(30,60,90,50,70)
+//    Values pass to graph
+    val dataList = mutableListOf(8,2,3,4,10)
     val floatValue = mutableListOf<Float>()
-    val datesList = mutableListOf(2,3,4,5,6)
-
-    dataList.forEachIndexed { index, value ->
-
-        floatValue.add(index = index, element = value.toFloat()/dataList.max().toFloat())
-
+    val datesList = mutableListOf("Chat","Login","Invite","Call","Meeting")
+    dataList.forEachIndexed { index,value ->
+        floatValue.add(index = index,element = value.toFloat() / dataList.max().toFloat())
     }
 
-
-
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        TopBarForSetting {}
-        VerticalSpacer()
+
+        // top  bar
+        TopBarForSetting(onBackPressed = { navigator.popBackStack() })
         Column(modifier = Modifier.padding(10.dp)) {
             // upper Row
             Row(
@@ -64,11 +66,10 @@ fun MiningMainView(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-
                     Text(text = Strings.todays)
                     Text(text = "0.3 Woo")
                 }
-                Box(modifier = Modifier.size(60.dp)) {
+                Box {
                     CircularProgressIndicator(
                         modifier = Modifier.size(60.dp),
                         progress = 0.7F,
@@ -85,9 +86,9 @@ fun MiningMainView(
 
                 }
             }
-            VerticalSpacer()
+            VerticalSpacer(Dimension.dimen_5)
             ViewDivider()
-            VerticalSpacer()
+            VerticalSpacer(Dimension.dimen_5)
             // Daily Reward
             Column {
                 Text(text = Strings.dailyRewardText)
@@ -96,10 +97,9 @@ fun MiningMainView(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(10.dp)
+                        .padding(horizontal = 10.dp)
 
                 ) {
-
 // D1
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -129,7 +129,7 @@ fun MiningMainView(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        TextForDays(Strings.D1)
+                        TextForDays(Strings.D2)
                         VerticalSpacer(Dimension.dimen_5)
                         Box(
                             modifier = Modifier
@@ -154,7 +154,7 @@ fun MiningMainView(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        TextForDays(Strings.D1)
+                        TextForDays(Strings.D3)
                         VerticalSpacer(Dimension.dimen_5)
                         Box(
                             modifier = Modifier
@@ -179,7 +179,7 @@ fun MiningMainView(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        TextForDays(Strings.D1)
+                        TextForDays(Strings.D4)
                         VerticalSpacer(Dimension.dimen_5)
                         Box(
                             modifier = Modifier
@@ -204,7 +204,7 @@ fun MiningMainView(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        TextForDays(Strings.D1)
+                        TextForDays(Strings.D5)
                         VerticalSpacer(Dimension.dimen_5)
                         Box(
                             modifier = Modifier
@@ -229,7 +229,7 @@ fun MiningMainView(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        TextForDays(Strings.D1)
+                        TextForDays(Strings.D6)
                         VerticalSpacer(Dimension.dimen_5)
                         Box(
                             modifier = Modifier
@@ -254,7 +254,7 @@ fun MiningMainView(
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        TextForDays(Strings.D1)
+                        TextForDays(Strings.D7)
                         VerticalSpacer(Dimension.dimen_5)
                         Box(
                             modifier = Modifier
@@ -277,10 +277,11 @@ fun MiningMainView(
                     }
 
                 }
+                VerticalSpacer()
                 Text(
                     text = Strings.claimAssetText,
                     modifier = Modifier.align(Alignment.End),
-                    fontSize = 15.sp
+                    fontSize = 14.sp
                 )
             }
             VerticalSpacer()
@@ -341,21 +342,109 @@ fun MiningMainView(
             VerticalSpacer()
             ViewDivider()
             VerticalSpacer()
-                // mining History
+            // mining History
             Text(text = Strings.mHstryText)
+            // Weak Month Year  All
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(15.dp),
+                modifier = Modifier.padding(10.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .border(1.dp,WooColor.white,shape = RoundedCornerShape(20.dp))
+                        .size(40.dp)
+                        .background(WooColor.textBox)
 
-            VerticalSpacer()
+                ) {
+                    Text(text = "W",modifier = Modifier.align(Alignment.Center))
+                }
 
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .border(1.dp,WooColor.white,shape = RoundedCornerShape(20.dp))
+                        .size(40.dp)
+                        .background(WooColor.textBox)
+
+                ) {
+                    Text(text = "M",modifier = Modifier.align(Alignment.Center))
+                }
+
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .border(1.dp,WooColor.white,shape = RoundedCornerShape(20.dp))
+                        .size(40.dp)
+                        .background(WooColor.textBox)
+
+                ) {
+                    Text(text = "Y",modifier = Modifier.align(Alignment.Center))
+                }
+
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(20.dp))
+                        .border(1.dp,WooColor.white,shape = RoundedCornerShape(20.dp))
+                        .size(40.dp)
+                        .background(WooColor.textBox)
+
+                ) {
+                    Text(text = "All",modifier = Modifier.align(Alignment.Center))
+                }
+
+            }
+            // Graph
             BarGraph(
                 graphBarData = floatValue,
                 xAxisScaleData = datesList,
                 barData_ = dataList,
                 height = 200.dp,
                 roundType = BarType.TOP_CURVED,
-                barWidth = 50.dp,
-                barColor = WooColor.Cyan,
+                barWidth = 55.dp,
                 barArrangement = Arrangement.SpaceEvenly
             )
+            VerticalSpacer()
+            ViewDivider()
+            VerticalSpacer(Dimension.dimen_5)
+
+            // wallet view
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Row {
+                    Icon(
+                        imageVector = Icons.Default.AccountBalanceWallet,
+                        contentDescription = "",
+                        tint = WooColor.white,
+                        modifier = Modifier.size(50.dp)
+                    )
+                    HorizontalSpacer(Dimension.dimen_5)
+                    Text(text = "4.8325 woo \n$ 57.3489",fontSize = 15.sp)
+                }
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .border(1.dp,WooColor.white,shape = RoundedCornerShape(10.dp))
+                        .size(50.dp)
+                        .background(WooColor.textBox)
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Send,
+                        contentDescription = "",
+                        tint = WooColor.white,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .size(27.dp)
+                    )
+                }
+
+            }
         }
     }
 }

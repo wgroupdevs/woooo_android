@@ -16,6 +16,7 @@ object WooColor {
     var primary = Color(0xff3E7EB9)
     var backgroundColor = Color(0xff3E7EB9)
     var attachmentCardOuterColor = Color(0xff071D8F)
+    var graphFilledColor = Color(0x99334DE0)
     var attachmentCardInnerColor = Color(0xff006389)
     var attachmentCardInnerSecColor = Color(0xff005A81)
     var attachmentCardEndingColor = Color(0xff020C40)

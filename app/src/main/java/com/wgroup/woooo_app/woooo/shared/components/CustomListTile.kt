@@ -91,7 +91,7 @@ fun TopBarForSetting(
                             .padding(end = 10.dp)
                             .clickable(onClick = onBackPressed)
             )
-            HorizontalSpacer(Dimension.dimen_5)
+//            HorizontalSpacer(Dimension.dimen_5)
             OutlinedTextField(
                 textStyle = MaterialTheme.typography.labelMedium.copy(color = WooColor.white),
                 onValueChange = onValueChange,

@@ -11,8 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.wgroup.woooo_app.woooo.NavGraphs
-import com.wgroup.woooo_app.woooo.feature.auth.screen.SignUpView
-import com.wgroup.woooo_app.woooo.feature.mining.views.MiningMainView
+import com.wgroup.woooo_app.woooo.feature.profile.views.UpdateProfileView
 import com.wgroup.woooo_app.woooo.theme.Woooo_androidTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -35,8 +34,8 @@ fun MainScreen() {
             color = MaterialTheme.colorScheme.background
         ) {
 //            DestinationsNavHost(navGraph = NavGraphs.root)
-
-            MiningMainView()        }
+            UpdateProfileView()
+        }
     }
 }
 

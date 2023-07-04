@@ -7,6 +7,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.feature.auth.screen.SignUpView
 import com.wgroup.woooo_app.woooo.feature.home.screen.DashboardView
 import com.wgroup.woooo_app.woooo.feature.home.screen.HomePage
+import com.wgroup.woooo_app.woooo.feature.mining.views.MiningMainView
 import com.wgroup.woooo_app.woooo.feature.settings.views.ApplicationMainView
 import com.wgroup.woooo_app.woooo.feature.settings.views.SettingMainView
 import com.wgroup.woooo_app.woooo.feature.settings.views.account.AccountMainView
@@ -93,6 +94,12 @@ fun AudioVideoMainScreen(navigator: DestinationsNavigator) {
 @Composable
 fun LanguageMainScreen(navigator: DestinationsNavigator) {
     LanguageView(navigator)
+}
+
+@Destination
+@Composable
+fun MiningMainScreen(navigator: DestinationsNavigator) {
+    MiningMainView(navigator)
 }
 
 
