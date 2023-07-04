@@ -28,6 +28,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.wgroup.woooo_app.woooo.shared.components.BarGraph
+import com.wgroup.woooo_app.woooo.shared.components.BarType
 import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.ViewDivider
@@ -39,6 +41,17 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 fun MiningMainView(
 //    navigator: DestinationsNavigator
 ) {
+    val dataList = mutableListOf(30,60,90,50,70)
+    val floatValue = mutableListOf<Float>()
+    val datesList = mutableListOf(2,3,4,5,6)
+
+    dataList.forEachIndexed { index, value ->
+
+        floatValue.add(index = index, element = value.toFloat()/dataList.max().toFloat())
+
+    }
+
+
 
     Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         TopBarForSetting {}
@@ -330,6 +343,19 @@ fun MiningMainView(
             VerticalSpacer()
                 // mining History
             Text(text = Strings.mHstryText)
+
+            VerticalSpacer()
+
+            BarGraph(
+                graphBarData = floatValue,
+                xAxisScaleData = datesList,
+                barData_ = dataList,
+                height = 200.dp,
+                roundType = BarType.TOP_CURVED,
+                barWidth = 50.dp,
+                barColor = WooColor.Cyan,
+                barArrangement = Arrangement.SpaceEvenly
+            )
         }
     }
 }
