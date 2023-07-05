@@ -1,7 +1,5 @@
 package com.wgroup.woooo_app.woooo.shared.components.view_models
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -10,20 +8,19 @@ import javax.inject.Inject
 
 class DateTimerPickerViewModel @Inject constructor() : ViewModel() {
 
-    private val _setDateDialogueShow = mutableStateOf(false)
-    val getDateDialogueShow: State<Boolean> = _setDateDialogueShow
-    fun setDateDialogueValue(value: Boolean) {
-        _setDateDialogueShow.value = value
+    private val _setDateDialogueShowForUpdateProfile = mutableStateOf(false)
+    val getDateDialogueShowForUpdateProfile: State<Boolean> = _setDateDialogueShowForUpdateProfile
+    fun setDateDialogueValueForUpdateProfile(value: Boolean) {
+        _setDateDialogueShowForUpdateProfile.value = value
     }
 
-    private val _setDatePickerText = mutableStateOf("")
+    private val _setDatePickerTextForUpdateProfile = mutableStateOf("")
 
     /// for get value from View Model
-    val getDatePickerText: State<String> = _setDatePickerText
+    val getDatePickerTextForUpdateProfile: State<String> = _setDatePickerTextForUpdateProfile
 
     /// for set value from View Model
-    fun setDateTextValue(isEnabled: LocalDate) {
-        _setDatePickerText.value = isEnabled.toString()
+    fun setDateTextValueForUpdateProfile(isEnabled: LocalDate) {
+        _setDatePickerTextForUpdateProfile.value = isEnabled.toString()
     }
-
 }

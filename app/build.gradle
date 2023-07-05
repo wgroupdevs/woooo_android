@@ -110,15 +110,15 @@ dependencies {
     //glassy
     implementation "com.github.skydoves:cloudy:0.1.2"
 
-    //SDP-SSP
-    implementation 'com.intuit.sdp:sdp-android:1.1.0'
-    implementation 'com.intuit.ssp:ssp-android:1.1.0'
-
+//    //SDP-SSP
+//    implementation 'com.intuit.sdp:sdp-android:1.1.0'
+//    implementation 'com.intuit.ssp:ssp-android:1.1.0'
+//
 
     implementation "androidx.compose.material:material-icons-extended"
     // date time picker
     implementation("com.marosseleng.android:compose-material3-datetime-pickers:0.7.2")
-    implementation 'androidx.camera:camera-view:1.3.0-beta01'
+//    implementation 'androidx.camera:camera-view:1.3.0-beta01'
     implementation 'com.google.zxing:core:3.4.1'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

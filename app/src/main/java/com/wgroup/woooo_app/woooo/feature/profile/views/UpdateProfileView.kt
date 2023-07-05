@@ -1,15 +1,22 @@
 package com.wgroup.woooo_app.woooo.feature.profile.views
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,17 +35,17 @@ import androidx.compose.material.icons.rounded.Cake
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.Pin
-import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,24 +57,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wgroup.woooo_app.R
-import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
+import com.wgroup.woooo_app.woooo.feature.profile.viewmodels.UpdateProfileViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
-import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageSignUpView
+import com.wgroup.woooo_app.woooo.shared.components.CustomDateTimePicker
+import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageUpdateProfileView
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.TextLabel
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.ViewDivider
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
+import com.wgroup.woooo_app.woooo.shared.components.view_models.DateTimerPickerViewModel
 import com.wgroup.woooo_app.woooo.theme.Shapes
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
+import java.time.LocalDate
 
-@OptIn(ExperimentalMaterial3Api::class)
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun UpdateProfileView() {
-    var text by remember { mutableStateOf("") }
-    val signUpViewModel: SignUpViewModel = hiltViewModel()
+    val dateTimerPickerViewModel: DateTimerPickerViewModel = hiltViewModel()
+    val updateProfileViewModel: UpdateProfileViewModel = hiltViewModel()
+    Log.d("${dateTimerPickerViewModel.getDateDialogueShowForUpdateProfile.value}","dncosdlsdkc")
+
     Column(
         Modifier
             .padding(10.dp)
@@ -121,14 +133,16 @@ fun UpdateProfileView() {
         Box(
             modifier = Modifier
                 .height(150.dp)
-                .background(WooColor.textFieldBackGround, shape = RoundedCornerShape(10.dp))
+                .background(WooColor.textFieldBackGround,shape = RoundedCornerShape(10.dp))
         ) {
             OutlinedTextField(
+
                 textStyle = MaterialTheme.typography.labelMedium.copy(color = WooColor.white),
                 onValueChange = {
-                    if (it.length <= 300) text = it
+                    if (it.length <= 300) updateProfileViewModel.setAboutControllerValue(it)
+                    updateProfileViewModel.setAboutErrorValue(false)
                 },
-                value = text,
+                value = updateProfileViewModel.getAboutController.value,
                 placeholder = {
                     Text(
                         text = "Enter About",
@@ -148,48 +162,54 @@ fun UpdateProfileView() {
                     disabledLabelColor = Color.Transparent,
                 ),
                 shape = Shapes.extraLarge,
-                singleLine = true,
                 maxLines = 5,
-            )
+                isError = updateProfileViewModel.getAboutError.value,
+                supportingText = {
+                    if (updateProfileViewModel.getAboutError.value) {
+                        ErrorMessageUpdateProfileView()
+                    }
+                },
+
+                )
         }
         // first name
         TextLabel(label = Strings.firstNameText)
         VerticalSpacer()
         WooTextField(onValueChange = {
-            signUpViewModel.setNameControllerValue(it)
-            signUpViewModel.setNameErrorValue(false)
+            updateProfileViewModel.setNameControllerValue(it)
+            updateProfileViewModel.setNameErrorValue(false)
         },
-            value = signUpViewModel.getNameController.value,
-            isError = signUpViewModel.getNameError.value,
+            value = updateProfileViewModel.getNameController.value,
+            isError = updateProfileViewModel.getNameError.value,
             supportingText = {
-                if (signUpViewModel.getNameError.value) {
-                    ErrorMessageSignUpView()
+                if (updateProfileViewModel.getNameError.value) {
+                    ErrorMessageUpdateProfileView()
                 }
             },
             hint = Strings.firstNameText,
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Person, contentDescription = "", tint = Color.White
+                    imageVector = Icons.Rounded.Person,contentDescription = "",tint = Color.White
                 )
             })
         // last name
         TextLabel(label = Strings.lastNameText)
         VerticalSpacer()
         WooTextField(onValueChange = {
-            signUpViewModel.setLastNameControllerValue(it)
-            signUpViewModel.setLastNameErrorValue(false)
+            updateProfileViewModel.setLastNameControllerValue(it)
+            updateProfileViewModel.setLastNameErrorValue(false)
         },
-            value = signUpViewModel.getLastNameController.value,
-            isError = signUpViewModel.getLastNameError.value,
+            value = updateProfileViewModel.getLastNameController.value,
+            isError = updateProfileViewModel.getLastNameError.value,
             supportingText = {
-                if (signUpViewModel.getLastNameError.value) {
-                    ErrorMessageSignUpView()
+                if (updateProfileViewModel.getLastNameError.value) {
+                    ErrorMessageUpdateProfileView()
                 }
             },
             hint = Strings.lastNameText,
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Person, contentDescription = "", tint = Color.White
+                    imageVector = Icons.Rounded.Person,contentDescription = "",tint = Color.White
                 )
             })
         //email
@@ -197,28 +217,38 @@ fun UpdateProfileView() {
         VerticalSpacer()
         WooTextField(
             onValueChange = {
-                signUpViewModel.setEmailControllerValue(it)
-                signUpViewModel.setEmailErrorValue(false)
+//                updateProfileViewModel.setEmailControllerValue(it)
+//                updateProfileViewModel.setEmailErrorValue(false)
             },
-            value = signUpViewModel.getEmailController.value,
-            isError = signUpViewModel.getEmailError.value,
-            supportingText = {
-                if (signUpViewModel.getEmailError.value) {
-                    ErrorMessageSignUpView()
-                }
-            },
-            hint = Strings.emailText,
-            leadingIcon = {
+//            value = signUpViewModel.getEmailController.value,
+//            isError = signUpViewModel.getEmailError.value,
+//            supportingText = {
+//                if (signUpViewModel.getEmailError.value) {
+//                    ErrorMessageUpdateProfileView()
+//                }
+//            },
+            hint = Strings.emailText,leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Email, contentDescription = "", tint = Color.White
+                    imageVector = Icons.Rounded.Email,contentDescription = "",tint = Color.White
                 )
-            },
-            readOnly = true
+            },readOnly = true
         )
         //phone number
         TextLabel(label = Strings.phoneNmbrText)
         VerticalSpacer()
-        WooTextField(hint = Strings.enterNumberText, leadingIcon = {
+        WooTextField(hint = Strings.enterNumberText, interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->
+            LaunchedEffect(interactionSource) {
+                interactionSource.interactions.collect {
+                    if (it is PressInteraction.Release) {
+                        // open date picker
+                        dateTimerPickerViewModel.setDateDialogueValueForUpdateProfile(
+                            true
+                        )
+                    }
+                }
+            }
+        },
+            leadingIcon = {
             Row(
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically
@@ -237,41 +267,63 @@ fun UpdateProfileView() {
                         .padding(5.dp)
                 )
             }
-        }, readOnly = true)
+        },readOnly = true)
         VerticalSpacer()
         // date of birth
         TextLabel(label = Strings.dobTex)
         VerticalSpacer()
-        WooTextField(onValueChange = {
-            signUpViewModel.setNameControllerValue(it)
-            signUpViewModel.setNameErrorValue(false)
-        },
+        WooTextField(
+            interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->
+                LaunchedEffect(interactionSource) {
+                    interactionSource.interactions.collect {
+                        if (it is PressInteraction.Release) {
+                            // open date picker
+                            dateTimerPickerViewModel.setDateDialogueValueForUpdateProfile(
+                                true
+                            )
+                        }
+                    }
+                }
+            },
+            onValueChange = {
+                updateProfileViewModel.setDOBControllerValue(it)
+                updateProfileViewModel.setDOBErrorValue(false)
+            },
             readOnly = true,
-            value = signUpViewModel.getNameController.value,
-            isError = signUpViewModel.getNameError.value,
+            value = dateTimerPickerViewModel.getDatePickerTextForUpdateProfile.value,
+            isError = updateProfileViewModel.getDOBError.value,
             supportingText = {
-                if (signUpViewModel.getNameError.value) {
-                    ErrorMessageSignUpView()
+                if (updateProfileViewModel.getDOBError.value) {
+                    ErrorMessageUpdateProfileView()
                 }
             },
             hint = "2010-05-15",
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Cake, contentDescription = "", tint = Color.White
+                    imageVector = Icons.Rounded.Cake,contentDescription = "",tint = Color.White
                 )
+            },
+
+            )
+
+        if (dateTimerPickerViewModel.getDateDialogueShowForUpdateProfile.value) CustomDateTimePicker(
+            onDateChange = {
+                val date = LocalDate.parse(it.toString())
+                dateTimerPickerViewModel.setDateTextValueForUpdateProfile(date)
+                dateTimerPickerViewModel.setDateDialogueValueForUpdateProfile(false)
             })
         // address
         TextLabel(label = Strings.addressText)
         VerticalSpacer()
         WooTextField(onValueChange = {
-            signUpViewModel.setNameControllerValue(it)
-            signUpViewModel.setNameErrorValue(false)
+            updateProfileViewModel.setNameControllerValue(it)
+            updateProfileViewModel.setNameErrorValue(false)
         },
-            value = signUpViewModel.getNameController.value,
-            isError = signUpViewModel.getNameError.value,
+            value = updateProfileViewModel.getAddressController.value,
+            isError = updateProfileViewModel.getAddressError.value,
             supportingText = {
-                if (signUpViewModel.getNameError.value) {
-                    ErrorMessageSignUpView()
+                if (updateProfileViewModel.getAddressError.value) {
+                    ErrorMessageUpdateProfileView()
                 }
             },
             hint = Strings.addressText,
@@ -286,21 +338,20 @@ fun UpdateProfileView() {
         TextLabel(label = Strings.pstlCodeText)
         VerticalSpacer()
         WooTextField(onValueChange = {
-            signUpViewModel.setNameControllerValue(it)
-            signUpViewModel.setNameErrorValue(false)
-            signUpViewModel.setNameErrorValue(false)
+            updateProfileViewModel.setPostalCodeControllerValue(it)
+            updateProfileViewModel.setPostalCodeErrorValue(false)
         },
-            value = signUpViewModel.getNameController.value,
-            isError = signUpViewModel.getNameError.value,
+            value = updateProfileViewModel.getPostalCodeController.value,
+            isError = updateProfileViewModel.getPostalCodeError.value,
             supportingText = {
-                if (signUpViewModel.getNameError.value) {
-                    ErrorMessageSignUpView()
+                if (updateProfileViewModel.getPostalCodeError.value) {
+                    ErrorMessageUpdateProfileView()
                 }
             },
             hint = Strings.pstlCodeText,
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Pin, contentDescription = "", tint = Color.White
+                    imageVector = Icons.Rounded.Pin,contentDescription = "",tint = Color.White
                 )
             })
         VerticalSpacer()
@@ -312,9 +363,9 @@ fun UpdateProfileView() {
                 .wrapContentWidth()
         ) {
             CustomButton(
-                border = BorderStroke(1.dp, Color.White),
+                border = BorderStroke(1.dp,Color.White),
                 onClick = {
-                    signUpViewModel.validateSignUpFields()
+                    updateProfileViewModel.validateSignUpFields()
                 },
                 content = {
                     Text(
