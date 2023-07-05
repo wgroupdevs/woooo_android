@@ -186,7 +186,7 @@ var  meetingText= "Meeting"
 //    "chngNmeText"= "Change Name"
 //    "chngGrpNmeText"= "Change Group Name"
 //    "entrNewNameText"= "Enter New Name"
-//    "saveText"= "Save"
+var saveText= "Save"
 //
 //    // new group view
 //
@@ -264,12 +264,12 @@ var mHstryText= "Mining History"
 //
     var abtText = "About"
 
-    //    "dobText"= "Date Of Birth"
+    var dobTex= "Date Of Birth"
     var lanText = "Language"
 
     //    "ctyText"= "City"
 //    "stateText"= "State"
-//    "pstlCodeText"= "Postal Code"
+var pstlCodeText= "Postal Code"
 //    "cntryText"= "Country"
 //
 //    // meeting main view keys
