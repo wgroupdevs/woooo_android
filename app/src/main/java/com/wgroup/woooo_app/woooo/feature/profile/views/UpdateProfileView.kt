@@ -1,7 +1,6 @@
 package com.wgroup.woooo_app.woooo.feature.profile.views
 
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -14,9 +13,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,7 +32,6 @@ import androidx.compose.material.icons.rounded.Cake
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material.icons.rounded.Pin
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -43,9 +39,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -56,6 +50,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.R
 import com.wgroup.woooo_app.woooo.feature.profile.viewmodels.UpdateProfileViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
@@ -75,10 +70,9 @@ import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun UpdateProfileView() {
+fun UpdateProfileView(navigator: DestinationsNavigator) {
     val dateTimerPickerViewModel: DateTimerPickerViewModel = hiltViewModel()
     val updateProfileViewModel: UpdateProfileViewModel = hiltViewModel()
-    Log.d("${dateTimerPickerViewModel.getDateDialogueShowForUpdateProfile.value}","dncosdlsdkc")
 
     Column(
         Modifier
@@ -86,7 +80,10 @@ fun UpdateProfileView() {
             .verticalScroll(rememberScrollState())
     ) {
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.clickable(onClick = { navigator.popBackStack() })
+        ) {
             Icon(
                 imageVector = Icons.Outlined.ArrowBackIosNew,
                 contentDescription = "",
@@ -236,38 +233,41 @@ fun UpdateProfileView() {
         //phone number
         TextLabel(label = Strings.phoneNmbrText)
         VerticalSpacer()
-        WooTextField(hint = Strings.enterNumberText, interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->
-            LaunchedEffect(interactionSource) {
-                interactionSource.interactions.collect {
-                    if (it is PressInteraction.Release) {
-                        // open date picker
-                        dateTimerPickerViewModel.setDateDialogueValueForUpdateProfile(
-                            true
-                        )
+        WooTextField(hint = Strings.enterNumberText,
+            interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->
+                LaunchedEffect(interactionSource) {
+                    interactionSource.interactions.collect {
+                        if (it is PressInteraction.Release) {
+                            // open date picker
+                            dateTimerPickerViewModel.setDateDialogueValueForUpdateProfile(
+                                true
+                            )
+                        }
                     }
                 }
-            }
-        },
+            },
             leadingIcon = {
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "+81",
-                    style = MaterialTheme.typography.labelMedium,
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "+81",
+                        style = MaterialTheme.typography.labelMedium,
 
+                        )
+                    HorizontalSpacer()
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .width(1.dp)
+                            .background(WooColor.hintText)
+                            .padding(5.dp)
                     )
-                HorizontalSpacer()
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(1.dp)
-                        .background(WooColor.hintText)
-                        .padding(5.dp)
-                )
-            }
-        },readOnly = true)
+                }
+            },
+            readOnly = true
+        )
         VerticalSpacer()
         // date of birth
         TextLabel(label = Strings.dobTex)

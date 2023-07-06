@@ -9,42 +9,32 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Pin
-import androidx.compose.material.icons.outlined.QuestionMark
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.R
 import com.wgroup.woooo_app.woooo.destinations.SettingsScreenDestination
-import com.wgroup.woooo_app.woooo.feature.settings.views.SettingMainView
+import com.wgroup.woooo_app.woooo.destinations.UpdateProfileMainScreenDestination
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.ViewDivider
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppDrawer(
     modifier: Modifier = Modifier,
@@ -56,12 +46,12 @@ fun AppDrawer(
     ModalDrawerSheet(
         modifier = modifier
             .border(
-                border = BorderStroke(width = 0.5.dp, color = WooColor.white),
-                shape = RoundedCornerShape(0.dp, 15.dp, 15.dp, 0.dp)
+                border = BorderStroke(width = 0.5.dp,color = WooColor.white),
+                shape = RoundedCornerShape(0.dp,15.dp,15.dp,0.dp)
             ),
         drawerContainerColor = Color.Transparent
     ) {
-        DrawerHeader(modifier)
+        DrawerHeader(modifier,navigator)
 //        Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.spacer_padding)))
         Column(modifier = Modifier.padding(Dimension.dimen_10)) {
 
@@ -75,7 +65,7 @@ fun AppDrawer(
                         contentDescription = "Settings",
                         tint = WooColor.white
                     )
-                }, onClick = {
+                },onClick = {
                     navigator.navigate(SettingsScreenDestination)
                 })
 
@@ -87,7 +77,7 @@ fun AppDrawer(
                         contentDescription = "Invite friend",
                         tint = WooColor.white
                     )
-                }, onClick = {
+                },onClick = {
                     navigator.navigate(SettingsScreenDestination)
                 })
 
@@ -99,7 +89,7 @@ fun AppDrawer(
                         contentDescription = "Feedback",
                         tint = WooColor.white
                     )
-                }, onClick = {
+                },onClick = {
                     navigator.navigate(SettingsScreenDestination)
                 })
             CustomListTile(
@@ -110,7 +100,7 @@ fun AppDrawer(
                         contentDescription = "Referral",
                         tint = WooColor.white
                     )
-                }, onClick = {
+                },onClick = {
                     navigator.navigate(SettingsScreenDestination)
                 })
             CustomListTile(
@@ -121,7 +111,7 @@ fun AppDrawer(
                         contentDescription = "invitation",
                         tint = WooColor.white
                     )
-                }, onClick = {
+                },onClick = {
                     navigator.navigate(SettingsScreenDestination)
                 })
             CustomListTile(
@@ -132,20 +122,18 @@ fun AppDrawer(
                         contentDescription = "Logout",
                         tint = WooColor.white
                     )
-                }, onClick = {
+                },onClick = {
                     navigator.navigate(SettingsScreenDestination)
                 })
         }
-
 
     }
 
 
 }
 
-
 @Composable
-fun DrawerHeader(modifier: Modifier) {
+fun DrawerHeader(modifier: Modifier,navigator: DestinationsNavigator) {
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
@@ -153,7 +141,6 @@ fun DrawerHeader(modifier: Modifier) {
             .background(Color.Transparent)
             .fillMaxWidth()
     ) {
-
 
         Image(
             painterResource(id = R.drawable.app_logo),
@@ -180,8 +167,9 @@ fun DrawerHeader(modifier: Modifier) {
             Text(
                 text = "Edit profile",
                 style = MaterialTheme.typography.labelMedium,
-                modifier = Modifier.clickable { })
-
+                modifier = Modifier.clickable { navigator.navigate(
+                    UpdateProfileMainScreenDestination
+                ) })
         }
     }
 }

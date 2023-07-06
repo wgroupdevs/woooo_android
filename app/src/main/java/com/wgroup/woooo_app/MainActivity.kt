@@ -33,8 +33,7 @@ fun MainScreen() {
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-//            DestinationsNavHost(navGraph = NavGraphs.root)
-            UpdateProfileView()
+            DestinationsNavHost(navGraph = NavGraphs.root)
         }
     }
 }
