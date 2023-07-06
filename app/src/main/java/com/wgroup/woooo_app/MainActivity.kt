@@ -20,7 +20,10 @@ import com.google.gson.Gson
 import com.wgroup.woooo_app.woooo.theme.Woooo_androidTheme
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.BufferedReader
+import java.io.IOException
+import java.io.InputStream
 import java.io.InputStreamReader
+import java.nio.charset.Charset
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -60,10 +63,11 @@ fun MainScreen() {
             Box(modifier = Modifier
                 .height(300.dp)
                 .clickable(onClick = {
-                    readJsonFile(local)
+                    readJsonFileFromAssets(local)
 
-                    Log.d("","")
-                })) {
+                    Log.d("", "")
+                })
+            ) {
 //                CountryCodePicker()
 
             }
@@ -71,19 +75,56 @@ fun MainScreen() {
     }
 }
 
-data class MyData(val name: String,val dial_code: String,val code: String)
 
-fun readJsonFile(context: Context): MyData? {
-    val inputStream = context.resources.openRawResource(R.raw.countrycodes)
-    val reader = BufferedReader(InputStreamReader(inputStream))
-    val jsonString = StringBuilder()
-    var line: String? = reader.readLine()
-    while (line != null) {
-        jsonString.append(line)
-        line = reader.readLine()
+fun readJsonFileFromAssets(context: Context): String? {
+    var jsonString: String?
+    try {
+        val inputStream = context.assets.open("countrycodes.json")
+        val size = inputStream.available()
+        val buffer = ByteArray(size)
+        inputStream.read(buffer)
+        inputStream.close()
+        jsonString = String(buffer, Charset.defaultCharset())
+        Log.d("ReadJsonFileFromAssets", jsonString)
+
+        val data = Gson().fromJson(jsonString.toString(), CountryModel::class.java)
+
+        Log.d("ReadJsonFileFromAssets", "${data.countries.size}")
+        data.countries.forEach {
+            Log.d("ReadJsonFileFromAssets", it.name)
+
+        }
+
+    } catch (e: IOException) {
+        Log.e("ReadJsonFileFromAssets", "Error reading JSON file", e)
+        jsonString = null
     }
-    reader.close()
-    Log.d(line,"Readed file Data")
-
-    return Gson().fromJson(jsonString.toString(),MyData::class.java)
+    return jsonString
 }
+
+data class MyData(val name: String, val dial_code: String, val code: String)
+//
+//fun readJsonFile(context: Context): MyData? {
+//    val inputStream = context.resources.openRawResource(R.raw.countrycodes)
+//    val reader = BufferedReader(InputStreamReader(inputStream))
+//    val jsonString = StringBuilder()
+//    var line: String? = reader.readLine()
+//    while (line != null) {
+//        jsonString.append(line)
+//        line = reader.readLine()
+//    }
+//    reader.close()
+//    Log.d(line,"Readed file Data")
+//
+//    return Gson().fromJson(jsonString.toString(),MyData::class.java)
+//}
+
+data class CountryModel(
+    val countries: List<Country>
+)
+
+data class Country(
+    val code: String,
+    val dial_code: String,
+    val name: String
+)
