@@ -1,17 +1,13 @@
 package com.wgroup.woooo_app.woooo.shared.components
 
-import android.util.Log
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -46,7 +42,8 @@ fun WooTextField(
 //    colors: TextFieldColors = TextFieldDefaults.textFieldColors()
     leadingIcon: @Composable (() -> Unit)? = null,
     obscusePass: Boolean = true,
-    interactionSource: MutableInteractionSource = MutableInteractionSource()
+    interactionSource: MutableInteractionSource = MutableInteractionSource(),
+    unfocusedColor: Color = Color.Black
 ) {
     OutlinedTextField(
         visualTransformation = if (obscusePass) VisualTransformation.None else PasswordVisualTransformation(),
@@ -65,15 +62,16 @@ fun WooTextField(
         value = value,
         isError = isError,
         supportingText = supportingText,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            cursorColor = WooColor.primary,
-            disabledLabelColor = Color(0xffd8e6ff),
-            unfocusedBorderColor = Color.Black,
-            focusedBorderColor = WooColor.white,
-            containerColor = WooColor.textFieldBackGround,
+        colors = OutlinedTextFieldDefaults.colors(
             disabledTextColor = Color.Transparent,
-            errorContainerColor = WooColor.textFieldBackGround
-
+            focusedContainerColor = WooColor.textFieldBackGround,
+            unfocusedContainerColor = WooColor.textFieldBackGround,
+            disabledContainerColor = WooColor.textFieldBackGround,
+            errorContainerColor = WooColor.textFieldBackGround,
+            cursorColor = WooColor.primary,
+            focusedBorderColor = WooColor.white,
+            unfocusedBorderColor = unfocusedColor,
+            disabledLabelColor = Color(0xffd8e6ff),
         ),
         shape = shape,
         singleLine = true,

@@ -1,10 +1,10 @@
 package com.wgroup.woooo_app.woooo.shared.data.models
 
-data class CountryList(
-    val countries: List<Country>
+data class CountryListModel(
+    val countries: List<CountriesList>
 )
 
-data class Country(
+data class CountriesList(
     val code: String,
     val dial_code: String,
     val name: String
