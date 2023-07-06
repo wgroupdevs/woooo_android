@@ -1,0 +1,72 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "com.wgroup.woooo_app",
+  "variantName": "conversationsFreeRelease",
+  "elements": [
+    {
+      "type": "UNIVERSAL",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 4205900,
+      "versionName": "2.12.5+free",
+      "outputFile": "Woooo-2.12.5-conversations-free-universal-release.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "x86_64"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 4205903,
+      "versionName": "2.12.5+free",
+      "outputFile": "Woooo-2.12.5-conversations-free-x86_64-release.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "arm64-v8a"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 4205904,
+      "versionName": "2.12.5+free",
+      "outputFile": "Woooo-2.12.5-conversations-free-arm64-v8a-release.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "armeabi-v7a"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 4205901,
+      "versionName": "2.12.5+free",
+      "outputFile": "Woooo-2.12.5-conversations-free-armeabi-v7a-release.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "x86"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 4205902,
+      "versionName": "2.12.5+free",
+      "outputFile": "Woooo-2.12.5-conversations-free-x86-release.apk"
+    }
+  ],
+  "elementType": "File"
+}
