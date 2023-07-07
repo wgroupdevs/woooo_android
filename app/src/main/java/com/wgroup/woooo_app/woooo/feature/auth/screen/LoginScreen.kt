@@ -1,9 +1,10 @@
-import android.os.Build
-import androidx.annotation.RequiresApi
+//import com.wgroup.woooo_app.woooo.shared.components.view_models.DateTimerPickerViewModel
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,12 +22,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.rounded.VisibilityOff
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wgroup.woooo_app.R
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginViewModelWithEmail
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
+import com.wgroup.woooo_app.woooo.shared.components.CountryPicker
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.CustomDivider
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageForLoginWithEmail
@@ -48,11 +50,10 @@ import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageLoginWithPhone
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
-//import com.wgroup.woooo_app.woooo.shared.components.view_models.DateTimerPickerViewModel
+import com.wgroup.woooo_app.woooo.shared.components.view_models.CountryPickerViewModel
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
-
 
 @Preview
 @Composable
@@ -75,14 +76,11 @@ fun LoginView() {
     }
 }
 
-
 @Composable
 fun LoginWithPhoneNumber() {
-
     val loginWithEmailViewModel: LoginViewModelWithEmail = hiltViewModel()
-//    val dateTimeViewModel: DateTimerPickerViewModel = hiltViewModel()
     val loginWithPhoneViewModel: LoginWithPhoneViewModel = hiltViewModel()
-
+    val countryPickerViewModel: CountryPickerViewModel = hiltViewModel()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -103,8 +101,18 @@ fun LoginWithPhoneNumber() {
             VerticalSpacer(Dimension.dimen_25)
 
             // Country picker
-            WooTextField(
-                hint = "Japan",
+            WooTextField(readOnly = true,
+                interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->
+                    LaunchedEffect(interactionSource) {
+                        interactionSource.interactions.collect {
+                            if (it is PressInteraction.Release) {
+//                                open date picker
+                                loginWithPhoneViewModel.setShowCountryPickerValue(true)
+                            }
+                        }
+                    }
+                },
+                hint = countryPickerViewModel.getSelectedCountry.value,
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
@@ -112,11 +120,7 @@ fun LoginWithPhoneNumber() {
                         tint = Color.White
                     )
                 },
-                onValueChange = {
-                    loginWithPhoneViewModel.setCountryText(it)
-                    loginWithPhoneViewModel.setPhoneError(false)
-                },
-                value = loginWithPhoneViewModel.getCountryText.value,
+                value = countryPickerViewModel.getSelectedCountry.value,
                 isError = loginWithPhoneViewModel.getCountryError.value,
                 supportingText = {
                     if (loginWithPhoneViewModel.getCountryError.value) {
@@ -129,16 +133,19 @@ fun LoginWithPhoneNumber() {
             WooTextField(
                 hint = Strings.enterNumberText,
                 leadingIcon = {
-
                     Row(
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.height(Dimension.dimen_50)
+                        modifier = Modifier
+                            .height(Dimension.dimen_50)
+                            .clickable(onClick = {
+                                loginWithPhoneViewModel.setShowCountryPickerValue(true)
+                            })
                     ) {
                         HorizontalSpacer()
                         Text(
-                            text = "+81",
-                            style = MaterialTheme.typography.titleSmall,
+                            text = countryPickerViewModel.getSelectedCountryDialCode.value,
+                            style = MaterialTheme.typography.labelMedium,
                         )
                         HorizontalSpacer()
                         Box(
@@ -150,7 +157,6 @@ fun LoginWithPhoneNumber() {
 
                         )
                         HorizontalSpacer(Dimension.dimen_5)
-
                     }
                 },
                 onValueChange = {
@@ -210,7 +216,7 @@ fun LoginWithPhoneNumber() {
             CustomButton(
                 border = BorderStroke(1.dp,Color.White),
                 onClick = {
-             //       dateTimeViewModel.setDatePickerShowValue(value = UseCaseState())
+                    //       dateTimeViewModel.setDatePickerShowValue(value = UseCaseState())
                 },
                 content = {
                     Text(
@@ -244,6 +250,14 @@ fun LoginWithPhoneNumber() {
 
         }
     }
+    // Enabled Country Country When User Click On PhoneNumber TextField
+
+    if (loginWithPhoneViewModel.setShowCountryPicker.value) CountryPicker(onDismissRequest = {
+        loginWithPhoneViewModel.setShowCountryPickerValue(
+            false
+        )
+    },viewModel = loginWithPhoneViewModel)
+
 }
 
 @Composable

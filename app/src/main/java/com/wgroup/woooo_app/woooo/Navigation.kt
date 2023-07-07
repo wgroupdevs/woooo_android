@@ -1,8 +1,6 @@
 package com.wgroup.woooo_app.woooo
 
 import LoginView
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
@@ -21,6 +19,9 @@ import com.wgroup.woooo_app.woooo.feature.settings.views.application.AudioVideoV
 import com.wgroup.woooo_app.woooo.feature.settings.views.application.DisplayView
 import com.wgroup.woooo_app.woooo.feature.settings.views.application.LanguageView
 import com.wgroup.woooo_app.woooo.feature.settings.views.application.SoundAndVibrationView
+import com.wgroup.woooo_app.woooo.feature.wallet.views.SendCurrencyView
+import com.wgroup.woooo_app.woooo.feature.wallet.views.TransactionsView
+import com.wgroup.woooo_app.woooo.feature.wallet.views.WalletMainView
 
 @Destination
 @Composable
@@ -40,7 +41,7 @@ fun HomeScreen(navigator: DestinationsNavigator) {
 fun SignUpScreen(navigator: DestinationsNavigator) {
     SignUpView()
 }
-
+// setting views navigation
 @Destination
 @Composable
 fun SettingsScreen(navigator: DestinationsNavigator) {
@@ -107,22 +108,29 @@ fun MiningMainScreen(navigator: DestinationsNavigator) {
     MiningMainView(navigator)
 }
 
-
-
-@RequiresApi(Build.VERSION_CODES.O)
 @Destination
 @Composable
-fun  UpdateProfileMainScreen(navigator: DestinationsNavigator) {
+fun UpdateProfileMainScreen(navigator: DestinationsNavigator) {
     UpdateProfileView(navigator)
 }
 
+@Destination
+@Composable
+fun SendCurrencyMainScreen(navigator: DestinationsNavigator) {
+    SendCurrencyView(navigator)
+}
 
+@Destination
+@Composable
+fun TransactionMainScreen(navigator: DestinationsNavigator) {
+    TransactionsView(navigator)
+}
 
-
-
-
-
-
+@Destination
+@Composable
+fun WalletMainScreen(navigator: DestinationsNavigator) {
+    WalletMainView(navigator)
+}
 
 //@Destination
 //@Composable

@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.feature.wallet.viewmodel.SendCurrencyViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageSendCurrencyView
@@ -37,12 +38,10 @@ import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 
 @Composable
-fun SendCurrencyView() {
+fun SendCurrencyView(navigator: DestinationsNavigator) {
     val sendCurrencyViewModel: SendCurrencyViewModel = hiltViewModel()
     Column(horizontalAlignment = Alignment.CenterHorizontally,modifier = Modifier.padding(10.dp)) {
-        TopBarForSetting {
-
-        }
+        TopBarForSetting(onBackPressed = { navigator.popBackStack() })
         VerticalSpacer(Dimension.dimen_20)
         Image(
             modifier = Modifier

@@ -11,6 +11,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpViewModel @Inject constructor() : ViewModel() {
 
+
     // first name
     private val _setNameController = mutableStateOf("")
     val getNameController: State<String> = _setNameController
@@ -44,6 +45,13 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
     val getLastNameError: State<Boolean> = _setLastNameError
     fun setLastNameErrorValue(value: Boolean) {
         _setLastNameError.value = value
+    }
+
+    //  Show Country Picker
+    private val _getShowCountryPicker = mutableStateOf(false)
+    val setShowCountryPicker: State<Boolean> = _getShowCountryPicker
+    fun setShowCountryPickerValue(value: Boolean) {
+        _getShowCountryPicker.value = value
     }
 
 //    // error text

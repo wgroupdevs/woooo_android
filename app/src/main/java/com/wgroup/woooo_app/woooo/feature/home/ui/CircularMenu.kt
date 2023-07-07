@@ -23,6 +23,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.R
 import com.wgroup.woooo_app.woooo.destinations.DashboardScreenDestination
 import com.wgroup.woooo_app.woooo.destinations.MiningMainScreenDestination
+import com.wgroup.woooo_app.woooo.destinations.WalletMainScreenDestination
 import com.wgroup.woooo_app.woooo.feature.home.screen.initCircleTextOffset
 import com.wgroup.woooo_app.woooo.feature.home.viewmodel.CircularMenuViewModel
 import com.wgroup.woooo_app.woooo.theme.WooColor
@@ -176,6 +177,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                     }
                     scopeAntiClockWise.launch {
                         circularMenuViewModel.rotateMiddleCircleClockWise()
+                        navigator.navigate(WalletMainScreenDestination)
                     }
                 },
         ) {

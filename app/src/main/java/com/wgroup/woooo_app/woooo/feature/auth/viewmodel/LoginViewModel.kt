@@ -162,6 +162,14 @@ class LoginWithPhoneViewModel @Inject constructor() : ViewModel() {
         _setErrorText.value = value
     }
 
+    //  Show Country Picker
+    private val _getShowCountryPicker = mutableStateOf(false)
+    val setShowCountryPicker: State<Boolean> = _getShowCountryPicker
+    fun setShowCountryPickerValue(value: Boolean) {
+        _getShowCountryPicker.value = value
+    }
+
+
     fun validateEmailWithPhoneFields() {
         if (getCountryText.value.trim() == "") {
             setErrorText(Strings.slctCountry)
