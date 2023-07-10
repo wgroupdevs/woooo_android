@@ -23,9 +23,9 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.R
 import com.wgroup.woooo_app.woooo.destinations.DashboardScreenDestination
 import com.wgroup.woooo_app.woooo.destinations.MiningMainScreenDestination
-import com.wgroup.woooo_app.woooo.destinations.WalletMainScreenDestination
 import com.wgroup.woooo_app.woooo.feature.home.screen.initCircleTextOffset
 import com.wgroup.woooo_app.woooo.feature.home.viewmodel.CircularMenuViewModel
+import com.wgroup.woooo_app.woooo.feature.wallet.views.Wallet_Pin_Verify_Dialog
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import kotlinx.coroutines.launch
@@ -177,10 +177,19 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                     }
                     scopeAntiClockWise.launch {
                         circularMenuViewModel.rotateMiddleCircleClockWise()
-                        navigator.navigate(WalletMainScreenDestination)
+                        /// open verify dialog
+                        circularMenuViewModel.setOpenVerifyDialogValue(true)
+
                     }
                 },
         ) {
+            /// open verify dialog
+            if (circularMenuViewModel.getOpenVerifyDialog.value) {
+                Wallet_Pin_Verify_Dialog(navigator = navigator,
+                    onDismiss = { circularMenuViewModel.setOpenVerifyDialogValue(false) },
+                    viewModel = circularMenuViewModel,
+                    onBackClick = { circularMenuViewModel.setOpenVerifyDialogValue(false) })
+            }
             Image(
                 painter = wallet_text_active,
                 contentDescription = null,

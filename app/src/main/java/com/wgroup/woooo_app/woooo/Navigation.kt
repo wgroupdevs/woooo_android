@@ -26,11 +26,11 @@ import com.wgroup.woooo_app.woooo.feature.wallet.views.WalletMainView
 @Destination
 @Composable
 fun LoginScreen(navigator: DestinationsNavigator) {
-    LoginView()
+    LoginView(navigator)
 }
 
 @RootNavGraph(start = true)
-@Destination()
+@Destination
 @Composable
 fun HomeScreen(navigator: DestinationsNavigator) {
     HomePage(navigator = navigator)
@@ -39,8 +39,9 @@ fun HomeScreen(navigator: DestinationsNavigator) {
 @Destination
 @Composable
 fun SignUpScreen(navigator: DestinationsNavigator) {
-    SignUpView()
+    SignUpView(navigator)
 }
+
 // setting views navigation
 @Destination
 @Composable

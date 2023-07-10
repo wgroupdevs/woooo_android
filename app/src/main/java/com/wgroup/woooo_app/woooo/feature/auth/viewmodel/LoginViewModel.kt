@@ -61,6 +61,14 @@ class LoginViewModelWithEmail @Inject constructor(private val loginUseCase: Logi
         _setErrorText.value = value
     }
 
+    // change bool login with email to phone and vise versa
+
+    private val _setLoginWithEmail = mutableStateOf(false)
+    val getLoginWithEmail: State<Boolean> = _setLoginWithEmail
+    fun setLoginWithEmailValue(value: Boolean) {
+        _setLoginWithEmail.value = value
+    }
+
     // validate login with Email fields
     fun validateEmailPass(): Boolean {
         if (getEmailController.value.trim() == "") {
@@ -168,7 +176,6 @@ class LoginWithPhoneViewModel @Inject constructor() : ViewModel() {
     fun setShowCountryPickerValue(value: Boolean) {
         _getShowCountryPicker.value = value
     }
-
 
     fun validateEmailWithPhoneFields() {
         if (getCountryText.value.trim() == "") {

@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.R
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CountryPicker
@@ -50,7 +51,7 @@ import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 
 @Composable
-fun SignUpView() {
+fun SignUpView(navigator: DestinationsNavigator) {
     val signUpViewModel: SignUpViewModel = hiltViewModel()
     val countryPickerViewModel: CountryPickerViewModel = hiltViewModel()
     val context = LocalContext.current

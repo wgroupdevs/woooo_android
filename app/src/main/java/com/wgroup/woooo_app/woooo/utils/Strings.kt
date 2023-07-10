@@ -224,11 +224,12 @@ object Strings {
 //
 //    // wallet verify dialogue
 //
-//    "acsWalt"= "Access Your Wallet"
-//    "lgnWthFingre"= "Login With TouchID/Fingerprint"
-//    "frgtText"= "Forgot Pin"
-//    "vrfyText"= "Verify"
-//
+    var acsWalt = "Access Your Wallet"
+    var lgnWthFingre = "Login With TouchID/Fingerprint"
+    var frgtText = "Forgot Pin"
+    var vrfyText = "Verify"
+
+    //
 //    // wallet main view keys
 //
 //    "buyWoText"= "Buy Woooo"

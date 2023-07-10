@@ -1,4 +1,3 @@
-//import com.wgroup.woooo_app.woooo.shared.components.view_models.DateTimerPickerViewModel
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,18 +27,17 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.R
+import com.wgroup.woooo_app.woooo.destinations.SignUpScreenDestination
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginViewModelWithEmail
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CountryPicker
@@ -55,10 +53,10 @@ import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 
-@Preview
 @Composable
-fun LoginView() {
-    val withEmail by remember { mutableStateOf(false) }
+fun LoginView(navigator: DestinationsNavigator) {
+    val loginWithEmailViewModel: LoginViewModelWithEmail = hiltViewModel()
+    val loginWithPhoneViewModel: LoginWithPhoneViewModel = hiltViewModel()
 
 
     Box(
@@ -68,18 +66,24 @@ fun LoginView() {
 
         ) {
 
-        if (withEmail) {
-            LoginWithEmail()
+        if (loginWithEmailViewModel.getLoginWithEmail.value) {
+            LoginWithEmail(navigator = navigator)
         } else {
-            LoginWithPhoneNumber()
+            LoginWithPhoneNumber(
+                navigator = navigator,
+                loginWithEmailViewModel = loginWithEmailViewModel,
+                loginWithPhoneViewModel = loginWithPhoneViewModel
+            )
         }
     }
 }
 
 @Composable
-fun LoginWithPhoneNumber() {
-    val loginWithEmailViewModel: LoginViewModelWithEmail = hiltViewModel()
-    val loginWithPhoneViewModel: LoginWithPhoneViewModel = hiltViewModel()
+fun LoginWithPhoneNumber(
+    navigator: DestinationsNavigator,
+    loginWithEmailViewModel: LoginViewModelWithEmail,
+    loginWithPhoneViewModel: LoginWithPhoneViewModel
+) {
     val countryPickerViewModel: CountryPickerViewModel = hiltViewModel()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -101,7 +105,8 @@ fun LoginWithPhoneNumber() {
             VerticalSpacer(Dimension.dimen_25)
 
             // Country picker
-            WooTextField(readOnly = true,
+            WooTextField(
+                readOnly = true,
                 interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->
                     LaunchedEffect(interactionSource) {
                         interactionSource.interactions.collect {
@@ -195,6 +200,24 @@ fun LoginWithPhoneNumber() {
                 },
                 obscusePass = loginWithEmailViewModel.getEyeForPassword.value
             )
+            // forgot text
+            Box(
+                modifier = Modifier
+                    .align(alignment = Alignment.Start)
+                    .padding(start = Dimension.dimen_5)
+            ) {
+                TextButton(
+
+                    onClick = { },contentPadding = PaddingValues(0.dp)
+
+                ) {
+                    Text(
+                        text = Strings.forgotText,
+                        style = MaterialTheme.typography.labelSmall.copy(color = WooColor.white)
+                    )
+                }
+            }
+
             VerticalSpacer(Dimension.dimen_30)
             // login button
             CustomButton(
@@ -216,7 +239,7 @@ fun LoginWithPhoneNumber() {
             CustomButton(
                 border = BorderStroke(1.dp,Color.White),
                 onClick = {
-                    //       dateTimeViewModel.setDatePickerShowValue(value = UseCaseState())
+                    loginWithEmailViewModel.setLoginWithEmailValue(!loginWithEmailViewModel.getLoginWithEmail.value)
                 },
                 content = {
                     Text(
@@ -227,26 +250,17 @@ fun LoginWithPhoneNumber() {
                 },
             )
 
-            // forgot text
-            TextButton(onClick = { }) {
-                Text(text = Strings.forgotText,style = MaterialTheme.typography.displaySmall)
-            }
             Spacer(modifier = Modifier.weight(1f))
 
             //  last Button
-            CustomButton(
-                border = BorderStroke(1.dp,Color.White),
+
+            TextButton(
                 onClick = {
-//                    print("${dateTimeViewModel.getDatePickerShow.show()}" + "uhwslckalksnciodc")
-                },
-                content = {
-                    Text(
-                        text = Strings.dontHaveAcntText,
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                    )
-                },
-            )
+                    navigator.navigate(SignUpScreenDestination)
+                },contentPadding = PaddingValues(0.dp)
+            ) {
+                Text(text = Strings.dontHaveAcntText,style = MaterialTheme.typography.labelLarge)
+            }
 
         }
     }
@@ -261,7 +275,7 @@ fun LoginWithPhoneNumber() {
 }
 
 @Composable
-fun LoginWithEmail() {
+fun LoginWithEmail(navigator: DestinationsNavigator) {
     val loginWithEmailViewModel: LoginViewModelWithEmail = hiltViewModel()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -367,7 +381,7 @@ fun LoginWithEmail() {
             VerticalSpacer(Dimension.dimen_15)       //  Login With Phone Button
             CustomButton(
                 border = BorderStroke(1.dp,Color.White),
-                onClick = {},
+                onClick = { loginWithEmailViewModel.setLoginWithEmailValue(!loginWithEmailViewModel.getLoginWithEmail.value) },
                 content = {
                     Text(
                         text = Strings.LogWithPhoneText,
@@ -381,7 +395,7 @@ fun LoginWithEmail() {
         }
         TextButton(
             onClick = {
-//                datePickerDialog.show()
+                navigator.navigate(SignUpScreenDestination)
             },contentPadding = PaddingValues(0.dp)
         ) {
             Text(text = Strings.dontHaveAcntText,style = MaterialTheme.typography.labelLarge)

@@ -27,7 +27,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.R
+import com.wgroup.woooo_app.woooo.destinations.LoginScreenDestination
 import com.wgroup.woooo_app.woooo.destinations.SettingsScreenDestination
+import com.wgroup.woooo_app.woooo.destinations.SignUpScreenDestination
 import com.wgroup.woooo_app.woooo.destinations.UpdateProfileMainScreenDestination
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
@@ -123,7 +125,7 @@ fun AppDrawer(
                         tint = WooColor.white
                     )
                 },onClick = {
-                    navigator.navigate(SettingsScreenDestination)
+                    navigator.navigate(LoginScreenDestination)
                 })
         }
 
