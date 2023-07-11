@@ -125,7 +125,7 @@
         </receiver>
 
         <activity
-            android:name="com.wgroup.woooo_app.MainActivity"
+            android:name="woooo_app.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             >

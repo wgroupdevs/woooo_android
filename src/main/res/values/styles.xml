@@ -1,42 +1,54 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 
     <style name="TextAppearance.Conversations.Display2.Monospace" parent="TextAppearance.Conversations.Display2">
-        <item name="android:fontFamily" tools:targetApi="jelly_bean">monospace</item>
+        <item name="android:fontFamily" tools:targetApi="jelly_bean">@font/nasalization</item>
         <item name="android:typeface">monospace</item>
     </style>
 
     <style name="TextAppearance.Conversations.Title.Monospace" parent="TextAppearance.Conversations.Title">
-        <item name="android:fontFamily" tools:targetApi="jelly_bean">monospace</item>
+        <item name="android:fontFamily" tools:targetApi="jelly_bean">@font/nasalization</item>
         <item name="android:typeface">monospace</item>
     </style>
 
     <style name="TextAppearance.Conversations.Display2" parent="TextAppearance.AppCompat.Display2">
         <item name="android:textSize">?TextSizeDisplay2</item>
+        <item name="android:fontFamily">@font/nasalization</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="TextAppearance.Conversations.Title" parent="TextAppearance.AppCompat.Title">
         <item name="android:textSize">?TextSizeTitle</item>
+        <item name="android:fontFamily">@font/nasalization</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="TextAppearance.Conversations.Subhead" parent="TextAppearance.AppCompat.Subhead">
         <item name="android:textSize">?TextSizeSubhead</item>
+        <item name="android:fontFamily">@font/nasalization</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="TextAppearance.Conversations.Subhead.Bold" parent="TextAppearance.Conversations.Subhead">
         <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/nasalization</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="TextAppearance.Conversations.Subhead.Bold.Secondary" parent="TextAppearance.Conversations.Subhead.Bold">
-        <item name="android:textColor">?android:textColorSecondary</item>
+        <item name="android:fontFamily">@font/nasalization</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="TextAppearance.Conversations.Body2" parent="TextAppearance.AppCompat.Body2">
         <item name="android:textSize">?TextSizeBody2</item>
+        <item name="android:fontFamily">@font/nasalization</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="TextAppearance.Conversations.Body1" parent="TextAppearance.AppCompat.Body1">
         <item name="android:textSize">?TextSizeBody1</item>
-        <item name="android:textColorLink">?android:textColorPrimary</item>
+        <item name="android:fontFamily">@font/nasalization</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="TextAppearance.Conversations.Body1.Warning" parent="TextAppearance.AppCompat.Body1">
@@ -53,9 +65,12 @@
 
     <style name="Widget.Conversations.EditText" parent="Widget.AppCompat.EditText">
         <item name="android:textSize">?TextSizeInput</item>
+        <item name="android:fontFamily">@font/nasalization</item>
+        <item name="android:textColor">@color/white</item>
     </style>
 
     <style name="Widget.Conversations.SearchView" parent="Widget.Conversations.EditText">
+        <item name="android:fontFamily">@font/nasalization</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textColorHint">@color/white70</item>
         <item name="android:background">@android:color/transparent</item>

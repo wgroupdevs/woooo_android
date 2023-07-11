@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app
+package woooo_app
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -13,7 +13,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.wgroup.woooo_app.woooo.NavGraphs
 import com.wgroup.woooo_app.woooo.shared.components.view_models.CountryPickerViewModel
-import com.wgroup.woooo_app.woooo.theme.Woooo_androidTheme
+import woooo_app.woooo.theme.Woooo_androidTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -393,7 +393,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         View viewCustom = LayoutInflater.from(this).inflate(R.layout.center_nav_button, bottomMenuView, false);
         itemView.addView(viewCustom);
         viewCustom.setOnClickListener(v -> {
-
+            finish();
         });
 
         configureActionBar(getSupportActionBar());
