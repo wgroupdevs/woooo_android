@@ -1,6 +1,7 @@
 package eu.siacs.conversations.ui.adapter;
 
 import android.graphics.Typeface;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,7 @@ public class ConversationAdapter
     private final List<Conversation> conversations;
     private OnConversationClickListener listener;
 
+    private final  String TAG="ConversationAdapter";
     public ConversationAdapter(XmppActivity activity, List<Conversation> conversations) {
         this.activity = activity;
         this.conversations = conversations;
@@ -45,6 +47,9 @@ public class ConversationAdapter
     @NonNull
     @Override
     public ConversationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
+        Log.d(TAG,"onCreateViewHolder Called");
+
         return new ConversationViewHolder(
                 DataBindingUtil.inflate(
                         LayoutInflater.from(parent.getContext()),

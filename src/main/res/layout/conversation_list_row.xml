@@ -62,6 +62,7 @@
                             android:layout_alignParentLeft="true"
                             android:text="@string/me"
                             android:layout_marginRight="?attr/TextSeparation"
+                            android:fontFamily="@font/nasalization"
                             android:textAppearance="@style/TextAppearance.Conversations.Body1.Secondary"
                             android:visibility="visible" />
 
