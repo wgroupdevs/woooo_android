@@ -14,6 +14,7 @@ import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginViewModelWithEmail
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.VerifyOtpViewModel
+import com.wgroup.woooo_app.woooo.feature.profile.viewmodels.UpdateProfileViewModel
 import com.wgroup.woooo_app.woooo.feature.wallet.viewmodel.SendCurrencyViewModel
 import com.wgroup.woooo_app.woooo.utils.Dimension
 
@@ -71,5 +72,12 @@ fun ErrorMessageSendCurrencyView() {
     val sendCurrencyViewModel: SendCurrencyViewModel = hiltViewModel()
     Text(
         text = sendCurrencyViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
+    )
+}
+@Composable
+fun ErrorMessageUpdateProfileView() {
+    val updateProfileViewModel: UpdateProfileViewModel = hiltViewModel()
+    Text(
+        text = updateProfileViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
     )
 }

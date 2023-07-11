@@ -49,6 +49,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.wgroup.woooo_app.woooo.destinations.SendCurrencyMainScreenDestination
+import com.wgroup.woooo_app.woooo.destinations.TransactionMainScreenDestination
 import com.wgroup.woooo_app.woooo.feature.wallet.viewmodel.WalletMainViewViewModel
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
@@ -57,7 +60,7 @@ import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 
 @Composable
-fun WalletMainView() {
+fun WalletMainView(navigator: DestinationsNavigator) {
     val walletMainViewModel: WalletMainViewViewModel = hiltViewModel()
 
     Column(
@@ -97,8 +100,7 @@ fun WalletMainView() {
 //                    shape = RoundedCornerShape(5.dp)
 //                )
                 .border(
-                    BorderStroke(1.dp,WooColor.white),
-                    shape = RoundedCornerShape(10.dp)
+                    BorderStroke(1.dp,WooColor.white),shape = RoundedCornerShape(10.dp)
                 )
                 .fillMaxWidth(0.5f)
                 .padding(10.dp)
@@ -136,6 +138,13 @@ fun WalletMainView() {
         ) {
 
             Row(
+                modifier = Modifier.clickable(
+                    onClick = {
+                        navigator.navigate(
+                            TransactionMainScreenDestination
+                        )
+                    }
+                ),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(text = Strings.trnscetgText)
@@ -169,6 +178,11 @@ fun WalletMainView() {
             items(count = listItems.size,itemContent = {
 
                 ListItem(modifier = Modifier
+                    .clickable(onClick = {
+                        navigator.navigate(
+                            SendCurrencyMainScreenDestination
+                        )
+                    })
                     .padding(5.dp)
                     .padding(start = 10.dp,end = 10.dp)
                     .border(

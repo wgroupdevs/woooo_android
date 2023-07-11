@@ -75,7 +75,7 @@
 
 
     <application
-        android:name="woooo_app.woooo.di.WooApplication"
+        android:name="com.wgroup.woooo_app.woooo.di.WooApplication"
         android:allowBackup="true"
         android:appCategory="social"
         android:fullBackupContent="@xml/backup_content"
@@ -125,7 +125,7 @@
         </receiver>
 
         <activity
-            android:name="woooo_app.MainActivity"
+            android:name="com.wgroup.woooo_app.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             >

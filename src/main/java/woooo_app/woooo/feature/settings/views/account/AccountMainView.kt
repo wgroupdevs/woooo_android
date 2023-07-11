@@ -16,6 +16,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.wgroup.woooo_app.woooo.destinations.PrivacyMainScreenDestination
+import com.wgroup.woooo_app.woooo.destinations.SecurityMainScreenDestination
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.theme.WooColor
@@ -43,11 +45,9 @@ fun AccountMainView(navigator: DestinationsNavigator) {
                         imageVector = Icons.Outlined.Lock,contentDescription = "",
                     )
                 },
-                title = Strings.privacyText,onClick = {
-//                    navigator.navigate(
-//                    PrivacyMainScreenDestination
-//                )
-                                                      },
+                title = Strings.privacyText,onClick = {navigator.navigate(
+                    PrivacyMainScreenDestination
+                )},
             )
             CustomListTile(leadingIcon = {
                 Icon(
@@ -55,11 +55,9 @@ fun AccountMainView(navigator: DestinationsNavigator) {
                         36.dp
                     ),imageVector = Icons.Outlined.Security,contentDescription = ""
                 )
-            },title = Strings.securityText,onClick = {
-//                navigator.navigate(
-//                SecurityMainScreenDestination
-//            )
-            })
+            },title = Strings.securityText,onClick = {navigator.navigate(
+                SecurityMainScreenDestination
+            )})
             CustomListTile(leadingIcon = {
                 Icon(
                     tint = WooColor.white,

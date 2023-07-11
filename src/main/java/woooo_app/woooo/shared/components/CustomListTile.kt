@@ -24,9 +24,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
+import woooo_app.woooo.shared.components.ViewDivider
 
 @Composable
 fun CustomListTile(
@@ -91,7 +91,7 @@ fun TopBarForSetting(
                             .padding(end = 10.dp)
                             .clickable(onClick = onBackPressed)
             )
-            HorizontalSpacer(Dimension.dimen_5)
+//            HorizontalSpacer(Dimension.dimen_5)
             OutlinedTextField(
                 textStyle = MaterialTheme.typography.labelMedium.copy(color = WooColor.white),
                 onValueChange = onValueChange,

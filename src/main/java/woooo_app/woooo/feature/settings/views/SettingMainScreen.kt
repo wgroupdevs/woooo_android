@@ -15,6 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.wgroup.woooo_app.woooo.destinations.AccountMainScreenDestination
+import com.wgroup.woooo_app.woooo.destinations.ApplicationMainScreenDestination
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
@@ -43,7 +45,7 @@ fun SettingMainView(navigator: DestinationsNavigator) {
             },
             title = Strings.appText,
             onClick = {
-//                navigator.navigate(ApplicationMainScreenDestination)
+                navigator.navigate(ApplicationMainScreenDestination)
             },
         )
         CustomListTile(
@@ -55,9 +57,7 @@ fun SettingMainView(navigator: DestinationsNavigator) {
                 )
             },
             title = Strings.accountText,
-            onClick = {
-//                navigator.navigate(AccountMainScreenDestination)
-            })
+            onClick = { navigator.navigate(AccountMainScreenDestination) })
         CustomListTile(leadingIcon = {
             Icon(
                 tint = WooColor.white,

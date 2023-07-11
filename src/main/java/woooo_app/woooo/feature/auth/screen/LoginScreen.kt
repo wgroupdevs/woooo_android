@@ -2,6 +2,8 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,19 +26,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.wgroup.woooo_app.woooo.destinations.SignUpScreenDestination
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginViewModelWithEmail
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
+import com.wgroup.woooo_app.woooo.shared.components.CountryPicker
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.CustomDivider
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageForLoginWithEmail
@@ -44,17 +47,16 @@ import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageLoginWithPhone
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
-//import com.wgroup.woooo_app.woooo.shared.components.view_models.DateTimerPickerViewModel
+import com.wgroup.woooo_app.woooo.shared.components.view_models.CountryPickerViewModel
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
 
-
-@Preview
 @Composable
-fun LoginView() {
-    val withEmail by remember { mutableStateOf(false) }
+fun LoginView(navigator: DestinationsNavigator) {
+    val loginWithEmailViewModel: LoginViewModelWithEmail = hiltViewModel()
+    val loginWithPhoneViewModel: LoginWithPhoneViewModel = hiltViewModel()
 
 
     Box(
@@ -64,22 +66,25 @@ fun LoginView() {
 
         ) {
 
-        if (withEmail) {
-            LoginWithEmail()
+        if (loginWithEmailViewModel.getLoginWithEmail.value) {
+            LoginWithEmail(navigator = navigator)
         } else {
-            LoginWithPhoneNumber()
+            LoginWithPhoneNumber(
+                navigator = navigator,
+                loginWithEmailViewModel = loginWithEmailViewModel,
+                loginWithPhoneViewModel = loginWithPhoneViewModel
+            )
         }
     }
 }
 
-
 @Composable
-fun LoginWithPhoneNumber() {
-
-    val loginWithEmailViewModel: LoginViewModelWithEmail = hiltViewModel()
-//    val dateTimeViewModel: DateTimerPickerViewModel = hiltViewModel()
-    val loginWithPhoneViewModel: LoginWithPhoneViewModel = hiltViewModel()
-
+fun LoginWithPhoneNumber(
+    navigator: DestinationsNavigator,
+    loginWithEmailViewModel: LoginViewModelWithEmail,
+    loginWithPhoneViewModel: LoginWithPhoneViewModel
+) {
+    val countryPickerViewModel: CountryPickerViewModel = hiltViewModel()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -101,7 +106,18 @@ fun LoginWithPhoneNumber() {
 
             // Country picker
             WooTextField(
-                hint = "Japan",
+                readOnly = true,
+                interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->
+                    LaunchedEffect(interactionSource) {
+                        interactionSource.interactions.collect {
+                            if (it is PressInteraction.Release) {
+//                                open date picker
+                                loginWithPhoneViewModel.setShowCountryPickerValue(true)
+                            }
+                        }
+                    }
+                },
+                hint = countryPickerViewModel.getSelectedCountry.value,
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.Default.ArrowDropDown,
@@ -109,11 +125,7 @@ fun LoginWithPhoneNumber() {
                         tint = Color.White
                     )
                 },
-                onValueChange = {
-                    loginWithPhoneViewModel.setCountryText(it)
-                    loginWithPhoneViewModel.setPhoneError(false)
-                },
-                value = loginWithPhoneViewModel.getCountryText.value,
+                value = countryPickerViewModel.getSelectedCountry.value,
                 isError = loginWithPhoneViewModel.getCountryError.value,
                 supportingText = {
                     if (loginWithPhoneViewModel.getCountryError.value) {
@@ -126,16 +138,19 @@ fun LoginWithPhoneNumber() {
             WooTextField(
                 hint = Strings.enterNumberText,
                 leadingIcon = {
-
                     Row(
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.height(Dimension.dimen_50)
+                        modifier = Modifier
+                            .height(Dimension.dimen_50)
+                            .clickable(onClick = {
+                                loginWithPhoneViewModel.setShowCountryPickerValue(true)
+                            })
                     ) {
                         HorizontalSpacer()
                         Text(
-                            text = "+81",
-                            style = MaterialTheme.typography.titleSmall,
+                            text = countryPickerViewModel.getSelectedCountryDialCode.value,
+                            style = MaterialTheme.typography.labelMedium,
                         )
                         HorizontalSpacer()
                         Box(
@@ -147,7 +162,6 @@ fun LoginWithPhoneNumber() {
 
                         )
                         HorizontalSpacer(Dimension.dimen_5)
-
                     }
                 },
                 onValueChange = {
@@ -186,6 +200,24 @@ fun LoginWithPhoneNumber() {
                 },
                 obscusePass = loginWithEmailViewModel.getEyeForPassword.value
             )
+            // forgot text
+            Box(
+                modifier = Modifier
+                    .align(alignment = Alignment.Start)
+                    .padding(start = Dimension.dimen_5)
+            ) {
+                TextButton(
+
+                    onClick = { },contentPadding = PaddingValues(0.dp)
+
+                ) {
+                    Text(
+                        text = Strings.forgotText,
+                        style = MaterialTheme.typography.labelSmall.copy(color = WooColor.white)
+                    )
+                }
+            }
+
             VerticalSpacer(Dimension.dimen_30)
             // login button
             CustomButton(
@@ -207,7 +239,7 @@ fun LoginWithPhoneNumber() {
             CustomButton(
                 border = BorderStroke(1.dp,Color.White),
                 onClick = {
-             //       dateTimeViewModel.setDatePickerShowValue(value = UseCaseState())
+                    loginWithEmailViewModel.setLoginWithEmailValue(!loginWithEmailViewModel.getLoginWithEmail.value)
                 },
                 content = {
                     Text(
@@ -218,33 +250,32 @@ fun LoginWithPhoneNumber() {
                 },
             )
 
-            // forgot text
-            TextButton(onClick = { }) {
-                Text(text = Strings.forgotText,style = MaterialTheme.typography.displaySmall)
-            }
             Spacer(modifier = Modifier.weight(1f))
 
             //  last Button
-            CustomButton(
-                border = BorderStroke(1.dp,Color.White),
+
+            TextButton(
                 onClick = {
-//                    print("${dateTimeViewModel.getDatePickerShow.show()}" + "uhwslckalksnciodc")
-                },
-                content = {
-                    Text(
-                        text = Strings.dontHaveAcntText,
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                    )
-                },
-            )
+                    navigator.navigate(SignUpScreenDestination)
+                },contentPadding = PaddingValues(0.dp)
+            ) {
+                Text(text = Strings.dontHaveAcntText,style = MaterialTheme.typography.labelLarge)
+            }
 
         }
     }
+    // Enabled Country Country When User Click On PhoneNumber TextField
+
+    if (loginWithPhoneViewModel.setShowCountryPicker.value) CountryPicker(onDismissRequest = {
+        loginWithPhoneViewModel.setShowCountryPickerValue(
+            false
+        )
+    },viewModel = loginWithPhoneViewModel)
+
 }
 
 @Composable
-fun LoginWithEmail() {
+fun LoginWithEmail(navigator: DestinationsNavigator) {
     val loginWithEmailViewModel: LoginViewModelWithEmail = hiltViewModel()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
@@ -350,7 +381,7 @@ fun LoginWithEmail() {
             VerticalSpacer(Dimension.dimen_15)       //  Login With Phone Button
             CustomButton(
                 border = BorderStroke(1.dp,Color.White),
-                onClick = {},
+                onClick = { loginWithEmailViewModel.setLoginWithEmailValue(!loginWithEmailViewModel.getLoginWithEmail.value) },
                 content = {
                     Text(
                         text = Strings.LogWithPhoneText,
@@ -364,7 +395,7 @@ fun LoginWithEmail() {
         }
         TextButton(
             onClick = {
-//                datePickerDialog.show()
+                navigator.navigate(SignUpScreenDestination)
             },contentPadding = PaddingValues(0.dp)
         ) {
             Text(text = Strings.dontHaveAcntText,style = MaterialTheme.typography.labelLarge)

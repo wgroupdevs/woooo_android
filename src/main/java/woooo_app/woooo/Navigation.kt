@@ -1,13 +1,15 @@
-package woooo_app.woooo
+package com.wgroup.woooo_app.woooo
 
 import LoginView
 import androidx.compose.runtime.Composable
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.wgroup.woooo_app.woooo.feature.auth.screen.SignUpView
+import woooo_app.woooo.feature.auth.screen.SignUpView
 import com.wgroup.woooo_app.woooo.feature.home.screen.DashboardView
 import com.wgroup.woooo_app.woooo.feature.home.screen.HomePage
+import com.wgroup.woooo_app.woooo.feature.mining.views.MiningMainView
+import com.wgroup.woooo_app.woooo.feature.profile.views.UpdateProfileView
 import com.wgroup.woooo_app.woooo.feature.settings.views.ApplicationMainView
 import com.wgroup.woooo_app.woooo.feature.settings.views.SettingMainView
 import com.wgroup.woooo_app.woooo.feature.settings.views.account.AccountMainView
@@ -17,15 +19,18 @@ import com.wgroup.woooo_app.woooo.feature.settings.views.application.AudioVideoV
 import com.wgroup.woooo_app.woooo.feature.settings.views.application.DisplayView
 import com.wgroup.woooo_app.woooo.feature.settings.views.application.LanguageView
 import com.wgroup.woooo_app.woooo.feature.settings.views.application.SoundAndVibrationView
+import com.wgroup.woooo_app.woooo.feature.wallet.views.SendCurrencyView
+import com.wgroup.woooo_app.woooo.feature.wallet.views.TransactionsView
+import com.wgroup.woooo_app.woooo.feature.wallet.views.WalletMainView
 
 @Destination
 @Composable
 fun LoginScreen(navigator: DestinationsNavigator) {
-    LoginView()
+    LoginView(navigator)
 }
 
 @RootNavGraph(start = true)
-@Destination()
+@Destination
 @Composable
 fun HomeScreen(navigator: DestinationsNavigator) {
     HomePage(navigator = navigator)
@@ -34,9 +39,10 @@ fun HomeScreen(navigator: DestinationsNavigator) {
 @Destination
 @Composable
 fun SignUpScreen(navigator: DestinationsNavigator) {
-    SignUpView()
+    SignUpView(navigator)
 }
 
+// setting views navigation
 @Destination
 @Composable
 fun SettingsScreen(navigator: DestinationsNavigator) {
@@ -97,13 +103,35 @@ fun LanguageMainScreen(navigator: DestinationsNavigator) {
     LanguageView(navigator)
 }
 
+@Destination
+@Composable
+fun MiningMainScreen(navigator: DestinationsNavigator) {
+    MiningMainView(navigator)
+}
 
+@Destination
+@Composable
+fun UpdateProfileMainScreen(navigator: DestinationsNavigator) {
+    UpdateProfileView(navigator)
+}
 
+@Destination
+@Composable
+fun SendCurrencyMainScreen(navigator: DestinationsNavigator) {
+    SendCurrencyView(navigator)
+}
 
+@Destination
+@Composable
+fun TransactionMainScreen(navigator: DestinationsNavigator) {
+    TransactionsView(navigator)
+}
 
-
-
-
+@Destination
+@Composable
+fun WalletMainScreen(navigator: DestinationsNavigator) {
+    WalletMainView(navigator)
+}
 
 //@Destination
 //@Composable

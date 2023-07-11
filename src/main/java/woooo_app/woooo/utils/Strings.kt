@@ -62,8 +62,9 @@ object Strings {
     var chatText = "Chat"
 
     //
-var  meetingText= "Meeting"
-//
+    var meetingText = "Meeting"
+
+    //
     var callText = "Call"
 
     var walletText = "Wallet"
@@ -186,8 +187,9 @@ var  meetingText= "Meeting"
 //    "chngNmeText"= "Change Name"
 //    "chngGrpNmeText"= "Change Group Name"
 //    "entrNewNameText"= "Enter New Name"
-//    "saveText"= "Save"
-//
+    var saveText = "Save"
+
+    //
 //    // new group view
 //
 //    "createNewGroupText"= "Create Group"
@@ -208,23 +210,26 @@ var  meetingText= "Meeting"
     var D6 = "Day 6"
     var D7 = "Day 7"
 
-    var collectText= "Collect"
-//    "collectedText"= "Collected"
-var claimAssetText= "Complete 7 day's to claim woo Asset"
-var timeLeftText= "Time Left"
-var mHstryText= "Mining History"
-//
+    var collectText = "Collect"
+
+    //    "collectedText"= "Collected"
+    var claimAssetText = "Complete 7 day's to claim woo Asset"
+    var timeLeftText = "Time Left"
+    var mHstryText = "Mining History"
+
+    //
 //    // call main view keys
 //
 //    "clLogsText"= "Call Logs"
 //
 //    // wallet verify dialogue
 //
-//    "acsWalt"= "Access Your Wallet"
-//    "lgnWthFingre"= "Login With TouchID/Fingerprint"
-//    "frgtText"= "Forgot Pin"
-//    "vrfyText"= "Verify"
-//
+    var acsWalt = "Access Your Wallet"
+    var lgnWthFingre = "Login With TouchID/Fingerprint"
+    var frgtText = "Forgot Pin"
+    var vrfyText = "Verify"
+
+    //
 //    // wallet main view keys
 //
 //    "buyWoText"= "Buy Woooo"
@@ -263,14 +268,18 @@ var mHstryText= "Mining History"
 //    // profile update view keys
 //
     var abtText = "About"
+    var enterAboutText = "Enter About Your Self"
 
-    //    "dobText"= "Date Of Birth"
+    var dobTex = "Date Of Birth"
+    var enterDobTex = "Enter Your Date Of Birth"
     var lanText = "Language"
 
     //    "ctyText"= "City"
 //    "stateText"= "State"
-//    "pstlCodeText"= "Postal Code"
-//    "cntryText"= "Country"
+    var pstlCodeText = "Postal Code"
+    var entrPstlCodeText = " Enter Postal Code"
+
+    //    "cntryText"= "Country"
 //
 //    // meeting main view keys
 //

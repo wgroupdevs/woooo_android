@@ -15,6 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.wgroup.woooo_app.woooo.destinations.AudioVideoMainScreenDestination
+import com.wgroup.woooo_app.woooo.destinations.DisplayMainScreenDestination
+import com.wgroup.woooo_app.woooo.destinations.LanguageMainScreenDestination
+import com.wgroup.woooo_app.woooo.destinations.SoundAndVibrationMainScreenDestination
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.theme.WooColor
@@ -49,7 +53,7 @@ fun ApplicationMainView(navigator: DestinationsNavigator) {
                 },
                 title = Strings.soundText,
                 onClick = {
-//                    navigator.navigate(SoundAndVibrationMainScreenDestination)
+                    navigator.navigate(SoundAndVibrationMainScreenDestination)
                 },
             )
             CustomListTile(leadingIcon = {
@@ -59,7 +63,7 @@ fun ApplicationMainView(navigator: DestinationsNavigator) {
                     ),imageVector = Icons.Outlined.WbSunny,contentDescription = ""
                 )
             },title = Strings.displyText,onClick = {
-//                navigator.navigate(DisplayMainScreenDestination)
+                navigator.navigate(DisplayMainScreenDestination)
             })
             CustomListTile(leadingIcon = {
                 Icon(
@@ -70,9 +74,9 @@ fun ApplicationMainView(navigator: DestinationsNavigator) {
                     ),imageVector = Icons.Outlined.Mic,contentDescription = ""
                 )
             },title = Strings.audioVideoText,onClick = {
-//                navigator.navigate(
-//                    AudioVideoMainScreenDestination
-//                )
+                navigator.navigate(
+                    AudioVideoMainScreenDestination
+                )
             })
             CustomListTile(leadingIcon = {
                 Icon(
@@ -84,10 +88,7 @@ fun ApplicationMainView(navigator: DestinationsNavigator) {
                 )
             },
                 title = Strings.lanText,
-                onClick = {
-//                    navigator.navigate(LanguageMainScreenDestination)
-
-                })
+                onClick = { navigator.navigate(LanguageMainScreenDestination) })
         }
     }
 }

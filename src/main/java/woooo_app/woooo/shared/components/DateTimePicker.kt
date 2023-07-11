@@ -1,10 +1,7 @@
 package com.wgroup.woooo_app.woooo.shared.components
 
-import android.graphics.drawable.shapes.Shape
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,7 +15,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.marosseleng.compose.material3.datetimepickers.date.domain.DatePickerDefaults
-import com.marosseleng.compose.material3.datetimepickers.date.domain.DatePickerShapes
 import com.marosseleng.compose.material3.datetimepickers.date.ui.dialog.DatePickerDialog
 import com.marosseleng.compose.material3.datetimepickers.time.domain.TimePickerDefaults
 import com.marosseleng.compose.material3.datetimepickers.time.domain.TimePickerStroke
@@ -32,21 +28,16 @@ import java.time.LocalTime
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun CustomDateTimePicker() {
-
-    val dateTimePickerViewModel: DateTimerPickerViewModel = hiltViewModel()
-
+fun CustomDateTimePicker(
+    onDateChange: (LocalDate) -> Unit = {},
+) {
     DatePickerDialog(
         modifier = Modifier
             .clip(RoundedCornerShape(10.dp))
             .alpha(0.7f),
-        containerColor = WooColor.dark,
+        containerColor = WooColor.primary,
         onDismissRequest = { },
-        onDateChange = {
-            val date = LocalDate.parse(it.toString())
-            dateTimePickerViewModel.setDateTextValue(date)
-            dateTimePickerViewModel.setDateDialogueValue(false)
-        },
+        onDateChange = onDateChange,
         buttonColors = ButtonDefaults.textButtonColors(
             contentColor = WooColor.dark,
         ),

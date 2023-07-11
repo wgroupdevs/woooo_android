@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.CustomDivider
 import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
@@ -31,7 +32,7 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
 
 @Composable
-fun TransactionsView() {
+fun TransactionsView(navigator: DestinationsNavigator) {
 
     data class DataClass(
         val name: String = "Danish",val img: Int,val title: String,val titlee: String
@@ -39,137 +40,128 @@ fun TransactionsView() {
 
     fun inputData(): MutableList<DataClass> {
         val list = mutableListOf<DataClass>()
-        list.add(
-            DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
-            )
-        )
-        list.add(
-            DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
-            )
-        )
-        list.add(
-            DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
-            )
-        )
-        list.add(
-            DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
-            )
-        )
-        list.add(
-            DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
-            )
-        )
-        list.add(
-            DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
-            )
-        )
-        list.add(
-            DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
-            )
-        )
-        list.add(
-            DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
-            )
-        )
-        list.add(
-            DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
-            )
-        )
-        list.add(
-            DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
-            )
-        )
-        list.add(
-            DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
-            )
-        )
-        list.add(
-            DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
-            )
-        )
-        list.add(
-            DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
-            )
-        )
-        list.add(
-            DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
-            )
-        )
-        list.add(
-            DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
-            )
-        )
-        list.add(
-            DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
-            )
-        )
-        list.add(
 
-            DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
-            )
-        )
         list.add(
             DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
+                name = "10-Dec-20",img = R.drawable.woooo_logo,title = "Login",titlee = "0.004"
             )
         )
-        list.add(
+
+         list.add(
             DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
+                name = "10-Dec-20",img = R.drawable.woooo_logo,title = "Login",titlee = "0.004"
             )
         )
-        list.add(
+
+         list.add(
             DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
+                name = "10-Dec-20",img = R.drawable.woooo_logo,title = "Login",titlee = "0.004"
             )
         )
-        list.add(
+
+         list.add(
             DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
+                name = "10-Dec-20",img = R.drawable.woooo_logo,title = "Login",titlee = "0.004"
             )
         )
-        list.add(
+
+         list.add(
             DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
+                name = "10-Dec-20",img = R.drawable.woooo_logo,title = "Login",titlee = "0.004"
             )
         )
-        list.add(
+
+         list.add(
             DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
+                name = "10-Dec-20",img = R.drawable.woooo_logo,title = "Login",titlee = "0.004"
             )
         )
-        list.add(
+
+         list.add(
             DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
+                name = "10-Dec-20",img = R.drawable.woooo_logo,title = "Login",titlee = "0.004"
             )
         )
-        list.add(
+
+         list.add(
             DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
+                name = "10-Dec-20",img = R.drawable.woooo_logo,title = "Login",titlee = "0.004"
             )
         )
-        list.add(
+
+         list.add(
             DataClass(
-                name = "dcsdcsdc",img = R.drawable.woooo_logo,title = "hucoasdincosd",titlee = "oooo"
+                name = "10-Dec-20",img = R.drawable.woooo_logo,title = "Login",titlee = "0.004"
             )
         )
+
+         list.add(
+            DataClass(
+                name = "10-Dec-20",img = R.drawable.woooo_logo,title = "Login",titlee = "0.004"
+            )
+        )
+
+         list.add(
+            DataClass(
+                name = "10-Dec-20",img = R.drawable.woooo_logo,title = "Login",titlee = "0.004"
+            )
+        )
+
+         list.add(
+            DataClass(
+                name = "10-Dec-20",img = R.drawable.woooo_logo,title = "Login",titlee = "0.004"
+            )
+        )
+
+         list.add(
+            DataClass(
+                name = "10-Dec-20",img = R.drawable.woooo_logo,title = "Login",titlee = "0.004"
+            )
+        )
+
+         list.add(
+            DataClass(
+                name = "10-Dec-20",img = R.drawable.woooo_logo,title = "Login",titlee = "0.004"
+            )
+        )
+
+         list.add(
+            DataClass(
+                name = "10-Dec-20",img = R.drawable.woooo_logo,title = "Login",titlee = "0.004"
+            )
+        )
+
+         list.add(
+            DataClass(
+                name = "10-Dec-20",img = R.drawable.woooo_logo,title = "Login",titlee = "0.004"
+            )
+        )
+
+         list.add(
+            DataClass(
+                name = "10-Dec-20",img = R.drawable.woooo_logo,title = "Login",titlee = "0.004"
+            )
+        )
+
+         list.add(
+            DataClass(
+                name = "10-Dec-20",img = R.drawable.woooo_logo,title = "Login",titlee = "0.004"
+            )
+        )
+
+         list.add(
+            DataClass(
+                name = "10-Dec-20",img = R.drawable.woooo_logo,title = "Login",titlee = "0.004"
+            )
+        )
+
+         list.add(
+            DataClass(
+                name = "10-Dec-20",img = R.drawable.woooo_logo,title = "Login",titlee = "0.004"
+            )
+        )
+
+
         return list
     }
     Column(
@@ -178,7 +170,7 @@ fun TransactionsView() {
             .padding(10.dp)
     ) {
 
-        TopBarForSetting {}
+        TopBarForSetting(onBackPressed = { navigator.popBackStack() })
         VerticalSpacer(Dimension.dimen_5)
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,

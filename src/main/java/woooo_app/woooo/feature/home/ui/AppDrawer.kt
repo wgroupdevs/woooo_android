@@ -26,14 +26,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.wgroup.woooo_app.woooo.destinations.LoginScreenDestination
+import com.wgroup.woooo_app.woooo.destinations.SettingsScreenDestination
+import com.wgroup.woooo_app.woooo.destinations.UpdateProfileMainScreenDestination
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
-import com.wgroup.woooo_app.woooo.shared.components.ViewDivider
+import woooo_app.woooo.shared.components.ViewDivider
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import eu.siacs.conversations.R
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppDrawer(
     modifier: Modifier = Modifier,
@@ -45,12 +47,12 @@ fun AppDrawer(
     ModalDrawerSheet(
         modifier = modifier
             .border(
-                border = BorderStroke(width = 0.5.dp, color = WooColor.white),
-                shape = RoundedCornerShape(0.dp, 15.dp, 15.dp, 0.dp)
+                border = BorderStroke(width = 0.5.dp,color = WooColor.white),
+                shape = RoundedCornerShape(0.dp,15.dp,15.dp,0.dp)
             ),
         drawerContainerColor = Color.Transparent
     ) {
-        DrawerHeader(modifier)
+        DrawerHeader(modifier,navigator)
 //        Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.spacer_padding)))
         Column(modifier = Modifier.padding(Dimension.dimen_10)) {
 
@@ -64,8 +66,8 @@ fun AppDrawer(
                         contentDescription = "Settings",
                         tint = WooColor.white
                     )
-                }, onClick = {
-//                    navigator.navigate(SettingsScreenDestination)
+                },onClick = {
+                    navigator.navigate(SettingsScreenDestination)
                 })
 
             CustomListTile(
@@ -76,8 +78,8 @@ fun AppDrawer(
                         contentDescription = "Invite friend",
                         tint = WooColor.white
                     )
-                }, onClick = {
-//                    navigator.navigate(SettingsScreenDestination)
+                },onClick = {
+                    navigator.navigate(SettingsScreenDestination)
                 })
 
             CustomListTile(
@@ -88,8 +90,8 @@ fun AppDrawer(
                         contentDescription = "Feedback",
                         tint = WooColor.white
                     )
-                }, onClick = {
-//                    navigator.navigate(SettingsScreenDestination)
+                },onClick = {
+                    navigator.navigate(SettingsScreenDestination)
                 })
             CustomListTile(
                 title = "Share referral code",
@@ -99,8 +101,8 @@ fun AppDrawer(
                         contentDescription = "Referral",
                         tint = WooColor.white
                     )
-                }, onClick = {
-//                    navigator.navigate(SettingsScreenDestination)
+                },onClick = {
+                    navigator.navigate(SettingsScreenDestination)
                 })
             CustomListTile(
                 title = "Add invitation Code",
@@ -110,8 +112,8 @@ fun AppDrawer(
                         contentDescription = "invitation",
                         tint = WooColor.white
                     )
-                }, onClick = {
-//                    navigator.navigate(SettingsScreenDestination)
+                },onClick = {
+                    navigator.navigate(SettingsScreenDestination)
                 })
             CustomListTile(
                 title = "Logout",
@@ -121,20 +123,18 @@ fun AppDrawer(
                         contentDescription = "Logout",
                         tint = WooColor.white
                     )
-                }, onClick = {
-//                    navigator.navigate(SettingsScreenDestination)
+                },onClick = {
+                    navigator.navigate(LoginScreenDestination)
                 })
         }
-
 
     }
 
 
 }
 
-
 @Composable
-fun DrawerHeader(modifier: Modifier) {
+fun DrawerHeader(modifier: Modifier,navigator: DestinationsNavigator) {
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
@@ -142,7 +142,6 @@ fun DrawerHeader(modifier: Modifier) {
             .background(Color.Transparent)
             .fillMaxWidth()
     ) {
-
 
         Image(
             painterResource(id = R.drawable.woooo_logo),
@@ -169,8 +168,9 @@ fun DrawerHeader(modifier: Modifier) {
             Text(
                 text = "Edit profile",
                 style = MaterialTheme.typography.labelMedium,
-                modifier = Modifier.clickable { })
-
+                modifier = Modifier.clickable { navigator.navigate(
+                    UpdateProfileMainScreenDestination
+                ) })
         }
     }
 }
