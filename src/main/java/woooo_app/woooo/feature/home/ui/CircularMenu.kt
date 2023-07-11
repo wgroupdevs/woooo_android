@@ -30,6 +30,7 @@ import eu.siacs.conversations.R
 import eu.siacs.conversations.ui.ConversationActivity
 import eu.siacs.conversations.ui.ConversationsActivity
 import eu.siacs.conversations.ui.StartConversationActivity
+import eu.siacs.conversations.ui.WelcomeActivity
 import kotlinx.coroutines.launch
 
 @Composable
@@ -107,7 +108,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                     scopeAntiClockWise.launch {
                         circularMenuViewModel.rotateMiddleCircleAntiClockWise()
 
-                        context.startActivity(Intent(context, StartConversationActivity::class.java))
+                        context.startActivity(Intent(context, ConversationActivity::class.java))
 
 
 //                        navigator.navigate(DashboardScreenDestination)

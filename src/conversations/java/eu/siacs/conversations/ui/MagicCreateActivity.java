@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ public class MagicCreateActivity extends XmppActivity implements TextWatcher {
     public static final String EXTRA_DOMAIN = "domain";
     public static final String EXTRA_PRE_AUTH = "pre_auth";
     public static final String EXTRA_USERNAME = "username";
+    public static final String TAG = "MagicCreateActivity";
 
     private MagicCreateBinding binding;
     private String domain;
@@ -118,6 +120,9 @@ public class MagicCreateActivity extends XmppActivity implements TextWatcher {
             }
         });
         binding.username.addTextChangedListener(this);
+
+
+        Log.d(TAG, "onCreate Called");
     }
 
     @Override

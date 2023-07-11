@@ -103,6 +103,7 @@ public abstract class XmppActivity extends ActionBarActivity {
     public boolean xmppConnectionServiceBound = false;
 
     protected static final String FRAGMENT_TAG_DIALOG = "dialog";
+    protected static final String TAG = "XmppActivity";
 
     private boolean isCameraFeatureAvailable = false;
 
@@ -226,6 +227,8 @@ public abstract class XmppActivity extends ActionBarActivity {
         }
         this.mUsingEnterKey = usingEnterKey();
         this.mUseTor = useTor();
+
+        Log.d(TAG, "onStart Called");
     }
 
     public void connectToBackend() {
@@ -423,8 +426,7 @@ public abstract class XmppActivity extends ActionBarActivity {
             AccountUtils.launchManageAccounts(this);
         } else if (R.id.action_account == item.getItemId()) {
             AccountUtils.launchManageAccount(this);
-        }
-        else if (R.id.action_show_qr_code == item.getItemId()) {
+        } else if (R.id.action_show_qr_code == item.getItemId()) {
             showQrCode();
         }
 
@@ -472,6 +474,10 @@ public abstract class XmppActivity extends ActionBarActivity {
         this.isCameraFeatureAvailable = getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
         this.mTheme = findTheme();
         setTheme(this.mTheme);
+
+        Log.d(TAG, "OnCreate Called");
+
+
     }
 
     protected boolean isCameraFeatureAvailable() {

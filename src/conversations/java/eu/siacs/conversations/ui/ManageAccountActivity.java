@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.security.KeyChain;
 import android.security.KeyChainAliasCallback;
+import android.util.Log;
 import android.util.Pair;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -43,6 +44,7 @@ import static eu.siacs.conversations.utils.PermissionUtils.writeGranted;
 public class ManageAccountActivity extends XmppActivity implements OnAccountUpdate, KeyChainAliasCallback, XmppConnectionService.OnAccountCreated, AccountAdapter.OnTglAccountState {
 
     private final String STATE_SELECTED_ACCOUNT = "selected_account";
+    private final String TAG = "ManageAccountActivity";
 
     private static final int REQUEST_IMPORT_BACKUP = 0x63fb;
 
@@ -100,6 +102,8 @@ public class ManageAccountActivity extends XmppActivity implements OnAccountUpda
         accountListView.setAdapter(this.mAccountAdapter);
         accountListView.setOnItemClickListener((arg0, view, position, arg3) -> switchToAccount(accountList.get(position)));
         registerForContextMenu(accountListView);
+
+        Log.d(TAG,"onCreate called");
     }
 
     @Override

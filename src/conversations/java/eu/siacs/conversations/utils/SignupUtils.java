@@ -2,6 +2,7 @@ package eu.siacs.conversations.utils;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.entities.Account;
@@ -20,6 +21,8 @@ public class SignupUtils {
     public static boolean isSupportTokenRegistry() {
         return true;
     }
+
+    private static String TAG = "SignupUtils";
 
     public static Intent getTokenRegistrationIntent(final Activity activity, Jid jid, String preAuth) {
         final Intent intent = new Intent(activity, MagicCreateActivity.class);
@@ -42,6 +45,7 @@ public class SignupUtils {
         if (toServerChooser) {
             intent = new Intent(activity, PickServerActivity.class);
         } else {
+            Log.d(TAG, "Start WelcomeActivity");
             intent = new Intent(activity, WelcomeActivity.class);
         }
         return intent;
@@ -60,10 +64,13 @@ public class SignupUtils {
         } else {
             if (service.getAccounts().size() == 0) {
                 if (Config.X509_VERIFICATION) {
+                    Log.d(TAG, "Not Verified");
                     intent = new Intent(activity, ManageAccountActivity.class);
                 } else if (Config.MAGIC_CREATE_DOMAIN != null) {
+                    Log.d(TAG, "MAGIC_CREATE_DOMAIN " + Config.MAGIC_CREATE_DOMAIN);
                     intent = getSignUpIntent(activity);
                 } else {
+                    Log.d(TAG, "EditAccountActivity");
                     intent = new Intent(activity, EditAccountActivity.class);
                 }
             } else {
@@ -71,7 +78,7 @@ public class SignupUtils {
             }
         }
         intent.putExtra("init", true);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         return intent;
     }
 }

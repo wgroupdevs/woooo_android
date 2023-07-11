@@ -112,7 +112,7 @@ dependencies {
     /// New dependencies
 
     //app dependencies
-    implementation("com.google.devtools.ksp:symbol-processing-api:1.8.0-1.0.9")
+//    implementation("com.google.devtools.ksp:symbol-processing-api:1.8.0-1.0.9")
 
     implementation platform("org.jetbrains.kotlin:kotlin-bom:$kotlin_bom")
     implementation 'androidx.core:core-ktx'
@@ -208,8 +208,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     buildFeatures {
@@ -267,27 +267,13 @@ android {
                 srcDir 'src/quicksyFree/java'
             }
         }
-//        quicksyPlaystore {
-//            java {
-//                srcDir 'src/quicksyPlaystore/java'
-//            }
-//            res {
-//                srcDir 'src/quicksyPlaystore/res'
-//            }
-//        }
+
         conversationsFree {
             java {
                 srcDir 'src/conversationsFree/java'
             }
         }
-//        conversationsPlaystore {
-//            java {
-//                srcDir 'src/conversationsPlaystore/java'
-//            }
-//            res {
-//                srcDir 'src/conversationsPlaystore/res'
-//            }
-//        }
+
     }
 
     buildTypes {

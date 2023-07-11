@@ -37,6 +37,7 @@ import static eu.siacs.conversations.utils.PermissionUtils.writeGranted;
 public class WelcomeActivity extends XmppActivity implements XmppConnectionService.OnAccountCreated, KeyChainAliasCallback {
 
     private static final int REQUEST_IMPORT_BACKUP = 0x63fb;
+    private static final String TAG = "WelcomeActivity";
 
     private XmppUri inviteUri;
 
@@ -97,7 +98,7 @@ public class WelcomeActivity extends XmppActivity implements XmppConnectionServi
         if (this.mTheme != theme) {
             recreate();
         }
-        new InstallReferrerUtils(this);
+//        new InstallReferrerUtils(this);
     }
 
     @Override
@@ -140,6 +141,8 @@ public class WelcomeActivity extends XmppActivity implements XmppConnectionServi
             addInviteUri(intent);
             startActivity(intent);
         });
+
+        Log.d(TAG,"onCreate Called");
 
     }
 

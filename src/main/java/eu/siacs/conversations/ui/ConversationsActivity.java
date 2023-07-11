@@ -48,8 +48,10 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.IdRes;
@@ -58,6 +60,10 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
+
+import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.openintents.openpgp.util.OpenPgpApi;
 
@@ -102,6 +108,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
     public static final String EXTRA_POST_INIT_ACTION = "post_init_action";
     public static final String POST_ACTION_RECORD_VOICE = "record_voice";
     public static final String EXTRA_TYPE = "type";
+    public static final String TAG = "ConversationsActivity";
 
     private static final List<String> VIEW_AND_SHARE_ACTIONS = Arrays.asList(
             ACTION_VIEW_CONVERSATION,
@@ -144,6 +151,10 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
 
     @Override
     void onBackendConnected() {
+
+        Log.d(TAG, "onBackendConnected Called");
+
+
         if (performRedirectIfNecessary(true)) {
             return;
         }
@@ -188,6 +199,8 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         boolean isConversationsListEmpty = xmppConnectionService.isConversationsListEmpty(ignore);
         if (isConversationsListEmpty && mRedirectInProcess.compareAndSet(false, true)) {
             final Intent intent = SignupUtils.getRedirectionIntent(this);
+
+
             if (noAnimation) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             }
@@ -370,6 +383,19 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         OmemoSetting.load(this);
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_conversations);
         setSupportActionBar(binding.toolbar);
+
+
+        //Add custom Center menu
+        BottomNavigationMenuView bottomMenuView = (BottomNavigationMenuView) binding.navigation.getChildAt(0);
+        View view = bottomMenuView.getChildAt(2);
+        BottomNavigationItemView itemView = (BottomNavigationItemView) view;
+
+        View viewCustom = LayoutInflater.from(this).inflate(R.layout.center_nav_button, bottomMenuView, false);
+        itemView.addView(viewCustom);
+        viewCustom.setOnClickListener(v -> {
+
+        });
+
         configureActionBar(getSupportActionBar());
         this.getFragmentManager().addOnBackStackChangedListener(this::invalidateActionBarTitle);
         this.getFragmentManager().addOnBackStackChangedListener(this::showDialogsIfMainIsOverview);
@@ -385,6 +411,8 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
             pendingViewIntent.push(intent);
             setIntent(createLauncherIntent(this));
         }
+
+        Log.d(TAG, "OnCreate Called");
     }
 
     @Override
@@ -472,7 +500,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         try {
             fragmentManager.executePendingTransactions();
         } catch (final Exception e) {
-            Log.e(Config.LOGTAG,"unable to execute pending fragment transactions");
+            Log.e(Config.LOGTAG, "unable to execute pending fragment transactions");
         }
     }
 
@@ -659,6 +687,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
 
     @Override
     public void onConversationArchived(Conversation conversation) {
+        Log.d(TAG, "onConversationArchived Called");
         if (performRedirectIfNecessary(conversation, false)) {
             return;
         }
@@ -714,6 +743,8 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
 
     @Override
     public void onConversationUpdate() {
+        Log.d(TAG, "onConversationUpdate Called");
+
         if (performRedirectIfNecessary(false)) {
             return;
         }
