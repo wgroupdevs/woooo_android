@@ -45,7 +45,7 @@ public final class MucDetailsContextMenuHelper {
             } else {
                 name = user.getName();
             }
-            menu.setHeaderTitle(name);
+//            menu.setHeaderTitle(name);
             MucDetailsContextMenuHelper.configureMucDetailsContextMenu(activity, menu, user.getConversation(), user);
         }
     }

@@ -161,6 +161,8 @@ public abstract class XmppActivity extends ActionBarActivity {
         final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
 
         if (bitmapWorkerTask != null) {
+
+            Log.d(TAG,"bitmapWorkerTask Found : " +bitmapWorkerTask.toString());
             final Message oldMessage = bitmapWorkerTask.message;
             if (oldMessage == null || message != oldMessage) {
                 bitmapWorkerTask.cancel(true);
@@ -952,6 +954,9 @@ public abstract class XmppActivity extends ActionBarActivity {
             cancelPotentialWork(message, imageView);
             imageView.setImageBitmap(bm);
             imageView.setBackgroundColor(0x00000000);
+
+            Log.d(TAG,"Bitmap Found : " +bm.toString());
+
         } else {
             if (cancelPotentialWork(message, imageView)) {
                 imageView.setBackgroundColor(0xff333333);

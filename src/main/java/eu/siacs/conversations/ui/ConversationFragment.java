@@ -1120,6 +1120,8 @@ public class ConversationFragment extends XmppFragment
         Log.d(Config.LOGTAG, "ConversationFragment.onAttach()");
         if (activity instanceof ConversationsActivity) {
             this.activity = (ConversationsActivity) activity;
+            assert this.activity.binding.navigation != null;
+            this.activity.binding.navigation.setVisibility(View.GONE);
         } else {
             throw new IllegalStateException(
                     "Trying to attach fragment to activity that is not the ConversationsActivity");
@@ -1129,6 +1131,8 @@ public class ConversationFragment extends XmppFragment
     @Override
     public void onDetach() {
         super.onDetach();
+        assert this.activity.binding.navigation != null;
+        this.activity.binding.navigation.setVisibility(View.VISIBLE);
         this.activity = null; // TODO maybe not a good idea since some callbacks really need it
     }
 
@@ -1307,7 +1311,7 @@ public class ConversationFragment extends XmppFragment
                             && (t instanceof JingleFileTransferConnection
                             || t instanceof HttpDownloadConnection);
             activity.getMenuInflater().inflate(R.menu.message_context, menu);
-            menu.setHeaderTitle(R.string.message_options);
+//            menu.setHeaderTitle(R.string.message_options);
             MenuItem openWith = menu.findItem(R.id.open_with);
             MenuItem copyMessage = menu.findItem(R.id.copy_message);
             MenuItem copyLink = menu.findItem(R.id.copy_link);

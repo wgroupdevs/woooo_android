@@ -27,6 +27,7 @@
     <style name="TextAppearance.Conversations.Subhead" parent="TextAppearance.AppCompat.Subhead">
         <item name="android:textSize">?TextSizeSubhead</item>
         <item name="android:fontFamily">@font/nasalization</item>
+        <item name="fontFamily">@font/nasalization</item>
         <item name="android:textColor">@color/white</item>
     </style>
 
@@ -50,6 +51,7 @@
     <style name="TextAppearance.Conversations.Body1" parent="TextAppearance.AppCompat.Body1">
         <item name="android:textSize">?TextSizeBody1</item>
         <item name="android:fontFamily">@font/nasalization</item>
+        <item name="fontFamily">@font/nasalization</item>
         <item name="android:textColor">@color/white</item>
     </style>
 
@@ -109,6 +111,7 @@
 
     <style name="TextAppearance.Conversations.Body1.Secondary" parent="TextAppearance.Conversations.Body1">
         <item name="android:fontFamily">@font/nasalization</item>
+        <item name="fontFamily">@font/nasalization</item>
         <item name="android:textColor">@color/white</item>
     </style>
 

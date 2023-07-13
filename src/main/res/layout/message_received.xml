@@ -14,7 +14,8 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
         android:scaleType="fitXY"
         app:riv_corner_radius="6dp" />
 
@@ -24,10 +25,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@+id/message_photo"
-        android:background="@drawable/message_bubble_received"
+        android:background="@drawable/receive_message_shape"
         android:minHeight="53dp"
         android:layout_marginTop="-2dp"
         android:layout_marginRight="-4dp"
+        android:padding="@dimen/_5sdp"
         android:longClickable="true">
 
         <LinearLayout

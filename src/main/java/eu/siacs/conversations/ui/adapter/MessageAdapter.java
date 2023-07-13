@@ -256,7 +256,6 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             } else {
                 viewHolder.time.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Caption);
             }
-            viewHolder.time.setTextColor(this.getMessageTextColor(darkBackground, false));
         }
         if (message.getEncryption() == Message.ENCRYPTION_NONE) {
             viewHolder.indicator.setVisibility(View.GONE);
@@ -582,11 +581,12 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                 Jid cp = message.getCounterpart();
                 privateMarker = activity.getString(R.string.private_message_to, Strings.nullToEmpty(cp == null ? null : cp.getResource()));
             }
-            final SpannableString body = new SpannableString(privateMarker);
-            body.setSpan(new ForegroundColorSpan(getMessageTextColor(darkBackground, false)), 0, privateMarker.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            body.setSpan(new StyleSpan(Typeface.BOLD), 0, privateMarker.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            viewHolder.messageBody.setText(body);
-            viewHolder.messageBody.setVisibility(View.VISIBLE);
+//            final SpannableString body = new SpannableString(privateMarker);
+//            body.setSpan(new ForegroundColorSpan(getMessageTextColor(darkBackground, false)), 0, privateMarker.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//            body.setSpan(new StyleSpan(Typeface.BOLD), 0, privateMarker.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//
+//            viewHolder.messageBody.setText(body);
+//            viewHolder.messageBody.setVisibility(View.VISIBLE);
         } else {
             viewHolder.messageBody.setVisibility(View.GONE);
         }
@@ -688,7 +688,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             } else {
                 viewHolder.status_message.setText(DateUtils.formatDateTime(activity, message.getTimeSent(), DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR));
             }
-            viewHolder.message_box.setBackgroundResource(activity.isDarkTheme() ? R.drawable.date_bubble_grey : R.drawable.date_bubble_white);
+            viewHolder.message_box.setBackgroundResource(R.drawable.date_bubble_bg);
             return view;
         } else if (type == RTP_SESSION) {
             final boolean isDarkTheme = activity.isDarkTheme();
@@ -712,7 +712,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             }
             viewHolder.indicatorReceived.setImageResource(RtpSessionStatus.getDrawable(received, rtpSessionStatus.successful, isDarkTheme));
             viewHolder.indicatorReceived.setAlpha(isDarkTheme ? 0.7f : 0.57f);
-            viewHolder.message_box.setBackgroundResource(isDarkTheme ? R.drawable.date_bubble_grey : R.drawable.date_bubble_white);
+//            viewHolder.message_box.setBackgroundResource(isDarkTheme ? R.drawable.date_bubble_grey : R.drawable.date_bubble_white);
             return view;
         } else if (type == STATUS) {
             if ("LOAD_MORE".equals(message.getBody())) {
@@ -829,13 +829,13 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
         if (type == RECEIVED) {
             if (isInValidSession) {
-                int bubble;
-                if (!mUseGreenBackground) {
-                    bubble = activity.getThemeResource(R.attr.message_bubble_received_monochrome, R.drawable.message_bubble_received_white);
-                } else {
-                    bubble = activity.getThemeResource(R.attr.message_bubble_received_green, R.drawable.message_bubble_received);
-                }
-                viewHolder.message_box.setBackgroundResource(bubble);
+//                int bubble;
+//                if (!mUseGreenBackground) {
+//                    bubble = activity.getThemeResource(R.attr.message_bubble_received_monochrome, R.drawable.message_bubble_received_white);
+//                } else {
+//                    bubble = activity.getThemeResource(R.attr.message_bubble_received_green, R.drawable.message_bubble_received);
+//                }
+//                viewHolder.message_box.setBackgroundResource(bubble);
                 viewHolder.encryption.setVisibility(View.GONE);
             } else {
                 viewHolder.message_box.setBackgroundResource(R.drawable.message_bubble_received_warning);

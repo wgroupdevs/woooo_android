@@ -40,8 +40,9 @@
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="-4dp"
         android:layout_toLeftOf="@+id/message_photo_box"
-        android:background="?attr/message_bubble_sent"
+        android:background="@drawable/sent_message_shape"
         android:longClickable="true"
+        android:padding="@dimen/_5sdp"
         android:minHeight="53dp">
 
         <LinearLayout
@@ -73,6 +74,7 @@
                     android:accessibilityTraversalBefore="@id/message_content"
                     android:gravity="center_vertical"
                     android:text="@string/sending"
+                    android:textColor="@color/white"
                     android:textAppearance="@style/TextAppearance.Conversations.Caption" />
 
                 <ImageView

@@ -52,6 +52,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.IdRes;
@@ -73,6 +75,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
+import eu.siacs.conversations.R.id;
 import eu.siacs.conversations.crypto.OmemoSetting;
 import eu.siacs.conversations.databinding.ActivityConversationsBinding;
 import eu.siacs.conversations.entities.Account;
@@ -125,7 +128,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
     int[] FRAGMENT_ID_NOTIFICATION_ORDER = {R.id.secondary_fragment, R.id.main_fragment};
     private final PendingItem<Intent> pendingViewIntent = new PendingItem<>();
     private final PendingItem<ActivityResult> postponedActivityResult = new PendingItem<>();
-    private ActivityConversationsBinding binding;
+    public ActivityConversationsBinding binding;
     private boolean mActivityPaused = true;
     private final AtomicBoolean mRedirectInProcess = new AtomicBoolean(false);
 
@@ -384,16 +387,18 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_conversations);
         setSupportActionBar(binding.toolbar);
 
+        //Back Button on TollBar
+        ImageView backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(v -> super.onBackPressed());
 
-        //Add custom Center menu
-        BottomNavigationMenuView bottomMenuView = (BottomNavigationMenuView) binding.navigation.getChildAt(0);
-        View view = bottomMenuView.getChildAt(2);
-        BottomNavigationItemView itemView = (BottomNavigationItemView) view;
+        assert binding.navigation != null;
+        binding.navigation.setOnItemSelectedListener(item -> {
 
-        View viewCustom = LayoutInflater.from(this).inflate(R.layout.center_nav_button, bottomMenuView, false);
-        itemView.addView(viewCustom);
-        viewCustom.setOnClickListener(v -> {
-            finish();
+//            int itemId = item.getItemId();
+            super.onBackPressed();
+
+            return true;
+
         });
 
         configureActionBar(getSupportActionBar());
@@ -415,22 +420,22 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         Log.d(TAG, "OnCreate Called");
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_conversations, menu);
-        final MenuItem qrCodeScanMenuItem = menu.findItem(R.id.action_scan_qr_code);
-        if (qrCodeScanMenuItem != null) {
-            if (isCameraFeatureAvailable()) {
-                Fragment fragment = getFragmentManager().findFragmentById(R.id.main_fragment);
-                boolean visible = getResources().getBoolean(R.bool.show_qr_code_scan)
-                        && fragment instanceof ConversationsOverviewFragment;
-                qrCodeScanMenuItem.setVisible(visible);
-            } else {
-                qrCodeScanMenuItem.setVisible(false);
-            }
-        }
-        return super.onCreateOptionsMenu(menu);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.activity_conversations, menu);
+//        final MenuItem qrCodeScanMenuItem = menu.findItem(R.id.action_scan_qr_code);
+//        if (qrCodeScanMenuItem != null) {
+//            if (isCameraFeatureAvailable()) {
+//                Fragment fragment = getFragmentManager().findFragmentById(R.id.main_fragment);
+//                boolean visible = getResources().getBoolean(R.bool.show_qr_code_scan)
+//                        && fragment instanceof ConversationsOverviewFragment;
+//                qrCodeScanMenuItem.setVisible(visible);
+//            } else {
+//                qrCodeScanMenuItem.setVisible(false);
+//            }
+//        }
+//        return super.onCreateOptionsMenu(menu);
+//    }
 
     @Override
     public void onConversationSelected(Conversation conversation) {
@@ -522,6 +527,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
             return false;
         }
         switch (item.getItemId()) {
+
             case android.R.id.home:
                 FragmentManager fm = getFragmentManager();
                 if (fm.getBackStackEntryCount() > 0) {
@@ -658,8 +664,8 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         if (mainFragment instanceof ConversationFragment) {
             final Conversation conversation = ((ConversationFragment) mainFragment).getConversation();
             if (conversation != null) {
-                actionBar.setTitle(conversation.getName());
-                actionBar.setDisplayHomeAsUpEnabled(true);
+//                actionBar.setTitle(conversation.getName());
+//                actionBar.setDisplayHomeAsUpEnabled(true);
                 ActionBarUtil.setActionBarOnClickListener(
                         binding.toolbar,
                         (v) -> openConversationDetails(conversation)
@@ -667,7 +673,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
                 return;
             }
         }
-        actionBar.setTitle(R.string.app_name);
+//        actionBar.setTitle(R.string.app_name);
         actionBar.setDisplayHomeAsUpEnabled(false);
         ActionBarUtil.resetActionBarOnClickListeners(binding.toolbar);
     }
@@ -765,4 +771,6 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
     public void onShowErrorToast(int resId) {
         runOnUiThread(() -> Toast.makeText(this, resId, Toast.LENGTH_SHORT).show());
     }
+
+
 }

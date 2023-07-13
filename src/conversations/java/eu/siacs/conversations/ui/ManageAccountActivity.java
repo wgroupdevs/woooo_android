@@ -138,7 +138,7 @@ public class ManageAccountActivity extends XmppActivity implements OnAccountUpda
             menu.findItem(R.id.mgmt_account_announce_pgp).setVisible(false);
             menu.findItem(R.id.mgmt_account_publish_avatar).setVisible(false);
         }
-        menu.setHeaderTitle(this.selectedAccount.getJid().asBareJid().toEscapedString());
+//        menu.setHeaderTitle(this.selectedAccount.getJid().asBareJid().toEscapedString());
     }
 
     @Override

@@ -1,6 +1,7 @@
 package eu.siacs.conversations.ui.adapter;
 
 import android.graphics.Typeface;
+import android.os.Build;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -47,8 +48,6 @@ public class ConversationAdapter
     @NonNull
     @Override
     public ConversationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-        Log.d(TAG,"onCreateViewHolder Called");
 
         return new ConversationViewHolder(
                 DataBindingUtil.inflate(
@@ -285,6 +284,13 @@ public class ConversationAdapter
                 conversation,
                 viewHolder.binding.conversationImage,
                 R.dimen.avatar_on_conversation_overview);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+            viewHolder.binding.conversationName.setTextAppearance(R.style.TextAppearance_Conversations_Subhead);
+            viewHolder.binding.senderName.setTextAppearance(R.style.TextAppearance_Conversations_Subhead);
+            viewHolder.binding.conversationLastmsg.setTextAppearance(R.style.TextAppearance_Conversations_Body1);
+        }
         viewHolder.itemView.setOnClickListener(v -> listener.onConversationClick(v, conversation));
     }
 

@@ -1,11 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.Toolbar android:id="@+id/toolbar"
+
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginStart="0dp"
     android:background="?attr/colorPrimary"
+    android:gravity="center_vertical"
     android:minHeight="?attr/actionBarSize"
-    android:elevation="@dimen/toolbar_elevation"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-    app:popupTheme="?popupOverlayStyle"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" />
+    android:paddingTop="@dimen/_5sdp"
+    app:contentInsetLeft="0dp"
+    app:contentInsetStart="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+
+        <ImageView
+            android:id="@+id/back_button"
+            android:layout_width="@dimen/_24sdp"
+            android:layout_height="@dimen/_24sdp"
+            android:layout_margin="@dimen/_5sdp"
+            android:backgroundTint="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/baseline_arrow_back_24" />
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_edit_text"
+            android:drawableStart="@drawable/outline_search_24"
+            android:hint="@string/search"
+            android:paddingLeft="@dimen/_10sdp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+    </LinearLayout>
+
+
+</androidx.appcompat.widget.Toolbar>
+

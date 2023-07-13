@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    >
 
     <TextView
         android:id="@+id/message_body"
@@ -16,7 +17,7 @@
         android:layout_marginBottom="4dp"
         android:layout_marginTop="8dp"
         android:adjustViewBounds="true"
-        android:background="@color/black87"
+        android:background="@color/blue_primary300"
         android:longClickable="true"
         android:scaleType="centerCrop"/>
 
@@ -41,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:alpha="?attr/icon_alpha"
-            android:background="?android:selectableItemBackground"/>
+            android:background="@color/blue_primary300"/>
 
         <TextView
             android:id="@+id/runtime"
