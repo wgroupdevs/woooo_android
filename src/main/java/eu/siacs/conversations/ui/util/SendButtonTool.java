@@ -84,68 +84,57 @@ public class SendButtonTool {
 		switch (action) {
 			case TEXT:
 				switch (status) {
-					case CHAT:
-					case ONLINE:
-						return R.drawable.ic_send_text_online;
 					case AWAY:
 						return R.drawable.ic_send_text_away;
 					case XA:
 					case DND:
 						return R.drawable.ic_send_text_dnd;
 					default:
-						return getThemeResource(activity, R.attr.ic_send_text_offline, R.drawable.ic_send_text_offline);
+						return R.drawable.outline_send_34;
 				}
 			case RECORD_VIDEO:
 				switch (status) {
-					case CHAT:
-					case ONLINE:
-						return R.drawable.ic_send_videocam_online;
 					case AWAY:
 						return R.drawable.ic_send_videocam_away;
 					case XA:
 					case DND:
 						return R.drawable.ic_send_videocam_dnd;
 					default:
-						return getThemeResource(activity, R.attr.ic_send_videocam_offline, R.drawable.ic_send_videocam_offline);
+						return R.drawable.baseline_videocam_34;
 				}
 			case TAKE_PHOTO:
 				switch (status) {
-					case CHAT:
-					case ONLINE:
-						return R.drawable.ic_send_photo_online;
 					case AWAY:
 						return R.drawable.ic_send_photo_away;
 					case XA:
 					case DND:
 						return R.drawable.ic_send_photo_dnd;
 					default:
-						return getThemeResource(activity, R.attr.ic_send_photo_offline, R.drawable.ic_send_photo_offline);
+						return R.drawable.baseline_camera_alt_34;
+//						return getThemeResource(activity, R.attr.ic_send_photo_offline, R.drawable.ic_send_photo_offline);
 				}
 			case RECORD_VOICE:
 				switch (status) {
-					case CHAT:
-					case ONLINE:
-						return R.drawable.ic_send_voice_online;
 					case AWAY:
 						return R.drawable.ic_send_voice_away;
 					case XA:
 					case DND:
 						return R.drawable.ic_send_voice_dnd;
 					default:
-						return getThemeResource(activity, R.attr.ic_send_voice_offline, R.drawable.ic_send_voice_offline);
+						return R.drawable.baseline_mic_34;
+//						return getThemeResource(activity, R.attr.ic_send_voice_offline, R.drawable.ic_send_voice_offline);
 				}
 			case SEND_LOCATION:
 				switch (status) {
-					case CHAT:
-					case ONLINE:
-						return R.drawable.ic_send_location_online;
 					case AWAY:
 						return R.drawable.ic_send_location_away;
 					case XA:
 					case DND:
 						return R.drawable.ic_send_location_dnd;
 					default:
-						return getThemeResource(activity, R.attr.ic_send_location_offline, R.drawable.ic_send_location_offline);
+
+						return  R.drawable.baseline_location_on_34;
+//						return getThemeResource(activity, R.attr.ic_send_location_offline, R.drawable.ic_send_location_offline);
 				}
 			case CANCEL:
 				switch (status) {
@@ -162,19 +151,22 @@ public class SendButtonTool {
 				}
 			case CHOOSE_PICTURE:
 				switch (status) {
-					case CHAT:
-					case ONLINE:
-						return R.drawable.ic_send_picture_online;
 					case AWAY:
 						return R.drawable.ic_send_picture_away;
 					case XA:
 					case DND:
 						return R.drawable.ic_send_picture_dnd;
 					default:
-						return getThemeResource(activity, R.attr.ic_send_picture_offline, R.drawable.ic_send_picture_offline);
+						return R.drawable.baseline_image_34;
+
+//					return getThemeResource(activity, R.attr.ic_send_picture_offline, R.drawable.ic_send_picture_offline);
 				}
 		}
-		return getThemeResource(activity, R.attr.ic_send_text_offline, R.drawable.ic_send_text_offline);
+
+
+		return R.drawable.outline_send_34;
+
+//		return getThemeResource(activity, R.attr.ic_send_text_offline, R.drawable.ic_send_text_offline);
 	}
 
 	private static int getThemeResource(Activity activity, int r_attr_name, int r_drawable_def) {

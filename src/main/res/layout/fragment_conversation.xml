@@ -6,7 +6,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/color_background_secondary">
-
         <ListView
             android:id="@+id/messages_view"
             android:layout_width="fill_parent"
@@ -22,7 +21,6 @@
             android:stackFromBottom="true"
             android:transcriptMode="normal"
             tools:listitem="@layout/message_sent">
-
         </ListView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -33,7 +31,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:alpha="0.85"
-            android:src="?attr/icon_scroll_down"
+            android:src="@drawable/ic_scroll_to_end_white"
             android:visibility="gone"
             app:backgroundTint="?attr/color_background_primary"
             app:fabSize="mini"
@@ -61,6 +59,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/_5sdp"
             android:background="?attr/color_background_primary">
 
             <LinearLayout
@@ -70,6 +69,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_toStartOf="@+id/textSendButton"
                 android:layout_toLeftOf="@+id/textSendButton"
+                android:layout_marginHorizontal="@dimen/_5sdp"
                 android:orientation="vertical">
 
                 <TextView
@@ -101,15 +101,15 @@
                     style="@style/Widget.Conversations.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?attr/color_background_primary"
+                    android:background="@drawable/bg_border"
                     android:ems="10"
                     android:imeOptions="flagNoExtractUi|actionSend"
                     android:inputType="textShortMessage|textMultiLine|textCapSentences"
                     android:maxLines="8"
                     android:minHeight="48dp"
                     android:minLines="1"
-                    android:padding="8dp">
-
+                    android:padding="8dp"
+                    >
                     <requestFocus />
                 </eu.siacs.conversations.ui.widget.EditMessage>
 
@@ -122,9 +122,10 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:background="?attr/color_background_primary"
+                android:background="@drawable/bg_border"
+                android:layout_marginEnd="@dimen/_2sdp"
                 android:contentDescription="@string/send_message"
-                android:src="?attr/ic_send_text_offline" />
+                android:src="@drawable/outline_send_34" />
         </RelativeLayout>
 
         <RelativeLayout

@@ -20,7 +20,7 @@
         android:textColor="?colorAccent"/>
 
     <com.makeramen.roundedimageview.RoundedImageView
-        android:id="@+id/message_photo"
+        android:id="@+id/toolbar_profile_photo"
         android:layout_width="32dp"
         android:layout_height="32dp"
         android:layout_alignParentLeft="true"
@@ -36,8 +36,8 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="8dp"
-        android:layout_toEndOf="@+id/message_photo"
-        android:layout_toRightOf="@+id/message_photo"
+        android:layout_toEndOf="@+id/toolbar_profile_photo"
+        android:layout_toRightOf="@+id/toolbar_profile_photo"
         android:gravity="center_vertical"
         android:minHeight="32dp"
         android:text="@string/contact_has_read_up_to_this_point"

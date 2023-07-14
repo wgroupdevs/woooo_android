@@ -42,7 +42,7 @@
             layout="@layout/toolbar" />
 
         <ImageView
-            android:paddingTop="@dimen/_5sdp"
+            android:paddingTop="@dimen/_2sdp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:src="@drawable/divider_ic" />

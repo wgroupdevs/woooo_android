@@ -15,6 +15,8 @@
             @color/blue_primary100</item>
         <item name="android:colorBackgroundFloating" tools:targetApi="23">
             @color/blue_primary100</item>
+
+        <item name="android:textColorHint">@color/white70</item>
         <item name="color_background_overlay">@color/black12</item>
         <item name="color_warning">@color/red_a700</item>
         <item name="TextColorOnline">@color/green600</item>
@@ -60,14 +62,14 @@
         </item>
         <item name="ic_send_voice_offline" type="reference">@drawable/ic_send_voice_offline</item>
 
-        <item name="ic_attach_camera" type="reference">@drawable/ic_attach_camera</item>
-        <item name="ic_attach_videocam" type="reference">@drawable/ic_attach_videocam</item>
-        <item name="ic_attach_document" type="reference">@drawable/ic_attach_document</item>
-        <item name="ic_attach_location" type="reference">@drawable/ic_attach_location</item>
-        <item name="ic_attach_photo" type="reference">@drawable/ic_attach_photo</item>
-        <item name="ic_attach_record" type="reference">@drawable/ic_attach_record</item>
+        <item name="ic_attach_camera" type="reference">@drawable/ic_attach_camera_white</item>
+        <item name="ic_attach_videocam" type="reference" >@drawable/ic_attach_videocam_white</item>
+        <item name="ic_attach_document" type="reference">@drawable/ic_attach_document_white</item>
+        <item name="ic_attach_location" type="reference">@drawable/ic_attach_location_white</item>
+        <item name="ic_attach_photo" type="reference">@drawable/ic_attach_photo_white</item>
+        <item name="ic_attach_record" type="reference">@drawable/ic_attach_record_white</item>
 
-        <item name="ic_make_audio_call" type="reference">@drawable/ic_call_black54_24dp</item>
+        <item name="ic_make_audio_call" type="reference">@drawable/ic_call_white_24dp</item>
         <item name="ic_make_video_call" type="reference">@drawable/ic_videocam_black54_24dp</item>
 
         <item name="message_bubble_received_monochrome" type="reference">
@@ -397,10 +399,9 @@
     </style>
 
     <style name="ConversationsTheme.Dialog" parent="@style/Theme.AppCompat.Light.Dialog">
-        <item name="colorPrimary">@color/green600</item>
-        <item name="colorPrimaryDark">@color/green700</item>
-        <item name="colorAccent">@color/blue_a400</item>
-        <item name="color_background_primary">@color/grey50</item>
+        <item name="colorPrimary">@color/blue_primary100</item>
+        <item name="colorAccent">@color/white</item>
+        <item name="color_background_primary">@color/blue_primary300</item>
         <item name="divider">@color/black12</item>
         <item name="TextSizeTitle">18sp</item>
         <item name="TextSizeBody2">14sp</item>

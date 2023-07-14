@@ -48,11 +48,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -63,10 +59,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 
-import com.google.android.material.bottomnavigation.BottomNavigationItemView;
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import org.openintents.openpgp.util.OpenPgpApi;
 
 import java.util.Arrays;
@@ -75,10 +67,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
-import eu.siacs.conversations.R.id;
 import eu.siacs.conversations.crypto.OmemoSetting;
 import eu.siacs.conversations.databinding.ActivityConversationsBinding;
-import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.Conversational;
@@ -388,7 +378,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         setSupportActionBar(binding.toolbar);
 
         //Back Button on TollBar
-        ImageView backButton = findViewById(R.id.back_button);
+        ImageView backButton = findViewById(R.id.toolbar_back_button);
         backButton.setOnClickListener(v -> super.onBackPressed());
 
         assert binding.navigation != null;

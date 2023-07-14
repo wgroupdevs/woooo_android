@@ -94,10 +94,13 @@
 
     <style name="Widget.Conversations.Button.Borderless" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:textSize">?TextSizeBody2</item>
+
     </style>
 
     <style name="Widget.Conversations.Button.Borderless.Primary" parent="Widget.Conversations.Button.Borderless">
-        <item name="android:textColor">?colorAccent</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/nasalization</item>
+
     </style>
 
 

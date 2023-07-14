@@ -22,7 +22,7 @@
 
 
         <ImageView
-            android:id="@+id/back_button"
+            android:id="@+id/toolbar_back_button"
             android:layout_width="@dimen/_24sdp"
             android:layout_height="@dimen/_24sdp"
             android:layout_margin="@dimen/_5sdp"
@@ -32,6 +32,7 @@
             android:src="@drawable/baseline_arrow_back_24" />
 
         <EditText
+            android:id="@+id/toolbar_search"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_gravity="center_vertical"
@@ -41,6 +42,29 @@
             android:hint="@string/search"
             android:paddingLeft="@dimen/_10sdp"
             android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/toolbar_profile_photo"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:scaleType="fitXY"
+            android:visibility="gone"
+            app:riv_corner_radius="6dp" />
+
+        <TextView
+            android:id="@+id/toolbar_contact_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.Conversations.Subhead"
+            android:layout_marginStart="@dimen/_2sdp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:maxLength="15"
+            android:visibility="gone" />
+
 
     </LinearLayout>
 

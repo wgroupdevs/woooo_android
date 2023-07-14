@@ -50,6 +50,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
@@ -104,6 +105,7 @@ import eu.siacs.conversations.ui.adapter.MediaPreviewAdapter;
 import eu.siacs.conversations.ui.adapter.MessageAdapter;
 import eu.siacs.conversations.ui.util.ActivityResult;
 import eu.siacs.conversations.ui.util.Attachment;
+import eu.siacs.conversations.ui.util.AvatarWorkerTask;
 import eu.siacs.conversations.ui.util.ConversationMenuConfigurator;
 import eu.siacs.conversations.ui.util.DateSeparator;
 import eu.siacs.conversations.ui.util.EditMessageActionModeCallback;
@@ -1122,6 +1124,9 @@ public class ConversationFragment extends XmppFragment
             this.activity = (ConversationsActivity) activity;
             assert this.activity.binding.navigation != null;
             this.activity.binding.navigation.setVisibility(View.GONE);
+            this.activity.binding.toolbar.findViewById(R.id.toolbar_search).setVisibility(View.GONE);
+            this.activity.binding.toolbar.findViewById(R.id.toolbar_profile_photo).setVisibility(View.VISIBLE);
+
         } else {
             throw new IllegalStateException(
                     "Trying to attach fragment to activity that is not the ConversationsActivity");
@@ -1133,6 +1138,10 @@ public class ConversationFragment extends XmppFragment
         super.onDetach();
         assert this.activity.binding.navigation != null;
         this.activity.binding.navigation.setVisibility(View.VISIBLE);
+        this.activity.binding.toolbar.findViewById(R.id.toolbar_search).setVisibility(View.VISIBLE);
+        this.activity.binding.toolbar.findViewById(R.id.toolbar_profile_photo).setVisibility(View.GONE);
+        this.activity.binding.toolbar.findViewById(R.id.toolbar_contact_name).setVisibility(View.GONE);
+
         this.activity = null; // TODO maybe not a good idea since some callbacks really need it
     }
 
@@ -1240,6 +1249,16 @@ public class ConversationFragment extends XmppFragment
                     new EditMessageActionModeCallback(this.binding.textinput));
         }
 
+
+        //set profile image on tollbar
+        final Contact contact = conversation == null ? null : conversation.getContact();
+
+        if (contact != null) {
+            AvatarWorkerTask.loadAvatar(contact, this.activity.binding.toolbar.findViewById(R.id.toolbar_profile_photo), R.dimen.avatar);
+            TextView toolbar_contact_name = (TextView) this.activity.binding.toolbar.findViewById(R.id.toolbar_contact_name);
+            toolbar_contact_name.setVisibility(View.VISIBLE);
+            toolbar_contact_name.setText(contact.getDisplayName());
+        }
         return binding.getRoot();
     }
 
@@ -1467,7 +1486,12 @@ public class ConversationFragment extends XmppFragment
         int itemId = item.getItemId();
         if (itemId == R.id.encryption_choice_axolotl || itemId == R.id.encryption_choice_pgp || itemId == R.id.encryption_choice_none) {
             handleEncryptionSelection(item);
-        } else if (itemId == R.id.attach_choose_picture || itemId == R.id.attach_take_picture || itemId == R.id.attach_record_video || itemId == R.id.attach_choose_file || itemId == R.id.attach_record_voice || itemId == R.id.attach_location) {
+        } else if (itemId == R.id.attach_choose_picture
+                || itemId == R.id.attach_take_picture
+                || itemId == R.id.attach_record_video
+                || itemId == R.id.attach_choose_file
+                || itemId == R.id.attach_record_voice
+                || itemId == R.id.attach_location) {
             handleAttachmentSelection(item);
         } else if (itemId == R.id.action_search) {
             startSearch();

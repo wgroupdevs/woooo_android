@@ -373,18 +373,18 @@ public class UIHelper {
         return input.length() > 256 ? StylingHelper.subSequence(input, 0, 256) : input;
     }
 
-    public static boolean isPositionPrecededByBodyStart(CharSequence body, int pos){
+    public static boolean isPositionPrecededByBodyStart(CharSequence body, int pos) {
         // true if not a single linebreak before current position
-        for (int i = pos - 1; i >= 0; i--){
-            if (body.charAt(i) != ' '){
+        for (int i = pos - 1; i >= 0; i--) {
+            if (body.charAt(i) != ' ') {
                 return false;
             }
         }
         return true;
     }
 
-    public static boolean isPositionPrecededByLineStart(CharSequence body, int pos){
-        if (isPositionPrecededByBodyStart(body, pos)){
+    public static boolean isPositionPrecededByLineStart(CharSequence body, int pos) {
+        if (isPositionPrecededByBodyStart(body, pos)) {
             return true;
         }
         return body.charAt(pos - 1) == '\n';
@@ -546,19 +546,23 @@ public class UIHelper {
         switch (conversation.getNextEncryption()) {
             case Message.ENCRYPTION_NONE:
                 if (Config.multipleEncryptionChoices()) {
-                    return context.getString(R.string.send_unencrypted_message);
+//                    return context.getString(R.string.send_unencrypted_message);
+                    return "Write message...";
                 } else {
                     return context.getString(R.string.send_message_to_x, conversation.getName());
                 }
             case Message.ENCRYPTION_AXOLOTL:
                 AxolotlService axolotlService = conversation.getAccount().getAxolotlService();
                 if (axolotlService != null && axolotlService.trustedSessionVerified(conversation)) {
-                    return context.getString(R.string.send_omemo_x509_message);
+//                    return context.getString(R.string.send_omemo_x509_message);
+                    return "Write message...";
                 } else {
-                    return context.getString(R.string.send_omemo_message);
+//                    return context.getString(R.string.send_omemo_message);
+                    return "Write message...";
                 }
             case Message.ENCRYPTION_PGP:
-                return context.getString(R.string.send_pgp_message);
+//                return context.getString(R.string.send_pgp_message);
+                return "Write message...";
             default:
                 return "";
         }

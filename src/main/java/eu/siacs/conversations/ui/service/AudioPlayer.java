@@ -107,7 +107,7 @@ public class AudioPlayer implements View.OnClickListener, MediaPlayer.OnCompleti
         }
         viewHolder.progress.setOnSeekBarChangeListener(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ColorStateList color = ContextCompat.getColorStateList(messageAdapter.getContext(), viewHolder.darkBackground ? R.color.white70 : R.color.green700_desaturated);
+            ColorStateList color = ContextCompat.getColorStateList(messageAdapter.getContext(), R.color.cyan);
             viewHolder.progress.setThumbTintList(color);
             viewHolder.progress.setProgressTintList(color);
         }
@@ -116,17 +116,17 @@ public class AudioPlayer implements View.OnClickListener, MediaPlayer.OnCompleti
         final Context context = viewHolder.playPause.getContext();
         if (message == currentlyPlayingMessage) {
             if (AudioPlayer.player != null && AudioPlayer.player.isPlaying()) {
-                viewHolder.playPause.setImageResource(viewHolder.darkBackground ? R.drawable.ic_pause_white_36dp : R.drawable.ic_pause_black_36dp);
+                viewHolder.playPause.setImageResource( R.drawable.ic_pause_white_36dp);
                 viewHolder.playPause.setContentDescription(context.getString(R.string.pause_audio));
                 viewHolder.progress.setEnabled(true);
             } else {
                 viewHolder.playPause.setContentDescription(context.getString(R.string.play_audio));
-                viewHolder.playPause.setImageResource(viewHolder.darkBackground ? R.drawable.ic_play_arrow_white_36dp : R.drawable.ic_play_arrow_black_36dp);
+                viewHolder.playPause.setImageResource(R.drawable.ic_play_arrow_white_36dp);
                 viewHolder.progress.setEnabled(false);
             }
             return true;
         } else {
-            viewHolder.playPause.setImageResource(viewHolder.darkBackground ? R.drawable.ic_play_arrow_white_36dp : R.drawable.ic_play_arrow_black_36dp);
+            viewHolder.playPause.setImageResource(R.drawable.ic_play_arrow_white_36dp);
             viewHolder.playPause.setContentDescription(context.getString(R.string.play_audio));
             viewHolder.runtime.setText(formatTime(message.getFileParams().runtime));
             viewHolder.progress.setProgress(0);
@@ -169,7 +169,7 @@ public class AudioPlayer implements View.OnClickListener, MediaPlayer.OnCompleti
             player.pause();
             messageAdapter.flagScreenOff();
             releaseProximityWakeLock();
-            viewHolder.playPause.setImageResource(viewHolder.darkBackground ? R.drawable.ic_play_arrow_white_36dp : R.drawable.ic_play_arrow_black_36dp);
+            viewHolder.playPause.setImageResource(R.drawable.ic_play_arrow_white_36dp);
             viewHolder.playPause.setContentDescription(context.getString(R.string.play_audio));
         } else {
             viewHolder.progress.setEnabled(true);
@@ -177,7 +177,7 @@ public class AudioPlayer implements View.OnClickListener, MediaPlayer.OnCompleti
             messageAdapter.flagScreenOn();
             acquireProximityWakeLock();
             this.stopRefresher(true);
-            viewHolder.playPause.setImageResource(viewHolder.darkBackground ? R.drawable.ic_pause_white_36dp : R.drawable.ic_pause_black_36dp);
+            viewHolder.playPause.setImageResource(R.drawable.ic_pause_white_36dp);
             viewHolder.playPause.setContentDescription(context.getString(R.string.pause_audio));
         }
         return false;
@@ -201,7 +201,7 @@ public class AudioPlayer implements View.OnClickListener, MediaPlayer.OnCompleti
             messageAdapter.flagScreenOn();
             acquireProximityWakeLock();
             viewHolder.progress.setEnabled(true);
-            viewHolder.playPause.setImageResource(viewHolder.darkBackground ? R.drawable.ic_pause_white_36dp : R.drawable.ic_pause_black_36dp);
+            viewHolder.playPause.setImageResource(R.drawable.ic_pause_white_36dp);
             viewHolder.playPause.setContentDescription(viewHolder.playPause.getContext().getString(R.string.pause_audio));
             sensorManager.registerListener(this, proximitySensor, SensorManager.SENSOR_DELAY_NORMAL);
             return true;
@@ -258,7 +258,7 @@ public class AudioPlayer implements View.OnClickListener, MediaPlayer.OnCompleti
         final ViewHolder viewHolder = ViewHolder.get(audioPlayer);
         final Message message = (Message) audioPlayer.getTag();
         viewHolder.playPause.setContentDescription(viewHolder.playPause.getContext().getString(R.string.play_audio));
-        viewHolder.playPause.setImageResource(viewHolder.darkBackground ? R.drawable.ic_play_arrow_white_36dp : R.drawable.ic_play_arrow_black_36dp);
+        viewHolder.playPause.setImageResource(R.drawable.ic_play_arrow_white_36dp );
         if (message != null) {
             viewHolder.runtime.setText(formatTime(message.getFileParams().runtime));
         }
