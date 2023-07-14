@@ -3,7 +3,8 @@ package com.wgroup.woooo_app.woooo.feature.auth.screen
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,10 +45,12 @@ import com.wgroup.woooo_app.woooo.shared.components.CountryPicker
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageSignUpView
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
+import com.wgroup.woooo_app.woooo.shared.components.PasswordValidator
 import com.wgroup.woooo_app.woooo.shared.components.TextLabel
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.shared.components.view_models.CountryPickerViewModel
+import com.wgroup.woooo_app.woooo.shared.components.view_models.PasswordValidatorViewModel
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
@@ -55,7 +60,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
     val signUpViewModel: SignUpViewModel = hiltViewModel()
     val countryPickerViewModel: CountryPickerViewModel = hiltViewModel()
     val context = LocalContext.current
-
+    val customPasswordValidator: PasswordValidatorViewModel = hiltViewModel()
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -130,16 +135,23 @@ fun SignUpView(navigator: DestinationsNavigator) {
             //phone number
             TextLabel(label = Strings.phoneNmbrText)
             VerticalSpacer()
-            WooTextField(
+            WooTextField(interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->
+                LaunchedEffect(interactionSource) {
+                    interactionSource.interactions.collect {
+                        if (it is PressInteraction.Release) {
+                            countryPickerViewModel.readJsonFileFromAssets(context = context)
+                            signUpViewModel.setShowCountryPickerValue(true)
+                        }
+                    }
+                }
+            },
+                readOnly = true,
                 hint = Strings.enterNumberText,
-                value = countryPickerViewModel.getSelectedCountryDialCode.value,
+                value = countryPickerViewModel.getSelectedCountry.value,
                 leadingIcon = {
                     Row(
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.clickable(onClick = {
-                            signUpViewModel.setShowCountryPickerValue(true)
-                        })
                     ) {
                         Text(
                             text = countryPickerViewModel.getSelectedCountryDialCode.value,
@@ -177,13 +189,34 @@ fun SignUpView(navigator: DestinationsNavigator) {
                     )
                 })
             VerticalSpacer(Dimension.dimen_5)
+
+            // Password Validator
+
+            if (customPasswordValidator.getPasswordValidatorStateForSignUp.value) Box(
+                modifier = Modifier.align(
+                    Alignment.CenterHorizontally
+                )
+            ) {
+                PasswordValidator(0.6f)
+            }
             //Password
             TextLabel(label = Strings.passwordText)
             VerticalSpacer()
-            WooTextField(onValueChange = {
-                signUpViewModel.setPasswordControllerValue(it)
-                signUpViewModel.setPasswordErrorValue(false)
+            WooTextField(interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->
+                LaunchedEffect(interactionSource) {
+                    interactionSource.interactions.collect {
+                        if (it is PressInteraction.Release) {
+                            customPasswordValidator.setPasswordValidatorStateForSignUp(true)
+                        }
+                    }
+                }
             },
+                onValueChange = {
+                    customPasswordValidator.passwordValidator(it,true)
+                    signUpViewModel.setPasswordControllerValue(it)
+                    signUpViewModel.setPasswordErrorValue(false)
+
+                },
                 value = signUpViewModel.getPasswordController.value,
                 isError = signUpViewModel.getPasswordError.value,
                 supportingText = {

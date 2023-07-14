@@ -11,7 +11,6 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpViewModel @Inject constructor() : ViewModel() {
 
-
     // first name
     private val _setNameController = mutableStateOf("")
     val getNameController: State<String> = _setNameController
@@ -138,12 +137,6 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
         _setReferralCodeError.value = value
     }
 
-//    // error text
-//    private val _setReferralCodeErrorText = mutableStateOf(false)
-//    val getReferralCodeErrorText: State<Boolean> = _setReferralCodeErrorText
-//    fun setReferralCodeErrorValueText(value: Boolean) {
-//        _setReferralCodeErrorText.value = value
-//    }
 
     fun validateSignUpFields(): Boolean {
         if (getNameController.value.trim() == "") {

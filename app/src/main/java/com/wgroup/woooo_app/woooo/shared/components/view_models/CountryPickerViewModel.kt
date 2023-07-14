@@ -34,11 +34,6 @@ class CountryPickerViewModel @Inject constructor() : ViewModel() {
         _setSelectedCountry.value = value
     }
 
-    private val _setSearchText = mutableStateOf("")
-    val getSearchText: State<String> = _setSearchText
-    fun setSearchTextValue(value: String) {
-        _setSearchText.value = value
-    }
 
     fun readJsonFileFromAssets(context: Context): String? {
         _setValueOfList.clear()

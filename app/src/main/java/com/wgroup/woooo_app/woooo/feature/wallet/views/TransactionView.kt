@@ -215,7 +215,7 @@ fun TransactionsView(navigator: DestinationsNavigator) {
         }
         LazyColumn(content = {
             items(inputData()) { item ->
-                CuRow(img = item.img,name = item.name,title = item.title,titlee = item.titlee)
+                History(img = item.img,name = item.name,title = item.title,titlee = item.titlee)
             }
         })
     }
@@ -223,7 +223,7 @@ fun TransactionsView(navigator: DestinationsNavigator) {
 }
 
 @Composable
-fun CuRow(name: String,img: Int,title: String,titlee: String) {
+fun History(name: String,img: Int,title: String,titlee: String) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,

@@ -24,7 +24,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Dimension
 
@@ -51,11 +50,11 @@ fun CustomListTile(
                 .clip(RoundedCornerShape(15.dp))
                 .clickable(onClick = onClick)
 //                .padding(5.dp),
-                    ,
+            ,
             colors = colors,
             headlineContent = {
                 Text(
-                    text = title, style = MaterialTheme.typography.titleSmall
+                    text = title,style = MaterialTheme.typography.titleSmall
                 )
             },
             leadingContent = leadingIcon,
@@ -63,7 +62,7 @@ fun CustomListTile(
             supportingContent = supportingContent
         )
         VerticalSpacer(Dimension.dimen_8)
-//       ViewDivider()
+        ViewDivider()
     }
 }
 
@@ -82,14 +81,14 @@ fun TopBarForSetting(
         Row(
             verticalAlignment = Alignment.CenterVertically,
 
-        ) {
+            ) {
             Icon(
                 imageVector = Icons.Outlined.ArrowBackIosNew,
                 contentDescription = "",
                 tint = WooColor.white,
-                        modifier = Modifier
-                            .padding(end = 10.dp)
-                            .clickable(onClick = onBackPressed)
+                modifier = Modifier
+                    .padding(end = 10.dp)
+                    .clickable(onClick = onBackPressed)
             )
 //            HorizontalSpacer(Dimension.dimen_5)
             OutlinedTextField(
@@ -97,9 +96,9 @@ fun TopBarForSetting(
                 onValueChange = onValueChange,
                 placeholder = {
                     Row {
-                        Icon(imageVector = Icons.Outlined.Search, contentDescription = "")
+                        Icon(imageVector = Icons.Outlined.Search,contentDescription = "")
                         HorizontalSpacer(Dimension.dimen_5)
-                        Text(text = "Search", style = MaterialTheme.typography.labelSmall)
+                        Text(text = "Search",style = MaterialTheme.typography.labelSmall)
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
