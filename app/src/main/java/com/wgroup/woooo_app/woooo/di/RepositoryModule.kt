@@ -1,7 +1,7 @@
 package com.wgroup.woooo_app.woooo.di
 
-import com.wgroup.woooo_app.woooo.data.repository.AuthRepositoryImpl
-import com.wgroup.woooo_app.woooo.feature.auth.domain.repository.AuthRepository
+import com.wgroup.woooo_app.woooo.data.repositoryImp.AuthRepositoryImpl
+import com.wgroup.woooo_app.woooo.domain.repository.AuthRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -12,9 +12,7 @@ import dagger.hilt.android.components.ViewModelComponent
 @InstallIn(ViewModelComponent::class)
 abstract class RepositoryModule {
     @Binds
-    abstract fun providesMovieRepository(
+    abstract fun providesAuthRepository(
         authRepository: AuthRepositoryImpl
     ): AuthRepository
-
-
 }

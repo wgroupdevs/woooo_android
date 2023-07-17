@@ -5,8 +5,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wgroup.woooo_app.woooo.feature.auth.domain.model.params.LoginRequestParams
-import com.wgroup.woooo_app.woooo.feature.auth.domain.usecase.LoginUseCase
+import com.wgroup.woooo_app.woooo.data.models.LoginRequestParams
+import com.wgroup.woooo_app.woooo.domain.usecase.LoginUseCase
 import com.wgroup.woooo_app.woooo.shared.base.doOnFailure
 import com.wgroup.woooo_app.woooo.shared.base.doOnLoading
 import com.wgroup.woooo_app.woooo.shared.base.doOnSuccess
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModelWithEmail @Inject constructor(private val loginUseCase: LoginUseCase) :
+class LoginWithEmailViewModel @Inject constructor(private val loginUseCase: LoginUseCase) :
     ViewModel() {
     private val _loginResponse: MutableState<LoginState> = mutableStateOf(LoginState())
     val loginResponse: State<LoginState> = _loginResponse

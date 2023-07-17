@@ -1,5 +1,6 @@
 package com.wgroup.woooo_app.woooo.feature.auth.screen
 
+import ShowLoader
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -266,6 +267,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
         CustomButton(
             border = BorderStroke(1.dp,Color.White),
             onClick = {
+                signUpViewModel.signUp(context)
                 signUpViewModel.validateSignUpFields()
             },
             content = {
@@ -292,7 +294,8 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 )
             },
         )
-
+        // enable Loader when Api Hit
+        if (signUpViewModel.signUpResponseState.value.isLoading) ShowLoader()
         // Enabled Country Country When User Click On PhoneNumber TextField
 
         if (signUpViewModel.setShowCountryPicker.value) CountryPicker(onDismissRequest = {

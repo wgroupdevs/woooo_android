@@ -38,7 +38,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.R
 import com.wgroup.woooo_app.woooo.destinations.SignUpScreenDestination
-import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginViewModelWithEmail
+import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginWithEmailViewModel
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CountryPicker
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
@@ -55,7 +55,7 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 
 @Composable
 fun LoginView(navigator: DestinationsNavigator) {
-    val loginWithEmailViewModel: LoginViewModelWithEmail = hiltViewModel()
+    val loginWithEmailViewModel: LoginWithEmailViewModel = hiltViewModel()
     val loginWithPhoneViewModel: LoginWithPhoneViewModel = hiltViewModel()
 
 
@@ -81,7 +81,7 @@ fun LoginView(navigator: DestinationsNavigator) {
 @Composable
 fun LoginWithPhoneNumber(
     navigator: DestinationsNavigator,
-    loginWithEmailViewModel: LoginViewModelWithEmail,
+    loginWithEmailViewModel: LoginWithEmailViewModel,
     loginWithPhoneViewModel: LoginWithPhoneViewModel
 ) {
     val countryPickerViewModel: CountryPickerViewModel = hiltViewModel()
@@ -276,7 +276,7 @@ fun LoginWithPhoneNumber(
 
 @Composable
 fun LoginWithEmail(navigator: DestinationsNavigator) {
-    val loginWithEmailViewModel: LoginViewModelWithEmail = hiltViewModel()
+    val loginWithEmailViewModel: LoginWithEmailViewModel = hiltViewModel()
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

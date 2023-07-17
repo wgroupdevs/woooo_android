@@ -32,12 +32,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.feature.settings.viewmodels.account.SecurityViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageSignUpView
 import com.wgroup.woooo_app.woooo.shared.components.PasswordValidator
 import com.wgroup.woooo_app.woooo.shared.components.TextLabel
+import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.shared.components.view_models.PasswordValidatorViewModel
@@ -47,11 +49,11 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 
 @Composable
 fun SecurityMainView(
-//    navigator: DestinationsNavigator
+    navigator: DestinationsNavigator
 ) {
     val passwordValidatorViewModel: PasswordValidatorViewModel = hiltViewModel()
     Column {
-//        TopBarForSetting(onBackPressed = { navigator.popBackStack() })
+        TopBarForSetting(onBackPressed = { navigator.popBackStack() })
 
         Column(modifier = Modifier.padding(10.dp)) {
             Text(

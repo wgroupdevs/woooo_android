@@ -1,15 +1,27 @@
 package com.wgroup.woooo_app.woooo.feature.auth.viewmodel
 
+import android.content.Context
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.wgroup.woooo_app.woooo.data.models.LoginRequestParams
+import com.wgroup.woooo_app.woooo.domain.usecase.SignUpUseCase
+import com.wgroup.woooo_app.woooo.shared.base.doOnFailure
+import com.wgroup.woooo_app.woooo.shared.base.doOnLoading
+import com.wgroup.woooo_app.woooo.shared.base.doOnSuccess
+import com.wgroup.woooo_app.woooo.shared.components.myToast
 import com.wgroup.woooo_app.woooo.utils.Strings
 import com.wgroup.woooo_app.woooo.utils.Validators
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor() : ViewModel() {
+class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCase) : ViewModel() {
+    private val _signUpResponseState: MutableState<SignUpSate> = mutableStateOf(SignUpSate())
+    val signUpResponseState: State<SignUpSate> = _signUpResponseState
 
     // first name
     private val _setNameController = mutableStateOf("")
@@ -137,6 +149,20 @@ class SignUpViewModel @Inject constructor() : ViewModel() {
         _setReferralCodeError.value = value
     }
 
+    // sign up view model
+    fun signUp(context: Context) = viewModelScope.launch {
+        _signUpResponseState.value.isLoading = true
+        signUpUseCase.invoke(
+            LoginRequestParams()
+        ).doOnSuccess {
+            _signUpResponseState.value = SignUpSate(data = it)
+            _signUpResponseState.value = SignUpSate(isLoading = false)
+        }.doOnFailure {
+            _signUpResponseState.value = SignUpSate(error = it.toString())
+            myToast(signUpResponseState.value.error,context)
+            _signUpResponseState.value = SignUpSate(isLoading = false)
+        }.doOnLoading { _signUpResponseState.value = SignUpSate(isLoading = false) }.collect {}
+    }
 
     fun validateSignUpFields(): Boolean {
         if (getNameController.value.trim() == "") {

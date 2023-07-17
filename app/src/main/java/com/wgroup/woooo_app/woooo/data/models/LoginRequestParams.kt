@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.feature.auth.domain.model.params
+package com.wgroup.woooo_app.woooo.data.models
 
 data class LoginRequestParams(
     val email: String="",

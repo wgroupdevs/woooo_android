@@ -2,7 +2,7 @@ package com.wgroup.woooo_app.woooo.di
 
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import com.wgroup.woooo_app.woooo.data.source.remote.ApiService
+import com.wgroup.woooo_app.woooo.data.datasource.remote.auth.AuthApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,13 +37,13 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun providesApiService(okHttpClient: OkHttpClient, moshi: Moshi): ApiService = Retrofit
+    fun providesApiService(okHttpClient: OkHttpClient, moshi: Moshi): AuthApiService = Retrofit
         .Builder()
         .run {
-            baseUrl(ApiService.BASE_URL)
+            baseUrl(AuthApiService.BASE_URL)
             client(okHttpClient)
             addConverterFactory(MoshiConverterFactory.create(moshi))
             build()
-        }.create(ApiService::class.java)
+        }.create(AuthApiService::class.java)
 
 }

@@ -76,7 +76,7 @@ fun PrivacyMainScreen(navigator: DestinationsNavigator) {
 @Destination
 @Composable
 fun SecurityMainScreen(navigator: DestinationsNavigator) {
-    SecurityMainView()
+    SecurityMainView(navigator = navigator)
 }
 
 @Destination

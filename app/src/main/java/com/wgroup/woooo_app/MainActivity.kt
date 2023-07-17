@@ -1,5 +1,6 @@
 package com.wgroup.woooo_app
 
+import ShowLoader
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,8 +31,8 @@ fun MainScreen() {
         Surface(
             modifier = Modifier.fillMaxSize(),color = MaterialTheme.colorScheme.background
         ) {
-//            DestinationsNavHost(navGraph = NavGraphs.root)
-            SecurityMainView()
+            DestinationsNavHost(navGraph = NavGraphs.root)
+//            ShowLoader()
         }
     }
 }

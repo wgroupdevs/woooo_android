@@ -1,13 +1,13 @@
-package com.wgroup.woooo_app.woooo.feature.auth.domain.model
+package com.wgroup.woooo_app.woooo.data.models
 
-data class LoginResponse (
+data class LoginModel (
     val succeeded: Boolean=false,
     val message: Any? = null,
     val errors: Any? = null,
-    val data: Data?=null
+    val loginData: LoginData?=null
 )
 
-data class Data (
+data class LoginData (
     val id: String?,
     val userName: String?,
     val email: String?,

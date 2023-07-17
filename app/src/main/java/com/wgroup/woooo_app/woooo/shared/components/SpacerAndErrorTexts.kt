@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.ForgotViewModel
-import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginViewModelWithEmail
+import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginWithEmailViewModel
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.VerifyOtpViewModel
@@ -30,7 +30,7 @@ fun HorizontalSpacer(width: Dp = Dimension.dimen_10) {
 
 @Composable
 fun ErrorMessageForLoginWithEmail() {
-    val loginWithEmailViewModel: LoginViewModelWithEmail = hiltViewModel()
+    val loginWithEmailViewModel: LoginWithEmailViewModel = hiltViewModel()
     Text(
         text = loginWithEmailViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
     )
