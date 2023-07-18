@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.feature.wallet.views
+package woooo_app.woooo.feature.wallet.views
 
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
@@ -55,11 +55,14 @@ import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
+import woooo_app.woooo.utils.Dimension
 
 @Composable
 fun WalletMainView(navigator: DestinationsNavigator) {
+    val colors = mutableListOf<Color>(
+        WooColor.Yellow,Color.Cyan
+    )
     val walletMainViewModel: WalletMainViewViewModel = hiltViewModel()
 
     Column(
@@ -73,7 +76,8 @@ fun WalletMainView(navigator: DestinationsNavigator) {
                 data = mapOf(
                     Pair("Sample-1",100),
                     Pair("Sample-2",7),
-                )
+                ),
+                listOfColors = colors
             )
             // pie chart center Currency
             Column(
@@ -117,7 +121,7 @@ fun WalletMainView(navigator: DestinationsNavigator) {
                 HorizontalSpacer(5.dp)
                 Text(text = walletMainViewModel.getCurrentValueOption.value)
 //                HorizontalSpacer(Dimension.dimen_5)
-               CustomIcon(icon = Icons.Outlined.ArrowDropDown)
+                CustomIcon(icon = Icons.Outlined.ArrowDropDown)
                 DropdownMenuExample()
             }
 
@@ -133,18 +137,16 @@ fun WalletMainView(navigator: DestinationsNavigator) {
         ) {
 
             Row(
-                modifier = Modifier.clickable(
-                    onClick = {
-                        navigator.navigate(
-                            TransactionMainScreenDestination
-                        )
-                    }
-                ),
+                modifier = Modifier.clickable(onClick = {
+                    navigator.navigate(
+                        TransactionMainScreenDestination
+                    )
+                }),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(text = Strings.trnscetgText)
                 HorizontalSpacer(5.dp)
-               CustomIcon(icon =  Icons.Rounded.ArrowForwardIos,)
+                CustomIcon(icon = Icons.Rounded.ArrowForwardIos)
 
             }
             Row(
@@ -152,7 +154,7 @@ fun WalletMainView(navigator: DestinationsNavigator) {
             ) {
                 Text(text = Strings.walletText)
                 HorizontalSpacer(5.dp)
-              CustomIcon(icon = Icons.Rounded.ArrowForwardIos,)
+                CustomIcon(icon = Icons.Rounded.ArrowForwardIos)
 
             }
         }
@@ -187,13 +189,13 @@ fun WalletMainView(navigator: DestinationsNavigator) {
                         )
                     },
                     leadingContent = {
-                        CustomIcon(icon = Icons.Rounded.ArrowForwardIos,)
+                        CustomIcon(icon = Icons.Rounded.ArrowForwardIos)
                     },
                     trailingContent = {
                         Row(horizontalArrangement = Arrangement.Center) {
                             Text(text = " 0.0  BTC")
                             HorizontalSpacer(Dimension.dimen_5)
-                           CustomIcon(icon = Icons.Rounded.Forward10)
+                            CustomIcon(icon = Icons.Rounded.Forward10)
                         }
                     }
 
@@ -241,6 +243,7 @@ fun PieChart(
     radiusOuter: Dp = 80.dp,
     chartBarWidth: Dp = 25.dp,
     animDuration: Int = 2000,
+    listOfColors: MutableList<Color>
 ) {
 
     val totalSum = data.values.sum()
@@ -249,10 +252,6 @@ fun PieChart(
     data.values.forEachIndexed { index,values ->
         floatValue.add(index,360 * values.toFloat() / totalSum.toFloat())
     }
-
-    val colors = listOf(
-        WooColor.circulInner, Color.Transparent, Color.Transparent, Color.Transparent
-    )
 
     var animationPlayed by remember { mutableStateOf(false) }
 
@@ -294,7 +293,7 @@ fun PieChart(
                 // draw each Arc for each data entry in Pie Chart
                 floatValue.forEachIndexed { index,value ->
                     drawArc(
-                        color = colors[index],
+                        color = listOfColors[index],
                         lastValue,
                         value,
                         useCenter = false,

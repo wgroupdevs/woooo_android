@@ -21,7 +21,7 @@ import com.wgroup.woooo_app.woooo.feature.settings.views.application.LanguageVie
 import com.wgroup.woooo_app.woooo.feature.settings.views.application.SoundAndVibrationView
 import com.wgroup.woooo_app.woooo.feature.wallet.views.SendCurrencyView
 import com.wgroup.woooo_app.woooo.feature.wallet.views.TransactionsView
-import com.wgroup.woooo_app.woooo.feature.wallet.views.WalletMainView
+import woooo_app.woooo.feature.wallet.views.WalletMainView
 
 @Destination
 @Composable
