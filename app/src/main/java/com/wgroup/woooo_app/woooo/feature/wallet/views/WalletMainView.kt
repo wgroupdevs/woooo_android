@@ -53,6 +53,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.destinations.SendCurrencyMainScreenDestination
 import com.wgroup.woooo_app.woooo.destinations.TransactionMainScreenDestination
 import com.wgroup.woooo_app.woooo.feature.wallet.viewmodel.WalletMainViewViewModel
+import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.theme.WooColor
@@ -118,11 +119,7 @@ fun WalletMainView(navigator: DestinationsNavigator) {
                 HorizontalSpacer(5.dp)
                 Text(text = walletMainViewModel.getCurrentValueOption.value)
 //                HorizontalSpacer(Dimension.dimen_5)
-                Icon(
-                    imageVector = Icons.Outlined.ArrowDropDown,
-                    contentDescription = "",
-                    tint = Color.White
-                )
+               CustomIcon(icon = Icons.Outlined.ArrowDropDown)
                 DropdownMenuExample()
             }
 
@@ -149,11 +146,7 @@ fun WalletMainView(navigator: DestinationsNavigator) {
             ) {
                 Text(text = Strings.trnscetgText)
                 HorizontalSpacer(5.dp)
-                Icon(
-                    imageVector = Icons.Rounded.ArrowForwardIos,
-                    contentDescription = "",
-                    tint = WooColor.white
-                )
+               CustomIcon(icon =  Icons.Rounded.ArrowForwardIos,)
 
             }
             Row(
@@ -161,11 +154,7 @@ fun WalletMainView(navigator: DestinationsNavigator) {
             ) {
                 Text(text = Strings.walletText)
                 HorizontalSpacer(5.dp)
-                Icon(
-                    imageVector = Icons.Rounded.ArrowForwardIos,
-                    contentDescription = "",
-                    tint = WooColor.white
-                )
+              CustomIcon(icon = Icons.Rounded.ArrowForwardIos,)
 
             }
         }
@@ -200,17 +189,13 @@ fun WalletMainView(navigator: DestinationsNavigator) {
                         )
                     },
                     leadingContent = {
-                        Icon(
-                            modifier = Modifier.size(24.dp),
-                            imageVector = Icons.Rounded.Fitbit,
-                            contentDescription = ""
-                        )
+                        CustomIcon(icon = Icons.Rounded.ArrowForwardIos,)
                     },
                     trailingContent = {
                         Row(horizontalArrangement = Arrangement.Center) {
                             Text(text = " 0.0  BTC")
                             HorizontalSpacer(Dimension.dimen_5)
-                            Icon(imageVector = Icons.Rounded.Forward10,contentDescription = "")
+                           CustomIcon(icon = Icons.Rounded.Forward10)
                         }
                     }
 
