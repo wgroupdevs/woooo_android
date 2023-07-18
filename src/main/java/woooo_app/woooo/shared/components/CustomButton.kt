@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import com.wgroup.woooo_app.woooo.utils.Dimension
+import woooo_app.woooo.utils.Dimension
 
 @Composable
 fun CustomButton(

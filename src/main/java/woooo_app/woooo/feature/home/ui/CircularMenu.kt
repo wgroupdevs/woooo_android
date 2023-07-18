@@ -1,33 +1,44 @@
 package com.wgroup.woooo_app.woooo.feature.home.ui
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.wgroup.woooo_app.woooo.destinations.DashboardScreenDestination
 import com.wgroup.woooo_app.woooo.destinations.MiningMainScreenDestination
 import com.wgroup.woooo_app.woooo.feature.home.screen.initCircleTextOffset
 import com.wgroup.woooo_app.woooo.feature.home.viewmodel.CircularMenuViewModel
+import com.wgroup.woooo_app.woooo.feature.wallet.views.PieChart
 import com.wgroup.woooo_app.woooo.feature.wallet.views.Wallet_Pin_Verify_Dialog
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import com.wgroup.woooo_app.woooo.utils.Dimension
+import woooo_app.woooo.utils.Dimension
 import eu.siacs.conversations.R
+import eu.siacs.conversations.ui.ConversationActivity
 import kotlinx.coroutines.launch
 
 @Composable
@@ -41,13 +52,49 @@ fun CircularMenu(navigator: DestinationsNavigator) {
     val wallet_text_active = painterResource(id = R.drawable.wallet_text_disable)
     val scopeClockWise = rememberCoroutineScope()
     val scopeAntiClockWise = rememberCoroutineScope()
-
+    val context = LocalContext.current
 
     Box(
         Modifier.padding(top = Dimension.dimen_10)
     ) {
 
         initCircleTextOffset(Dimension.boxWithConstraintsScope.maxWidth)
+
+
+        Box(modifier = Modifier.align(Alignment.Center)) {
+            //OuterCircle Compose
+            OuterCircle(viewModel = circularMenuViewModel)
+        }
+
+
+        //Middle Circle Compose
+        Box(
+            modifier = Modifier.align(Alignment.Center),
+        ) {
+            MiddleCircle(viewModel = circularMenuViewModel)
+        }
+
+
+        ///Circle
+        Box(
+            modifier = Modifier
+                .size(Dimension.boxWithConstraintsScope.maxWidth * 0.55f)
+                .align(Alignment.Center)
+        ) {
+            PieChart(
+                data = mapOf(
+                    Pair("Sample-1", 25),
+                    Pair("Sample-2", 25),
+                    Pair("Sample-3", 25),
+                    Pair("Sample-4", 25),
+                ),
+                radiusOuter = (Dimension.boxWithConstraintsScope.maxWidth * 0.55f),
+                chartBarWidth = 34.dp,
+                animDuration = 0
+            )
+
+        }
+
 
         // Go to Mining
 
@@ -61,7 +108,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = rememberRipple(
-                        bounded = false,color = WooColor.white,radius = 100.dp
+                        bounded = false, color = WooColor.white, radius = 100.dp
                     ),
 
                     ) {
@@ -78,21 +125,12 @@ fun CircularMenu(navigator: DestinationsNavigator) {
             contentScale = ContentScale.FillBounds
         )
 
-        //Middle Circle Compose
-        Box(
-            modifier = Modifier.align(Alignment.Center),
-        ) {
-            MiddleCircle(viewModel = circularMenuViewModel)
-        }
-
-        //OuterCircle Compose
-        OuterCircle(viewModel = circularMenuViewModel)
 
 //       Go to Chat
         Box(
             modifier = Modifier
                 .absoluteOffset(
-                    x = Dimension.chatTextOffset_X,y = Dimension.chatTextOffset_Y
+                    x = Dimension.chatTextOffset_X, y = Dimension.chatTextOffset_Y
                 )
                 .align(Alignment.TopStart)
                 .clickable {
@@ -101,7 +139,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                     }
                     scopeAntiClockWise.launch {
                         circularMenuViewModel.rotateMiddleCircleAntiClockWise()
-                        navigator.navigate(DashboardScreenDestination)
+                        context.startActivity(Intent(context, ConversationActivity::class.java))
 
                     }
 
@@ -120,7 +158,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
         Box(
             modifier = Modifier
                 .absoluteOffset(
-                    x = -Dimension.meetingTextOffset_X,y = Dimension.meetingTextOffset_Y
+                    x = -Dimension.meetingTextOffset_X, y = Dimension.meetingTextOffset_Y
                 )
                 .align(Alignment.TopEnd)
                 .clickable {
@@ -133,7 +171,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                 },
         ) {
             Image(
-                painter = meeting_text_active,contentDescription = null,
+                painter = meeting_text_active, contentDescription = null,
                 modifier = Modifier
                     .height(Dimension.circleWheelTextHeight)
                     .width(Dimension.circleWheelTextHeight)
@@ -144,7 +182,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
         Box(
             modifier = Modifier
                 .absoluteOffset(
-                    x = Dimension.callTextOffset_X,y = -Dimension.callTextOffset_Y
+                    x = Dimension.callTextOffset_X, y = -Dimension.callTextOffset_Y
                 )
                 .align(Alignment.BottomStart)
                 .clickable {
@@ -157,7 +195,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                 },
         ) {
             Image(
-                painter = call_text_active,contentDescription = null,
+                painter = call_text_active, contentDescription = null,
                 modifier = Modifier
                     .height(Dimension.circleWheelTextHeight)
                     .width(Dimension.circleWheelTextHeight)
@@ -168,7 +206,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
         Box(
             modifier = Modifier
                 .absoluteOffset(
-                    x = -Dimension.walletTextOffset_X,y = -Dimension.walletTextOffset_Y
+                    x = -Dimension.walletTextOffset_X, y = -Dimension.walletTextOffset_Y
                 )
                 .align(Alignment.BottomEnd)
                 .clickable {
@@ -200,7 +238,9 @@ fun CircularMenu(navigator: DestinationsNavigator) {
             )
         }
 
+
     }
+
 
 }
 
@@ -227,12 +267,13 @@ fun OuterCircle(viewModel: CircularMenuViewModel) {
 @Composable
 fun MiddleCircle(viewModel: CircularMenuViewModel) {
     val middle_wheel = painterResource(id = R.drawable.middle_wheel_1)
+    val wheelSize: Dp = (Dimension.boxWithConstraintsScope.maxWidth * 0.70f)
     Image(
         painter = middle_wheel,
         contentDescription = "middle_wheel",
         modifier = Modifier
-            .width(Dimension.boxWithConstraintsScope.maxWidth * 0.70f)
-            .height(Dimension.boxWithConstraintsScope.maxWidth * 0.70f)
+            .width(wheelSize)
+            .height(wheelSize)
             .graphicsLayer {
                 rotationZ = if (viewModel.isOuterRotatingClockWise.value) {
                     viewModel.antiClockWiseRotation.component1().value
@@ -243,4 +284,3 @@ fun MiddleCircle(viewModel: CircularMenuViewModel) {
         contentScale = ContentScale.FillBounds
     )
 }
-

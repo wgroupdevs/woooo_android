@@ -1,6 +1,5 @@
 package com.wgroup.woooo_app.woooo.feature.meeting.views
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,7 +28,7 @@ import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import com.wgroup.woooo_app.woooo.utils.Dimension
+import woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 
 @Preview

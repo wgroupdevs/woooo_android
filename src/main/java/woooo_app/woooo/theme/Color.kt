@@ -30,5 +30,6 @@ object WooColor {
     val red = Color(0xD9FF0000)
     val dark = Color(0xFF505C61)
     val circulInner = Color(0xFFCBD3D6)
+    val halfTransparent = Color(0x80CBD3D6)
     val lightBlue = Color(0xCC80D8FF)
 }

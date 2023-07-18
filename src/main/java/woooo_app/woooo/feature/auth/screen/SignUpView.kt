@@ -24,7 +24,6 @@ import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.JoinInner
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,7 +52,7 @@ import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.shared.components.view_models.CountryPickerViewModel
 import com.wgroup.woooo_app.woooo.shared.components.view_models.PasswordValidatorViewModel
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import com.wgroup.woooo_app.woooo.utils.Dimension
+import woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
 

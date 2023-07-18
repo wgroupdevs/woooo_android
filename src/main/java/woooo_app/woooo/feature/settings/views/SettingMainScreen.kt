@@ -19,7 +19,7 @@ import com.wgroup.woooo_app.woooo.destinations.AccountMainScreenDestination
 import com.wgroup.woooo_app.woooo.destinations.ApplicationMainScreenDestination
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import com.wgroup.woooo_app.woooo.utils.Dimension
+import woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 
 @Composable
