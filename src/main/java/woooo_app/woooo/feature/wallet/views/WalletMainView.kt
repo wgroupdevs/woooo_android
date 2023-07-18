@@ -23,12 +23,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.rounded.ArrowForwardIos
-import androidx.compose.material.icons.rounded.Fitbit
 import androidx.compose.material.icons.rounded.Forward10
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
@@ -57,7 +55,7 @@ import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import com.wgroup.woooo_app.woooo.utils.Dimension
+import woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 
 @Composable
@@ -253,7 +251,7 @@ fun PieChart(
     }
 
     val colors = listOf(
-        WooColor.Yellow,WooColor.Cyan
+        WooColor.circulInner, Color.Transparent, Color.Transparent, Color.Transparent
     )
 
     var animationPlayed by remember { mutableStateOf(false) }
@@ -290,7 +288,7 @@ fun PieChart(
         ) {
             Canvas(
                 modifier = Modifier
-                    .size(radiusOuter * 2f)
+                    .size(radiusOuter)
                     .rotate(animateRotation)
             ) {
                 // draw each Arc for each data entry in Pie Chart

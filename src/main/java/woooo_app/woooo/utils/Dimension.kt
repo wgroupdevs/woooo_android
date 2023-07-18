@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.utils
+package woooo_app.woooo.utils
 
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.ui.unit.dp

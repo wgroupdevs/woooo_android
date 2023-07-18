@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.min
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wgroup.woooo_app.woooo.shared.components.view_models.PasswordValidatorViewModel
 import com.wgroup.woooo_app.woooo.theme.WooColor
+import woooo_app.woooo.utils.Dimension
 
 @Composable
 fun PasswordValidator(height: Float) {
@@ -48,7 +49,7 @@ fun PasswordValidator(height: Float) {
                     HorizontalSpacer()
                     Text(text = "Minimum 8 Characters",style = MaterialTheme.typography.bodySmall)
                 }
-                VerticalSpacer(com.wgroup.woooo_app.woooo.utils.Dimension.dimen_5)
+                VerticalSpacer(Dimension.dimen_5)
                 // upper case
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (customPasswordValidator.upperCase.value) DoneIcon()
@@ -59,7 +60,7 @@ fun PasswordValidator(height: Float) {
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
-                VerticalSpacer(com.wgroup.woooo_app.woooo.utils.Dimension.dimen_5)
+                VerticalSpacer(Dimension.dimen_5)
                 // lower Case
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (customPasswordValidator.lowerCase.value) DoneIcon()
@@ -70,7 +71,7 @@ fun PasswordValidator(height: Float) {
                         style = MaterialTheme.typography.bodySmall
                     )
                 }
-                VerticalSpacer(com.wgroup.woooo_app.woooo.utils.Dimension.dimen_5)
+                VerticalSpacer(Dimension.dimen_5)
                 //  1 Number
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (customPasswordValidator.oneNumber.value) DoneIcon()
@@ -82,7 +83,7 @@ fun PasswordValidator(height: Float) {
                 }
                 // special Character
 
-                VerticalSpacer(com.wgroup.woooo_app.woooo.utils.Dimension.dimen_5)
+                VerticalSpacer(Dimension.dimen_5)
                 //  1 Number
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (customPasswordValidator.specialChar.value) DoneIcon()

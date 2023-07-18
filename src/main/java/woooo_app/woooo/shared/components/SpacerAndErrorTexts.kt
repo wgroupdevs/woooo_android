@@ -16,7 +16,7 @@ import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.VerifyOtpViewModel
 import com.wgroup.woooo_app.woooo.feature.profile.viewmodels.UpdateProfileViewModel
 import com.wgroup.woooo_app.woooo.feature.wallet.viewmodel.SendCurrencyViewModel
-import com.wgroup.woooo_app.woooo.utils.Dimension
+import woooo_app.woooo.utils.Dimension
 
 @Composable
 fun VerticalSpacer(height: Dp = Dimension.dimen_10) {
