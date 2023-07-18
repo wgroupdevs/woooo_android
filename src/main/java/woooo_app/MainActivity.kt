@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app
+package woooo_app
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
