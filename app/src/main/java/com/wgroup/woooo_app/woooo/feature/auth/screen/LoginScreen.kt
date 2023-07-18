@@ -21,7 +21,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.rounded.VisibilityOff
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -31,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -43,6 +43,7 @@ import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CountryPicker
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.CustomDivider
+import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageForLoginWithEmail
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageLoginWithPhone
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
@@ -85,6 +86,7 @@ fun LoginWithPhoneNumber(
     loginWithPhoneViewModel: LoginWithPhoneViewModel
 ) {
     val countryPickerViewModel: CountryPickerViewModel = hiltViewModel()
+    val context = LocalContext.current
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -111,7 +113,7 @@ fun LoginWithPhoneNumber(
                     LaunchedEffect(interactionSource) {
                         interactionSource.interactions.collect {
                             if (it is PressInteraction.Release) {
-//                                open date picker
+                                countryPickerViewModel.readJsonFileFromAssets(context = context)
                                 loginWithPhoneViewModel.setShowCountryPickerValue(true)
                             }
                         }
@@ -119,11 +121,7 @@ fun LoginWithPhoneNumber(
                 },
                 hint = countryPickerViewModel.getSelectedCountry.value,
                 trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.ArrowDropDown,
-                        contentDescription = "",
-                        tint = Color.White
-                    )
+                    CustomIcon(icon = Icons.Default.ArrowDropDown,modifier = Modifier)
                 },
                 value = countryPickerViewModel.getSelectedCountry.value,
                 isError = loginWithPhoneViewModel.getCountryError.value,
@@ -191,12 +189,9 @@ fun LoginWithPhoneNumber(
                 },
                 hint = Strings.enterPasswordText,
                 trailingIcon = {
-                    Icon(imageVector = Icons.Rounded.VisibilityOff,
-
-                        contentDescription = "",tint = Color.White,modifier = Modifier.clickable {
-                            loginWithEmailViewModel.setEyeValueForPassword(!loginWithEmailViewModel.getEyeForPassword.value)
-                        })
-
+                    CustomIcon(icon = Icons.Rounded.VisibilityOff,modifier = Modifier.clickable {
+                        loginWithEmailViewModel.setEyeValueForPassword(!loginWithEmailViewModel.getEyeForPassword.value)
+                    })
                 },
                 obscusePass = loginWithEmailViewModel.getEyeForPassword.value
             )
@@ -328,12 +323,9 @@ fun LoginWithEmail(navigator: DestinationsNavigator) {
                 },
                 hint = Strings.enterPasswordText,
                 trailingIcon = {
-                    Icon(imageVector = Icons.Rounded.VisibilityOff,
-
-                        contentDescription = "",tint = Color.White,modifier = Modifier.clickable {
-                            loginWithEmailViewModel.setEyeValueForPassword(!loginWithEmailViewModel.getEyeForPassword.value)
-                        })
-
+                    CustomIcon(icon = Icons.Rounded.VisibilityOff,modifier = Modifier.clickable {
+                        loginWithEmailViewModel.setEyeValueForPassword(!loginWithEmailViewModel.getEyeForPassword.value)
+                    })
                 },
                 obscusePass = loginWithEmailViewModel.getEyeForPassword.value
             )
@@ -393,14 +385,13 @@ fun LoginWithEmail(navigator: DestinationsNavigator) {
             VerticalSpacer(Dimension.dimen_130)       //  Login With Phone Button
 
         }
-        TextButton(
-            onClick = {
-                navigator.navigate(SignUpScreenDestination)
-            },contentPadding = PaddingValues(0.dp)
+        TextButton (onClick = {
+            navigator.navigate(SignUpScreenDestination)
+        },
+        contentPadding = PaddingValues(0.dp)
         ) {
-            Text(text = Strings.dontHaveAcntText,style = MaterialTheme.typography.labelLarge)
-        }
+        Text(text = Strings.dontHaveAcntText,style = MaterialTheme.typography.labelLarge)
     }
-
+    }
 
 }

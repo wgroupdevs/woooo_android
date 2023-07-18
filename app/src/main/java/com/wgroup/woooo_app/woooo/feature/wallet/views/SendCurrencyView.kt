@@ -154,7 +154,7 @@ fun SendByAddress() {
 
 @Composable
 fun SendByScan() {
-    val URL = "https://www.example.com"
+
     Column {
 
     }

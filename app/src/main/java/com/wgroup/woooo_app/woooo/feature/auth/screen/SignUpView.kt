@@ -44,6 +44,7 @@ import com.wgroup.woooo_app.R
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CountryPicker
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
+import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageSignUpView
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.PasswordValidator
@@ -103,11 +104,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 },
                 hint = Strings.firstNameText,
                 leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Rounded.Person,
-                        contentDescription = "",
-                        tint = Color.White
-                    )
+                  CustomIcon( icon = Icons.Rounded.Person,modifier =Modifier )
                 })
             VerticalSpacer(Dimension.dimen_5)
             // last name
@@ -126,11 +123,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 },
                 hint = Strings.lastNameText,
                 leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Rounded.Person,
-                        contentDescription = "",
-                        tint = Color.White
-                    )
+                    CustomIcon( icon = Icons.Rounded.Person,modifier =Modifier )
                 })
             VerticalSpacer(Dimension.dimen_5)
             //phone number
@@ -140,6 +133,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 LaunchedEffect(interactionSource) {
                     interactionSource.interactions.collect {
                         if (it is PressInteraction.Release) {
+//                            First read Json File and Then Enabled Country Picker Dialog
                             countryPickerViewModel.readJsonFileFromAssets(context = context)
                             signUpViewModel.setShowCountryPickerValue(true)
                         }
@@ -185,9 +179,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 },
                 hint = Strings.emailText,
                 leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Rounded.Email,contentDescription = "",tint = Color.White
-                    )
+                   CustomIcon(icon = Icons.Rounded.Email,modifier = Modifier)
                 })
             VerticalSpacer(Dimension.dimen_5)
 
@@ -227,9 +219,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 },
                 hint = Strings.passwordText,
                 leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Rounded.Lock,contentDescription = "",tint = Color.White
-                    )
+                    CustomIcon(icon = Icons.Rounded.Lock)
                 })
             VerticalSpacer(Dimension.dimen_5)
             //Confirm Password
@@ -248,18 +238,14 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 },
                 hint = Strings.confirmpasswordText,
                 leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Rounded.Lock,contentDescription = "",tint = Color.White
-                    )
+                   CustomIcon(icon = Icons.Rounded.Lock)
                 })
             VerticalSpacer(Dimension.dimen_5)
             //Referral Code
             TextLabel(label = Strings.referralCodeText)
             VerticalSpacer()
             WooTextField(hint = Strings.referralCodeText,leadingIcon = {
-                Icon(
-                    imageVector = Icons.Rounded.JoinInner,contentDescription = "",tint = Color.White
-                )
+               CustomIcon(icon = Icons.Rounded.JoinInner)
             })
 
         }

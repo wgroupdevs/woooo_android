@@ -83,13 +83,12 @@ fun CircularMenu(navigator: DestinationsNavigator) {
             modifier = Modifier.align(Alignment.Center),
         ) {
             MiddleCircle(viewModel = circularMenuViewModel)
-
         }
 
         //OuterCircle Compose
         OuterCircle(viewModel = circularMenuViewModel)
 
-//         ChatText
+//       Go to Chat
         Box(
             modifier = Modifier
                 .absoluteOffset(
@@ -117,6 +116,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                     .rotate(Dimension.chatTextRotation)
             )
         }
+//        Go to Meeting
         Box(
             modifier = Modifier
                 .absoluteOffset(
@@ -183,7 +183,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                     }
                 },
         ) {
-            /// open verify dialog
+            /// open verify Wallet Pin dialog
             if (circularMenuViewModel.getOpenVerifyDialog.value) {
                 Wallet_Pin_Verify_Dialog(navigator = navigator,
                     onDismiss = { circularMenuViewModel.setOpenVerifyDialogValue(false) },

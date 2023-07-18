@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBackIos
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.VerifyOtpViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
+import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageVerifyOtp
 import com.wgroup.woooo_app.woooo.shared.components.TextLabel
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
@@ -34,10 +34,7 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 fun VerifyOtpView() {
     val verifyOtpViewModel: VerifyOtpViewModel = hiltViewModel()
     Column(Modifier.padding(Dimension.dimen_10)) {
-        Icon(
-            imageVector = Icons.Rounded.ArrowBackIos,
-            contentDescription = "",
-        )
+        CustomIcon(icon = Icons.Rounded.ArrowBackIos)
         VerticalSpacer(Dimension.dimen_30)
         Column(Modifier.padding(Dimension.dimen_10)) {
             val context = LocalContext.current
@@ -63,10 +60,11 @@ fun VerifyOtpView() {
             //New Pass
             TextLabel(label = Strings.newPswdText)
             VerticalSpacer(Dimension.dimen_15)
-            WooTextField(onValueChange = {
-                verifyOtpViewModel.setNewPassText(it)
-                verifyOtpViewModel.setNewPassError(false)
-            },
+            WooTextField(
+                onValueChange = {
+                    verifyOtpViewModel.setNewPassText(it)
+                    verifyOtpViewModel.setNewPassError(false)
+                },
                 value = verifyOtpViewModel.getNewPassText.value,
                 isError = verifyOtpViewModel.getNewPassError.value,
                 supportingText = {
@@ -79,10 +77,11 @@ fun VerifyOtpView() {
             //Confirm Pass
             TextLabel(label = Strings.confirmpasswordText)
             VerticalSpacer(Dimension.dimen_15)
-            WooTextField(onValueChange = {
-                verifyOtpViewModel.setConfirmPassText(it)
-                verifyOtpViewModel.setConfirmPassError(false)
-            },
+            WooTextField(
+                onValueChange = {
+                    verifyOtpViewModel.setConfirmPassText(it)
+                    verifyOtpViewModel.setConfirmPassError(false)
+                },
                 value = verifyOtpViewModel.getConfirmPassText.value,
                 isError = verifyOtpViewModel.getConfirmPassError.value,
                 supportingText = {

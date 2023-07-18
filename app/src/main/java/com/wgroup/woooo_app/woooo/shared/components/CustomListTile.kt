@@ -82,10 +82,9 @@ fun TopBarForSetting(
             verticalAlignment = Alignment.CenterVertically,
 
             ) {
-            Icon(
-                imageVector = Icons.Outlined.ArrowBackIosNew,
-                contentDescription = "",
-                tint = WooColor.white,
+
+            CustomIcon(
+                icon = Icons.Outlined.ArrowBackIosNew,
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .clickable(onClick = onBackPressed)
@@ -96,7 +95,7 @@ fun TopBarForSetting(
                 onValueChange = onValueChange,
                 placeholder = {
                     Row {
-                        Icon(imageVector = Icons.Outlined.Search,contentDescription = "")
+                        CustomIcon(icon = Icons.Outlined.Search)
                         HorizontalSpacer(Dimension.dimen_5)
                         Text(text = "Search",style = MaterialTheme.typography.labelSmall)
                     }

@@ -23,7 +23,6 @@ import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
@@ -51,6 +50,7 @@ import com.wgroup.woooo_app.woooo.destinations.SignUpScreenDestination
 import com.wgroup.woooo_app.woooo.feature.home.ui.AppDrawer
 import com.wgroup.woooo_app.woooo.feature.home.ui.CircularMenu
 import com.wgroup.woooo_app.woooo.feature.home.viewmodel.HomeViewModel
+import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.ViewDivider
@@ -62,8 +62,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomePage(navigator: DestinationsNavigator,homeViewModel: HomeViewModel = hiltViewModel()) {
     BoxWithConstraints(
-        Modifier
-            .padding(top = Dimension.dimen_10)
+        Modifier.padding(top = Dimension.dimen_10)
 
     ) {
         Dimension.boxWithConstraintsScope = this
@@ -115,8 +114,7 @@ fun HomePage(navigator: DestinationsNavigator,homeViewModel: HomeViewModel = hil
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(upperPadding),
-                )
-                { innerPadding ->
+                ) { innerPadding ->
                     Column(
                         Modifier
                             .fillMaxSize()
@@ -128,16 +126,14 @@ fun HomePage(navigator: DestinationsNavigator,homeViewModel: HomeViewModel = hil
                         VerticalSpacer()
                         //Name Text
                         Text(
-                            text = "Hi, Mac27",
-                            modifier = Modifier
+                            text = "Hi, Mac27",modifier = Modifier
                                 .align(
                                     alignment = Alignment.Start
                                 )
                                 .padding(start = Dimension.dimen_20)
                                 .clickable {
                                     navigator.navigate(SignUpScreenDestination)
-                                },
-                            style = MaterialTheme.typography.bodyLarge
+                                },style = MaterialTheme.typography.bodyLarge
                         )
                         CircularMenu(navigator)
                         Column(
@@ -219,8 +215,7 @@ enum class ExpandedType {
 fun BottomSheetContent(
 ) {
     Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(Dimension.dimen_20))
+        modifier = Modifier.clip(RoundedCornerShape(Dimension.dimen_20))
     ) {
 
         Box(
@@ -231,29 +226,25 @@ fun BottomSheetContent(
         )
 
         Column(
-            modifier = Modifier
-                .verticalScroll(rememberScrollState())
+            modifier = Modifier.verticalScroll(rememberScrollState())
         ) {
 
-            Button(
-                modifier = Modifier
-                    .align(
-                        alignment = Alignment.CenterHorizontally
-                    ),
-                onClick = { /*TODO*/ }) {
+            Button(modifier = Modifier.align(
+                    alignment = Alignment.CenterHorizontally
+                ),onClick = { /*TODO*/ }) {
                 Text(text = "Show more",style = MaterialTheme.typography.bodyMedium)
             }
 
 
-            BottomSheetCard("Chat")
+            BottomSheetCard("Chat") {}
             VerticalSpacer()
-            BottomSheetCard("Call")
+            BottomSheetCard("Call") {}
             VerticalSpacer()
-            BottomSheetCard("Meeting")
+            BottomSheetCard("Meeting") {}
             VerticalSpacer()
-            BottomSheetCard("Wallet")
+            BottomSheetCard("Wallet") {}
             VerticalSpacer()
-            BottomSheetCard("Daily Reward")
+            BottomSheetCard("Daily Reward") {}
             VerticalSpacer()
         }
 
@@ -275,7 +266,7 @@ fun DailyProgress() {
             Text(text = "0% to complete",style = MaterialTheme.typography.labelSmall)
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(imageVector = Icons.Outlined.AccessTime,contentDescription = "")
+            CustomIcon(icon = Icons.Outlined.AccessTime)
             HorizontalSpacer(Dimension.dimen_5)
             Text(text = "12 hrs",style = MaterialTheme.typography.labelSmall)
         }
@@ -298,10 +289,8 @@ fun GradientProgressbar(
 ) {
 
     val animateNumber = animateFloatAsState(
-        targetValue = 80f,
-        animationSpec = tween(
-            durationMillis = animationDuration,
-            delayMillis = animationDelay
+        targetValue = 80f,animationSpec = tween(
+            durationMillis = animationDuration,delayMillis = animationDelay
         )
     )
 
@@ -378,14 +367,19 @@ fun PendingChatCallMeeting() {
 }
 
 @Composable
-fun BottomSheetCard(label: String) {
+fun BottomSheetCard(
+    label: String,content: @Composable () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = Dimension.dimen_20)
             .height(300.dp)
             .clip(RoundedCornerShape(Dimension.dimen_20))
-            .border(border = BorderStroke(width = 1.dp,color = WooColor.white))
+            .border(
+                border = BorderStroke(width = 1.dp,color = WooColor.white),
+                shape = RoundedCornerShape(Dimension.dimen_20)
+            )
     ) {
 
         Column(
@@ -396,20 +390,21 @@ fun BottomSheetCard(label: String) {
                 ),
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = label,style = MaterialTheme.typography.headlineMedium)
                 IconButton(onClick = {}) {
-                    Icon(imageVector = Icons.Outlined.ArrowForward,contentDescription = "")
+                    CustomIcon(icon = Icons.Outlined.ArrowForward)
 
                 }
             }
-
             ViewDivider()
-
+            VerticalSpacer()
+            Column {
+                content()
+            }
         }
 
     }
