@@ -46,7 +46,7 @@ import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.shared.components.view_models.CountryPickerViewModel
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import com.wgroup.woooo_app.woooo.utils.Dimension
+import woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
 

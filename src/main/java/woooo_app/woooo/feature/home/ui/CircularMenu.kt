@@ -1,6 +1,7 @@
 package com.wgroup.woooo_app.woooo.feature.home.ui
 
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -19,19 +20,20 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.wgroup.woooo_app.woooo.destinations.DashboardScreenDestination
 import com.wgroup.woooo_app.woooo.destinations.MiningMainScreenDestination
 import com.wgroup.woooo_app.woooo.feature.home.screen.initCircleTextOffset
 import com.wgroup.woooo_app.woooo.feature.home.viewmodel.CircularMenuViewModel
 import com.wgroup.woooo_app.woooo.feature.wallet.views.Wallet_Pin_Verify_Dialog
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import com.wgroup.woooo_app.woooo.utils.Dimension
+import woooo_app.woooo.utils.Dimension
 import eu.siacs.conversations.R
 import eu.siacs.conversations.ui.ConversationActivity
 import kotlinx.coroutines.launch
+import ir.kaaveh.sdpcompose.sdp
 
 @Composable
 fun CircularMenu(navigator: DestinationsNavigator) {
@@ -63,13 +65,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                 .width(Dimension.boxWithConstraintsScope.maxWidth * 0.33f)
                 .height(Dimension.boxWithConstraintsScope.maxWidth * 0.33f)
                 .align(Alignment.Center)
-                .clickable(
-                    interactionSource = MutableInteractionSource(),
-                    indication = rememberRipple(
-                        bounded = false, color = WooColor.white, radius = 100.dp
-                    ),
-
-                    ) {
+                .clickable {
 
                     scopeClockWise.launch {
                         circularMenuViewModel.rotateOuterCircleClockWise()
@@ -108,7 +104,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                     scopeAntiClockWise.launch {
                         circularMenuViewModel.rotateMiddleCircleAntiClockWise()
 
-                        context.startActivity(Intent(context,ConversationActivity::class.java))
+                        context.startActivity(Intent(context, ConversationActivity::class.java))
 
 //                        navigator.navigate(DashboardScreenDestination)
 
@@ -235,12 +231,19 @@ fun OuterCircle(viewModel: CircularMenuViewModel) {
 @Composable
 fun MiddleCircle(viewModel: CircularMenuViewModel) {
     val middle_wheel = painterResource(id = R.drawable.middle_wheel_1)
+
+    val wheelSize:Dp = (Dimension.boxWithConstraintsScope.maxWidth * 0.70f)
+//    val wheelSize:Dp = 288.sdp
+
+    Log.d("MIDDLE_CIRCLE",wheelSize.toString());
+//288
+
     Image(
         painter = middle_wheel,
         contentDescription = "middle_wheel",
         modifier = Modifier
-            .width(Dimension.boxWithConstraintsScope.maxWidth * 0.70f)
-            .height(Dimension.boxWithConstraintsScope.maxWidth * 0.70f)
+            .width(wheelSize)
+            .height(wheelSize)
             .graphicsLayer {
                 rotationZ = if (viewModel.isOuterRotatingClockWise.value) {
                     viewModel.antiClockWiseRotation.component1().value

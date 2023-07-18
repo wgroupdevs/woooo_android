@@ -74,7 +74,7 @@ import eu.siacs.conversations.xmpp.jingle.RtpEndUserState;
 
 public class RtpSessionActivity extends XmppActivity
         implements XmppConnectionService.OnJingleRtpConnectionUpdate,
-                eu.siacs.conversations.ui.widget.SurfaceViewRenderer.OnAspectRatioChanged {
+        eu.siacs.conversations.ui.widget.SurfaceViewRenderer.OnAspectRatioChanged {
 
     public static final String EXTRA_WITH = "with";
     public static final String EXTRA_SESSION_ID = "session_id";
@@ -319,7 +319,7 @@ public class RtpSessionActivity extends XmppActivity
 
     private void acceptContentAdd(final ContentAddition contentAddition) {
         if (contentAddition == null || contentAddition.direction != ContentAddition.Direction.INCOMING) {
-            Log.d(Config.LOGTAG,"ignore press on content-accept button");
+            Log.d(Config.LOGTAG, "ignore press on content-accept button");
             return;
         }
         requestPermissionAndAcceptContentAdd(contentAddition);
@@ -414,7 +414,7 @@ public class RtpSessionActivity extends XmppActivity
                     rtpConnection == null ? null : rtpConnection.getAudioManager();
             if (audioManager == null
                     || audioManager.getSelectedAudioDevice()
-                            == AppRTCAudioManager.AudioDevice.EARPIECE) {
+                    == AppRTCAudioManager.AudioDevice.EARPIECE) {
                 acquireProximityWakeLock();
             }
         }
@@ -469,7 +469,8 @@ public class RtpSessionActivity extends XmppActivity
     }
 
     @Override
-    protected void refreshUiReal() {}
+    protected void refreshUiReal() {
+    }
 
     @Override
     public void onNewIntent(final Intent intent) {
@@ -543,8 +544,8 @@ public class RtpSessionActivity extends XmppActivity
             }
             if (END_CARD.contains(state)
                     || xmppConnectionService
-                            .getJingleConnectionManager()
-                            .hasMatchingProposal(account, with)) {
+                    .getJingleConnectionManager()
+                    .hasMatchingProposal(account, with)) {
                 return;
             }
             Log.d(Config.LOGTAG, "restored state (" + state + ") was not an end card. finishing");
@@ -738,10 +739,10 @@ public class RtpSessionActivity extends XmppActivity
             final JingleRtpConnection rtpConnection = requireRtpConnection();
             return rtpConnection.getMedia().contains(Media.VIDEO)
                     && Arrays.asList(
-                                    RtpEndUserState.ACCEPTING_CALL,
-                                    RtpEndUserState.CONNECTING,
-                                    RtpEndUserState.CONNECTED)
-                            .contains(rtpConnection.getEndUserState());
+                            RtpEndUserState.ACCEPTING_CALL,
+                            RtpEndUserState.CONNECTING,
+                            RtpEndUserState.CONNECTED)
+                    .contains(rtpConnection.getEndUserState());
         } catch (final IllegalStateException e) {
             return false;
         }
@@ -917,31 +918,48 @@ public class RtpSessionActivity extends XmppActivity
     }
 
     private void updateIncomingCallScreen(final RtpEndUserState state, final Contact contact) {
-        if (state == RtpEndUserState.INCOMING_CALL || state == RtpEndUserState.ACCEPTING_CALL) {
-            final boolean show = getResources().getBoolean(R.bool.show_avatar_incoming_call);
-            if (show) {
-                binding.contactPhoto.setVisibility(View.VISIBLE);
-                if (contact == null) {
-                    AvatarWorkerTask.loadAvatar(
-                            getWith(), binding.contactPhoto, R.dimen.publish_avatar_size);
-                } else {
-                    AvatarWorkerTask.loadAvatar(
-                            contact, binding.contactPhoto, R.dimen.publish_avatar_size);
-                }
-            } else {
-                binding.contactPhoto.setVisibility(View.GONE);
-            }
-            final Account account = contact == null ? getWith().getAccount() : contact.getAccount();
-            binding.usingAccount.setVisibility(View.VISIBLE);
-            binding.usingAccount.setText(
-                    getString(
-                            R.string.using_account,
-                            account.getJid().asBareJid().toEscapedString()));
+
+        binding.contactPhoto.setVisibility(View.VISIBLE);
+        if (contact == null) {
+            AvatarWorkerTask.loadAvatar(
+                    getWith(), binding.contactPhoto, R.dimen.publish_avatar_size);
         } else {
-            binding.usingAccount.setVisibility(View.GONE);
-            binding.contactPhoto.setVisibility(View.GONE);
+            AvatarWorkerTask.loadAvatar(
+                    contact, binding.contactPhoto, R.dimen.publish_avatar_size);
         }
-    }
+
+
+//        if (state == RtpEndUserState.INCOMING_CALL || state == RtpEndUserState.ACCEPTING_CALL) {
+//            final boolean show = getResources().getBoolean(R.bool.show_avatar_incoming_call);
+//            if (show) {
+//                binding.contactPhoto.setVisibility(View.VISIBLE);
+//                if (contact == null) {
+//                    AvatarWorkerTask.loadAvatar(
+//                            getWith(), binding.contactPhoto, R.dimen.publish_avatar_size);
+//                } else {
+//                    AvatarWorkerTask.loadAvatar(
+//                            contact, binding.contactPhoto, R.dimen.publish_avatar_size);
+//                }
+//            } else {
+//
+////                binding.contactPhoto.setVisibility(View.GONE);
+//            }
+//            final Account account = contact == null ? getWith().getAccount() : contact.getAccount();
+//            binding.usingAccount.setVisibility(View.VISIBLE);
+//            binding.usingAccount.setText(
+//                    getString(
+//                            R.string.using_account,
+//                            account.getJid().asBareJid().toEscapedString()));
+//
+//
+//    } else
+//
+//    {
+//        binding.usingAccount.setVisibility(View.GONE);
+//        binding.contactPhoto.setVisibility(View.VISIBLE);
+//    }
+
+}
 
     private Set<Media> getMedia() {
         return requireRtpConnection().getMedia();
@@ -992,11 +1010,11 @@ public class RtpSessionActivity extends XmppActivity
             this.binding.acceptCall.setImageResource(R.drawable.ic_voicemail_white_24dp);
             this.binding.acceptCall.setVisibility(View.VISIBLE);
         } else if (asList(
-                        RtpEndUserState.CONNECTIVITY_ERROR,
-                        RtpEndUserState.CONNECTIVITY_LOST_ERROR,
-                        RtpEndUserState.APPLICATION_ERROR,
-                        RtpEndUserState.RETRACTED,
-                        RtpEndUserState.SECURITY_ERROR)
+                RtpEndUserState.CONNECTIVITY_ERROR,
+                RtpEndUserState.CONNECTIVITY_LOST_ERROR,
+                RtpEndUserState.APPLICATION_ERROR,
+                RtpEndUserState.RETRACTED,
+                RtpEndUserState.SECURITY_ERROR)
                 .contains(state)) {
             this.binding.rejectCall.setContentDescription(getString(R.string.exit));
             this.binding.rejectCall.setOnClickListener(this::exit);
