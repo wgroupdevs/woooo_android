@@ -11,7 +11,7 @@ buildscript {
         hilt_version = '2.45'
         retrofit = '2.9.0'
         lifecycle_version = "2.6.1"
-        kotlin_version = '1.8.20'
+        kotlin_gradle = '1.8.20'
     }
 
     repositories {
@@ -24,12 +24,12 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:7.4.2'
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_gradle"
     }
 }
 
 plugins {
-    id 'com.google.devtools.ksp' version '1.8.20-1.0.10' // Depends on your kotlin version
+    id 'com.google.devtools.ksp' version '1.8.20-1.0.11' // Depends on your kotlin version
 }
 
 
@@ -45,13 +45,13 @@ repositories {
 }
 
 configurations {
-    playstoreImplementation
+//    playstoreImplementation
     freeImplementation
     conversationsFreeImplementation
     conversationsPlaystorImplementation
-    conversationsPlaystoreImplementation
-    quicksyPlaystoreImplementation
-    quicksyPlaystoreImplementation
+//    conversationsPlaystoreImplementation
+//    quicksyPlaystoreImplementation
+//    quicksyPlaystoreImplementation
     quicksyFreeImplementation
     quicksyImplementation
 }
@@ -59,13 +59,14 @@ configurations {
 dependencies {
     implementation 'androidx.viewpager:viewpager:1.0.0'
 
-    playstoreImplementation('com.google.firebase:firebase-messaging:23.1.2') {
-        exclude group: 'com.google.firebase', module: 'firebase-core'
-        exclude group: 'com.google.firebase', module: 'firebase-analytics'
-        exclude group: 'com.google.firebase', module: 'firebase-measurement-connector'
-    }
-    conversationsPlaystoreImplementation("com.android.installreferrer:installreferrer:2.2")
-    quicksyPlaystoreImplementation 'com.google.android.gms:play-services-auth-api-phone:18.0.1'
+//    playstoreImplementation('com.google.firebase:firebase-messaging:23.1.2') {
+//        exclude group: 'com.google.firebase', module: 'firebase-core'
+//        exclude group: 'com.google.firebase', module: 'firebase-analytics'
+//        exclude group: 'com.google.firebase', module: 'firebase-measurement-connector'
+//    }
+//    conversationsPlaystoreImplementation("com.android.installreferrer:installreferrer:2.2")
+//    quicksyPlaystoreImplementation 'com.google.android.gms:play-services-auth-api-phone:18.0.1'
+    implementation 'com.google.firebase:firebase-messaging:23.1.2'
     implementation 'com.github.open-keychain.open-keychain:openpgp-api:v5.7.1'
     implementation("com.github.CanHub:Android-Image-Cropper:2.0.0")
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -252,10 +253,10 @@ android {
             dimension "mode"
         }
 
-        playstore {
-            dimension "distribution"
-            versionNameSuffix "+playstore"
-        }
+//        playstore {
+//            dimension "distribution"
+//            versionNameSuffix "+playstore"
+//        }
         free {
             dimension "distribution"
             versionNameSuffix "+free"
@@ -284,8 +285,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            shrinkResources true
-            minifyEnabled true
+//            shrinkResources true
+//            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
