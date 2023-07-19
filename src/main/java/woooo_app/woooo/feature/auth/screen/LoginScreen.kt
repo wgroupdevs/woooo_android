@@ -38,8 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.destinations.SignUpScreenDestination
-import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginWithEmailViewModel
-import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
+import woooo_app.woooo.feature.auth.viewmodel.LoginWithEmailViewModel
+import woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CountryPicker
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.CustomDivider
@@ -262,7 +262,7 @@ fun LoginWithPhoneNumber(
 
         }
     }
-    // Enabled Country Country When User Click On PhoneNumber TextField
+    // Enabled Country Country When woooo_app.woooo.data.models.auth.User Click On PhoneNumber TextField
 
     if (loginWithPhoneViewModel.setShowCountryPicker.value) CountryPicker(onDismissRequest = {
         loginWithPhoneViewModel.setShowCountryPickerValue(
@@ -356,9 +356,11 @@ fun LoginWithEmail(navigator: DestinationsNavigator) {
                 border = BorderStroke(1.dp,Color.White),
                 onClick = {
 
-                    if (loginWithEmailViewModel.validateEmailPass()) {
-                        loginWithEmailViewModel.login()
-                    }
+                    loginWithEmailViewModel.login()
+
+//                    if (loginWithEmailViewModel.validateEmailPass()) {
+//
+//                    }
 
                 },
                 content = {

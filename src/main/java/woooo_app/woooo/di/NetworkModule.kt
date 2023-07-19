@@ -1,15 +1,16 @@
-package com.wgroup.woooo_app.woooo.di
+package woooo_app.woooo.di
 
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import woooo_app.woooo.data.datasource.remote.auth.AuthApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -19,17 +20,26 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun providesMoshi(): Moshi = Moshi
-        .Builder()
-        .run {
-            add(KotlinJsonAdapterFactory())
-            build()
+    fun provideGson(): Gson {
+        return GsonBuilder().serializeNulls().setLenient().create()
+    }
+
+    @Provides
+    @Singleton
+    fun provideInterceptor(): Interceptor {
+        return Interceptor {
+            val request = it.request().newBuilder()
+            request.addHeader("Authorization", "<Your token here>")
+            val actualRequest = request.build()
+            it.proceed(actualRequest)
         }
+    }
+
 
     @Provides
     @Singleton
     fun providesOkHttp(): OkHttpClient = OkHttpClient.Builder().run {
-        interceptors()
+        provideInterceptor()
         connectTimeout(50, TimeUnit.SECONDS)
         readTimeout(50, TimeUnit.SECONDS)
         build()
@@ -37,12 +47,12 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun providesApiService(okHttpClient: OkHttpClient, moshi: Moshi): AuthApiService = Retrofit
+    fun providesApiService(okHttpClient: OkHttpClient, gson: Gson): AuthApiService = Retrofit
         .Builder()
         .run {
             baseUrl(AuthApiService.BASE_URL)
             client(okHttpClient)
-            addConverterFactory(MoshiConverterFactory.create(moshi))
+            addConverterFactory(GsonConverterFactory.create(gson))
             build()
         }.create(AuthApiService::class.java)
 

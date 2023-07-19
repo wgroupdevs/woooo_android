@@ -1,8 +1,8 @@
 package woooo_app.woooo.data.repositoryImp
 
 import android.util.Log
-import com.wgroup.woooo_app.woooo.shared.base.APIResult
-import com.wgroup.woooo_app.woooo.shared.base.BaseRepository
+import woooo_app.woooo.shared.base.APIResult
+import woooo_app.woooo.shared.base.BaseRepository
 import kotlinx.coroutines.flow.Flow
 import woooo_app.woooo.data.datasource.remote.auth.AuthApiService
 import woooo_app.woooo.data.models.auth.ConfirmAccountModel
@@ -20,7 +20,7 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun login(user: LoginRequestParams): Flow<APIResult<LoginModel>> =
         safeApiCall {
             Log.d("LOGIN API CALL",user.toString())
-            apiService.login(user)
+            apiService.login(true,user)
         }
 
     override suspend fun signUp(user: SignUpRequestModel): Flow<APIResult<SignUpModel>> =

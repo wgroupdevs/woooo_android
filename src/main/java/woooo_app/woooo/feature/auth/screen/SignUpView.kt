@@ -292,7 +292,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
         )
         // enable Loader when Api Hit
         if (signUpViewModel.signUpResponseState.value.isLoading) ShowLoader()
-        // Enabled Country Country When User Click On PhoneNumber TextField
+        // Enabled Country Country When woooo_app.woooo.data.models.auth.User Click On PhoneNumber TextField
 
         if (signUpViewModel.setShowCountryPicker.value) CountryPicker(onDismissRequest = {
             signUpViewModel.setShowCountryPickerValue(

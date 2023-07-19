@@ -2,7 +2,7 @@ package com.wgroup.woooo_app.woooo.feature.wallet.data.source.remote
 //
 //import com.wgroup.woooo_app.woooo.feature.auth.domain.model.LoginResponse
 //import com.wgroup.woooo_app.woooo.feature.auth.domain.model.params.LoginRequestParams
-//import com.wgroup.woooo_app.woooo.shared.base.APIResult
+//import woooo_app.woooo.shared.base.APIResult
 //import retrofit2.Response
 //import retrofit2.http.Body
 //import retrofit2.http.POST

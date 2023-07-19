@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
-import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
+import woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import woooo_app.woooo.shared.components.ViewDivider

@@ -706,7 +706,7 @@
 
 ### Version 1.13.0
 * configurable dark theme
-* opt-in to share Last User Interaction
+* opt-in to share Last woooo_app.woooo.data.models.auth.User Interaction
 
 ### Version 1.12.9
 * make grace period configurable

@@ -1,15 +1,16 @@
-package com.wgroup.woooo_app.woooo.feature.auth.viewmodel
+package woooo_app.woooo.feature.auth.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import woooo_app.woooo.shared.base.doOnFailure
+import woooo_app.woooo.shared.base.doOnLoading
+import woooo_app.woooo.shared.base.doOnSuccess
 import woooo_app.woooo.data.models.auth.requestmodels.LoginRequestParams
 import woooo_app.woooo.domain.usecase.LoginUseCase
-import com.wgroup.woooo_app.woooo.shared.base.doOnFailure
-import com.wgroup.woooo_app.woooo.shared.base.doOnLoading
-import com.wgroup.woooo_app.woooo.shared.base.doOnSuccess
 import com.wgroup.woooo_app.woooo.utils.Strings
 import woooo_app.woooo.utils.Validators
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -97,18 +98,24 @@ class LoginWithEmailViewModel @Inject constructor(private val loginUseCase: Logi
     }
 
     fun login() = viewModelScope.launch {
+        Log.d("SafeAPICall Message","Login Started....")
         loginUseCase.invoke(
             LoginRequestParams(
-                email = "hamzaf875@gmail.commm",deviceName = "Mobile",password = "Hamza@123"
+                email = "Sweatboy570@gmail.com",password = "Hamza@123"
             )
         ).doOnSuccess {
             _loginResponse.value = LoginState(
                 it,
             )
+            Log.d("SafeAPICall Message","doOnSuccess....")
+            Log.d("SafeAPICall Message","${loginResponse.value.data.data?.user?.email}")
+
         }.doOnFailure {
             _loginResponse.value = LoginState(
                 error = it.toString(),
             )
+            Log.d("Login With Email Error","${it?.message}")
+            Log.d("Login With Email Error","${it?.error}")
         }.doOnLoading {
             _loginResponse.value = LoginState(
                 isLoading = true

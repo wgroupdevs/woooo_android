@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.feature.auth.viewmodel
+package woooo_app.woooo.feature.auth.viewmodel
 
 import woooo_app.woooo.data.models.auth.LoginModel
 import woooo_app.woooo.data.models.auth.SignUpModel

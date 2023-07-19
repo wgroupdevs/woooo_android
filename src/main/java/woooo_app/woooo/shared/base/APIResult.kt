@@ -1,11 +1,12 @@
-package com.wgroup.woooo_app.woooo.shared.base
+package woooo_app.woooo.shared.base
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.transform
+import woooo_app.woooo.data.models.BaseModel
 
 sealed class APIResult<out T> {
 
     data class Success<out T>(val data: T) : APIResult<T>()
-    data class Failure(val msg: Throwable?) : APIResult<Nothing>()
+    data class Failure(val msg: BaseModel?) : APIResult<Nothing>()
     object Loading : APIResult<Nothing>()
 
     override fun toString(): String {
@@ -33,7 +34,7 @@ fun <T> Flow<APIResult<T>>.doOnSuccess(action: suspend (T) -> Unit): Flow<APIRes
         return@transform emit(result)
     }
 
-fun <T> Flow<APIResult<T>>.doOnFailure(action: suspend (Throwable?) -> Unit): Flow<APIResult<T>> =
+fun <T> Flow<APIResult<T>>.doOnFailure(action: suspend (BaseModel?) -> Unit): Flow<APIResult<T>> =
     transform { result ->
         if (result is APIResult.Failure) {
             action(result.msg)

@@ -7,10 +7,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.SignUpSate
-import com.wgroup.woooo_app.woooo.shared.base.doOnFailure
-import com.wgroup.woooo_app.woooo.shared.base.doOnLoading
-import com.wgroup.woooo_app.woooo.shared.base.doOnSuccess
+import woooo_app.woooo.shared.base.doOnFailure
+import woooo_app.woooo.shared.base.doOnLoading
+import woooo_app.woooo.shared.base.doOnSuccess
 import com.wgroup.woooo_app.woooo.shared.components.myToast
 import com.wgroup.woooo_app.woooo.utils.Strings
 import dagger.hilt.android.lifecycle.HiltViewModel
