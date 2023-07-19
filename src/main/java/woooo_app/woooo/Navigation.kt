@@ -1,11 +1,12 @@
 package com.wgroup.woooo_app.woooo
 
 import LoginView
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import woooo_app.woooo.feature.auth.screen.SignUpView
 import com.wgroup.woooo_app.woooo.feature.home.screen.DashboardView
 import com.wgroup.woooo_app.woooo.feature.home.screen.HomePage
 import com.wgroup.woooo_app.woooo.feature.mining.views.MiningMainView
@@ -21,6 +22,7 @@ import com.wgroup.woooo_app.woooo.feature.settings.views.application.LanguageVie
 import com.wgroup.woooo_app.woooo.feature.settings.views.application.SoundAndVibrationView
 import com.wgroup.woooo_app.woooo.feature.wallet.views.SendCurrencyView
 import com.wgroup.woooo_app.woooo.feature.wallet.views.TransactionsView
+import woooo_app.woooo.feature.auth.screen.SignUpView
 import woooo_app.woooo.feature.wallet.views.WalletMainView
 
 @Destination
@@ -29,12 +31,12 @@ fun LoginScreen(navigator: DestinationsNavigator) {
     LoginView(navigator)
 }
 
-@RootNavGraph(start = true)
 @Destination
 @Composable
 fun HomeScreen(navigator: DestinationsNavigator) {
     HomePage(navigator = navigator)
 }
+@RootNavGraph(start = true)
 
 @Destination
 @Composable
@@ -109,6 +111,7 @@ fun MiningMainScreen(navigator: DestinationsNavigator) {
     MiningMainView(navigator)
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Destination
 @Composable
 fun UpdateProfileMainScreen(navigator: DestinationsNavigator) {

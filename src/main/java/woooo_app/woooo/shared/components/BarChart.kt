@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.shared.components
+package woooo_app.woooo.shared.components
 
 import android.graphics.Paint
 import androidx.compose.animation.core.animateFloatAsState
