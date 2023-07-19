@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.shared.components
+package woooo_app.woooo.shared.components
 
 import android.os.Build
 import androidx.annotation.RequiresApi

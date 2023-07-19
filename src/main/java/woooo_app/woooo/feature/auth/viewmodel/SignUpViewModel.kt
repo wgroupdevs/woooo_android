@@ -1,12 +1,12 @@
 package woooo_app.woooo.feature.auth.viewmodel
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wgroup.woooo_app.woooo.domain.usecase.SignUpUseCase
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.SignUpSate
 import woooo_app.woooo.shared.base.doOnFailure
 import woooo_app.woooo.shared.base.doOnLoading
@@ -16,12 +16,13 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 import com.wgroup.woooo_app.woooo.utils.Validators
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import woooo_app.woooo.data.models.auth.SignUpRequestModel
+import woooo_app.woooo.data.models.auth.requestmodels.SignUpRequestModel
+import woooo_app.woooo.domain.usecase.SignUpUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCase) : ViewModel() {
-    private val _signUpResponseState: MutableState<SignUpSate> = mutableStateOf(SignUpSate())
+    val _signUpResponseState: MutableState<SignUpSate> = mutableStateOf(SignUpSate())
     val signUpResponseState: State<SignUpSate> = _signUpResponseState
 
     // first name
@@ -66,13 +67,6 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
         _getShowCountryPicker.value = value
     }
 
-//    // error text
-//    private val _setErrorText = mutableStateOf("")
-//    val getErrorText: State<String> = _setErrorText
-//    fun setErrorValueText(value: String) {
-//        _setErrorText.value = value
-//    }
-
     // email
     private val _setEmailController = mutableStateOf("")
     val getEmailController: State<String> = _setEmailController
@@ -86,13 +80,6 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
     fun setEmailErrorValue(value: Boolean) {
         _setEmailError.value = value
     }
-//
-//    // error text
-//    private val _setEmailErrorText = mutableStateOf(false)
-//    val getEmailErrorText: State<Boolean> = _setEmailErrorText
-//    fun setEmailErrorValueText(value: Boolean) {
-//        _setEmailErrorText.value = value
-//    }
 
     // password
     private val _setPasswordController = mutableStateOf("")
@@ -115,13 +102,6 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
         _setPasswordError.value = value
     }
 
-//    // error text
-//    private val _setPasswordErrorText = mutableStateOf(false)
-//    val getPasswordErrorText: State<Boolean> = _setPasswordErrorText
-//    fun setPasswordErrorValueText(value: Boolean) {
-//        _setPasswordErrorText.value = value
-//    }
-
     // Confirm password
     private val _setConfirmPasswordController = mutableStateOf("")
     val getConfirmPasswordController: State<String> = _setConfirmPasswordController
@@ -136,13 +116,6 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
         _setConfirmPasswordError.value = value
     }
 
-//    // error text
-//    private val _setConfirmPasswordErrorText = mutableStateOf(false)
-//    val getConfirmPasswordErrorText: State<Boolean> = _setConfirmPasswordErrorText
-//    fun setConfirmPasswordErrorValueText(value: Boolean) {
-//        _setConfirmPasswordErrorText.value = value
-//    }
-
     // Referral password
     private val _setReferralCodeController = mutableStateOf("")
     val getReferralCodeController: State<String> = _setReferralCodeController
@@ -150,12 +123,8 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
         _setReferralCodeController.value = value
     }
 
-    //  error
-    private val _setReferralCodeError = mutableStateOf(false)
-    val getReferralCodeError: State<Boolean> = _setReferralCodeError
-    fun setReferralCodeErrorValue(value: Boolean) {
-        _setReferralCodeError.value = value
-    }
+//    val setSuccessDialog = mutableStateOf(false)
+//    val getSuccessDialog: State<Boolean> = setSuccessDialog
 
     // sign up view model
     fun signUp(context: Context) = viewModelScope.launch {
@@ -163,7 +132,7 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
         signUpUseCase.invoke(
             SignUpRequestModel(
                 email = getEmailController.value,
-                phoneNumber = "+9234876523728",
+                phoneNumber = getPhoneNumberController.value,
                 password = getPasswordController.value,
                 userReferralCode = getReferralCodeController.value,
                 firstName = getNameController.value,
@@ -173,12 +142,16 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
             )
         ).doOnSuccess {
             _signUpResponseState.value = SignUpSate(data = it)
-            _signUpResponseState.value = SignUpSate(isLoading = false)
+//            _signUpResponseState.value = SignUpSate(isLoading = false)
+            Log.d(_signUpResponseState.value.data.toString(), "SignUp API")
+
         }.doOnFailure {
             _signUpResponseState.value = SignUpSate(error = it.toString())
             myToast(signUpResponseState.value.error,context)
-            _signUpResponseState.value = SignUpSate(isLoading = false)
-        }.doOnLoading { _signUpResponseState.value = SignUpSate(isLoading = false) }.collect {}
+//            _signUpResponseState.value = SignUpSate(isLoading = false)
+        }.doOnLoading {
+//            _signUpResponseState.value = SignUpSate(isLoading = false)
+        }.collect {}
     }
 
     fun validateSignUpFields(): Boolean {
@@ -222,4 +195,14 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
         return true
     }
 
+    fun clearSignUpFields() {
+//        setSuccessDialog.value = false
+        setShowCountryPickerValue(false)
+        setReferralCodeControllerValue("")
+        setConfirmPasswordControllerValue("")
+        setPhoneNumberControllerValue("")
+        setEmailControllerValue("")
+        setLastNameControllerValue("")
+        setNameControllerValue("")
+    }
 }

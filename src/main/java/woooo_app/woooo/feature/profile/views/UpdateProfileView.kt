@@ -53,7 +53,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.feature.profile.viewmodels.UpdateProfileViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
-import com.wgroup.woooo_app.woooo.shared.components.CustomDateTimePicker
+import woooo_app.woooo.shared.components.CustomDateTimePicker
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageUpdateProfileView
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.TextLabel
