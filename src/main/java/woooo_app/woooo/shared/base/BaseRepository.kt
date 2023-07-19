@@ -1,6 +1,6 @@
 package woooo_app.woooo.shared.base
 import android.util.Log
-import com.google.gson.Gson
+import com.google.gson.JsonParser
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -33,8 +33,9 @@ abstract class BaseRepository {
 //        Log.d("SafeAPICall Error", response.errorBody().source().readUtf8Line().toString())
 
 
-//        val bufferUTF= response.errorBody()!!.source().readUtf8Line().toString();
-
+        val bufferUTF= response.errorBody()!!.source().readUtf8Line().toString();
+        val parser = JsonParser()
+        val json = parser
 //        val jsonObj = JSONObject(bufferUTF)
 //        val map = jsonObj.toMap()
 
