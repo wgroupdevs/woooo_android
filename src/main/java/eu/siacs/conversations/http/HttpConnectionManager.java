@@ -50,7 +50,7 @@ public class HttpConnectionManager extends AbstractConnectionManager {
                 .addInterceptor(chain -> {
                     final Request original = chain.request();
                     final Request modified = original.newBuilder()
-                            .header("User-Agent", getUserAgent())
+                            .header("woooo_app.woooo.data.models.auth.User-Agent", getUserAgent())
                             .build();
                     return chain.proceed(modified);
                 })

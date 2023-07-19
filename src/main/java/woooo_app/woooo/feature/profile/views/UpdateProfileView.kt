@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.feature.profile.views
+package woooo_app.woooo.feature.profile.views
 
 import android.os.Build
 import androidx.annotation.RequiresApi

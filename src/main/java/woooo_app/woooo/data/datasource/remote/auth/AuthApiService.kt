@@ -3,6 +3,7 @@ package woooo_app.woooo.data.datasource.remote.auth
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.Query
 import woooo_app.woooo.data.models.auth.LoginModel
 import woooo_app.woooo.data.models.auth.LoginRequestParams
 import woooo_app.woooo.data.models.auth.SignUpModel
@@ -14,11 +15,14 @@ interface AuthApiService {
 //        const val BASE_URL = "http://192.168.1.18"
     }
 
-    @POST("/api/Auth/LoginWithEmail")
-    suspend fun login(@Body user: LoginRequestParams):Response<LoginModel>
-    @POST("/api/Auth/SignUp")
-    suspend fun signUp(@Body user: SignUpRequestModel):Response<SignUpModel>
+    @POST("/api/Auth/login")
+    suspend fun login(
+        @Query("isLoginWithEmail") isLoginWithEmail: Boolean,
+        @Body user: LoginRequestParams
+    ): Response<LoginModel>
 
+    @POST("/api/Auth/SignUp")
+    suspend fun signUp(@Body user: SignUpRequestModel): Response<SignUpModel>
 
 
 }

@@ -10,8 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.ForgotViewModel
-import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginWithEmailViewModel
-import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
+import woooo_app.woooo.feature.auth.viewmodel.LoginWithEmailViewModel
+import woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
 import woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.VerifyOtpViewModel
 import com.wgroup.woooo_app.woooo.feature.profile.viewmodels.UpdateProfileViewModel

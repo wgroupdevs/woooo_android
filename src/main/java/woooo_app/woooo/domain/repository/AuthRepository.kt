@@ -1,6 +1,6 @@
 package woooo_app.woooo.domain.repository
 
-import com.wgroup.woooo_app.woooo.shared.base.APIResult
+import woooo_app.woooo.shared.base.APIResult
 import kotlinx.coroutines.flow.Flow
 import woooo_app.woooo.data.models.auth.LoginModel
 import woooo_app.woooo.data.models.auth.LoginRequestParams

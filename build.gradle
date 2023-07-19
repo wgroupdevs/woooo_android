@@ -7,7 +7,7 @@ buildscript {
         kotlin_bom = '1.8.20'
         coroutine_android = '1.6.1'
         coroutine_core = '1.6.4'
-        moshi = '1.13.0'
+//        moshi = '1.13.0'
         hilt_version = '2.45'
         retrofit = '2.9.0'
         lifecycle_version = "2.6.1"
@@ -146,12 +146,13 @@ dependencies {
 
     //retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit"
-    implementation "com.squareup.retrofit2:converter-moshi:$retrofit"
+
+//    implementation "com.squareup.retrofit2:converter-moshi:$retrofit"
     //okHttp
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.10.0'
     //moshi
-    implementation "com.squareup.moshi:moshi-kotlin:$moshi"
+//    implementation "com.squareup.moshi:moshi-kotlin:$moshi"
 
     //coil
     implementation("io.coil-kt:coil-compose:2.2.2")

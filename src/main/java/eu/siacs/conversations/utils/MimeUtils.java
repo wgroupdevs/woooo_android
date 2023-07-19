@@ -428,7 +428,7 @@ public final class MimeUtils {
     }
 
     private static InputStream getContentTypesPropertiesStream() {
-        // User override?
+        // woooo_app.woooo.data.models.auth.User override?
         String userTable = System.getProperty("content.types.user.table");
         if (userTable != null) {
             File f = new File(userTable);

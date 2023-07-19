@@ -5,8 +5,8 @@ package com.wgroup.woooo_app.woooo.feature.wallet.data.repository
 //import com.wgroup.woooo_app.woooo.feature.auth.domain.model.LoginResponse
 //import com.wgroup.woooo_app.woooo.feature.auth.domain.model.params.LoginRequestParams
 //import com.wgroup.woooo_app.woooo.feature.auth.domain.repository.AuthRepository
-//import com.wgroup.woooo_app.woooo.shared.base.APIResult
-//import com.wgroup.woooo_app.woooo.shared.base.BaseRepository
+//import woooo_app.woooo.shared.base.APIResult
+//import woooo_app.woooo.shared.base.BaseRepository
 //import kotlinx.coroutines.flow.Flow
 //import javax.inject.Inject
 //
