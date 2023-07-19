@@ -101,7 +101,7 @@ class LoginWithEmailViewModel @Inject constructor(private val loginUseCase: Logi
         Log.d("SafeAPICall Message","Login Started....")
         loginUseCase.invoke(
             LoginRequestParams(
-                email = "Sweatboy570@gmail.com",password = "Hamza@123"
+                email = "abc570@gmail.com",password = "Hamza@123"
             )
         ).doOnSuccess {
             _loginResponse.value = LoginState(
@@ -114,8 +114,9 @@ class LoginWithEmailViewModel @Inject constructor(private val loginUseCase: Logi
             _loginResponse.value = LoginState(
                 error = it.toString(),
             )
-            Log.d("Login With Email Error","${it?.message}")
-            Log.d("Login With Email Error","${it?.error}")
+            Log.d("Login With Email Error","${it?.Success}")
+            Log.d("Login With Email Error","${it?.Message}")
+            Log.d("Login With Email Error","${it?.Error}")
         }.doOnLoading {
             _loginResponse.value = LoginState(
                 isLoading = true
