@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.data.models
+package woooo_app.woooo.data.models.auth
 
 data class LoginModel (
     val succeeded: Boolean=false,

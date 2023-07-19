@@ -1,14 +1,15 @@
-package com.wgroup.woooo_app.woooo.data.repositoryImp
+package woooo_app.woooo.data.repositoryImp
 
 import android.util.Log
-import com.wgroup.woooo_app.woooo.data.datasource.remote.auth.AuthApiService
-import com.wgroup.woooo_app.woooo.data.models.LoginRequestParams
-import com.wgroup.woooo_app.woooo.data.models.LoginModel
-import com.wgroup.woooo_app.woooo.data.models.SignUpModel
-import com.wgroup.woooo_app.woooo.domain.repository.AuthRepository
 import com.wgroup.woooo_app.woooo.shared.base.APIResult
 import com.wgroup.woooo_app.woooo.shared.base.BaseRepository
 import kotlinx.coroutines.flow.Flow
+import woooo_app.woooo.data.datasource.remote.auth.AuthApiService
+import woooo_app.woooo.data.models.auth.LoginModel
+import woooo_app.woooo.data.models.auth.LoginRequestParams
+import woooo_app.woooo.data.models.auth.SignUpModel
+import woooo_app.woooo.data.models.auth.SignUpRequestModel
+import woooo_app.woooo.domain.repository.AuthRepository
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -20,7 +21,7 @@ class AuthRepositoryImpl @Inject constructor(
             apiService.login(user)
         }
 
-    override suspend fun signUp(user: LoginRequestParams): Flow<APIResult<SignUpModel>> = safeApiCall {
+    override suspend fun signUp(user: SignUpRequestModel): Flow<APIResult<SignUpModel>> = safeApiCall {
         Log.d("SignUp API CALL",user.toString())
         apiService.signUp(user)
     }

@@ -1,7 +1,7 @@
 package com.wgroup.woooo_app.woooo.feature.auth.viewmodel
 
-import com.wgroup.woooo_app.woooo.data.models.LoginModel
-import com.wgroup.woooo_app.woooo.data.models.SignUpModel
+import woooo_app.woooo.data.models.auth.LoginModel
+import woooo_app.woooo.data.models.auth.SignUpModel
 
 // login State
 data class LoginState(

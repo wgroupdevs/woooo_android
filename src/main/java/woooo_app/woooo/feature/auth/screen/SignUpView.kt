@@ -1,9 +1,11 @@
-package com.wgroup.woooo_app.woooo.feature.auth.screen
+package woooo_app.woooo.feature.auth.screen
 
 import ShowLoader
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
@@ -39,7 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CountryPicker
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
@@ -49,12 +50,13 @@ import com.wgroup.woooo_app.woooo.shared.components.PasswordValidator
 import com.wgroup.woooo_app.woooo.shared.components.TextLabel
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
-import com.wgroup.woooo_app.woooo.shared.components.view_models.CountryPickerViewModel
 import com.wgroup.woooo_app.woooo.shared.components.view_models.PasswordValidatorViewModel
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
+import woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
+import woooo_app.woooo.shared.components.view_models.CountryPickerViewModel
+import woooo_app.woooo.utils.Dimension
 
 @Composable
 fun SignUpView(navigator: DestinationsNavigator) {
@@ -103,7 +105,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 },
                 hint = Strings.firstNameText,
                 leadingIcon = {
-                  CustomIcon( icon = Icons.Rounded.Person,modifier =Modifier )
+                    CustomIcon(icon = Icons.Rounded.Person,modifier = Modifier)
                 })
             VerticalSpacer(Dimension.dimen_5)
             // last name
@@ -122,30 +124,28 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 },
                 hint = Strings.lastNameText,
                 leadingIcon = {
-                    CustomIcon( icon = Icons.Rounded.Person,modifier =Modifier )
+                    CustomIcon(icon = Icons.Rounded.Person,modifier = Modifier)
                 })
             VerticalSpacer(Dimension.dimen_5)
             //phone number
             TextLabel(label = Strings.phoneNmbrText)
             VerticalSpacer()
-            WooTextField(interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->
-                LaunchedEffect(interactionSource) {
-                    interactionSource.interactions.collect {
-                        if (it is PressInteraction.Release) {
-//                            First read Json File and Then Enabled Country Picker Dialog
-                            countryPickerViewModel.readJsonFileFromAssets(context = context)
-                            signUpViewModel.setShowCountryPickerValue(true)
-                        }
-                    }
-                }
-            },
-                readOnly = true,
+            WooTextField(
+
+//                readOnly = true,
                 hint = Strings.enterNumberText,
-                value = countryPickerViewModel.getSelectedCountry.value,
+                value = signUpViewModel.getPhoneNumberController.value,
                 leadingIcon = {
                     Row(
                         horizontalArrangement = Arrangement.Start,
                         verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.clickable(onClick = {
+//                            First read Json File and Then Enabled Country Picker Dialog
+                            countryPickerViewModel.readJsonFileFromAssets(
+                                context = context
+                            )
+                            signUpViewModel.setShowCountryPickerValue(true)
+                        })
                     ) {
                         Text(
                             text = countryPickerViewModel.getSelectedCountryDialCode.value,
@@ -160,6 +160,9 @@ fun SignUpView(navigator: DestinationsNavigator) {
                                 .padding(5.dp)
                         )
                     }
+                },
+                onValueChange = {
+                    signUpViewModel.setPhoneNumberControllerValue(it)
                 })
             VerticalSpacer(Dimension.dimen_5)
             //email
@@ -178,7 +181,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 },
                 hint = Strings.emailText,
                 leadingIcon = {
-                   CustomIcon(icon = Icons.Rounded.Email,modifier = Modifier)
+                    CustomIcon(icon = Icons.Rounded.Email,modifier = Modifier)
                 })
             VerticalSpacer(Dimension.dimen_5)
 
@@ -237,14 +240,14 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 },
                 hint = Strings.confirmpasswordText,
                 leadingIcon = {
-                   CustomIcon(icon = Icons.Rounded.Lock)
+                    CustomIcon(icon = Icons.Rounded.Lock)
                 })
             VerticalSpacer(Dimension.dimen_5)
             //Referral Code
             TextLabel(label = Strings.referralCodeText)
             VerticalSpacer()
             WooTextField(hint = Strings.referralCodeText,leadingIcon = {
-               CustomIcon(icon = Icons.Rounded.JoinInner)
+                CustomIcon(icon = Icons.Rounded.JoinInner)
             })
 
         }
@@ -252,8 +255,10 @@ fun SignUpView(navigator: DestinationsNavigator) {
         CustomButton(
             border = BorderStroke(1.dp,Color.White),
             onClick = {
-                signUpViewModel.signUp(context)
-                signUpViewModel.validateSignUpFields()
+
+                if (signUpViewModel.validateSignUpFields()) {
+                    signUpViewModel.signUp(context)
+                }
             },
             content = {
                 Text(
@@ -269,7 +274,9 @@ fun SignUpView(navigator: DestinationsNavigator) {
         VerticalSpacer(Dimension.dimen_40)
         CustomButton(
             border = BorderStroke(1.dp,Color.White),
-            onClick = {},
+            onClick = {
+                Log.d("valiuecjsnc",signUpViewModel.getPasswordController.value)
+            },
             content = {
                 Text(
                     text = Strings.alreadyAccount,

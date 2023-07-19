@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.shared.components.view_models
+package woooo_app.woooo.shared.components.view_models
 
 import android.content.Context
 import android.util.Log

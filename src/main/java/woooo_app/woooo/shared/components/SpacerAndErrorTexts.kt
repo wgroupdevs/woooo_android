@@ -12,7 +12,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.ForgotViewModel
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginWithEmailViewModel
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
-import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
+import woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.VerifyOtpViewModel
 import com.wgroup.woooo_app.woooo.feature.profile.viewmodels.UpdateProfileViewModel
 import com.wgroup.woooo_app.woooo.feature.wallet.viewmodel.SendCurrencyViewModel

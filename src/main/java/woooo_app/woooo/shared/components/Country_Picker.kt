@@ -29,10 +29,10 @@ import androidx.compose.ui.unit.min
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
-import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
-import com.wgroup.woooo_app.woooo.shared.components.view_models.CountryPickerViewModel
 import com.wgroup.woooo_app.woooo.theme.WooColor
+import woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import woooo_app.woooo.shared.components.ViewDivider
+import woooo_app.woooo.shared.components.view_models.CountryPickerViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.wgroup.woooo_app.woooo.feature.auth.screen.SignUpView
+import woooo_app.woooo.feature.auth.screen.SignUpView
 import com.wgroup.woooo_app.woooo.feature.home.screen.DashboardView
 import com.wgroup.woooo_app.woooo.feature.home.screen.HomePage
 import com.wgroup.woooo_app.woooo.feature.mining.views.MiningMainView

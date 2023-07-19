@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.feature.auth.viewmodel
+package woooo_app.woooo.feature.auth.viewmodel
 
 import android.content.Context
 import androidx.compose.runtime.MutableState
@@ -6,8 +6,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wgroup.woooo_app.woooo.data.models.LoginRequestParams
 import com.wgroup.woooo_app.woooo.domain.usecase.SignUpUseCase
+import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.SignUpSate
 import com.wgroup.woooo_app.woooo.shared.base.doOnFailure
 import com.wgroup.woooo_app.woooo.shared.base.doOnLoading
 import com.wgroup.woooo_app.woooo.shared.base.doOnSuccess
@@ -16,6 +16,7 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 import com.wgroup.woooo_app.woooo.utils.Validators
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import woooo_app.woooo.data.models.auth.SignUpRequestModel
 import javax.inject.Inject
 
 @HiltViewModel
@@ -100,6 +101,13 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
         _setPasswordController.value = value
     }
 
+    // phone number
+    private val _setPhoneNumberController = mutableStateOf("")
+    val getPhoneNumberController: State<String> = _setPhoneNumberController
+    fun setPhoneNumberControllerValue(value: String) {
+        _setPhoneNumberController.value = value
+    }
+
     //  error
     private val _setPasswordError = mutableStateOf(false)
     val getPasswordError: State<Boolean> = _setPasswordError
@@ -153,7 +161,16 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
     fun signUp(context: Context) = viewModelScope.launch {
         _signUpResponseState.value.isLoading = true
         signUpUseCase.invoke(
-            LoginRequestParams()
+            SignUpRequestModel(
+                email = getEmailController.value,
+                phoneNumber = "+9234876523728",
+                password = getPasswordController.value,
+                userReferralCode = getReferralCodeController.value,
+                firstName = getNameController.value,
+                lastName = getLastNameController.value,
+                deviceId = "",
+                ipAddress = ""
+            )
         ).doOnSuccess {
             _signUpResponseState.value = SignUpSate(data = it)
             _signUpResponseState.value = SignUpSate(isLoading = false)

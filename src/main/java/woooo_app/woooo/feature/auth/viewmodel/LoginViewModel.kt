@@ -5,7 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wgroup.woooo_app.woooo.data.models.LoginRequestParams
+import woooo_app.woooo.data.models.auth.LoginRequestParams
 import com.wgroup.woooo_app.woooo.domain.usecase.LoginUseCase
 import com.wgroup.woooo_app.woooo.shared.base.doOnFailure
 import com.wgroup.woooo_app.woooo.shared.base.doOnLoading

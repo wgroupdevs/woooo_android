@@ -1,16 +1,17 @@
 package com.wgroup.woooo_app.woooo.domain.usecase
 
-import com.wgroup.woooo_app.woooo.data.models.LoginRequestParams
-import com.wgroup.woooo_app.woooo.data.models.LoginModel
-import com.wgroup.woooo_app.woooo.data.models.SignUpModel
-import com.wgroup.woooo_app.woooo.domain.repository.AuthRepository
 import com.wgroup.woooo_app.woooo.shared.base.APIResult
-import com.wgroup.woooo_app.woooo.shared.base.BaseUseCase
 import kotlinx.coroutines.flow.Flow
+import woooo_app.woooo.data.models.auth.LoginModel
+import woooo_app.woooo.data.models.auth.LoginRequestParams
+import woooo_app.woooo.data.models.auth.SignUpModel
+import woooo_app.woooo.data.models.auth.SignUpRequestModel
+import woooo_app.woooo.domain.repository.AuthRepository
+import woooo_app.woooo.shared.base.BaseUseCase
 import javax.inject.Inject
 
 typealias LoginBaseUseCase = BaseUseCase<LoginRequestParams,Flow<APIResult<LoginModel>>>
-typealias SignUpBaseUseCase = BaseUseCase<LoginRequestParams,Flow<APIResult<SignUpModel>>>
+typealias SignUpBaseUseCase = BaseUseCase<SignUpRequestModel,Flow<APIResult<SignUpModel>>>
 
 /**
  * use case to login user
@@ -33,7 +34,6 @@ class LoginUseCase @Inject constructor(private val authRepository: AuthRepositor
 
 class SignUpUseCase @Inject constructor(private val authRepository: AuthRepository) :
     SignUpBaseUseCase {
-    override suspend fun invoke(params: LoginRequestParams): Flow<APIResult<SignUpModel>> =
+    override suspend fun invoke(params: SignUpRequestModel): Flow<APIResult<SignUpModel>> =
         authRepository.signUp(params)
-
 }

@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.shared.base
+package woooo_app.woooo.shared.base
 
 /**
  * Base use case designed to implement which abstracts the business logic
