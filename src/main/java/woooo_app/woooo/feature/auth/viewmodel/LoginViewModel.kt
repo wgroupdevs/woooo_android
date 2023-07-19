@@ -11,7 +11,7 @@ import com.wgroup.woooo_app.woooo.shared.base.doOnFailure
 import com.wgroup.woooo_app.woooo.shared.base.doOnLoading
 import com.wgroup.woooo_app.woooo.shared.base.doOnSuccess
 import com.wgroup.woooo_app.woooo.utils.Strings
-import com.wgroup.woooo_app.woooo.utils.Validators
+import woooo_app.woooo.utils.Validators
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -13,11 +13,12 @@ import com.wgroup.woooo_app.woooo.shared.base.doOnLoading
 import com.wgroup.woooo_app.woooo.shared.base.doOnSuccess
 import com.wgroup.woooo_app.woooo.shared.components.myToast
 import com.wgroup.woooo_app.woooo.utils.Strings
-import com.wgroup.woooo_app.woooo.utils.Validators
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import woooo_app.woooo.data.models.auth.requestmodels.SignUpRequestModel
 import woooo_app.woooo.domain.usecase.SignUpUseCase
+import woooo_app.woooo.utils.Validators
+import woooo_app.woooo.utils.Validators.isStringContainNumeric
 import javax.inject.Inject
 
 @HiltViewModel
@@ -143,7 +144,7 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
         ).doOnSuccess {
             _signUpResponseState.value = SignUpSate(data = it)
 //            _signUpResponseState.value = SignUpSate(isLoading = false)
-            Log.d(_signUpResponseState.value.data.toString(), "SignUp API")
+            Log.d(_signUpResponseState.value.data.toString(),"SignUp API")
 
         }.doOnFailure {
             _signUpResponseState.value = SignUpSate(error = it.toString())
@@ -161,6 +162,11 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
             // enabled value of error in text field
             setNameErrorValue(true)
             return false
+        } else if (isStringContainNumeric(getNameController.value)) {
+            // pass error text to show below in text field
+            setErrorValueText("Name Only Contain Alphabets")
+            // enabled value of error in text field
+            setNameErrorValue(true)
         } else if (getLastNameController.value.trim() == "") {
             // pass error text to show below in text field
             setErrorValueText(Strings.plzEntrLstName)
