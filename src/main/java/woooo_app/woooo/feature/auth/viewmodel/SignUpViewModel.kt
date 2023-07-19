@@ -6,7 +6,6 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wgroup.woooo_app.woooo.domain.usecase.SignUpUseCase
 import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.SignUpSate
 import com.wgroup.woooo_app.woooo.shared.base.doOnFailure
 import com.wgroup.woooo_app.woooo.shared.base.doOnLoading
@@ -16,7 +15,8 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 import com.wgroup.woooo_app.woooo.utils.Validators
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import woooo_app.woooo.data.models.auth.SignUpRequestModel
+import woooo_app.woooo.data.models.auth.requestmodels.SignUpRequestModel
+import woooo_app.woooo.domain.usecase.SignUpUseCase
 import javax.inject.Inject
 
 @HiltViewModel

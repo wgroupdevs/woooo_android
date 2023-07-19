@@ -1,3 +1,4 @@
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -48,11 +49,11 @@ import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageLoginWithPhone
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
-import woooo_app.woooo.shared.components.view_models.CountryPickerViewModel
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
+import woooo_app.woooo.shared.components.view_models.CountryPickerViewModel
+import woooo_app.woooo.utils.Dimension
 
 @Composable
 fun LoginView(navigator: DestinationsNavigator) {
@@ -175,6 +176,8 @@ fun LoginWithPhoneNumber(
                 },
             )
             VerticalSpacer(Dimension.dimen_15)
+
+            // password
             WooTextField(
                 onValueChange = {
                     loginWithEmailViewModel.setPasswordControllerValue(it)
@@ -238,7 +241,7 @@ fun LoginWithPhoneNumber(
                 },
                 content = {
                     Text(
-                        text = Strings.LogWithPhoneText,
+                        text = Strings.LogWithEmailText,
                         style = MaterialTheme.typography.bodyMedium,
                         textAlign = TextAlign.Center,
                     )

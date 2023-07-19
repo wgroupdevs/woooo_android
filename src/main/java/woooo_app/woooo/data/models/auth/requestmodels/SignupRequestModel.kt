@@ -1,4 +1,4 @@
-package woooo_app.woooo.data.models.auth
+package woooo_app.woooo.data.models.auth.requestmodels
 
 data class SignUpRequestModel(
     val deviceId: String = "",
