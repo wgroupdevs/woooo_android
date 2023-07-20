@@ -15,13 +15,17 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 import com.wgroup.woooo_app.woooo.utils.Validators
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import woooo_app.woooo.data.datasource.local.UserPreferences
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginWithEmailViewModel @Inject constructor(private val loginUseCase: LoginUseCase) :
+class LoginWithEmailViewModel @Inject constructor(
+    private val userPreferences: UserPreferences,
+    private val loginUseCase: LoginUseCase
+) :
     ViewModel() {
     private val _loginResponse: MutableState<LoginState> = mutableStateOf(LoginState())
-    val loginResponse: State<LoginState> = _loginResponse
+    private val loginResponse: State<LoginState> = _loginResponse
 
     /// get & set input of Email
     private val setEmailController = mutableStateOf("")
@@ -58,12 +62,11 @@ class LoginWithEmailViewModel @Inject constructor(private val loginUseCase: Logi
 
     private val _setErrorText = mutableStateOf("")
     val getErrorText: State<String> = _setErrorText
-    fun setErrorTextValue(value: String) {
+    private fun setErrorTextValue(value: String) {
         _setErrorText.value = value
     }
 
     // change bool login with email to phone and vise versa
-
     private val _setLoginWithEmail = mutableStateOf(false)
     val getLoginWithEmail: State<Boolean> = _setLoginWithEmail
     fun setLoginWithEmailValue(value: Boolean) {
@@ -98,25 +101,26 @@ class LoginWithEmailViewModel @Inject constructor(private val loginUseCase: Logi
     }
 
     fun login() = viewModelScope.launch {
-        Log.d("SafeAPICall Message","Login Started....")
+        saveUserInfo()
+        Log.d("SafeAPICall Message", "Login Started....")
         loginUseCase.invoke(
             LoginRequestParams(
-                email = "abc570@gmail.com",password = "Hamza@123"
+                email = "abc570@gmail.com", password = "Hamza@123"
             )
         ).doOnSuccess {
             _loginResponse.value = LoginState(
                 it,
             )
-            Log.d("SafeAPICall Message","doOnSuccess....")
-            Log.d("SafeAPICall Message","${loginResponse.value.data.data?.user?.email}")
+            Log.d("SafeAPICall Message", "doOnSuccess....")
+            Log.d("SafeAPICall Message", "${loginResponse.value.data.data?.user?.email}")
 
         }.doOnFailure {
             _loginResponse.value = LoginState(
                 error = it.toString(),
             )
-            Log.d("Login With Email Error","${it?.Success}")
-            Log.d("Login With Email Error","${it?.Message}")
-            Log.d("Login With Email Error","${it?.Error}")
+            Log.d("Login With Email Error", "${it?.Success}")
+            Log.d("Login With Email Error", "${it?.Message}")
+            Log.d("Login With Email Error", "${it?.Error}")
         }.doOnLoading {
             _loginResponse.value = LoginState(
                 isLoading = true
@@ -124,6 +128,25 @@ class LoginWithEmailViewModel @Inject constructor(private val loginUseCase: Logi
         }.collect {}
     }
 
+
+    suspend fun saveUserInfo(){
+
+        viewModelScope.launch {
+            userPreferences.setAuthToken("13234343242")
+            userPreferences.setFirstName("Ehsan")
+            userPreferences.setLastName("Ahmad")
+            getUserInfo()
+        }
+    }
+
+    suspend fun getUserInfo(){
+        viewModelScope.launch {
+            Log.d("getUserInfo : ",  userPreferences.getAuthToke())
+//            Log.d("getUserInfo : ",  userPreferences.getFirstName())
+
+//            userPreferences.getLastName()
+        }
+    }
 
 }
 
