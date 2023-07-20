@@ -30,7 +30,7 @@ fun MainScreen() {
             modifier = Modifier.fillMaxSize(),color = MaterialTheme.colorScheme.background
         ) {
             DestinationsNavHost(navGraph = NavGraphs.root)
-//            ShowLoader()
+//            ConfirmAccountScreen()
         }
     }
 }

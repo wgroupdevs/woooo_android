@@ -2,6 +2,7 @@ package com.wgroup.woooo_app.woooo.shared.components
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -34,7 +35,7 @@ fun WooTextField(
     supportingText: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
 //    visualTransformation: VisualTransformation = VisualTransformation.None,
-//    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
 //    keyboardActions: KeyboardActions = KeyboardActions.Default,
 //    singleLine: Boolean = false,
 //    maxLines: Int = Int.MAX_VALUE,
@@ -46,6 +47,7 @@ fun WooTextField(
     unfocusedColor: Color = Color.Black
 ) {
     OutlinedTextField(
+        keyboardOptions = keyboardOptions,
         visualTransformation = if (obscusePass) VisualTransformation.None else PasswordVisualTransformation(),
         readOnly = readOnly,
         textStyle = MaterialTheme.typography.labelMedium.copy(color = WooColor.white),

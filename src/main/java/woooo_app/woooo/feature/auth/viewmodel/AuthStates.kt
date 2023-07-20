@@ -13,6 +13,6 @@ data class LoginState(
 
 data class SignUpSate(
     val data: SignUpModel = SignUpModel(),
-    val error: String = "",
+    var error: String = "",
     var isLoading: Boolean = false
 )
