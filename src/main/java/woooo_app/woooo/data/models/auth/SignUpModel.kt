@@ -2,10 +2,10 @@ package woooo_app.woooo.data.models.auth
 
 
 data class SignUpModel(
-    val success: Boolean? = null,
-    val message: String? = null,
-    val error: String? = null,
-    val data: SignUpData? = null
+    var Success: Boolean? = null,
+    val Message: String? = null,
+    val Error: String? = null,
+    val Data: SignUpData? = null
 )
 
 data class SignUpData(

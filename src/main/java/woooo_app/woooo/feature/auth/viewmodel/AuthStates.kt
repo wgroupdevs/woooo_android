@@ -1,5 +1,7 @@
 package woooo_app.woooo.feature.auth.viewmodel
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import woooo_app.woooo.data.models.auth.LoginModel
 import woooo_app.woooo.data.models.auth.SignUpModel
 
@@ -12,7 +14,9 @@ data class LoginState(
 // SignUp State
 
 data class SignUpSate(
-    val data: SignUpModel = SignUpModel(),
-    var error: String = "",
-    var isLoading: Boolean = false
+    var data: SignUpModel = SignUpModel(),
+    var message: String = "",
+    val isLoading: MutableState<Boolean> = mutableStateOf(false),
+    val isSucceed: MutableState<Boolean> = mutableStateOf(false),
+    val isFailed: MutableState<Boolean> = mutableStateOf(false)
 )

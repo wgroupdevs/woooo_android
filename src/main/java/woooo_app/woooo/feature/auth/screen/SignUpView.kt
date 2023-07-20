@@ -109,7 +109,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 },
                 hint = Strings.firstNameText,
                 leadingIcon = {
-                    CustomIcon(icon = Icons.Rounded.Person,modifier = Modifier)
+                    CustomIcon(icon = Icons.Rounded.Person, modifier = Modifier)
                 })
             VerticalSpacer(Dimension.dimen_5)
             // last name
@@ -128,7 +128,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 },
                 hint = Strings.lastNameText,
                 leadingIcon = {
-                    CustomIcon(icon = Icons.Rounded.Person,modifier = Modifier)
+                    CustomIcon(icon = Icons.Rounded.Person, modifier = Modifier)
                 })
             VerticalSpacer(Dimension.dimen_5)
             //phone number
@@ -184,7 +184,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 },
                 hint = Strings.emailText,
                 leadingIcon = {
-                    CustomIcon(icon = Icons.Rounded.Email,modifier = Modifier)
+                    CustomIcon(icon = Icons.Rounded.Email, modifier = Modifier)
                 })
             VerticalSpacer(Dimension.dimen_5)
 
@@ -210,7 +210,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 }
             },
                 onValueChange = {
-                    customPasswordValidator.passwordValidator(it,true)
+                    customPasswordValidator.passwordValidator(it, true)
                     signUpViewModel.setPasswordControllerValue(it)
                     signUpViewModel.setPasswordErrorValue(false)
 
@@ -249,14 +249,14 @@ fun SignUpView(navigator: DestinationsNavigator) {
             //Referral Code
             TextLabel(label = Strings.referralCodeText)
             VerticalSpacer()
-            WooTextField(hint = Strings.referralCodeText,leadingIcon = {
+            WooTextField(hint = Strings.referralCodeText, leadingIcon = {
                 CustomIcon(icon = Icons.Rounded.JoinInner)
             })
 
         }
         VerticalSpacer(Dimension.dimen_40)
         CustomButton(
-            border = BorderStroke(1.dp,Color.White),
+            border = BorderStroke(1.dp, Color.White),
             onClick = {
 
                 if (signUpViewModel.validateSignUpFields()) {
@@ -276,7 +276,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
 
         VerticalSpacer(Dimension.dimen_40)
         CustomButton(
-            border = BorderStroke(1.dp,Color.White),
+            border = BorderStroke(1.dp, Color.White),
             onClick = {
 
             },
@@ -296,14 +296,20 @@ fun SignUpView(navigator: DestinationsNavigator) {
             signUpViewModel.setShowCountryPickerValue(
                 false
             )
-        },viewModel = signUpViewModel)
+        }, viewModel = signUpViewModel)
         // enable Loader when Api Hit
-        if (signUpViewModel.signUpResponseState.value.isLoading) ShowLoader()
+        if (signUpViewModel.signUpResponseState.value.isLoading.value) ShowLoader()
         // enabled success dialogue when api hit successfully
-        if (signUpViewModel.signUpResponseState.value.data.success == true) {
+        if (signUpViewModel.signUpResponseState.value.isSucceed.value) {
             ShowAlertDialog {
-                Text(text = signUpViewModel.signUpResponseState.value.error)
+                Text(text = signUpViewModel.signUpResponseState.value.message)
             }
         }
+        if (signUpViewModel.signUpResponseState.value.isFailed.value) {
+            ShowAlertDialog {
+                Text(text = signUpViewModel.signUpResponseState.value.message)
+            }
+        }
+
     }
 }

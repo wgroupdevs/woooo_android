@@ -126,9 +126,7 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
 
     // sign up
     fun signUp() = viewModelScope.launch {
-        Log.d("Success Call response","${signUpResponseState.value.data.success}")
-
-        _signUpResponseState.value.isLoading = true
+        Log.d("Success Call response", "${signUpResponseState.value.data}")
         signUpUseCase.invoke(
             SignUpRequestModel(
                 email = getEmailController.value,
@@ -141,17 +139,30 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
                 ipAddress = ""
             )
         ).doOnSuccess {
-            _signUpResponseState.value = SignUpSate(data =  it , isLoading = false)
-//            _signUpResponseState.value.error = it.message.toString()
-            Log.d("Success Call response","${signUpResponseState.value.data.success}")
-            Log.d("Success Call response","${signUpResponseState.value.data.data}")
-        }.doOnFailure {
-            _signUpResponseState.value.error = it?.Message.toString()
-            Log.d(it?.Message,"Success Call fAil")
-            Log.d(it?.Message,"Success Call fAil")
 
+            Log.d(_signUpResponseState.value.data.Data?.email, "SUCCESS DATA EMAIL doOnSuccess")
+
+            _signUpResponseState.value.apply {
+                data = it
+                message = it.Message.toString()
+                isFailed.value = false
+                isSucceed.value = it.Success ?: false
+                isLoading.value = false
+            }
+
+            Log.d(_signUpResponseState.value.data.Data?.email, "SUCCESS DATA EMAIL")
+
+//            _signUpResponseState.value.data = it
+//            _signUpResponseState.value.message = it.Message.toString()
+//            _signUpResponseState.value.isLoading.value = false
+//            _signUpResponseState.value.isSucceed.value = it.Success ?: false
+
+        }.doOnFailure {
+            _signUpResponseState.value.message = it?.Message.toString()
+            _signUpResponseState.value.isLoading.value = false
+            _signUpResponseState.value.isFailed.value = it?.Success ?: false
         }.doOnLoading {
-            _signUpResponseState.value.isLoading = true
+            _signUpResponseState.value.isLoading.value = true
         }.collect {}
     }
 
