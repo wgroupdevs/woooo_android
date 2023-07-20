@@ -4,7 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.wgroup.woooo_app.woooo.utils.Strings
-import com.wgroup.woooo_app.woooo.utils.Validators
+import woooo_app.woooo.utils.Validators
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

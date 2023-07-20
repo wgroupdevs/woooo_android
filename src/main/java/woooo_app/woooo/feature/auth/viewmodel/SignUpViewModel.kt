@@ -1,27 +1,26 @@
 package woooo_app.woooo.feature.auth.viewmodel
 
-import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import woooo_app.woooo.shared.base.doOnFailure
-import woooo_app.woooo.shared.base.doOnLoading
-import woooo_app.woooo.shared.base.doOnSuccess
-import com.wgroup.woooo_app.woooo.shared.components.myToast
 import com.wgroup.woooo_app.woooo.utils.Strings
-import com.wgroup.woooo_app.woooo.utils.Validators
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import woooo_app.woooo.data.models.auth.requestmodels.SignUpRequestModel
 import woooo_app.woooo.domain.usecase.SignUpUseCase
+import woooo_app.woooo.shared.base.doOnFailure
+import woooo_app.woooo.shared.base.doOnLoading
+import woooo_app.woooo.shared.base.doOnSuccess
+import woooo_app.woooo.utils.Validators
+import woooo_app.woooo.utils.Validators.isStringContainNumeric
 import javax.inject.Inject
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCase) : ViewModel() {
-    val _signUpResponseState: MutableState<SignUpSate> = mutableStateOf(SignUpSate())
+    private val _signUpResponseState: MutableState<SignUpSate> = mutableStateOf(SignUpSate())
     val signUpResponseState: State<SignUpSate> = _signUpResponseState
 
     // first name
@@ -125,8 +124,10 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
 //    val setSuccessDialog = mutableStateOf(false)
 //    val getSuccessDialog: State<Boolean> = setSuccessDialog
 
-    // sign up view model
-    fun signUp(context: Context) = viewModelScope.launch {
+    // sign up
+    fun signUp() = viewModelScope.launch {
+        Log.d("Success Call response","${signUpResponseState.value.data.success}")
+
         _signUpResponseState.value.isLoading = true
         signUpUseCase.invoke(
             SignUpRequestModel(
@@ -140,16 +141,17 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
                 ipAddress = ""
             )
         ).doOnSuccess {
-            _signUpResponseState.value = SignUpSate(data = it)
-//            _signUpResponseState.value = SignUpSate(isLoading = false)
-            Log.d(_signUpResponseState.value.data.toString(), "SignUp API")
-
+            _signUpResponseState.value = SignUpSate(data =  it , isLoading = false)
+//            _signUpResponseState.value.error = it.message.toString()
+            Log.d("Success Call response","${signUpResponseState.value.data.success}")
+            Log.d("Success Call response","${signUpResponseState.value.data.data}")
         }.doOnFailure {
-            _signUpResponseState.value = SignUpSate(error = it.toString())
-            myToast(signUpResponseState.value.error,context)
-//            _signUpResponseState.value = SignUpSate(isLoading = false)
+            _signUpResponseState.value.error = it?.Message.toString()
+            Log.d(it?.Message,"Success Call fAil")
+            Log.d(it?.Message,"Success Call fAil")
+
         }.doOnLoading {
-//            _signUpResponseState.value = SignUpSate(isLoading = false)
+            _signUpResponseState.value.isLoading = true
         }.collect {}
     }
 
@@ -160,6 +162,11 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
             // enabled value of error in text field
             setNameErrorValue(true)
             return false
+        } else if (!isStringContainNumeric(getNameController.value)) {
+            // pass error text to show below in text field
+            setErrorValueText("Name Only Contain Alphabets")
+            // enabled value of error in text field
+            setNameErrorValue(true)
         } else if (getLastNameController.value.trim() == "") {
             // pass error text to show below in text field
             setErrorValueText(Strings.plzEntrLstName)
@@ -184,13 +191,14 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
             // enabled value of error in text field
             setPasswordErrorValue(true)
             return false
-        } else if (getConfirmPasswordController.value.trim() == "") {
-            // pass error text to show below in text field
-            setErrorValueText(Strings.plzEntrConPass)
-            // enabled value of error in text field
-            setConfirmPasswordErrorValue(true)
-            return false
         }
+//        else if (getConfirmPasswordController.value.trim() == "") {
+//             pass error text to show below in text field
+//            setErrorValueText(Strings.plzEntrConPass)
+//             enabled value of error in text field
+//            setConfirmPasswordErrorValue(true)
+//            return false
+//        }
         return true
     }
 
