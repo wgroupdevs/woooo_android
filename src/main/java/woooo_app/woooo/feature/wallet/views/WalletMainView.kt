@@ -48,14 +48,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.wgroup.woooo_app.woooo.destinations.SendCurrencyMainScreenDestination
-import com.wgroup.woooo_app.woooo.destinations.TransactionMainScreenDestination
 import com.wgroup.woooo_app.woooo.feature.wallet.viewmodel.WalletMainViewViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
+import woooo_app.woooo.destinations.SendCurrencyMainScreenDestination
+import woooo_app.woooo.destinations.TransactionMainScreenDestination
 import woooo_app.woooo.utils.Dimension
 
 @Composable

@@ -37,7 +37,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.wgroup.woooo_app.woooo.destinations.SignUpScreenDestination
 import woooo_app.woooo.feature.auth.viewmodel.LoginWithEmailViewModel
 import woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CountryPicker
@@ -52,6 +51,7 @@ import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
+import woooo_app.woooo.destinations.SignUpScreenDestination
 import woooo_app.woooo.shared.components.view_models.CountryPickerViewModel
 import woooo_app.woooo.utils.Dimension
 

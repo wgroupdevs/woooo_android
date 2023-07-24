@@ -91,6 +91,7 @@ import eu.siacs.conversations.xmpp.XmppConnection;
 public class StartConversationActivity extends XmppActivity implements XmppConnectionService.OnConversationUpdate, OnRosterUpdate, OnUpdateBlocklist, CreatePrivateGroupChatDialog.CreateConferenceDialogListener, JoinConferenceDialog.JoinConferenceDialogListener, SwipeRefreshLayout.OnRefreshListener, CreatePublicChannelDialog.CreatePublicChannelDialogListener {
 
     public static final String EXTRA_INVITE_URI = "eu.siacs.conversations.invite_uri";
+    private static final String TAG = "StartConversationAtvy";
 
     private final int REQUEST_SYNC_CONTACTS = 0x28cf;
     private final int REQUEST_CREATE_CONFERENCE = 0x39da;
@@ -376,6 +377,8 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
 
     @Override
     public void onStart() {
+
+        Log.d(TAG,"OnStarted...");
         super.onStart();
         final int theme = findTheme();
         if (this.mTheme != theme) {

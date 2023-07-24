@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo
+package woooo_app.woooo
 
 import LoginView
 import android.os.Build
@@ -24,14 +24,14 @@ import com.wgroup.woooo_app.woooo.feature.settings.views.application.SoundAndVib
 import com.wgroup.woooo_app.woooo.feature.wallet.views.SendCurrencyView
 import com.wgroup.woooo_app.woooo.feature.wallet.views.TransactionsView
 import woooo_app.woooo.feature.wallet.views.WalletMainView
-@RootNavGraph(start = true)
+
 @Destination
 @Composable
 fun LoginScreen(navigator: DestinationsNavigator) {
     LoginView(navigator)
 }
 
-
+@RootNavGraph(start = true)
 @Destination
 @Composable
 fun HomeScreen(navigator: DestinationsNavigator) {

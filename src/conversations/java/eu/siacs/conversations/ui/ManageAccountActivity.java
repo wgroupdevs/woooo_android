@@ -262,6 +262,8 @@ public class ManageAccountActivity extends XmppActivity implements OnAccountUpda
     @Override
     public boolean onNavigateUp() {
         if (xmppConnectionService.getConversations().size() == 0) {
+
+            Log.d(TAG,"onNavigateUp Called");
             Intent contactsIntent = new Intent(this,
                     StartConversationActivity.class);
             contactsIntent.setFlags(
