@@ -16,13 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.wgroup.woooo_app.woooo.destinations.PrivacyMainScreenDestination
-import com.wgroup.woooo_app.woooo.destinations.SecurityMainScreenDestination
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
+import woooo_app.woooo.destinations.PrivacyMainScreenDestination
+import woooo_app.woooo.destinations.SecurityMainScreenDestination
 
 @Composable
 fun AccountMainView(navigator: DestinationsNavigator) {

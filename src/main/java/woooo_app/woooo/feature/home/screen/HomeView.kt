@@ -44,7 +44,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.wgroup.woooo_app.woooo.destinations.SignUpScreenDestination
 import com.wgroup.woooo_app.woooo.feature.home.ui.AppDrawer
 import com.wgroup.woooo_app.woooo.feature.home.ui.CircularMenu
 import com.wgroup.woooo_app.woooo.feature.home.viewmodel.HomeViewModel
@@ -57,6 +56,7 @@ import woooo_app.woooo.utils.Dimension
 import eu.siacs.conversations.R
 import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
+import woooo_app.woooo.destinations.SignUpScreenDestination
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

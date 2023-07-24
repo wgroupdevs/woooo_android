@@ -26,15 +26,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.wgroup.woooo_app.woooo.destinations.LoginScreenDestination
-import com.wgroup.woooo_app.woooo.destinations.SettingsScreenDestination
-import com.wgroup.woooo_app.woooo.destinations.UpdateProfileMainScreenDestination
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import woooo_app.woooo.shared.components.ViewDivider
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import woooo_app.woooo.utils.Dimension
 import eu.siacs.conversations.R
+import woooo_app.woooo.destinations.LoginScreenDestination
+import woooo_app.woooo.destinations.SettingsScreenDestination
+import woooo_app.woooo.destinations.UpdateProfileMainScreenDestination
 
 @Composable
 fun AppDrawer(

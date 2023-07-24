@@ -74,6 +74,8 @@ public class SignupUtils {
                     intent = new Intent(activity, EditAccountActivity.class);
                 }
             } else {
+                Log.d(TAG, "StartConversationActivity");
+
                 intent = new Intent(activity, StartConversationActivity.class);
             }
         }

@@ -120,27 +120,34 @@ public class WelcomeActivity extends XmppActivity implements XmppConnectionServi
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         super.onCreate(savedInstanceState);
-        ActivityWelcomeBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_welcome);
-        setSupportActionBar(binding.toolbar);
-        configureActionBar(getSupportActionBar(), false);
-        binding.registerNewAccount.setOnClickListener(v -> {
-            final Intent intent = new Intent(this, PickServerActivity.class);
-            addInviteUri(intent);
-            startActivity(intent);
-        });
-        binding.useExisting.setOnClickListener(v -> {
-            final List<Account> accounts = xmppConnectionService.getAccounts();
-            Intent intent = new Intent(WelcomeActivity.this, EditAccountActivity.class);
-            intent.putExtra(EditAccountActivity.EXTRA_FORCE_REGISTER, false);
-            if (accounts.size() == 1) {
-                intent.putExtra("jid", accounts.get(0).getJid().asBareJid().toString());
-                intent.putExtra("init", true);
-            } else if (accounts.size() >= 1) {
-                intent = new Intent(WelcomeActivity.this, ManageAccountActivity.class);
-            }
-            addInviteUri(intent);
-            startActivity(intent);
-        });
+        Intent intent = new Intent(WelcomeActivity.this, EditAccountActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.putExtra(EditAccountActivity.EXTRA_FORCE_REGISTER, false);
+        addInviteUri(intent);
+        startActivity(intent);
+
+
+//        ActivityWelcomeBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_welcome);
+//        setSupportActionBar(binding.toolbar);
+//        configureActionBar(getSupportActionBar(), false);
+//        binding.registerNewAccount.setOnClickListener(v -> {
+//            final Intent intent = new Intent(this, PickServerActivity.class);
+//            addInviteUri(intent);
+//            startActivity(intent);
+//        });
+//        binding.useExisting.setOnClickListener(v -> {
+//            final List<Account> accounts = xmppConnectionService.getAccounts();
+//            Intent intent = new Intent(WelcomeActivity.this, EditAccountActivity.class);
+//            intent.putExtra(EditAccountActivity.EXTRA_FORCE_REGISTER, false);
+//            if (accounts.size() == 1) {
+//                intent.putExtra("jid", accounts.get(0).getJid().asBareJid().toString());
+//                intent.putExtra("init", true);
+//            } else if (accounts.size() >= 1) {
+//                intent = new Intent(WelcomeActivity.this, ManageAccountActivity.class);
+//            }
+//            addInviteUri(intent);
+//            startActivity(intent);
+//        });
 
         Log.d(TAG,"onCreate Called");
 

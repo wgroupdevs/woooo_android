@@ -1,5 +1,6 @@
 package eu.siacs.conversations.services;
 
+import static eu.siacs.conversations.ui.EditAccountActivity.TAG;
 import static eu.siacs.conversations.utils.Compatibility.s;
 import static eu.siacs.conversations.utils.Random.SECURE_RANDOM;
 
@@ -115,6 +116,7 @@ import eu.siacs.conversations.generator.IqGenerator;
 import eu.siacs.conversations.generator.MessageGenerator;
 import eu.siacs.conversations.generator.PresenceGenerator;
 import eu.siacs.conversations.http.HttpConnectionManager;
+import eu.siacs.conversations.http.services.WooooAuthService;
 import eu.siacs.conversations.parser.AbstractParser;
 import eu.siacs.conversations.parser.IqParser;
 import eu.siacs.conversations.parser.MessageParser;
@@ -225,6 +227,7 @@ public class XmppConnectionService extends Service {
     private final NotificationService mNotificationService = new NotificationService(this);
     private final UnifiedPushBroker unifiedPushBroker = new UnifiedPushBroker(this);
     private final ChannelDiscoveryService mChannelDiscoveryService = new ChannelDiscoveryService(this);
+    private final WooooAuthService wooooAuthService = new WooooAuthService(this);
     private final ShortcutService mShortcutService = new ShortcutService(this);
     private final AtomicBoolean mInitialAddressbookSyncCompleted = new AtomicBoolean(false);
     private final AtomicBoolean mForceForegroundService = new AtomicBoolean(false);
@@ -582,7 +585,7 @@ public class XmppConnectionService extends Service {
         }
     }
 
-    public void attachImageToConversation(final Conversation conversation, final Uri uri,  final String type, final UiCallback<Message> callback) {
+    public void attachImageToConversation(final Conversation conversation, final Uri uri, final String type, final UiCallback<Message> callback) {
         final String mimeType = MimeUtils.guessMimeTypeFromUriAndMime(this, uri, type);
         final String compressPictures = getCompressPicturesPreference();
 
@@ -818,8 +821,8 @@ public class XmppConnectionService extends Service {
                     final Messenger messenger = intent.getParcelableExtra("messenger");
                     final UnifiedPushBroker.PushTargetMessenger pushTargetMessenger;
                     if (messenger != null && application != null && instance != null) {
-                        pushTargetMessenger = new UnifiedPushBroker.PushTargetMessenger(new UnifiedPushDatabase.PushTarget(application, instance),messenger);
-                        Log.d(Config.LOGTAG,"found push target messenger");
+                        pushTargetMessenger = new UnifiedPushBroker.PushTargetMessenger(new UnifiedPushDatabase.PushTarget(application, instance), messenger);
+                        Log.d(Config.LOGTAG, "found push target messenger");
                     } else {
                         pushTargetMessenger = null;
                     }
@@ -969,13 +972,19 @@ public class XmppConnectionService extends Service {
         mChannelDiscoveryService.discover(Strings.nullToEmpty(query).trim(), method, onChannelSearchResultsFound);
     }
 
+
+    public void loginUserOnWoooo(String email,String password,WooooAuthService.OnLoginAPiResult onLoginAPiResult) {
+        wooooAuthService.login(email,password,onLoginAPiResult);
+    }
+
+
     public boolean isDataSaverDisabled() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             final ConnectivityManager connectivityManager =
                     (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
             return !connectivityManager.isActiveNetworkMetered()
                     || Compatibility.getRestrictBackgroundStatus(connectivityManager)
-                            == ConnectivityManager.RESTRICT_BACKGROUND_STATUS_DISABLED;
+                    == ConnectivityManager.RESTRICT_BACKGROUND_STATUS_DISABLED;
         } else {
             return true;
         }
@@ -1159,6 +1168,7 @@ public class XmppConnectionService extends Service {
             mNotificationService.initializeChannels();
         }
         mChannelDiscoveryService.initializeMuclumbusService();
+        wooooAuthService.initializeWOOOOService();
         mForceDuringOnCreate.set(Compatibility.runsAndTargetsTwentySix(this));
         toggleForegroundService();
         this.destroyed = false;
@@ -1855,7 +1865,7 @@ public class XmppConnectionService extends Service {
         account.putBookmark(bookmark);
         final XmppConnection connection = account.getXmppConnection();
         if (connection == null) {
-            Log.d(Config.LOGTAG, account.getJid().asBareJid()+": no connection. ignoring bookmark creation");
+            Log.d(Config.LOGTAG, account.getJid().asBareJid() + ": no connection. ignoring bookmark creation");
         } else if (connection.getFeatures().bookmarks2()) {
             final Element item = mIqGenerator.publishBookmarkItem(bookmark);
             pushNodeAndEnforcePublishOptions(account, Namespace.BOOKMARKS2, item, bookmark.getJid().asBareJid().toEscapedString(), PublishOptions.persistentWhitelistAccessMaxItems());
@@ -2343,6 +2353,8 @@ public class XmppConnectionService extends Service {
     }
 
     public void createAccount(final Account account) {
+
+        Log.d(TAG,"xmppConnectionService.createAccount");
         account.initAccountServices(this);
         databaseBackend.createAccount(account);
         this.accounts.add(account);
@@ -2490,7 +2502,7 @@ public class XmppConnectionService extends Service {
 
     public void unregisterAccount(final Account account, final Consumer<Boolean> callback) {
         final IqPacket iqPacket = new IqPacket(IqPacket.TYPE.SET);
-        final Element query = iqPacket.addChild("query",Namespace.REGISTER);
+        final Element query = iqPacket.addChild("query", Namespace.REGISTER);
         query.addChild("remove");
         sendIqPacket(account, iqPacket, (a, response) -> {
             if (response.getType() == IqPacket.TYPE.RESULT) {
@@ -2862,6 +2874,7 @@ public class XmppConnectionService extends Service {
             }
         });
     }
+
     public void joinMuc(Conversation conversation) {
         joinMuc(conversation, null, false);
     }
@@ -3103,12 +3116,12 @@ public class XmppConnectionService extends Service {
         final IqPacket request = mIqGenerator.deleteNode(node);
         sendIqPacket(account, request, (a, packet) -> {
             if (packet.getType() == IqPacket.TYPE.RESULT) {
-                Log.d(Config.LOGTAG,a.getJid().asBareJid()+": successfully deleted pep node "+node);
+                Log.d(Config.LOGTAG, a.getJid().asBareJid() + ": successfully deleted pep node " + node);
                 if (runnable != null) {
                     runnable.run();
                 }
             } else {
-                Log.d(Config.LOGTAG,a.getJid().asBareJid()+": failed to delete "+ packet);
+                Log.d(Config.LOGTAG, a.getJid().asBareJid() + ": failed to delete " + packet);
             }
         });
     }
@@ -3117,12 +3130,12 @@ public class XmppConnectionService extends Service {
         final IqPacket retrieveVcard = mIqGenerator.retrieveVcardAvatar(account.getJid().asBareJid());
         sendIqPacket(account, retrieveVcard, (a, response) -> {
             if (response.getType() != IqPacket.TYPE.RESULT) {
-                Log.d(Config.LOGTAG,a.getJid().asBareJid()+": no vCard set. nothing to do");
+                Log.d(Config.LOGTAG, a.getJid().asBareJid() + ": no vCard set. nothing to do");
                 return;
             }
             final Element vcard = response.findChild("vCard", "vcard-temp");
             if (vcard == null) {
-                Log.d(Config.LOGTAG,a.getJid().asBareJid()+": no vCard set. nothing to do");
+                Log.d(Config.LOGTAG, a.getJid().asBareJid() + ": no vCard set. nothing to do");
                 return;
             }
             Element photo = vcard.findChild("PHOTO");
@@ -3135,7 +3148,7 @@ public class XmppConnectionService extends Service {
             publication.addChild(vcard);
             sendIqPacket(account, publication, (a1, publicationResponse) -> {
                 if (publicationResponse.getType() == IqPacket.TYPE.RESULT) {
-                    Log.d(Config.LOGTAG,a1.getJid().asBareJid()+": successfully deleted vcard avatar");
+                    Log.d(Config.LOGTAG, a1.getJid().asBareJid() + ": successfully deleted vcard avatar");
                     runnable.run();
                 } else {
                     Log.d(Config.LOGTAG, "failed to publish vcard " + publicationResponse.getErrorCondition());
@@ -4554,7 +4567,6 @@ public class XmppConnectionService extends Service {
             }
         }
     }
-
 
 
     private void sendOfflinePresence(final Account account) {

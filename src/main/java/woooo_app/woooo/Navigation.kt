@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo
+package woooo_app.woooo
 
 import LoginView
 import android.os.Build
@@ -29,13 +29,14 @@ import woooo_app.woooo.feature.profile.views.UpdateProfileView
 import woooo_app.woooo.feature.wallet.views.WalletMainView
 @RootNavGraph(start = true)
 
+
 @Destination
 @Composable
 fun LoginScreen(navigator: DestinationsNavigator) {
     LoginView(navigator)
 }
 
-
+@RootNavGraph(start = true)
 @Destination
 @Composable
 fun HomeScreen(navigator: DestinationsNavigator) {

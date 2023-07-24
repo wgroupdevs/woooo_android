@@ -29,6 +29,10 @@ public class SignupUtils {
     public static Intent getRedirectionIntent(ConversationsActivity activity) {
         final Intent intent;
         final Account account = AccountUtils.getFirst(activity.xmppConnectionService);
+
+        Log.d("Quicksy SignUpUtils","getRedirectionIntent called");
+
+
         if (account != null) {
             if (account.isOptionSet(Account.OPTION_UNVERIFIED)) {
                 intent = new Intent(activity, VerifyActivity.class);

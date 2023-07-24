@@ -50,6 +50,7 @@ public final class Config {
     public static final Jid QUICKSY_DOMAIN = Jid.of("quicksy.im");
 
     public static final String CHANNEL_DISCOVERY = "https://search.jabber.network";
+    public static final String WOOOO_BASE_URL = "https://wooooapi.watchblock.net";
 
     public static final boolean DISALLOW_REGISTRATION_IN_UI = false; //hide the register checkbox
 
