@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -22,11 +23,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.JoinInner
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.wgroup.woooo_app.woooo.destinations.ConfirmAccountMainScreenDestination
 import com.wgroup.woooo_app.woooo.shared.components.CountryPicker
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
@@ -56,12 +58,13 @@ import com.wgroup.woooo_app.woooo.shared.components.view_models.PasswordValidato
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
+import woooo_app.woooo.feature.auth.EmailForAuthModule
 import woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import woooo_app.woooo.shared.components.ShowAlertDialog
+import woooo_app.woooo.shared.components.ViewDivider
 import woooo_app.woooo.shared.components.view_models.CountryPickerViewModel
 import woooo_app.woooo.utils.Dimension
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SignUpView(navigator: DestinationsNavigator) {
     val signUpViewModel: SignUpViewModel = hiltViewModel()
@@ -75,7 +78,19 @@ fun SignUpView(navigator: DestinationsNavigator) {
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            CustomIcon(
+                icon = Icons.Rounded.ArrowBack,modifier = Modifier.clickable(onClick = {
+                    navigator.popBackStack( )
+                })
+            )
+            HorizontalSpacer()
+            Text(text = Strings.reg,style = MaterialTheme.typography.bodyLarge)
+        }
         VerticalSpacer(Dimension.dimen_20)
         // ap logo On top
 
@@ -97,7 +112,9 @@ fun SignUpView(navigator: DestinationsNavigator) {
             TextLabel(label = Strings.firstNameText)
             VerticalSpacer()
             WooTextField(onValueChange = {
-                signUpViewModel.setNameControllerValue(it)
+                if (it.length <= 40) {
+                    signUpViewModel.setNameControllerValue(it)
+                }
                 signUpViewModel.setNameErrorValue(false)
             },
                 value = signUpViewModel.getNameController.value,
@@ -109,14 +126,16 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 },
                 hint = Strings.firstNameText,
                 leadingIcon = {
-                    CustomIcon(icon = Icons.Rounded.Person, modifier = Modifier)
+                    CustomIcon(icon = Icons.Rounded.Person,modifier = Modifier)
                 })
             VerticalSpacer(Dimension.dimen_5)
             // last name
             TextLabel(label = Strings.lastNameText)
             VerticalSpacer()
             WooTextField(onValueChange = {
-                signUpViewModel.setLastNameControllerValue(it)
+                if (it.length <= 40) {
+                    signUpViewModel.setLastNameControllerValue(it)
+                }
                 signUpViewModel.setLastNameErrorValue(false)
             },
                 value = signUpViewModel.getLastNameController.value,
@@ -128,7 +147,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 },
                 hint = Strings.lastNameText,
                 leadingIcon = {
-                    CustomIcon(icon = Icons.Rounded.Person, modifier = Modifier)
+                    CustomIcon(icon = Icons.Rounded.Person,modifier = Modifier)
                 })
             VerticalSpacer(Dimension.dimen_5)
             //phone number
@@ -165,17 +184,19 @@ fun SignUpView(navigator: DestinationsNavigator) {
                     }
                 },
                 onValueChange = {
-                    signUpViewModel.setPhoneNumberControllerValue(it)
+                    if (it.length <= 12) {
+                        signUpViewModel.setPhoneNumberControllerValue(it)
+                    }
                 })
             VerticalSpacer(Dimension.dimen_5)
             //email
             TextLabel(label = Strings.emailText)
             VerticalSpacer()
             WooTextField(onValueChange = {
-                signUpViewModel.setEmailControllerValue(it)
+                EmailForAuthModule.setEmailValue(it)
                 signUpViewModel.setEmailErrorValue(false)
             },
-                value = signUpViewModel.getEmailController.value,
+                value = EmailForAuthModule.getEmail.value,
                 isError = signUpViewModel.getEmailError.value,
                 supportingText = {
                     if (signUpViewModel.getEmailError.value) {
@@ -184,7 +205,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 },
                 hint = Strings.emailText,
                 leadingIcon = {
-                    CustomIcon(icon = Icons.Rounded.Email, modifier = Modifier)
+                    CustomIcon(icon = Icons.Rounded.Email,modifier = Modifier)
                 })
             VerticalSpacer(Dimension.dimen_5)
 
@@ -210,7 +231,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 }
             },
                 onValueChange = {
-                    customPasswordValidator.passwordValidator(it, true)
+                    customPasswordValidator.passwordValidator(it,true)
                     signUpViewModel.setPasswordControllerValue(it)
                     signUpViewModel.setPasswordErrorValue(false)
 
@@ -249,14 +270,20 @@ fun SignUpView(navigator: DestinationsNavigator) {
             //Referral Code
             TextLabel(label = Strings.referralCodeText)
             VerticalSpacer()
-            WooTextField(hint = Strings.referralCodeText, leadingIcon = {
+            WooTextField(hint = Strings.referralCodeText,leadingIcon = {
+
                 CustomIcon(icon = Icons.Rounded.JoinInner)
+            },onValueChange = {
+                if (it.length <= 10) {
+                    signUpViewModel.setReferralCodeControllerValue(it)
+                }
             })
 
         }
+        // sign up button
         VerticalSpacer(Dimension.dimen_40)
         CustomButton(
-            border = BorderStroke(1.dp, Color.White),
+            border = BorderStroke(1.dp,Color.White),
             onClick = {
 
                 if (signUpViewModel.validateSignUpFields()) {
@@ -276,9 +303,9 @@ fun SignUpView(navigator: DestinationsNavigator) {
 
         VerticalSpacer(Dimension.dimen_40)
         CustomButton(
-            border = BorderStroke(1.dp, Color.White),
+            border = BorderStroke(1.dp,Color.White),
             onClick = {
-
+                navigator.popBackStack()
             },
             content = {
                 Text(
@@ -296,20 +323,130 @@ fun SignUpView(navigator: DestinationsNavigator) {
             signUpViewModel.setShowCountryPickerValue(
                 false
             )
-        }, viewModel = signUpViewModel)
+        },viewModel = signUpViewModel)
         // enable Loader when Api Hit
         if (signUpViewModel.signUpResponseState.value.isLoading.value) ShowLoader()
         // enabled success dialogue when api hit successfully
         if (signUpViewModel.signUpResponseState.value.isSucceed.value) {
-            ShowAlertDialog {
-                Text(text = signUpViewModel.signUpResponseState.value.message)
-            }
-        }
-        if (signUpViewModel.signUpResponseState.value.isFailed.value) {
-            ShowAlertDialog {
-                Text(text = signUpViewModel.signUpResponseState.value.message)
-            }
-        }
+            ShowAlertDialog(content = {
+                Column(
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.padding(10.dp)
+                ) {
+                    Box(modifier = Modifier.align(Alignment.Start)) {
+                        Text(text = Strings.regPass,style = MaterialTheme.typography.bodyLarge)
+                    }
+                    VerticalSpacer()
+                    ViewDivider()
+                    VerticalSpacer()
 
+                    Text(
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        text = signUpViewModel.signUpResponseState.value.message,
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                    VerticalSpacer(Dimension.dimen_40)
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(bottom = 10.dp)
+                    ) {
+                        CustomButton(
+                            border = BorderStroke(1.dp,Color.White),
+                            onClick = {
+                                clickOnSuccessDialog(
+                                    signUpViewModel = signUpViewModel,navigator = navigator
+                                )
+                            },
+                            content = {
+                                Text(
+                                    text = Strings.okText,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 16.sp
+                                )
+                            },
+                        )
+                    }
+                }
+
+            },onDismissRequest = {
+                clickOnSuccessDialog(signUpViewModel = signUpViewModel,navigator = navigator)
+            })
+        }
+        // enabled Fail dialogue when api hit Fail
+
+        if (signUpViewModel.signUpResponseState.value.isFailed.value) {
+            ShowAlertDialog(content = {
+                Column(
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.padding(10.dp)
+                ) {
+                    Box(modifier = Modifier.align(Alignment.Start)) {
+                        Text(text = Strings.regFail,style = MaterialTheme.typography.bodyLarge)
+                    }
+                    VerticalSpacer()
+                    ViewDivider()
+                    VerticalSpacer()
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        Text(
+                            text = signUpViewModel.signUpResponseState.value.message,
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    }
+                    VerticalSpacer(Dimension.dimen_50)
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(bottom = 10.dp)
+                    ) {
+                        CustomButton(
+                            border = BorderStroke(1.dp,Color.White),
+                            onClick = {
+                                clickOnFailureDialog(signUpViewModel = signUpViewModel)
+
+                            },
+                            content = {
+                                Text(
+                                    text = Strings.okText,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 16.sp
+                                )
+                            },
+                        )
+                    }
+                }
+
+            },onDismissRequest = {
+                clickOnFailureDialog(signUpViewModel = signUpViewModel)
+            })
+        }
+        Box(Modifier.height(200.dp)) {
+
+        }
+    }
+}
+
+// common function to handle the state when success dialog is disappear
+private fun clickOnSuccessDialog(
+    signUpViewModel: SignUpViewModel,navigator: DestinationsNavigator
+) {
+    signUpViewModel.signUpResponseState.value.apply {
+        isSucceed.value = false
+    }
+    navigator.navigate(ConfirmAccountMainScreenDestination)
+    signUpViewModel.clearSignUpFields()
+}
+
+// common function to handle the state when Failure dialog is disappear
+private fun clickOnFailureDialog(signUpViewModel: SignUpViewModel) {
+    signUpViewModel.signUpResponseState.value.apply {
+        isFailed.value = false
     }
 }

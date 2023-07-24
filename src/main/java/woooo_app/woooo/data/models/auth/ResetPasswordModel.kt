@@ -1,8 +1,8 @@
 package woooo_app.woooo.data.models.auth
 
-data class ConfirmAccountModel (
+data class ResetPasswordModel(
     val Success: Boolean? = null,
     val Message: String? = null,
-    val Error: String? = null,
+    val Errors: Any? = null,
     val Data: Any? = null
 )

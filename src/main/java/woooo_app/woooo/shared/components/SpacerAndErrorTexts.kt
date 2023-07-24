@@ -9,13 +9,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.ForgotViewModel
+import woooo_app.woooo.feature.auth.viewmodel.ForgotPasswordViewModel
+import woooo_app.woooo.feature.auth.viewmodel.VerifyOtpViewModel
+import com.wgroup.woooo_app.woooo.feature.profile.viewmodels.UpdateProfileViewModel
+import com.wgroup.woooo_app.woooo.feature.wallet.viewmodel.SendCurrencyViewModel
+import woooo_app.woooo.feature.auth.viewmodel.ConfirmAccountViewModel
 import woooo_app.woooo.feature.auth.viewmodel.LoginWithEmailViewModel
 import woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
 import woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
-import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.VerifyOtpViewModel
-import com.wgroup.woooo_app.woooo.feature.profile.viewmodels.UpdateProfileViewModel
-import com.wgroup.woooo_app.woooo.feature.wallet.viewmodel.SendCurrencyViewModel
 import woooo_app.woooo.utils.Dimension
 
 @Composable
@@ -32,15 +33,16 @@ fun HorizontalSpacer(width: Dp = Dimension.dimen_10) {
 fun ErrorMessageForLoginWithEmail() {
     val loginWithEmailViewModel: LoginWithEmailViewModel = hiltViewModel()
     Text(
-        text = loginWithEmailViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
+        text = loginWithEmailViewModel.getErrorText.value,
+        style = MaterialTheme.typography.labelSmall
     )
 }
 
 @Composable
 fun ErrorMessageForgetPasswordView() {
-    val forgotViewModel: ForgotViewModel = hiltViewModel()
+    val forgotPasswordViewModel: ForgotPasswordViewModel = hiltViewModel()
     Text(
-        text = forgotViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
+        text = forgotPasswordViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
     )
 }
 
@@ -64,9 +66,11 @@ fun ErrorMessageVerifyOtp() {
 fun ErrorMessageLoginWithPhone() {
     val loginWithPhoneViewModel: LoginWithPhoneViewModel = hiltViewModel()
     Text(
-        text = loginWithPhoneViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
+        text = loginWithPhoneViewModel.getErrorText.value,
+        style = MaterialTheme.typography.labelSmall
     )
 }
+
 @Composable
 fun ErrorMessageSendCurrencyView() {
     val sendCurrencyViewModel: SendCurrencyViewModel = hiltViewModel()
@@ -74,10 +78,20 @@ fun ErrorMessageSendCurrencyView() {
         text = sendCurrencyViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
     )
 }
+
 @Composable
 fun ErrorMessageUpdateProfileView() {
     val updateProfileViewModel: UpdateProfileViewModel = hiltViewModel()
     Text(
         text = updateProfileViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
+    )
+}
+
+@Composable
+fun ErrorMessageConfirmAccountView() {
+    val confirmAccountViewModel: ConfirmAccountViewModel = hiltViewModel()
+    Text(
+        text = confirmAccountViewModel.getOtpErrorText.value,
+        style = MaterialTheme.typography.labelSmall
     )
 }

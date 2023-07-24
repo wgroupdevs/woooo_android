@@ -1,3 +1,4 @@
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -11,7 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.dp
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.theme.WooColor
@@ -19,7 +19,7 @@ import com.wgroup.woooo_app.woooo.theme.WooColor
 @Composable
 fun ShowLoader() {
     AlertDialog(modifier = Modifier
-        .alpha(0.8f)
+//        .alpha(0.8f)
         .background(WooColor.loaderColorBackGround,shape = RoundedCornerShape(20.dp)),
         confirmButton = { Text(text = "") },
         onDismissRequest = {},

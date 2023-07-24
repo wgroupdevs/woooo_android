@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import woooo_app.woooo.data.models.auth.requestmodels.SignUpRequestModel
 import woooo_app.woooo.domain.usecase.SignUpUseCase
+import woooo_app.woooo.feature.auth.EmailForAuthModule
 import woooo_app.woooo.shared.base.doOnFailure
 import woooo_app.woooo.shared.base.doOnLoading
 import woooo_app.woooo.shared.base.doOnSuccess
@@ -65,12 +66,12 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
         _getShowCountryPicker.value = value
     }
 
-    // email
-    private val _setEmailController = mutableStateOf("")
-    val getEmailController: State<String> = _setEmailController
-    fun setEmailControllerValue(value: String) {
-        _setEmailController.value = value
-    }
+//    // email
+//    private val _setEmailController = mutableStateOf("")
+//    val getEmailController: State<String> = _setEmailController
+//    fun setEmailControllerValue(value: String) {
+//        _setEmailController.value = value
+//    }
 
     //  error
     private val _setEmailError = mutableStateOf(false)
@@ -114,7 +115,7 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
         _setConfirmPasswordError.value = value
     }
 
-    // Referral password
+    // Referral code
     private val _setReferralCodeController = mutableStateOf("")
     val getReferralCodeController: State<String> = _setReferralCodeController
     fun setReferralCodeControllerValue(value: String) {
@@ -126,43 +127,41 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
 
     // sign up
     fun signUp() = viewModelScope.launch {
-        Log.d("Success Call response", "${signUpResponseState.value.data}")
+        Log.d("Success Call response","${signUpResponseState.value.data}")
         signUpUseCase.invoke(
             SignUpRequestModel(
-                email = getEmailController.value,
-                phoneNumber = getPhoneNumberController.value,
-                password = getPasswordController.value,
-                userReferralCode = getReferralCodeController.value,
-                firstName = getNameController.value,
-                lastName = getLastNameController.value,
-                deviceId = "",
-                ipAddress = ""
+                email = EmailForAuthModule.getEmail.value.trim(),
+                phoneNumber = getPhoneNumberController.value.trim(),
+                password = getPasswordController.value.trim(),
+                userReferralCode = getReferralCodeController.value.trim(),
+                firstName = getNameController.value.trim(),
+                lastName = getLastNameController.value.trim(),
+                deviceId = "".trim(),
+                ipAddress = "".trim()
             )
         ).doOnSuccess {
 
-            Log.d(_signUpResponseState.value.data.Data?.email, "SUCCESS DATA EMAIL doOnSuccess")
+            Log.d(_signUpResponseState.value.data.Data?.email,"SUCCESS DATA EMAIL doOnSuccess")
 
             _signUpResponseState.value.apply {
                 data = it
                 message = it.Message.toString()
-                isFailed.value = false
                 isSucceed.value = it.Success ?: false
                 isLoading.value = false
             }
-
-            Log.d(_signUpResponseState.value.data.Data?.email, "SUCCESS DATA EMAIL")
-
-//            _signUpResponseState.value.data = it
-//            _signUpResponseState.value.message = it.Message.toString()
-//            _signUpResponseState.value.isLoading.value = false
-//            _signUpResponseState.value.isSucceed.value = it.Success ?: false
+            Log.d(_signUpResponseState.value.data.Data?.email,"SUCCESS DATA EMAIL")
 
         }.doOnFailure {
-            _signUpResponseState.value.message = it?.Message.toString()
-            _signUpResponseState.value.isLoading.value = false
-            _signUpResponseState.value.isFailed.value = it?.Success ?: false
+            Log.d(_signUpResponseState.value.data.Data?.email,"SUCCESS DATA EMAIL doOnFailure")
+            _signUpResponseState.value.apply {
+                message = it?.Message.toString()
+                isLoading.value = it?.Success ?: false
+                isFailed.value = true
+            }
         }.doOnLoading {
-            _signUpResponseState.value.isLoading.value = true
+            _signUpResponseState.value.apply {
+                isLoading.value = true
+            }
         }.collect {}
     }
 
@@ -184,13 +183,13 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
             // enabled value of error in text field
             setLastNameErrorValue(true)
             return false
-        } else if (getEmailController.value.trim() == "") {
+        } else if (EmailForAuthModule.getEmail.value.trim() == "") {
             // pass error text to show below in text field
             setErrorValueText(Strings.plzEnterEmail)
             // enabled value of error in text field
             setEmailErrorValue(true)
             return false
-        } else if (!Validators.isValidEmail(getEmailController.value.trim())) {
+        } else if (!Validators.isValidEmail(EmailForAuthModule.getEmail.value.trim())) {
             // pass error text to show below in text field
             setErrorValueText(Strings.entrValidEmailText)
             // enabled value of error in text field
@@ -202,24 +201,29 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
             // enabled value of error in text field
             setPasswordErrorValue(true)
             return false
-        }
-//        else if (getConfirmPasswordController.value.trim() == "") {
+        } else if (getConfirmPasswordController.value.trim() == "") {
 //             pass error text to show below in text field
-//            setErrorValueText(Strings.plzEntrConPass)
+            setErrorValueText(Strings.plzEntrConPass)
 //             enabled value of error in text field
-//            setConfirmPasswordErrorValue(true)
-//            return false
-//        }
+            setConfirmPasswordErrorValue(true)
+            return false
+        } else if (getConfirmPasswordController.value.trim() != getPasswordController.value.trim()) {
+//             pass error text to show below in text field
+            setErrorValueText(Strings.enterSamePass)
+//             enabled value of error in text field
+            setPasswordErrorValue(true)
+            setConfirmPasswordErrorValue(true)
+            return false
+        }
         return true
     }
 
     fun clearSignUpFields() {
-//        setSuccessDialog.value = false
         setShowCountryPickerValue(false)
         setReferralCodeControllerValue("")
+        setPasswordControllerValue("")
         setConfirmPasswordControllerValue("")
         setPhoneNumberControllerValue("")
-        setEmailControllerValue("")
         setLastNameControllerValue("")
         setNameControllerValue("")
     }

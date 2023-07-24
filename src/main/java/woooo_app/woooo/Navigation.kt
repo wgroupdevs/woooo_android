@@ -7,11 +7,9 @@ import androidx.compose.runtime.Composable
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import woooo_app.woooo.feature.auth.screen.SignUpView
 import com.wgroup.woooo_app.woooo.feature.home.screen.DashboardView
 import com.wgroup.woooo_app.woooo.feature.home.screen.HomePage
 import com.wgroup.woooo_app.woooo.feature.mining.views.MiningMainView
-import woooo_app.woooo.feature.profile.views.UpdateProfileView
 import com.wgroup.woooo_app.woooo.feature.settings.views.ApplicationMainView
 import com.wgroup.woooo_app.woooo.feature.settings.views.SettingMainView
 import com.wgroup.woooo_app.woooo.feature.settings.views.account.AccountMainView
@@ -23,8 +21,14 @@ import com.wgroup.woooo_app.woooo.feature.settings.views.application.LanguageVie
 import com.wgroup.woooo_app.woooo.feature.settings.views.application.SoundAndVibrationView
 import com.wgroup.woooo_app.woooo.feature.wallet.views.SendCurrencyView
 import com.wgroup.woooo_app.woooo.feature.wallet.views.TransactionsView
+import woooo_app.woooo.feature.auth.screen.ConfirmAccountScreen
+import woooo_app.woooo.feature.auth.screen.ForgotPasswordView
+import woooo_app.woooo.feature.auth.screen.SignUpView
+import woooo_app.woooo.feature.auth.screen.VerifyOtpView
+import woooo_app.woooo.feature.profile.views.UpdateProfileView
 import woooo_app.woooo.feature.wallet.views.WalletMainView
 @RootNavGraph(start = true)
+
 @Destination
 @Composable
 fun LoginScreen(navigator: DestinationsNavigator) {
@@ -134,6 +138,24 @@ fun TransactionMainScreen(navigator: DestinationsNavigator) {
 @Composable
 fun WalletMainScreen(navigator: DestinationsNavigator) {
     WalletMainView(navigator)
+}
+
+@Destination
+@Composable
+fun ConfirmAccountMainScreen(navigator: DestinationsNavigator) {
+    ConfirmAccountScreen(navigator)
+}
+
+@Destination
+@Composable
+fun ForgotPasswordViewScreen(navigator: DestinationsNavigator) {
+    ForgotPasswordView(navigator)
+}
+
+@Destination
+@Composable
+fun VerifyOTPScreen(navigator: DestinationsNavigator) {
+    VerifyOtpView(navigator)
 }
 
 //@Destination

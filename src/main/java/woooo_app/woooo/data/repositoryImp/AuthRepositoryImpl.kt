@@ -1,17 +1,22 @@
 package woooo_app.woooo.data.repositoryImp
 
 import android.util.Log
-import woooo_app.woooo.shared.base.APIResult
-import woooo_app.woooo.shared.base.BaseRepository
 import kotlinx.coroutines.flow.Flow
 import woooo_app.woooo.data.datasource.remote.auth.AuthApiService
 import woooo_app.woooo.data.models.auth.ConfirmAccountModel
+import woooo_app.woooo.data.models.auth.ForgotPasswordModel
 import woooo_app.woooo.data.models.auth.LoginModel
-import woooo_app.woooo.data.models.auth.ResendCodeModel
+import woooo_app.woooo.data.models.auth.ResentCodeModel
+import woooo_app.woooo.data.models.auth.ResetPasswordModel
 import woooo_app.woooo.data.models.auth.SignUpModel
+import woooo_app.woooo.data.models.auth.requestmodels.BaseResendCodeReqParam
+import woooo_app.woooo.data.models.auth.requestmodels.ForgotPasswordRequestModel
 import woooo_app.woooo.data.models.auth.requestmodels.LoginRequestParams
+import woooo_app.woooo.data.models.auth.requestmodels.ResetPasswordRequestModel
 import woooo_app.woooo.data.models.auth.requestmodels.SignUpRequestModel
 import woooo_app.woooo.domain.repository.AuthRepository
+import woooo_app.woooo.shared.base.APIResult
+import woooo_app.woooo.shared.base.BaseRepository
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -29,14 +34,30 @@ class AuthRepositoryImpl @Inject constructor(
             apiService.signUp(user)
         }
 
-    override suspend fun confirmAccount(user: SignUpRequestModel): Flow<APIResult<ConfirmAccountModel>> =
+    override suspend fun confirmAccount(params: Map<String,String>): Flow<APIResult<ConfirmAccountModel>> =
         safeApiCall {
-            Log.d("SignUp API CALL",user.toString())
-            apiService.confirmAccount(user)
+            Log.d("Confirm Account API",params.toString())
+            apiService.confirmAccount(params)
         }
-    override suspend fun reSendCode(user: String): Flow<APIResult<ResendCodeModel>> =
+
+    override suspend fun reSendCode(params: BaseResendCodeReqParam): Flow<APIResult<ResentCodeModel>> =
         safeApiCall {
-            Log.d("SignUp API CALL",user.toString())
-            apiService.reSendCode(user)
+            Log.d("reSend API ",params.toString())
+            apiService.reSendCode(
+                IsOtpForAccount = params.IsOtpForAccount,email = params.email
+            )
         }
+
+    override suspend fun forgotPassword(email: ForgotPasswordRequestModel): Flow<APIResult<ForgotPasswordModel>> =
+        safeApiCall {
+            Log.d("reSend API ",email.toString())
+            apiService.forgotPassword(email)
+        }
+
+    override suspend fun resetPassword(params: ResetPasswordRequestModel): Flow<APIResult<ResetPasswordModel>> =
+        safeApiCall {
+            Log.d("reSend API ",params.toString())
+            apiService.resetPassword(params)
+        }
+
 }

@@ -2,7 +2,7 @@ package com.wgroup.woooo_app.woooo.utils
 
 object Strings {
     // login view keys
-
+    var validOTP = "Please Enter Valid Otp"
     var login = "Login"
     var enterEmailText = "Enter Email"
     var pleaseEnterText = "Please Enter"
@@ -19,8 +19,8 @@ object Strings {
     var dontHaveAcntText = "Don't have an account? Sign Up"
     var otpSentEmailText = "Your Account is not verified.An OTP is sent on your email "
     var slctCountry = "Select Country"
-    // signup view keys
 
+    // signup view keys
     var firstNameText = "First Name"
 
     var signUpText = "Sign Up"
@@ -86,10 +86,14 @@ object Strings {
 //
 //    var homeText = "Home"
 //
-//
-//    okText
-//    = "Ok"
-//
+    var reg = "Registration"
+    var okText = "Ok"
+    var regFail = "Registration Failed"
+    var regPass = "Registration Success"
+    val reSendSuccess = "Successfully Sent"
+    var resetSuccess = ""
+
+    //
 //    // speed Dial chat main view keys
 //
 //    "addFrndText"= "Add friend"
@@ -175,6 +179,8 @@ object Strings {
 //    "cstmNotiText"= "Custom Notification"
 //    "mediaText"= "Media"
     var encryptionText = "Encryption"
+    var confirmAccount = "Confirm Account"
+    var enterSamePass = "Please Enter Same Password"
 
     //    "disappearingText"= "Message Disappearing"
 //    "ParticipantsText"= "Participants"
@@ -286,11 +292,12 @@ object Strings {
 //    "newMtngText"= "New Meeting"
 //    "mtngHstryText"= "Meeting History"
 //    "schduleText"= "Schedule"
-var mtngNmeText= "Meeting Name"
-var mtngUrlText= "Meeting URL"
-var strtMtngText= "Start Meeting"
-var joinMtngText= "Join Meeting"
-//    "joinText"= "Join"
+    var mtngNmeText = "Meeting Name"
+    var mtngUrlText = "Meeting URL"
+    var strtMtngText = "Start Meeting"
+    var joinMtngText = "Join Meeting"
+
+    //    "joinText"= "Join"
 //    "mtngStngsText"= "Meeting Settings"
 //    "mtngIDText"= "Meeting ID"
 //    "entrMtngIDText"= "Enter Meeting ID"
@@ -373,7 +380,7 @@ var joinMtngText= "Join Meeting"
     var noBodyText = "No Body"
 
     //    "rstPassText"= "Reset Password"
-    var resentOTP = "Resend OTP"
+    var resentOTP = "Resent OTP"
     var verifyCode = "Verify Code"
 
     //    "resendCode"= "Resend Code"
@@ -531,10 +538,12 @@ var joinMtngText= "Join Meeting"
 //    "noMiningNotiText"= "There is no Mining Notification"
 //    "noUserFnd"= "No woooo_app.woooo.data.models.auth.User Found!"
 //    "camOfText"= "Camera is Off"
-var camOnText= "Camera is On"
-//    "micOffText"= "Mic is off"
-var micOnText= "Mic is On"
-//    "alMostText"= "Almost there..."
+    var camOnText = "Camera is On"
+
+    //    "micOffText"= "Mic is off"
+    var micOnText = "Mic is On"
+
+    //    "alMostText"= "Almost there..."
 //    "mrText"= "More"
 //    "endText"= "End"
 //    "tglText"= "Toggle Display"

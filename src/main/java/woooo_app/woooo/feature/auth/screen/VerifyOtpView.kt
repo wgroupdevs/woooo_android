@@ -1,18 +1,20 @@
-package com.wgroup.woooo_app.woooo.feature.auth.screen
+package woooo_app.woooo.feature.auth.screen
 
-import android.widget.Toast
+import ShowLoader
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBackIos
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -20,24 +22,40 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.wgroup.woooo_app.woooo.feature.auth.viewmodel.VerifyOtpViewModel
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.wgroup.woooo_app.woooo.destinations.LoginScreenDestination
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageVerifyOtp
+import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.TextLabel
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
-import woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
+import woooo_app.woooo.feature.auth.viewmodel.VerifyOtpViewModel
+import woooo_app.woooo.shared.components.ShowAlertDialog
+import woooo_app.woooo.shared.components.ViewDivider
+import woooo_app.woooo.utils.Dimension
 
 @Composable
-fun VerifyOtpView() {
+fun VerifyOtpView(navigator: DestinationsNavigator) {
+    val context = LocalContext.current
+
     val verifyOtpViewModel: VerifyOtpViewModel = hiltViewModel()
     Column(Modifier.padding(Dimension.dimen_10)) {
-        CustomIcon(icon = Icons.Rounded.ArrowBackIos)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,modifier = Modifier.fillMaxWidth()
+        ) {
+            CustomIcon(
+                icon = Icons.Rounded.ArrowBack,modifier = Modifier.clickable(onClick = {
+                    navigator.popBackStack()
+                })
+            )
+            HorizontalSpacer()
+            Text(text = Strings.confirmAccount,style = MaterialTheme.typography.bodyLarge)
+        }
         VerticalSpacer(Dimension.dimen_30)
         Column(Modifier.padding(Dimension.dimen_10)) {
-            val context = LocalContext.current
 
             VerticalSpacer(Dimension.dimen_15)
             //OTP
@@ -54,7 +72,8 @@ fun VerifyOtpView() {
                     if (verifyOtpViewModel.getOtpError.value) {
                         ErrorMessageVerifyOtp()
                     }
-                },hint = Strings.verifyCode
+                },
+                hint = Strings.verifyCode
             )
             VerticalSpacer(Dimension.dimen_15)
             //New Pass
@@ -71,7 +90,8 @@ fun VerifyOtpView() {
                     if (verifyOtpViewModel.getNewPassError.value) {
                         ErrorMessageVerifyOtp()
                     }
-                },hint = Strings.newPswdText
+                },
+                hint = Strings.newPswdText
             )
             VerticalSpacer(Dimension.dimen_15)
             //Confirm Pass
@@ -88,7 +108,8 @@ fun VerifyOtpView() {
                     if (verifyOtpViewModel.getConfirmPassError.value) {
                         ErrorMessageVerifyOtp()
                     }
-                },hint = Strings.reTypePswdText
+                },
+                hint = Strings.reTypePswdText
             )
             VerticalSpacer(Dimension.dimen_20)
             Row(
@@ -99,14 +120,18 @@ fun VerifyOtpView() {
             ) {
                 TextLabel(label = Strings.reTypePswdDes)
                 TextLabel(label = Strings.resentOTP,modifier = Modifier.clickable {
-                    Toast.makeText(context,"This is a toast",Toast.LENGTH_SHORT).show()
+                    verifyOtpViewModel.resentCode(context)
                 })
             }
             VerticalSpacer(Dimension.dimen_50)
             Row(horizontalArrangement = Arrangement.Center,modifier = Modifier.fillMaxWidth()) {
                 CustomButton(
                     border = BorderStroke(1.dp,Color.White),
-                    onClick = { verifyOtpViewModel.validateOTPFields() },
+                    onClick = {
+                        if (verifyOtpViewModel.validateOTPFields()) {
+                            verifyOtpViewModel.resetPassword(context)
+                        }
+                    },
                     content = {
                         Text(
                             text = Strings.resetText,
@@ -118,6 +143,132 @@ fun VerifyOtpView() {
 
                     )
             }
+
+            // enable Loader when Api Hit
+            if (verifyOtpViewModel.resentCodeState.value.isLoading.value) ShowLoader()
+            // enable success dialog when reSent OTp Api hit
+            if (verifyOtpViewModel.resentCodeState.value.isSucceed.value) {
+                ShowAlertDialog(content = {
+                    Column(
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.padding(10.dp)
+                    ) {
+//
+                        VerticalSpacer()
+                        ViewDivider()
+                        VerticalSpacer()
+
+                        Text(
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            text = verifyOtpViewModel.resentCodeState.value.message,
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                        VerticalSpacer(Dimension.dimen_40)
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .padding(bottom = 10.dp)
+                        ) {
+                            CustomButton(
+                                border = BorderStroke(1.dp,Color.White),
+                                onClick = {
+                                    clickOnSuccessResentOtp(
+                                        verifyOtpViewModel = verifyOtpViewModel
+                                    )
+                                },
+                                content = {
+                                    Text(
+                                        text = Strings.okText,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        textAlign = TextAlign.Center,
+                                        fontSize = 16.sp
+                                    )
+                                },
+                            )
+                        }
+                    }
+
+                },onDismissRequest = {
+                    clickOnSuccessResentOtp(
+                        verifyOtpViewModel = verifyOtpViewModel
+                    )
+                })
+            }
+
+            // enable Loader when Api Hit
+            if (verifyOtpViewModel.resetPasswordState.value.isLoading.value) ShowLoader()
+            // enable success dialog when reSent OTp Api hit
+            if (verifyOtpViewModel.resetPasswordState.value.isSucceed.value) {
+                ShowAlertDialog(content = {
+                    Column(
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.padding(10.dp)
+                    ) {
+                        Box(modifier = Modifier.align(Alignment.Start)) {
+                            Text(
+                                text = Strings.reSendSuccess,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                        VerticalSpacer()
+                        ViewDivider()
+                        VerticalSpacer()
+
+                        Text(
+                            modifier = Modifier.align(Alignment.CenterHorizontally),
+                            text = verifyOtpViewModel.resetPasswordState.value.message,
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                        VerticalSpacer(Dimension.dimen_40)
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.CenterHorizontally)
+                                .padding(bottom = 10.dp)
+                        ) {
+                            CustomButton(
+                                border = BorderStroke(1.dp,Color.White),
+                                onClick = {
+                                    clickOnSuccessResentPass(
+                                        verifyOtpViewModel = verifyOtpViewModel,
+                                        navigator = navigator
+                                    )
+                                },
+                                content = {
+                                    Text(
+                                        text = Strings.okText,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        textAlign = TextAlign.Center,
+                                        fontSize = 16.sp
+                                    )
+                                },
+                            )
+                        }
+                    }
+
+                },onDismissRequest = {
+                    clickOnSuccessResentPass(
+                        verifyOtpViewModel = verifyOtpViewModel,navigator = navigator
+                    )
+                })
+            }
         }
     }
+}
+
+fun clickOnSuccessResentOtp(verifyOtpViewModel: VerifyOtpViewModel) {
+    verifyOtpViewModel.resentCodeState.value.apply {
+        isSucceed.value = false
+    }
+}
+
+fun clickOnSuccessResentPass(
+    verifyOtpViewModel: VerifyOtpViewModel,
+    navigator: DestinationsNavigator
+) {
+    verifyOtpViewModel.resetPasswordState.value.apply {
+        isSucceed.value = false
+    }
+    navigator.popBackStack(LoginScreenDestination,false)
 }
