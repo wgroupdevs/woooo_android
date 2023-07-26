@@ -1,10 +1,13 @@
 package woooo_app.woooo.feature.profile.views
 
 import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
@@ -45,27 +48,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.wgroup.woooo_app.woooo.feature.profile.viewmodels.UpdateProfileViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
-import woooo_app.woooo.shared.components.CustomDateTimePicker
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageUpdateProfileView
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.TextLabel
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
-import woooo_app.woooo.shared.components.ViewDivider
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.shared.components.view_models.DateTimerPickerViewModel
 import com.wgroup.woooo_app.woooo.theme.Shapes
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
-import eu.siacs.conversations.R
+import woooo_app.woooo.feature.profile.viewmodels.UpdateProfileViewModel
+import woooo_app.woooo.shared.components.CustomDateTimePicker
+import woooo_app.woooo.shared.components.ViewDivider
+import woooo_app.woooo.utils.Dimension
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -73,7 +76,13 @@ import java.time.LocalDate
 fun UpdateProfileView(navigator: DestinationsNavigator) {
     val dateTimerPickerViewModel: DateTimerPickerViewModel = hiltViewModel()
     val updateProfileViewModel: UpdateProfileViewModel = hiltViewModel()
-
+    var context = LocalContext.current
+    val imagePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = {
+            updateProfileViewModel.profileImage.value = it.toString()
+//                updateProfileViewModel.setUserProfile()
+        })
     Column(
         Modifier
             .padding(10.dp)
@@ -100,13 +109,21 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             Modifier.align(Alignment.CenterHorizontally)
         ) {
             Box(
-                Modifier.clip(CircleShape)
+                Modifier
+                    .clip(CircleShape)
+                    .clickable(onClick = {
+                        imagePicker.launch(
+                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                        )
+                    })
             ) {
-                Image(
+                AsyncImage(
+                    model = updateProfileViewModel.profileImage.value,
                     modifier = Modifier
                         .height(150.dp)
-                        .width(150.dp),
-                    painter = painterResource(R.drawable.woooo_logo),
+                        .width(150.dp)
+                        .background(color = Color.Transparent,shape = CircleShape)
+                        .border(2.dp,Color.White,shape = CircleShape),
                     contentDescription = "This is a circular image",
                     contentScale = ContentScale.FillBounds
                 )
@@ -316,8 +333,8 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
         TextLabel(label = Strings.addressText)
         VerticalSpacer()
         WooTextField(onValueChange = {
-            updateProfileViewModel.setNameControllerValue(it)
-            updateProfileViewModel.setNameErrorValue(false)
+            updateProfileViewModel.setAddressControllerValue(it)
+            updateProfileViewModel.setAddressErrorValue(false)
         },
             value = updateProfileViewModel.getAddressController.value,
             isError = updateProfileViewModel.getAddressError.value,
@@ -365,7 +382,8 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             CustomButton(
                 border = BorderStroke(1.dp,Color.White),
                 onClick = {
-                    updateProfileViewModel.validateSignUpFields()
+                    updateProfileViewModel.updateProfile(context)
+//                    updateProfileViewModel.validateSignUpFields()
                 },
                 content = {
                     Text(
@@ -377,5 +395,6 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
                 },
             )
         }
+        Box(modifier = Modifier.height(400.dp))
     }
 }

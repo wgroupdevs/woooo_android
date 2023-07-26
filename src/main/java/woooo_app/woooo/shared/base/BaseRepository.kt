@@ -20,20 +20,20 @@ abstract class BaseRepository {
     ): Flow<APIResult<T>> = flow {
         emit(APIResult.Loading)
         val response = apiCall()
-//        Log.d("SafeAPICall StatusCode", response.code().toString())
-//        Log.d("SafeAPICall Message", response.message())
-//        Log.d("SafeAPICall Successful", response.isSuccessful.toString())
-//        Log.d("SafeAPICall headers", response.headers().toString())
-//        Log.d("SafeAPICall raw", response.raw().toString())
-//        Log.d("SafeAPICall Body", response.body().toString())
-//        Log.d("SafeAPICall Error", response.errorBody()?.source().toString())
-//        Log.d("SafeAPICall Error ", response.errorBody()?.charStream().toString())
-////        Log.d("SafeAPICall Error", response.errorBody().source().readUtf8Line().toString())
-//
-//
-////        Log.d("SafeAPICall fromJson",json.toString())
-////        val jsonObj = JSONObject(bufferUTF)
-////        val map = jsonObj.toMap()
+        Log.d("SafeAPICall StatusCode", response.code().toString())
+        Log.d("SafeAPICall Message", response.message())
+        Log.d("SafeAPICall Successful", response.isSuccessful.toString())
+        Log.d("SafeAPICall headers", response.headers().toString())
+        Log.d("SafeAPICall raw", response.raw().toString())
+        Log.d("SafeAPICall Body", response.body().toString())
+        Log.d("SafeAPICall Error", response.errorBody()?.source().toString())
+        Log.d("SafeAPICall Error ", response.errorBody()?.charStream().toString())
+//        Log.d("SafeAPICall Error", response.errorBody().source().readUtf8Line().toString())
+
+
+//        Log.d("SafeAPICall fromJson",json.toString())
+//        val jsonObj = JSONObject(bufferUTF)
+//        val map = jsonObj.toMap()
 
         if (response.isSuccessful) {
             val data = response.body()

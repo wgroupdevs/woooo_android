@@ -4,8 +4,6 @@ import ShowLoader
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.wgroup.woooo_app.woooo.destinations.LoginScreenDestination
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageConfirmAccountView
@@ -40,9 +37,8 @@ import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
+import woooo_app.woooo.destinations.LoginScreenDestination
 import woooo_app.woooo.feature.auth.viewmodel.ConfirmAccountViewModel
-import woooo_app.woooo.shared.components.ShowAlertDialog
-import woooo_app.woooo.shared.components.ViewDivider
 import woooo_app.woooo.utils.Dimension
 
 @Composable
@@ -129,111 +125,30 @@ fun ConfirmAccountScreen(navigator: DestinationsNavigator) {
         if (confirmAccountViewModel.confirmAccountState.value.isLoading.value) ShowLoader()
         // enable success dialog when verify OTp Api hit
         if (confirmAccountViewModel.confirmAccountState.value.isSucceed.value) {
-            ShowAlertDialog(content = {
-                Column(
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.padding(10.dp)
-                ) {
-                    Box(modifier = Modifier.align(Alignment.Start)) {
-                        Text(text = Strings.regPass,style = MaterialTheme.typography.bodyLarge)
-                    }
-                    VerticalSpacer()
-                    ViewDivider()
-                    VerticalSpacer()
-
-                    Text(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        text = confirmAccountViewModel.confirmAccountState.value.message,
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.labelLarge
+            SuccessDialogAuth(title = Strings.regPass,
+                message = confirmAccountViewModel.confirmAccountState.value.message,
+                onClick =
+                {
+                    clickOnSuccessDialogVerifyAccount(
+                        confirmAccountViewModel = confirmAccountViewModel,
+                        navigator = navigator
                     )
-                    VerticalSpacer(Dimension.dimen_40)
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(bottom = 10.dp)
-                    ) {
-                        CustomButton(
-                            border = BorderStroke(1.dp,Color.White),
-                            onClick = {
-                                clickOnSuccessDialogVerifyAccount(
-                                    confirmAccountViewModel = confirmAccountViewModel,
-                                    navigator = navigator
-                                )
-                            },
-                            content = {
-                                Text(
-                                    text = Strings.okText,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    textAlign = TextAlign.Center,
-                                    fontSize = 16.sp
-                                )
-                            },
-                        )
-                    }
-                }
-
-            },onDismissRequest = {
-                clickOnSuccessDialogVerifyAccount(
-                    confirmAccountViewModel = confirmAccountViewModel,navigator = navigator
-                )
-            })
+                })
         }
         // enable Loader when Api Hit
         if (confirmAccountViewModel.resentCodeState.value.isLoading.value) ShowLoader()
         // enable success dialog when reSent OTp Api hit
         if (confirmAccountViewModel.resentCodeState.value.isSucceed.value) {
-            ShowAlertDialog(content = {
-                Column(
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.padding(10.dp)
-                ) {
-                    Box(modifier = Modifier.align(Alignment.Start)) {
-                        Text(
-                            text = Strings.reSendSuccess,style = MaterialTheme.typography.bodyLarge
-                        )
-                    }
-                    VerticalSpacer()
-                    ViewDivider()
-                    VerticalSpacer()
 
-                    Text(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        text = confirmAccountViewModel.resentCodeState.value.message,
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.labelLarge
+            SuccessDialogAuth(
+                title = Strings.reSendSuccess,
+                message = confirmAccountViewModel.resentCodeState.value.message,
+                onClick = {
+                    clickOnSuccessDialogReSentOTP(
+                        confirmAccountViewModel = confirmAccountViewModel
                     )
-                    VerticalSpacer(Dimension.dimen_40)
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(bottom = 10.dp)
-                    ) {
-                        CustomButton(
-                            border = BorderStroke(1.dp,Color.White),
-                            onClick = {
-                                clickOnSuccessDialogReSentOTP(
-                                    confirmAccountViewModel = confirmAccountViewModel
-                                )
-                            },
-                            content = {
-                                Text(
-                                    text = Strings.okText,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    textAlign = TextAlign.Center,
-                                    fontSize = 16.sp
-                                )
-                            },
-                        )
-                    }
-                }
-
-            },onDismissRequest = {
-                clickOnSuccessDialogReSentOTP(
-                    confirmAccountViewModel = confirmAccountViewModel
-                )
-            })
-
+                },
+            )
         }
     }
 }

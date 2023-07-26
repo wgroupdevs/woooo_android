@@ -14,6 +14,8 @@ import woooo_app.woooo.data.models.auth.requestmodels.ForgotPasswordRequestModel
 import woooo_app.woooo.data.models.auth.requestmodels.LoginRequestParams
 import woooo_app.woooo.data.models.auth.requestmodels.ResetPasswordRequestModel
 import woooo_app.woooo.data.models.auth.requestmodels.SignUpRequestModel
+import woooo_app.woooo.data.models.profile.UpdateProfileModel
+import woooo_app.woooo.data.models.profile.UpdateProfileRequestModel
 import woooo_app.woooo.domain.repository.AuthRepository
 import woooo_app.woooo.shared.base.APIResult
 import woooo_app.woooo.shared.base.BaseRepository
@@ -58,6 +60,12 @@ class AuthRepositoryImpl @Inject constructor(
         safeApiCall {
             Log.d("reSend API ",params.toString())
             apiService.resetPassword(params)
+        }
+
+    override suspend fun updateProfile(params: UpdateProfileRequestModel): Flow<APIResult<UpdateProfileModel>> =
+        safeApiCall {
+            Log.d("update Profile params ","${ params.toMap() }")
+            apiService.updateProfile("DE751AA2-227E-42F1-BEE6-B1F05C143246",params)
         }
 
 }

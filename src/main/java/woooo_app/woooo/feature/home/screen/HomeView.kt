@@ -45,7 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.feature.home.ui.AppDrawer
-import com.wgroup.woooo_app.woooo.feature.home.ui.CircularMenu
+import woooo_app.woooo.feature.home.ui.CircularMenu
 import com.wgroup.woooo_app.woooo.feature.home.viewmodel.HomeViewModel
 import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer

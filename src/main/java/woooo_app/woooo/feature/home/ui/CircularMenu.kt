@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.feature.home.ui
+package woooo_app.woooo.feature.home.ui
 
 import android.content.Intent
 import androidx.compose.foundation.Image
@@ -44,17 +44,22 @@ import woooo_app.woooo.utils.Dimension
 fun CircularMenu(navigator: DestinationsNavigator) {
     var indexToBePressed by remember { mutableStateOf(0) }
 
-    val transparentColor = mutableListOf<Color>(
+    val transparentColor = mutableListOf(
         Color.Transparent,Color.Transparent,Color.Transparent,Color.Transparent,
     )
+    val meetingColors = mutableListOf(
+        WooColor.halfTransparent,Color.Transparent,Color.Transparent,Color.Transparent
+    )
+    val walletColors = mutableListOf(
+        Color.Transparent,WooColor.halfTransparent,Color.Transparent,Color.Transparent
+    )
+    val callColors = mutableListOf(
+        Color.Transparent,Color.Transparent,WooColor.halfTransparent,Color.Transparent
+    )
+    val chatColor = mutableListOf(
+        Color.Transparent,Color.Transparent,Color.Transparent,WooColor.halfTransparent
+    )
 
-
-//    val chatColors = mutableListOf<Color>(
-//        Color.Transparent,Color.Transparent,Color.Transparent,WooColor.circulInner
-//    )
-//    val meetingColors = mutableListOf<Color>(
-//        Color.Transparent,WooColor.circulInner,Color.Transparent,Color.Transparent
-//    )
     val circularMenuViewModel: CircularMenuViewModel = hiltViewModel()
     val inner_wheel = painterResource(id = R.drawable.inner_wheel)
     val meeting_text_active = painterResource(id = R.drawable.meeting_text_disable)
@@ -91,7 +96,6 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                 .align(Alignment.Center)
         ) {
 
-
             PieChart(
                 data = mapOf(
                     Pair("Sample-1",25),
@@ -102,10 +106,14 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                 radiusOuter = (Dimension.boxWithConstraintsScope.maxWidth * 0.55f),
                 chartBarWidth = 34.dp,
                 animDuration = 0,
-                listOfColors = transparentColor
-//                if (indexToBePressed == 0) transparentColor else if (indexToBePressed == 1) chatColors else meetingColors
+                listOfColors = when (indexToBePressed) {
+                    1 -> meetingColors
+                    2 -> walletColors
+                    3 -> callColors
+                    4 -> chatColor
+                    else -> transparentColor
+                },
             )
-
         }
 
         // Go to Mining
@@ -145,15 +153,14 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                 )
                 .align(Alignment.TopStart)
                 .clickable {
-                    indexToBePressed = 3
-                    transparentColor[indexToBePressed]=WooColor.halfTransparent
-
+                    indexToBePressed = 4
                     scopeClockWise.launch {
                         circularMenuViewModel.rotateOuterCircleClockWise()
                     }
                     scopeAntiClockWise.launch {
                         circularMenuViewModel.rotateMiddleCircleAntiClockWise()
-                        context.startActivity(Intent(context, ConversationActivity::class.java))
+                        context.startActivity(Intent(context,ConversationActivity::class.java))
+                        indexToBePressed = 0
                     }
 
                 },
@@ -175,12 +182,14 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                 )
                 .align(Alignment.TopEnd)
                 .clickable {
-                    indexToBePressed = 0
+                    indexToBePressed = 1
+//                    transparentColor[indexToBePressed] = WooColor.halfTransparent
                     scopeClockWise.launch {
                         circularMenuViewModel.rotateOuterCircleAntiClockWise()
                     }
                     scopeAntiClockWise.launch {
                         circularMenuViewModel.rotateMiddleCircleClockWise()
+                        indexToBePressed = 0
                     }
                 },
         ) {
@@ -201,12 +210,13 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                 )
                 .align(Alignment.BottomStart)
                 .clickable {
-                    indexToBePressed = 2
+                    indexToBePressed = 3
                     scopeClockWise.launch {
                         circularMenuViewModel.rotateOuterCircleClockWise()
                     }
                     scopeAntiClockWise.launch {
                         circularMenuViewModel.rotateMiddleCircleAntiClockWise()
+                        indexToBePressed = 0
                     }
                 },
         ) {
@@ -228,7 +238,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                 )
                 .align(Alignment.BottomEnd)
                 .clickable {
-                    indexToBePressed = 1
+                    indexToBePressed = 2
                     scopeClockWise.launch {
                         circularMenuViewModel.rotateOuterCircleAntiClockWise()
                     }
@@ -236,6 +246,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                         circularMenuViewModel.rotateMiddleCircleClockWise()
                         /// open verify dialog
                         circularMenuViewModel.setOpenVerifyDialogValue(true)
+                        indexToBePressed = 0
 
                     }
                 },

@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.map
 
 class UserPreferencesImpl(private val dataStore: DataStore<Preferences>) : UserPreferences {
 
-
     override suspend fun setFirstName(firstName: String) {
         dataStore.edit {
             it[UserPreferencesKey.FIRST_NAME] = firstName
@@ -42,6 +41,10 @@ class UserPreferencesImpl(private val dataStore: DataStore<Preferences>) : UserP
         }
     }
 
+    override suspend fun setProfileImage(image: String) {
+        dataStore.edit { it[UserPreferencesKey.PROFILE_IMAGE] = image }
+    }
+
     override fun getFirstName(): Flow<String> {
         return dataStore.data.catch { emit(emptyPreferences()) }.map {
             it[UserPreferencesKey.FIRST_NAME] ?: ""
@@ -56,6 +59,10 @@ class UserPreferencesImpl(private val dataStore: DataStore<Preferences>) : UserP
 
     override suspend fun getAuthToke(): String {
         return dataStore.data.first()[UserPreferencesKey.AUTH_TOKEN] ?: ""
+    }
+
+    override suspend fun getProfileImage(): String {
+        return dataStore.data.first()[UserPreferencesKey.PROFILE_IMAGE] ?: ""
     }
 
 }

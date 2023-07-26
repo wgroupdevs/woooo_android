@@ -1,14 +1,32 @@
-package com.wgroup.woooo_app.woooo.feature.profile.viewmodels
+package woooo_app.woooo.feature.profile.viewmodels
 
+import android.content.Context
+import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.wgroup.woooo_app.woooo.utils.Strings
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import woooo_app.woooo.data.datasource.local.UserPreferences
+import woooo_app.woooo.data.models.profile.UpdateProfileRequestModel
+import woooo_app.woooo.domain.usecase.UpdateProfileUseCase
+import woooo_app.woooo.shared.base.doOnFailure
+import woooo_app.woooo.shared.base.doOnLoading
+import woooo_app.woooo.shared.base.doOnSuccess
+import woooo_app.woooo.shared.components.showToast
 import javax.inject.Inject
 
 @HiltViewModel
-class UpdateProfileViewModel @Inject constructor() : ViewModel() {
+class UpdateProfileViewModel @Inject constructor(
+    private val userPreferences: UserPreferences,
+    private val updateProfileUseCase: UpdateProfileUseCase
+) : ViewModel() {
+    private val _updateProfileStates: MutableState<UpdateProfileStates> =
+        mutableStateOf(UpdateProfileStates())
+    val updateProfileStates: State<UpdateProfileStates> = _updateProfileStates
 
     // about name
     private val _setAboutController = mutableStateOf("")
@@ -101,6 +119,55 @@ class UpdateProfileViewModel @Inject constructor() : ViewModel() {
         _setPostalCodeError.value = value
     }
 
+    // set profile image of user
+    var profileImage = mutableStateOf<String>(value = "")
+    fun setUserProfile() = viewModelScope.launch {
+        profileImage.value = userPreferences.getProfileImage()
+        Log.d(profileImage.value,"UserProfile Image")
+    }
+
+//     update profile api function
+    fun updateProfile(context: Context) = viewModelScope.launch {
+        updateProfileUseCase.invoke(
+            UpdateProfileRequestModel(
+                firstName = getNameController.value,
+                lastName = getLastNameController.value,
+                imageURL = "",
+                dateOfBirth = "2023-07-25T11:39:08.478Z",
+                language = "userPreferences.getUserLanguage",
+                description = getAboutController.value,
+                address1 = getAddressController.value,
+                city = "userPreferences.getUserAddress",
+                country = "userPreferences.getUserCountry",
+                zipCode = getPostalCodeController.value,
+                state = "userPreferences.getUserState",
+                languageCode = "userPreferences.getUserLanguageCode"
+            )
+        ).doOnSuccess {
+            _updateProfileStates.value.apply {
+                data = it
+                message = it.Message.toString()
+                isSucceed.value = it.Success ?: false
+                isLoading.value = false
+            }
+            Log.d("Update Profile Success","Resent Code")
+        }.doOnFailure {
+            _updateProfileStates.value.apply {
+                message = it?.Message.toString()
+                isLoading.value = it?.Success ?: false
+                isFailed.value = true
+            }
+
+            Log.d("Update Profile Failure",it?.Message.toString())
+            showToast(it?.Message.toString(),context = context)
+
+        }.doOnLoading {
+            _updateProfileStates.value.apply {
+                isLoading.value = true
+            }
+        }.collect {}
+    }
+
     fun validateSignUpFields(): Boolean {
         if (getAboutController.value.trim() == "") {
             // pass error text to show below in text field
@@ -141,6 +208,4 @@ class UpdateProfileViewModel @Inject constructor() : ViewModel() {
         }
         return true
     }
-
-
 }

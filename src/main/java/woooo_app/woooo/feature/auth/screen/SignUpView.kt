@@ -44,7 +44,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.wgroup.woooo_app.woooo.destinations.ConfirmAccountMainScreenDestination
 import com.wgroup.woooo_app.woooo.shared.components.CountryPicker
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
@@ -58,10 +57,9 @@ import com.wgroup.woooo_app.woooo.shared.components.view_models.PasswordValidato
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
+import woooo_app.woooo.destinations.ConfirmAccountMainScreenDestination
 import woooo_app.woooo.feature.auth.EmailForAuthModule
 import woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
-import woooo_app.woooo.shared.components.ShowAlertDialog
-import woooo_app.woooo.shared.components.ViewDivider
 import woooo_app.woooo.shared.components.view_models.CountryPickerViewModel
 import woooo_app.woooo.utils.Dimension
 
@@ -85,7 +83,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
         ) {
             CustomIcon(
                 icon = Icons.Rounded.ArrowBack,modifier = Modifier.clickable(onClick = {
-                    navigator.popBackStack( )
+                    navigator.popBackStack()
                 })
             )
             HorizontalSpacer()
@@ -328,104 +326,25 @@ fun SignUpView(navigator: DestinationsNavigator) {
         if (signUpViewModel.signUpResponseState.value.isLoading.value) ShowLoader()
         // enabled success dialogue when api hit successfully
         if (signUpViewModel.signUpResponseState.value.isSucceed.value) {
-            ShowAlertDialog(content = {
-                Column(
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.padding(10.dp)
-                ) {
-                    Box(modifier = Modifier.align(Alignment.Start)) {
-                        Text(text = Strings.regPass,style = MaterialTheme.typography.bodyLarge)
-                    }
-                    VerticalSpacer()
-                    ViewDivider()
-                    VerticalSpacer()
-
-                    Text(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        text = signUpViewModel.signUpResponseState.value.message,
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.labelLarge
+            SuccessDialogAuth(
+                title = Strings.regPass,
+                message = signUpViewModel.signUpResponseState.value.message,
+                onClick = {
+                    clickOnSuccessDialog(
+                        signUpViewModel = signUpViewModel,navigator = navigator
                     )
-                    VerticalSpacer(Dimension.dimen_40)
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(bottom = 10.dp)
-                    ) {
-                        CustomButton(
-                            border = BorderStroke(1.dp,Color.White),
-                            onClick = {
-                                clickOnSuccessDialog(
-                                    signUpViewModel = signUpViewModel,navigator = navigator
-                                )
-                            },
-                            content = {
-                                Text(
-                                    text = Strings.okText,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    textAlign = TextAlign.Center,
-                                    fontSize = 16.sp
-                                )
-                            },
-                        )
-                    }
-                }
-
-            },onDismissRequest = {
-                clickOnSuccessDialog(signUpViewModel = signUpViewModel,navigator = navigator)
-            })
+                })
         }
         // enabled Fail dialogue when api hit Fail
 
         if (signUpViewModel.signUpResponseState.value.isFailed.value) {
-            ShowAlertDialog(content = {
-                Column(
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.padding(10.dp)
-                ) {
-                    Box(modifier = Modifier.align(Alignment.Start)) {
-                        Text(text = Strings.regFail,style = MaterialTheme.typography.bodyLarge)
-                    }
-                    VerticalSpacer()
-                    ViewDivider()
-                    VerticalSpacer()
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        Text(
-                            text = signUpViewModel.signUpResponseState.value.message,
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.labelLarge
-                        )
-                    }
-                    VerticalSpacer(Dimension.dimen_50)
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(bottom = 10.dp)
-                    ) {
-                        CustomButton(
-                            border = BorderStroke(1.dp,Color.White),
-                            onClick = {
-                                clickOnFailureDialog(signUpViewModel = signUpViewModel)
 
-                            },
-                            content = {
-                                Text(
-                                    text = Strings.okText,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    textAlign = TextAlign.Center,
-                                    fontSize = 16.sp
-                                )
-                            },
-                        )
-                    }
-                }
-
-            },onDismissRequest = {
-                clickOnFailureDialog(signUpViewModel = signUpViewModel)
-            })
+            SuccessDialogAuth(
+                title = Strings.regFail,
+                message = signUpViewModel.signUpResponseState.value.message,
+                onClick = {
+                    clickOnFailureDialog(signUpViewModel = signUpViewModel)
+                })
         }
         Box(Modifier.height(200.dp)) {
 

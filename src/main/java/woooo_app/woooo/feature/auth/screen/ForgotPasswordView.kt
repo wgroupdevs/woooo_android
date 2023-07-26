@@ -4,8 +4,6 @@ import ShowLoader
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.wgroup.woooo_app.woooo.destinations.VerifyOTPScreenDestination
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageForgetPasswordView
@@ -38,10 +35,9 @@ import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
+import woooo_app.woooo.destinations.VerifyOTPScreenDestination
 import woooo_app.woooo.feature.auth.EmailForAuthModule
 import woooo_app.woooo.feature.auth.viewmodel.ForgotPasswordViewModel
-import woooo_app.woooo.shared.components.ShowAlertDialog
-import woooo_app.woooo.shared.components.ViewDivider
 import woooo_app.woooo.utils.Dimension
 
 @Composable
@@ -64,9 +60,11 @@ fun ForgotPasswordView(navigator: DestinationsNavigator) {
                 .fillMaxWidth()
         ) {
             CustomIcon(
-                icon = Icons.Rounded.ArrowBack,modifier = Modifier.clickable(onClick = {
-                    navigator.popBackStack()
-                }).size(26.dp)
+                icon = Icons.Rounded.ArrowBack,modifier = Modifier
+                    .clickable(onClick = {
+                        navigator.popBackStack()
+                    })
+                    .size(26.dp)
             )
             HorizontalSpacer()
             Text(text = Strings.forgotTextNewPassView,style = MaterialTheme.typography.bodyLarge)
@@ -128,58 +126,15 @@ fun ForgotPasswordView(navigator: DestinationsNavigator) {
         if (forgotPassViewModel.forgotPasswordState.value.isLoading.value) ShowLoader()
         // enabled success dialogue when api hit successfully
         if (forgotPassViewModel.forgotPasswordState.value.isSucceed.value) {
-            ShowAlertDialog(content = {
-                Column(
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.padding(10.dp)
-                ) {
-                    Box(modifier = Modifier.align(Alignment.Start)) {
-                        Text(
-                            text = Strings.forgotTextNewPassView,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    }
-                    VerticalSpacer()
-                    ViewDivider()
-                    VerticalSpacer()
 
-                    Text(
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        text = forgotPassViewModel.forgotPasswordState.value.message,
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.labelLarge
+            SuccessDialogAuth(
+                title = Strings.forgotTextNewPassView,
+                message = forgotPassViewModel.forgotPasswordState.value.message,
+                onClick = {
+                    clickOnSuccessDialogForgotPassword(
+                        forgotPasswordViewModel = forgotPassViewModel,navigator = navigator
                     )
-                    VerticalSpacer(Dimension.dimen_40)
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .padding(bottom = 10.dp)
-                    ) {
-                        CustomButton(
-                            border = BorderStroke(1.dp,Color.White),
-                            onClick = {
-                                clickOnSuccessDialogForgotPassword(
-                                    forgotPasswordViewModel = forgotPassViewModel,
-                                    navigator = navigator
-                                )
-                            },
-                            content = {
-                                Text(
-                                    text = Strings.okText,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    textAlign = TextAlign.Center,
-                                    fontSize = 16.sp
-                                )
-                            },
-                        )
-                    }
-                }
-
-            },onDismissRequest = {
-                clickOnSuccessDialogForgotPassword(
-                    forgotPasswordViewModel = forgotPassViewModel,navigator = navigator
-                )
-            })
+                })
         }
     }
 }

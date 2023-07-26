@@ -58,7 +58,6 @@ import eu.siacs.conversations.entities.PresenceTemplate;
 import eu.siacs.conversations.http.services.BaseModelAPIResponse;
 import eu.siacs.conversations.http.services.LoginAPIResponseJAVA;
 import eu.siacs.conversations.http.services.WooooAuthService;
-import eu.siacs.conversations.http.services.WooooService;
 import eu.siacs.conversations.services.BarcodeProvider;
 import eu.siacs.conversations.services.QuickConversationsService;
 import eu.siacs.conversations.services.XmppConnectionService;
@@ -70,7 +69,6 @@ import eu.siacs.conversations.ui.util.AvatarWorkerTask;
 import eu.siacs.conversations.ui.util.MenuDoubleTabUtil;
 import eu.siacs.conversations.ui.util.PendingItem;
 import eu.siacs.conversations.ui.util.SoftKeyboardUtils;
-import eu.siacs.conversations.ui.util.StyledAttributes;
 import eu.siacs.conversations.utils.CryptoHelper;
 import eu.siacs.conversations.utils.Resolver;
 import eu.siacs.conversations.utils.SignupUtils;
@@ -88,7 +86,7 @@ import eu.siacs.conversations.xmpp.pep.Avatar;
 import okhttp3.HttpUrl;
 import woooo_app.MainActivity;
 
-public class EditAccountActivity extends OmemoActivity implements OnAccountUpdate, OnUpdateBlocklist,
+public class    EditAccountActivity extends OmemoActivity implements OnAccountUpdate, OnUpdateBlocklist,
         OnKeyStatusUpdated, OnCaptchaRequested, KeyChainAliasCallback, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnMamPreferencesFetched, WooooAuthService.OnLoginAPiResult {
 
     public static final String EXTRA_OPENED_FROM_NOTIFICATION = "opened_from_notification";

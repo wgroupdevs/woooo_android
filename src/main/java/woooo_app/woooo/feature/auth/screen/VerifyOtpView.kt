@@ -4,7 +4,6 @@ import ShowLoader
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.wgroup.woooo_app.woooo.destinations.LoginScreenDestination
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageVerifyOtp
@@ -32,9 +30,8 @@ import com.wgroup.woooo_app.woooo.shared.components.TextLabel
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.utils.Strings
+import woooo_app.woooo.destinations.LoginScreenDestination
 import woooo_app.woooo.feature.auth.viewmodel.VerifyOtpViewModel
-import woooo_app.woooo.shared.components.ShowAlertDialog
-import woooo_app.woooo.shared.components.ViewDivider
 import woooo_app.woooo.utils.Dimension
 
 @Composable
@@ -148,110 +145,29 @@ fun VerifyOtpView(navigator: DestinationsNavigator) {
             if (verifyOtpViewModel.resentCodeState.value.isLoading.value) ShowLoader()
             // enable success dialog when reSent OTp Api hit
             if (verifyOtpViewModel.resentCodeState.value.isSucceed.value) {
-                ShowAlertDialog(content = {
-                    Column(
-                        verticalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.padding(10.dp)
-                    ) {
-//
-                        VerticalSpacer()
-                        ViewDivider()
-                        VerticalSpacer()
-
-                        Text(
-                            modifier = Modifier.align(Alignment.CenterHorizontally),
-                            text = verifyOtpViewModel.resentCodeState.value.message,
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.labelLarge
+                SuccessDialogAuth(
+                    title = "",
+                    message = verifyOtpViewModel.resentCodeState.value.message,
+                    onClick = {
+                        clickOnSuccessResentOtp(
+                            verifyOtpViewModel = verifyOtpViewModel
                         )
-                        VerticalSpacer(Dimension.dimen_40)
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .padding(bottom = 10.dp)
-                        ) {
-                            CustomButton(
-                                border = BorderStroke(1.dp,Color.White),
-                                onClick = {
-                                    clickOnSuccessResentOtp(
-                                        verifyOtpViewModel = verifyOtpViewModel
-                                    )
-                                },
-                                content = {
-                                    Text(
-                                        text = Strings.okText,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        textAlign = TextAlign.Center,
-                                        fontSize = 16.sp
-                                    )
-                                },
-                            )
-                        }
-                    }
-
-                },onDismissRequest = {
-                    clickOnSuccessResentOtp(
-                        verifyOtpViewModel = verifyOtpViewModel
-                    )
-                })
+                    })
             }
 
             // enable Loader when Api Hit
             if (verifyOtpViewModel.resetPasswordState.value.isLoading.value) ShowLoader()
             // enable success dialog when reSent OTp Api hit
             if (verifyOtpViewModel.resetPasswordState.value.isSucceed.value) {
-                ShowAlertDialog(content = {
-                    Column(
-                        verticalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.padding(10.dp)
-                    ) {
-                        Box(modifier = Modifier.align(Alignment.Start)) {
-                            Text(
-                                text = Strings.reSendSuccess,
-                                style = MaterialTheme.typography.bodyLarge
-                            )
-                        }
-                        VerticalSpacer()
-                        ViewDivider()
-                        VerticalSpacer()
 
-                        Text(
-                            modifier = Modifier.align(Alignment.CenterHorizontally),
-                            text = verifyOtpViewModel.resetPasswordState.value.message,
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.labelLarge
+                SuccessDialogAuth(
+                    title = Strings.reSendSuccess,
+                    message = verifyOtpViewModel.resetPasswordState.value.message,
+                    onClick = {
+                        clickOnSuccessResentPass(
+                            verifyOtpViewModel = verifyOtpViewModel,navigator = navigator
                         )
-                        VerticalSpacer(Dimension.dimen_40)
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .padding(bottom = 10.dp)
-                        ) {
-                            CustomButton(
-                                border = BorderStroke(1.dp,Color.White),
-                                onClick = {
-                                    clickOnSuccessResentPass(
-                                        verifyOtpViewModel = verifyOtpViewModel,
-                                        navigator = navigator
-                                    )
-                                },
-                                content = {
-                                    Text(
-                                        text = Strings.okText,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        textAlign = TextAlign.Center,
-                                        fontSize = 16.sp
-                                    )
-                                },
-                            )
-                        }
-                    }
-
-                },onDismissRequest = {
-                    clickOnSuccessResentPass(
-                        verifyOtpViewModel = verifyOtpViewModel,navigator = navigator
-                    )
-                })
+                    })
             }
         }
     }
@@ -264,8 +180,7 @@ fun clickOnSuccessResentOtp(verifyOtpViewModel: VerifyOtpViewModel) {
 }
 
 fun clickOnSuccessResentPass(
-    verifyOtpViewModel: VerifyOtpViewModel,
-    navigator: DestinationsNavigator
+    verifyOtpViewModel: VerifyOtpViewModel,navigator: DestinationsNavigator
 ) {
     verifyOtpViewModel.resetPasswordState.value.apply {
         isSucceed.value = false

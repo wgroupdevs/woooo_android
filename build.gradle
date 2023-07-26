@@ -148,7 +148,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.10.0'
 
     //coil
-    implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation("io.coil-kt:coil-compose:2.3.0")
     //multidex
     implementation 'androidx.multidex:multidex:2.0.1'
     //SDP-SSP
@@ -159,6 +159,8 @@ dependencies {
     implementation("com.marosseleng.android:compose-material3-datetime-pickers:0.7.2")
     //DataStore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
+////    image pick
+//    implementation("io.coil-kt:coil-compose:2.3.0")
 }
 
 ext {

@@ -12,6 +12,8 @@ import woooo_app.woooo.data.models.auth.requestmodels.ForgotPasswordRequestModel
 import woooo_app.woooo.data.models.auth.requestmodels.LoginRequestParams
 import woooo_app.woooo.data.models.auth.requestmodels.ResetPasswordRequestModel
 import woooo_app.woooo.data.models.auth.requestmodels.SignUpRequestModel
+import woooo_app.woooo.data.models.profile.UpdateProfileModel
+import woooo_app.woooo.data.models.profile.UpdateProfileRequestModel
 import woooo_app.woooo.domain.repository.AuthRepository
 import woooo_app.woooo.shared.base.APIResult
 import woooo_app.woooo.shared.base.BaseUseCase
@@ -23,6 +25,7 @@ typealias ConfirmAccountBaseUseCase = BaseUseCase<Map<String,String>,Flow<APIRes
 typealias ReSendCodeBaseUseCase = BaseUseCase<BaseResendCodeReqParam,Flow<APIResult<ResentCodeModel>>>
 typealias ForgotPasswordBaseUseCase = BaseUseCase<ForgotPasswordRequestModel,Flow<APIResult<ForgotPasswordModel>>>
 typealias ResetPasswordBaseUseCase = BaseUseCase<ResetPasswordRequestModel,Flow<APIResult<ResetPasswordModel>>>
+typealias UpdateProfileBaseUseCase = BaseUseCase<UpdateProfileRequestModel,Flow<APIResult<UpdateProfileModel>>>
 
 /**
  * use case to login user
@@ -71,4 +74,10 @@ class ResetPasswordUseCase @Inject constructor(private val authRepository: AuthR
     ResetPasswordBaseUseCase {
     override suspend fun invoke(params: ResetPasswordRequestModel): Flow<APIResult<ResetPasswordModel>> =
         authRepository.resetPassword(params)
+}
+
+class UpdateProfileUseCase @Inject constructor(private val profileRepository: AuthRepository) :
+    UpdateProfileBaseUseCase {
+    override suspend fun invoke(params: UpdateProfileRequestModel): Flow<APIResult<UpdateProfileModel>> =
+        profileRepository.updateProfile(params)
 }

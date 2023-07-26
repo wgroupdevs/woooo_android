@@ -4,6 +4,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Query
 import retrofit2.http.QueryMap
 import woooo_app.woooo.data.models.auth.ConfirmAccountModel
@@ -17,6 +18,8 @@ import woooo_app.woooo.data.models.auth.requestmodels.LoginRequestParams
 import woooo_app.woooo.data.models.auth.requestmodels.ReSentOTPRequestModel
 import woooo_app.woooo.data.models.auth.requestmodels.ResetPasswordRequestModel
 import woooo_app.woooo.data.models.auth.requestmodels.SignUpRequestModel
+import woooo_app.woooo.data.models.profile.UpdateProfileModel
+import woooo_app.woooo.data.models.profile.UpdateProfileRequestModel
 
 interface AuthApiService {
     companion object {
@@ -47,5 +50,9 @@ interface AuthApiService {
 
     @POST("/api/Auth/reset-password")
     suspend fun resetPassword(@Body params: ResetPasswordRequestModel): Response<ResetPasswordModel>
+
+
+    @PUT("/api/v1/Account/UpdateAccount")
+    suspend fun updateProfile(@Query("id") id : String ,@Body params: UpdateProfileRequestModel): Response<UpdateProfileModel>
 
 }

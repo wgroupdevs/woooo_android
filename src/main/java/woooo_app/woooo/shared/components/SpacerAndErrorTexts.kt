@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import woooo_app.woooo.feature.auth.viewmodel.ForgotPasswordViewModel
 import woooo_app.woooo.feature.auth.viewmodel.VerifyOtpViewModel
-import com.wgroup.woooo_app.woooo.feature.profile.viewmodels.UpdateProfileViewModel
+import woooo_app.woooo.feature.profile.viewmodels.UpdateProfileViewModel
 import com.wgroup.woooo_app.woooo.feature.wallet.viewmodel.SendCurrencyViewModel
 import woooo_app.woooo.feature.auth.viewmodel.ConfirmAccountViewModel
 import woooo_app.woooo.feature.auth.viewmodel.LoginWithEmailViewModel

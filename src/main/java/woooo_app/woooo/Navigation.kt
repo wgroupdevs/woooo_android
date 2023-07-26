@@ -27,9 +27,6 @@ import woooo_app.woooo.feature.auth.screen.SignUpView
 import woooo_app.woooo.feature.auth.screen.VerifyOtpView
 import woooo_app.woooo.feature.profile.views.UpdateProfileView
 import woooo_app.woooo.feature.wallet.views.WalletMainView
-@RootNavGraph(start = true)
-
-
 @Destination
 @Composable
 fun LoginScreen(navigator: DestinationsNavigator) {
@@ -37,6 +34,7 @@ fun LoginScreen(navigator: DestinationsNavigator) {
 }
 
 @RootNavGraph(start = true)
+
 @Destination
 @Composable
 fun HomeScreen(navigator: DestinationsNavigator) {
@@ -140,23 +138,21 @@ fun TransactionMainScreen(navigator: DestinationsNavigator) {
 fun WalletMainScreen(navigator: DestinationsNavigator) {
     WalletMainView(navigator)
 }
+@Destination
+@Composable
+fun ForgotPasswordScreen(navigator: DestinationsNavigator) {
+    ForgotPasswordView(navigator)
+}
+@Destination
+@Composable
+fun VerifyOTPScreen(navigator: DestinationsNavigator) {
+    VerifyOtpView(navigator)
+}
 
 @Destination
 @Composable
 fun ConfirmAccountMainScreen(navigator: DestinationsNavigator) {
     ConfirmAccountScreen(navigator)
-}
-
-@Destination
-@Composable
-fun ForgotPasswordViewScreen(navigator: DestinationsNavigator) {
-    ForgotPasswordView(navigator)
-}
-
-@Destination
-@Composable
-fun VerifyOTPScreen(navigator: DestinationsNavigator) {
-    VerifyOtpView(navigator)
 }
 
 //@Destination

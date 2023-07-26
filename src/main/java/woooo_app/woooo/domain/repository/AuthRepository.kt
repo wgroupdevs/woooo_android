@@ -12,6 +12,8 @@ import woooo_app.woooo.data.models.auth.requestmodels.ForgotPasswordRequestModel
 import woooo_app.woooo.data.models.auth.requestmodels.LoginRequestParams
 import woooo_app.woooo.data.models.auth.requestmodels.ResetPasswordRequestModel
 import woooo_app.woooo.data.models.auth.requestmodels.SignUpRequestModel
+import woooo_app.woooo.data.models.profile.UpdateProfileModel
+import woooo_app.woooo.data.models.profile.UpdateProfileRequestModel
 import woooo_app.woooo.shared.base.APIResult
 
 interface AuthRepository {
@@ -21,4 +23,6 @@ interface AuthRepository {
     suspend fun reSendCode(params: BaseResendCodeReqParam): Flow<APIResult<ResentCodeModel>>
     suspend fun forgotPassword(email: ForgotPasswordRequestModel): Flow<APIResult<ForgotPasswordModel>>
     suspend fun resetPassword(params: ResetPasswordRequestModel): Flow<APIResult<ResetPasswordModel>>
+    suspend fun updateProfile(params: UpdateProfileRequestModel): Flow<APIResult<UpdateProfileModel>>
+
 }
