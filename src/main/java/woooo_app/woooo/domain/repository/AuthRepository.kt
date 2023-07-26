@@ -1,6 +1,7 @@
 package woooo_app.woooo.domain.repository
 
 import kotlinx.coroutines.flow.Flow
+import okhttp3.RequestBody
 import woooo_app.woooo.data.models.auth.ConfirmAccountModel
 import woooo_app.woooo.data.models.auth.ForgotPasswordModel
 import woooo_app.woooo.data.models.auth.LoginModel
@@ -14,6 +15,7 @@ import woooo_app.woooo.data.models.auth.requestmodels.ResetPasswordRequestModel
 import woooo_app.woooo.data.models.auth.requestmodels.SignUpRequestModel
 import woooo_app.woooo.data.models.profile.UpdateProfileModel
 import woooo_app.woooo.data.models.profile.UpdateProfileRequestModel
+import woooo_app.woooo.data.models.profile.UploadProfileModel
 import woooo_app.woooo.shared.base.APIResult
 
 interface AuthRepository {
@@ -24,5 +26,6 @@ interface AuthRepository {
     suspend fun forgotPassword(email: ForgotPasswordRequestModel): Flow<APIResult<ForgotPasswordModel>>
     suspend fun resetPassword(params: ResetPasswordRequestModel): Flow<APIResult<ResetPasswordModel>>
     suspend fun updateProfile(params: UpdateProfileRequestModel): Flow<APIResult<UpdateProfileModel>>
+    suspend fun uploadProfile(params: RequestBody): Flow<APIResult<UploadProfileModel>>
 
 }

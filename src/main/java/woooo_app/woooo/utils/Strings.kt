@@ -273,6 +273,7 @@ object Strings {
     //
 //    // profile update view keys
 //
+    var updateSuccess = "Profile Updated"
     var abtText = "About"
     var enterAboutText = "Enter About Your Self"
 

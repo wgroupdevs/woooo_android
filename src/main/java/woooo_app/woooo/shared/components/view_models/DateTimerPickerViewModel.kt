@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.shared.components.view_models
+package woooo_app.woooo.shared.components.view_models
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
