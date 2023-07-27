@@ -158,7 +158,7 @@
                 android:background="?attr/divider"/>
 
             <Button
-                android:id="@+id/save_button"
+                android:id="@+id/login_button"
                 style="@style/Widget.Conversations.Button.Borderless"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

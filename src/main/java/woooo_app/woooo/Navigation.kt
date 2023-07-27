@@ -34,7 +34,6 @@ fun LoginScreen(navigator: DestinationsNavigator) {
 }
 
 @RootNavGraph(start = true)
-
 @Destination
 @Composable
 fun HomeScreen(navigator: DestinationsNavigator) {

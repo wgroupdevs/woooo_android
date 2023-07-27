@@ -80,7 +80,7 @@ public class TrustKeysActivity extends OmemoActivity implements OnKeyStatusUpdat
 		}
 
 		binding.cancelButton.setOnClickListener(mCancelButtonListener);
-		binding.saveButton.setOnClickListener(mSaveButtonListener);
+		binding.loginButton.setOnClickListener(mSaveButtonListener);
 
 		setSupportActionBar(binding.toolbar);
 		configureActionBar(getSupportActionBar());
@@ -426,11 +426,11 @@ public class TrustKeysActivity extends OmemoActivity implements OnKeyStatusUpdat
 	}
 
 	private void unlock() {
-		binding.saveButton.setEnabled(true);
+		binding.loginButton.setEnabled(true);
 	}
 
 	private void lock() {
-		binding.saveButton.setEnabled(false);
+		binding.loginButton.setEnabled(false);
 	}
 
 	private void lockOrUnlockAsNeeded() {
@@ -448,10 +448,10 @@ public class TrustKeysActivity extends OmemoActivity implements OnKeyStatusUpdat
 	}
 
 	private void setDone() {
-		binding.saveButton.setText(getString(R.string.done));
+		binding.loginButton.setText(getString(R.string.done));
 	}
 
 	private void setFetching() {
-		binding.saveButton.setText(getString(R.string.fetching_keys));
+		binding.loginButton.setText(getString(R.string.fetching_keys));
 	}
 }

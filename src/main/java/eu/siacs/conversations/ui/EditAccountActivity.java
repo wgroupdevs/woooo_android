@@ -85,8 +85,9 @@ import eu.siacs.conversations.xmpp.forms.Data;
 import eu.siacs.conversations.xmpp.pep.Avatar;
 import okhttp3.HttpUrl;
 import woooo_app.MainActivity;
+import woooo_app.woooo.utils.NavIntentConstantKt;
 
-public class    EditAccountActivity extends OmemoActivity implements OnAccountUpdate, OnUpdateBlocklist,
+public class EditAccountActivity extends OmemoActivity implements OnAccountUpdate, OnUpdateBlocklist,
         OnKeyStatusUpdated, OnCaptchaRequested, KeyChainAliasCallback, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnMamPreferencesFetched, WooooAuthService.OnLoginAPiResult {
 
     public static final String EXTRA_OPENED_FROM_NOTIFICATION = "opened_from_notification";
@@ -143,20 +144,22 @@ public class    EditAccountActivity extends OmemoActivity implements OnAccountUp
     private XmppUri pendingUri = null;
     private boolean mUseTor;
     private ActivityEditAccountBinding binding;
-    private final OnClickListener mSaveButtonClickListener = new OnClickListener() {
+    private final OnClickListener mloginButtonClickListener = v -> loginAccountXMPP();
+    private final OnClickListener newAccount = v -> {
 
-        @Override
-        public void onClick(final View v) {
-            loginAccountXMPP();
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra(NavIntentConstantKt.CONST_KEY_INTENT, NavIntentConstantKt.SIGNUP_INTENT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
 
-        }
+
     };
     private final TextWatcher mTextWatcher = new TextWatcher() {
 
         @Override
         public void onTextChanged(final CharSequence s, final int start, final int before, final int count) {
             updatePortLayout();
-            updateSaveButton();
+            updateloginButton();
         }
 
         @Override
@@ -236,7 +239,7 @@ public class    EditAccountActivity extends OmemoActivity implements OnAccountUp
         if (mAccount != null) {
             updateAccountInformation(false);
         }
-        updateSaveButton();
+        updateloginButton();
     }
 
     @Override
@@ -468,7 +471,7 @@ public class    EditAccountActivity extends OmemoActivity implements OnAccountUp
 
             finish();
         } else {
-            updateSaveButton();
+            updateloginButton();
             updateAccountInformation(true);
 
             Log.d(TAG, "updateAccountInformation");
@@ -560,51 +563,51 @@ public class    EditAccountActivity extends OmemoActivity implements OnAccountUp
         }
     }
 
-    protected void updateSaveButton() {
+    protected void updateloginButton() {
         boolean accountInfoEdited = accountInfoEdited();
 
         if (accountInfoEdited && !mInitMode) {
-            this.binding.saveButton.setText(R.string.save);
-            this.binding.saveButton.setEnabled(true);
+//            this.binding.loginButton.setText(R.string.save);
+            this.binding.loginButton.setEnabled(true);
         } else if (mAccount != null
                 && (mAccount.getStatus() == Account.State.CONNECTING || mAccount.getStatus() == Account.State.REGISTRATION_SUCCESSFUL || mFetchingAvatar)) {
-            this.binding.saveButton.setEnabled(false);
-            this.binding.saveButton.setText(R.string.account_status_connecting);
+            this.binding.loginButton.setEnabled(false);
+//            this.binding.loginButton.setText(R.string.account_status_connecting);
         } else if (mAccount != null && mAccount.getStatus() == Account.State.DISABLED && !mInitMode) {
-            this.binding.saveButton.setEnabled(true);
-            this.binding.saveButton.setText(R.string.enable);
+            this.binding.loginButton.setEnabled(true);
+//            this.binding.loginButton.setText(R.string.enable);
         } else if (torNeedsInstall(mAccount)) {
-            this.binding.saveButton.setEnabled(true);
-            this.binding.saveButton.setText(R.string.install_orbot);
+            this.binding.loginButton.setEnabled(true);
+//            this.binding.loginButton.setText(R.string.install_orbot);
         } else if (torNeedsStart(mAccount)) {
-            this.binding.saveButton.setEnabled(true);
-            this.binding.saveButton.setText(R.string.start_orbot);
+            this.binding.loginButton.setEnabled(true);
+//            this.binding.loginButton.setText(R.string.start_orbot);
         } else {
-            this.binding.saveButton.setEnabled(true);
+            this.binding.loginButton.setEnabled(true);
             if (!mInitMode) {
                 if (mAccount != null && mAccount.isOnlineAndConnected()) {
-                    this.binding.saveButton.setText(R.string.save);
+//                    this.binding.loginButton.setText(R.string.save);
                     if (!accountInfoEdited) {
-                        this.binding.saveButton.setEnabled(false);
+                        this.binding.loginButton.setEnabled(false);
                     }
                 } else {
                     XmppConnection connection = mAccount == null ? null : mAccount.getXmppConnection();
                     HttpUrl url = connection != null && mAccount.getStatus() == Account.State.PAYMENT_REQUIRED ? connection.getRedirectionUrl() : null;
                     if (url != null) {
-                        this.binding.saveButton.setText(R.string.open_website);
+//                        this.binding.loginButton.setText(R.string.open_website);
                     } else if (inNeedOfSaslAccept()) {
-                        this.binding.saveButton.setText(R.string.accept);
+//                        this.binding.loginButton.setText(R.string.accept);
                     } else {
-                        this.binding.saveButton.setText(R.string.connect);
+//                        this.binding.loginButton.setText(R.string.connect);
                     }
                 }
             } else {
                 XmppConnection connection = mAccount == null ? null : mAccount.getXmppConnection();
                 HttpUrl url = connection != null && mAccount.getStatus() == Account.State.REGISTRATION_WEB ? connection.getRedirectionUrl() : null;
                 if (url != null && this.binding.accountRegisterNew.isChecked() && !accountInfoEdited) {
-                    this.binding.saveButton.setText(R.string.open_website);
+//                    this.binding.loginButton.setText(R.string.open_website);
                 } else {
-                    this.binding.saveButton.setText(R.string.next);
+//                    this.binding.loginButton.setText(R.string.next);
                 }
             }
         }
@@ -666,12 +669,14 @@ public class    EditAccountActivity extends OmemoActivity implements OnAccountUp
         this.binding.clearDevices.setOnClickListener(v -> showWipePepDialog());
         this.binding.port.setText(String.valueOf(Resolver.DEFAULT_PORT_XMPP));
         this.binding.port.addTextChangedListener(mTextWatcher);
-        this.binding.saveButton.setOnClickListener(this.mSaveButtonClickListener);
+        this.binding.loginButton.setOnClickListener(this.mloginButtonClickListener);
+        this.binding.newAccount.setOnClickListener(this.newAccount);
+
 //        this.binding.cancelButton.setOnClickListener(this.mCancelButtonClickListener);
         if (savedInstanceState != null && savedInstanceState.getBoolean("showMoreTable")) {
             changeMoreTableVisibility(true);
         }
-        final OnCheckedChangeListener OnCheckedShowConfirmPassword = (buttonView, isChecked) -> updateSaveButton();
+        final OnCheckedChangeListener OnCheckedShowConfirmPassword = (buttonView, isChecked) -> updateloginButton();
         this.binding.accountRegisterNew.setOnCheckedChangeListener(OnCheckedShowConfirmPassword);
         if (Config.DISALLOW_REGISTRATION_IN_UI) {
             this.binding.accountRegisterNew.setVisibility(View.GONE);
@@ -883,7 +888,7 @@ public class    EditAccountActivity extends OmemoActivity implements OnAccountUp
             final KnownHostsAdapter mKnownHostsAdapter = new KnownHostsAdapter(this,
                     R.layout.simple_list_item,
                     xmppConnectionService.getKnownHosts());
-            this.binding.accountJid.setAdapter(mKnownHostsAdapter);
+//            this.binding.accountJid.setAdapter(mKnownHostsAdapter);
         }
 
         if (pendingUri != null) {
@@ -891,7 +896,7 @@ public class    EditAccountActivity extends OmemoActivity implements OnAccountUp
             pendingUri = null;
         }
         updatePortLayout();
-        updateSaveButton();
+        updateloginButton();
         invalidateOptionsMenu();
     }
 
