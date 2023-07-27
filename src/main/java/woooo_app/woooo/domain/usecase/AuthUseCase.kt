@@ -1,6 +1,7 @@
 package woooo_app.woooo.domain.usecase
 
 import kotlinx.coroutines.flow.Flow
+import okhttp3.RequestBody
 import woooo_app.woooo.data.models.auth.ConfirmAccountModel
 import woooo_app.woooo.data.models.auth.ForgotPasswordModel
 import woooo_app.woooo.data.models.auth.LoginModel
@@ -14,6 +15,7 @@ import woooo_app.woooo.data.models.auth.requestmodels.ResetPasswordRequestModel
 import woooo_app.woooo.data.models.auth.requestmodels.SignUpRequestModel
 import woooo_app.woooo.data.models.profile.UpdateProfileModel
 import woooo_app.woooo.data.models.profile.UpdateProfileRequestModel
+import woooo_app.woooo.data.models.profile.UploadProfileModel
 import woooo_app.woooo.domain.repository.AuthRepository
 import woooo_app.woooo.shared.base.APIResult
 import woooo_app.woooo.shared.base.BaseUseCase
@@ -26,6 +28,7 @@ typealias ReSendCodeBaseUseCase = BaseUseCase<BaseResendCodeReqParam,Flow<APIRes
 typealias ForgotPasswordBaseUseCase = BaseUseCase<ForgotPasswordRequestModel,Flow<APIResult<ForgotPasswordModel>>>
 typealias ResetPasswordBaseUseCase = BaseUseCase<ResetPasswordRequestModel,Flow<APIResult<ResetPasswordModel>>>
 typealias UpdateProfileBaseUseCase = BaseUseCase<UpdateProfileRequestModel,Flow<APIResult<UpdateProfileModel>>>
+typealias UploadProfileBaseUseCase = BaseUseCase<RequestBody,Flow<APIResult<UploadProfileModel>>>
 
 /**
  * use case to login user
@@ -80,4 +83,10 @@ class UpdateProfileUseCase @Inject constructor(private val profileRepository: Au
     UpdateProfileBaseUseCase {
     override suspend fun invoke(params: UpdateProfileRequestModel): Flow<APIResult<UpdateProfileModel>> =
         profileRepository.updateProfile(params)
+}
+
+class UploadProfileUseCase @Inject constructor(private val profileRepository: AuthRepository) :
+    UploadProfileBaseUseCase {
+    override suspend fun invoke(params: RequestBody): Flow<APIResult<UploadProfileModel>> =
+        profileRepository.uploadProfile(params)
 }

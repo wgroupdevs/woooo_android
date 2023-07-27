@@ -2,6 +2,7 @@ package woooo_app.woooo.data.repositoryImp
 
 import android.util.Log
 import kotlinx.coroutines.flow.Flow
+import okhttp3.RequestBody
 import woooo_app.woooo.data.datasource.remote.auth.AuthApiService
 import woooo_app.woooo.data.models.auth.ConfirmAccountModel
 import woooo_app.woooo.data.models.auth.ForgotPasswordModel
@@ -16,6 +17,7 @@ import woooo_app.woooo.data.models.auth.requestmodels.ResetPasswordRequestModel
 import woooo_app.woooo.data.models.auth.requestmodels.SignUpRequestModel
 import woooo_app.woooo.data.models.profile.UpdateProfileModel
 import woooo_app.woooo.data.models.profile.UpdateProfileRequestModel
+import woooo_app.woooo.data.models.profile.UploadProfileModel
 import woooo_app.woooo.domain.repository.AuthRepository
 import woooo_app.woooo.shared.base.APIResult
 import woooo_app.woooo.shared.base.BaseRepository
@@ -64,8 +66,13 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun updateProfile(params: UpdateProfileRequestModel): Flow<APIResult<UpdateProfileModel>> =
         safeApiCall {
-            Log.d("update Profile params ","${ params.toMap() }")
+            Log.d("update Profile params ","${params.toMap()}")
             apiService.updateProfile("DE751AA2-227E-42F1-BEE6-B1F05C143246",params)
+        }
+
+    override suspend fun uploadProfile(params: RequestBody): Flow<APIResult<UploadProfileModel>> =
+        safeApiCall {
+            apiService.uploadFile("DE751AA2-227E-42F1-BEE6-B1F05C143246",params)
         }
 
 }

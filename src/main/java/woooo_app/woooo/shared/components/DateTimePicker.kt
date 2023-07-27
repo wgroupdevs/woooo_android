@@ -13,14 +13,12 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.marosseleng.compose.material3.datetimepickers.date.domain.DatePickerDefaults
 import com.marosseleng.compose.material3.datetimepickers.date.ui.dialog.DatePickerDialog
 import com.marosseleng.compose.material3.datetimepickers.time.domain.TimePickerDefaults
 import com.marosseleng.compose.material3.datetimepickers.time.domain.TimePickerStroke
 import com.marosseleng.compose.material3.datetimepickers.time.domain.noSeconds
 import com.marosseleng.compose.material3.datetimepickers.time.ui.dialog.TimePickerDialog
-import com.wgroup.woooo_app.woooo.shared.components.view_models.DateTimerPickerViewModel
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import java.time.LocalDate
 import java.time.LocalTime

@@ -1,6 +1,7 @@
 package woooo_app.woooo.feature.profile.viewmodels
 
 import android.content.Context
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
@@ -10,23 +11,31 @@ import androidx.lifecycle.viewModelScope
 import com.wgroup.woooo_app.woooo.utils.Strings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.asRequestBody
 import woooo_app.woooo.data.datasource.local.UserPreferences
 import woooo_app.woooo.data.models.profile.UpdateProfileRequestModel
 import woooo_app.woooo.domain.usecase.UpdateProfileUseCase
+import woooo_app.woooo.domain.usecase.UploadProfileUseCase
 import woooo_app.woooo.shared.base.doOnFailure
 import woooo_app.woooo.shared.base.doOnLoading
 import woooo_app.woooo.shared.base.doOnSuccess
 import woooo_app.woooo.shared.components.showToast
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class UpdateProfileViewModel @Inject constructor(
     private val userPreferences: UserPreferences,
-    private val updateProfileUseCase: UpdateProfileUseCase
+    private val updateProfileUseCase: UpdateProfileUseCase,
+    private val uploadProfileUseCase: UploadProfileUseCase,
 ) : ViewModel() {
     private val _updateProfileStates: MutableState<UpdateProfileStates> =
         mutableStateOf(UpdateProfileStates())
     val updateProfileStates: State<UpdateProfileStates> = _updateProfileStates
+    private val _uploadProfileStates: MutableState<UploadProfileStates> =
+        mutableStateOf(UploadProfileStates())
+    val uploadProfileStates: State<UploadProfileStates> = _uploadProfileStates
 
     // about name
     private val _setAboutController = mutableStateOf("")
@@ -126,16 +135,45 @@ class UpdateProfileViewModel @Inject constructor(
         Log.d(profileImage.value,"UserProfile Image")
     }
 
-//     update profile api function
+    //upload profile
+    fun uploadProfile(context: Context,fileUri: Uri) = viewModelScope.launch {
+        val file = File(fileUri.path!!)
+        val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
+        uploadProfileUseCase.invoke(params = requestFile).doOnSuccess {
+            _uploadProfileStates.value.apply {
+                data = it
+                message = it.Message.toString()
+                isSucceed.value = it.Success ?: false
+                isLoading.value = false
+            }
+            Log.d("Upload Profile Success",it.Message.toString())
+        }.doOnFailure {
+            _uploadProfileStates.value.apply {
+                message = it?.Message.toString()
+                isLoading.value = it?.Success ?: false
+                isFailed.value = true
+            }
+
+            Log.d("Upload Profile Failure",it?.Message.toString())
+            showToast(it?.Message.toString(),context = context)
+
+        }.doOnLoading {
+            _uploadProfileStates.value.apply {
+                isLoading.value = true
+            }
+        }.collect {}
+    }
+
+    //     update profile api function
     fun updateProfile(context: Context) = viewModelScope.launch {
         updateProfileUseCase.invoke(
             UpdateProfileRequestModel(
                 firstName = getNameController.value,
                 lastName = getLastNameController.value,
                 imageURL = "",
-                dateOfBirth = "2023-07-25T11:39:08.478Z",
+                dateOfBirth = getDOBController.value,
                 language = "userPreferences.getUserLanguage",
-                description = getAboutController.value,
+                description = getAboutController.value + "T11:39:08.478Z",
                 address1 = getAddressController.value,
                 city = "userPreferences.getUserAddress",
                 country = "userPreferences.getUserCountry",
@@ -150,7 +188,7 @@ class UpdateProfileViewModel @Inject constructor(
                 isSucceed.value = it.Success ?: false
                 isLoading.value = false
             }
-            Log.d("Update Profile Success","Resent Code")
+            Log.d("Update Profile Success",it.Message.toString())
         }.doOnFailure {
             _updateProfileStates.value.apply {
                 message = it?.Message.toString()

@@ -1,6 +1,8 @@
 package woooo_app.woooo.feature.profile.views
 
+import ShowLoader
 import android.os.Build
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -61,13 +63,15 @@ import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.TextLabel
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
-import com.wgroup.woooo_app.woooo.shared.components.view_models.DateTimerPickerViewModel
 import com.wgroup.woooo_app.woooo.theme.Shapes
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
+import woooo_app.woooo.destinations.HomeScreenDestination
+import woooo_app.woooo.feature.auth.screen.SuccessDialogAuth
 import woooo_app.woooo.feature.profile.viewmodels.UpdateProfileViewModel
 import woooo_app.woooo.shared.components.CustomDateTimePicker
 import woooo_app.woooo.shared.components.ViewDivider
+import woooo_app.woooo.shared.components.view_models.DateTimerPickerViewModel
 import woooo_app.woooo.utils.Dimension
 import java.time.LocalDate
 
@@ -77,12 +81,13 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
     val dateTimerPickerViewModel: DateTimerPickerViewModel = hiltViewModel()
     val updateProfileViewModel: UpdateProfileViewModel = hiltViewModel()
     var context = LocalContext.current
-    val imagePicker = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = {
-            updateProfileViewModel.profileImage.value = it.toString()
+    val imagePicker =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia(),
+            onResult = {
+                updateProfileViewModel.profileImage.value = it.toString()
 //                updateProfileViewModel.setUserProfile()
-        })
+                updateProfileViewModel.uploadProfile(context,it!!)
+            })
     Column(
         Modifier
             .padding(10.dp)
@@ -323,12 +328,6 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
 
             )
 
-        if (dateTimerPickerViewModel.getDateDialogueShowForUpdateProfile.value) CustomDateTimePicker(
-            onDateChange = {
-                val date = LocalDate.parse(it.toString())
-                dateTimerPickerViewModel.setDateTextValueForUpdateProfile(date)
-                dateTimerPickerViewModel.setDateDialogueValueForUpdateProfile(false)
-            })
         // address
         TextLabel(label = Strings.addressText)
         VerticalSpacer()
@@ -397,4 +396,30 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
         }
         Box(modifier = Modifier.height(400.dp))
     }
+    // enable Loader when Api Hit
+    if (updateProfileViewModel.updateProfileStates.value.isLoading.value) ShowLoader()
+
+    // enabled success dialgue
+    if (updateProfileViewModel.updateProfileStates.value.isSucceed.value) {
+
+        SuccessDialogAuth(title = Strings.updateSuccess,
+            message = updateProfileViewModel.updateProfileStates.value.message,
+            onClick = {
+                updateProfileViewModel.updateProfileStates.value.apply {
+                    isSucceed.value = false
+                }
+                navigator.popBackStack(HomeScreenDestination,false)
+            })
+    }
+    // enable date of birth picker
+    if (dateTimerPickerViewModel.getDateDialogueShowForUpdateProfile.value) CustomDateTimePicker(
+        onDateChange = {
+//            pass value to controller
+            updateProfileViewModel.setDOBControllerValue(it.toString())
+            Log.d("date of birth ...",updateProfileViewModel.getDOBController.value)
+            // convert it to local to show in text field
+            val date = LocalDate.parse(it.toString())
+            dateTimerPickerViewModel.setDateTextValueForUpdateProfile(date)
+            dateTimerPickerViewModel.setDateDialogueValueForUpdateProfile(false)
+        })
 }
