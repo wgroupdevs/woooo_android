@@ -88,12 +88,7 @@
         android:theme="@style/ConversationsTheme"
         tools:replace="android:label"
         tools:targetApi="q">
-        <activity
-            android:name=".textFieldText"
-            android:exported="false" />
-        <activity
-            android:name=".ui.CustomDialogActivity"
-            android:exported="false" />
+
 
         <meta-data
             android:name="com.google.android.gms.car.application"

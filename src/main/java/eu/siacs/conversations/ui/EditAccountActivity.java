@@ -3,6 +3,7 @@ package eu.siacs.conversations.ui;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
@@ -67,6 +68,7 @@ import eu.siacs.conversations.services.XmppConnectionService.OnCaptchaRequested;
 import eu.siacs.conversations.ui.adapter.KnownHostsAdapter;
 import eu.siacs.conversations.ui.adapter.PresenceTemplateAdapter;
 import eu.siacs.conversations.ui.util.AvatarWorkerTask;
+import eu.siacs.conversations.ui.util.CustomDialogUtil;
 import eu.siacs.conversations.ui.util.MenuDoubleTabUtil;
 import eu.siacs.conversations.ui.util.PendingItem;
 import eu.siacs.conversations.ui.util.SoftKeyboardUtils;
@@ -91,6 +93,7 @@ import woooo_app.woooo.utils.NavIntentConstantKt;
 public class EditAccountActivity extends OmemoActivity implements OnAccountUpdate, OnUpdateBlocklist, OnKeyStatusUpdated, OnCaptchaRequested, KeyChainAliasCallback, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnMamPreferencesFetched, WooooAuthService.OnLoginAPiResult {
     Boolean isLoginWithEmail = true;
     CountryCodePicker codePicker;
+    Context context;
 
 
     public static final String EXTRA_OPENED_FROM_NOTIFICATION = "opened_from_notification";
@@ -654,6 +657,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         }
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_account);
 //        setSupportActionBar(binding.toolbar);
+        context = this;
         binding.accountJid.addTextChangedListener(this.mTextWatcher);
         binding.accountJid.setOnFocusChangeListener(this.mEditTextFocusListener);
         this.binding.accountPassword.addTextChangedListener(this.mTextWatcher);
@@ -709,11 +713,11 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         // open dialog when click on text view
         binding.countryCodetv.setOnClickListener(view -> codePicker.launchCountrySelectionDialog());
 
-        String number = binding.phoneNumberField.getText() + binding.countryCodetv.getText().toString();
+        String number = codePicker.getSelectedCountryCode() + binding.phoneNumberField.getText();
         binding.loginButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("uoadnvoinvoivoadisnv", number);
+                CustomDialogUtil.showCustomDialog(context);
 
             }
         });
