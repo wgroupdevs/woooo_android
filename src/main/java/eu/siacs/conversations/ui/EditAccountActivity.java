@@ -68,7 +68,6 @@ import eu.siacs.conversations.services.XmppConnectionService.OnCaptchaRequested;
 import eu.siacs.conversations.ui.adapter.KnownHostsAdapter;
 import eu.siacs.conversations.ui.adapter.PresenceTemplateAdapter;
 import eu.siacs.conversations.ui.util.AvatarWorkerTask;
-import eu.siacs.conversations.ui.util.CustomDialogUtil;
 import eu.siacs.conversations.ui.util.MenuDoubleTabUtil;
 import eu.siacs.conversations.ui.util.PendingItem;
 import eu.siacs.conversations.ui.util.SoftKeyboardUtils;
@@ -714,13 +713,13 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         binding.countryCodetv.setOnClickListener(view -> codePicker.launchCountrySelectionDialog());
 
         String number = codePicker.getSelectedCountryCode() + binding.phoneNumberField.getText();
-        binding.loginButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CustomDialogUtil.showCustomDialog(context);
-
-            }
-        });
+//        binding.loginButton.setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                CustomDialogUtil.showCustomDialog(context);
+//
+//            }
+//        });
     }
 
     private void onEditYourNameClicked(View view) {
