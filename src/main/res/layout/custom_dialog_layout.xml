@@ -3,15 +3,114 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="12dp">
 
     <!-- Add your custom UI elements here -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="This is a custom layout in the dialog."
-        android:textColor="@color/black" />
+        android:text="Search By"
+        android:textColor="@color/white" />
 
-    <!-- Add more widgets or elements as needed -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
 
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radioOption1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_20sdp"
+                android:buttonTint="@color/white"
+                android:text="Email"
+                android:textColor="@color/white" />
+
+            <RadioButton
+                android:id="@+id/radioOption2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:buttonTint="@color/white"
+                android:text="Phone Number"
+                android:textColor="@color/white" />
+
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/searchByEmailEt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/textfield_background"
+            android:hint="Search"
+            android:padding="@dimen/_8sdp"
+            android:visibility="visible"/>
+
+
+        <LinearLayout
+            android:id="@+id/searchByNumber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/countryCodetv"
+                android:layout_width="@dimen/_45sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:background="@drawable/textfield_background"
+                android:gravity="center"
+                android:text="+81" />
+
+            <eu.siacs.conversations.ui.widget.TextInputEditText
+                android:id="@+id/phoneNumberField"
+                style="@style/Widget.Conversations.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:background="@drawable/textfield_background"
+                android:hint="Phone Number"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:paddingVertical="@dimen/_10sdp"
+                android:paddingStart="@dimen/_5sdp"
+                android:textColor="@color/white" />
+
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/rounded_elevated_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:background="@drawable/button"
+            android:elevation="8dp"
+            android:padding="16dp"
+            android:text="Search"
+            android:textAllCaps="true"
+            android:textColor="#FFFFFF" />
+
+
+    </LinearLayout>
 </LinearLayout>
