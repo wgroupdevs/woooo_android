@@ -46,7 +46,6 @@
     <uses-feature
         android:name="android.hardware.camera.autofocus"
         android:required="false" />
-
     <uses-feature
         android:name="android.hardware.microphone"
         android:required="false" />
@@ -63,6 +62,7 @@
         </intent>
         <intent>
             <action android:name="android.intent.action.VIEW" />
+
             <data android:mimeType="resource/folder" />
         </intent>
         <intent>
@@ -72,7 +72,6 @@
             <action android:name="org.unifiedpush.android.connector.MESSAGE" />
         </intent>
     </queries>
-
 
     <application
         android:name="com.wgroup.woooo_app.woooo.di.WooApplication"
@@ -90,6 +89,7 @@
         tools:replace="android:label"
         tools:targetApi="q">
 
+
         <meta-data
             android:name="com.google.android.gms.car.application"
             android:resource="@xml/automotive_app_desc" />
@@ -106,7 +106,6 @@
                 <action android:name="android.media.RINGER_MODE_CHANGED" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".services.UnifiedPushDistributor"
             android:enabled="false"
@@ -120,6 +119,7 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_FULLY_REMOVED" />
+
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
@@ -130,10 +130,10 @@
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.ShareLocationActivity"
             android:label="@string/title_activity_share_location" />
@@ -153,7 +153,7 @@
             android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <!--                <category android:name="android.intent.category.LAUNCHER" />-->
+                <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             </intent-filter>
         </activity>
         <activity
@@ -223,6 +223,7 @@
             android:label="@string/title_activity_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.NOTIFICATION_PREFERENCES" />
             </intent-filter>
         </activity>
@@ -242,6 +243,7 @@
             android:label="@string/choose_account">
             <intent-filter android:label="@string/set_profile_picture">
                 <action android:name="android.intent.action.ATTACH_DATA" />
+
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:mimeType="image/*" />
@@ -275,7 +277,6 @@
             android:exported="true"
             android:label="@string/app_name"
             android:launchMode="singleTop">
-
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
@@ -284,7 +285,6 @@
 
                 <data android:mimeType="text/plain" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
@@ -314,7 +314,6 @@
             android:name="com.canhub.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".ui.MemorizingActivity" />
-
         <activity
             android:name=".ui.MediaBrowserActivity"
             android:label="@string/media_browser" />

@@ -76,6 +76,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.8.0'
 
     implementation "androidx.emoji2:emoji2:1.2.0"
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     freeImplementation "androidx.emoji2:emoji2-bundled:1.2.0"
 
     implementation 'org.bouncycastle:bcmail-jdk15on:1.64'
@@ -140,9 +141,11 @@ dependencies {
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
 
+
     //retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit"
-
+    // country picker
+    implementation 'com.hbb20:ccp:2.5.3'
     //okHttp
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.10.0'
