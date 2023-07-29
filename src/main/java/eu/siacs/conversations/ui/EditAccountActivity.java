@@ -68,6 +68,7 @@ import eu.siacs.conversations.services.XmppConnectionService.OnCaptchaRequested;
 import eu.siacs.conversations.ui.adapter.KnownHostsAdapter;
 import eu.siacs.conversations.ui.adapter.PresenceTemplateAdapter;
 import eu.siacs.conversations.ui.util.AvatarWorkerTask;
+import eu.siacs.conversations.ui.util.CustomDialogUtil;
 import eu.siacs.conversations.ui.util.MenuDoubleTabUtil;
 import eu.siacs.conversations.ui.util.PendingItem;
 import eu.siacs.conversations.ui.util.SoftKeyboardUtils;
@@ -713,13 +714,31 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         binding.countryCodetv.setOnClickListener(view -> codePicker.launchCountrySelectionDialog());
 
         String number = codePicker.getSelectedCountryCode() + binding.phoneNumberField.getText();
-//        binding.loginButton.setOnClickListener(new OnClickListener() {
+        binding.loginButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CustomDialogUtil.showCustomDialog(context);
+
+            }
+        });
+    // radio button change method
+//        RadioGroup radioGroup = findViewById(R.id.radioGroup);
+//        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
 //            @Override
-//            public void onClick(View view) {
-//                CustomDialogUtil.showCustomDialog(context);
-//
+//            public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                // Handle the selected radio button here
+//                switch (checkedId) {
+//                    case R.id.radioOption1:
+//                        // Option 1 is selected
+//                        break;
+//                    case R.id.radioOption2:
+//                        // Option 2 is selected
+//                        break;
+//                    // Add cases for other radio buttons if needed
+//                }
 //            }
 //        });
+
     }
 
     private void onEditYourNameClicked(View view) {

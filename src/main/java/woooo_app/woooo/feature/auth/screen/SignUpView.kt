@@ -24,11 +24,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.JoinInner
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Person
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -87,19 +87,12 @@ fun SignUpView(navigator: DestinationsNavigator) {
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-//            CustomIcon(
-//                icon = Icons.Rounded.ArrowBack, modifier = Modifier.clickable(onClick = {
-//                    Log.d("SignUp", "Clicked...")
-//                })
-//            )
-            Button(onClick = {
+            CustomIcon(
+                icon = Icons.Rounded.ArrowBack, modifier = Modifier.clickable(onClick = {
+                    Log.d("SignUp", "Clicked...")
+                })
+            )
 
-                Log.d("SignUP", "CLICKEDDDD")
-            }) {
-
-              Text(text = "Back")
-
-            }
 //            HorizontalSpacer()
 //            Text(text = Strings.reg, style = MaterialTheme.typography.bodyLarge)
         }
