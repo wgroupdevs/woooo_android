@@ -73,11 +73,6 @@ fun SignUpView(navigator: DestinationsNavigator) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .clickable (onClick = {
-
-                Log.d("SignUP", "CLICKEDDDD")
-
-            })
             .padding(Dimension.dimen_10)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -87,6 +82,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
             modifier = Modifier
                 .fillMaxWidth()
         ) {
+
 //            CustomIcon(
 //                icon = Icons.Rounded.ArrowBack, modifier = Modifier.clickable(onClick = {
 //                    Log.d("SignUp", "Clicked...")
