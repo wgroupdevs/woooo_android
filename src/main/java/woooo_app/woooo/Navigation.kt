@@ -1,6 +1,8 @@
 package woooo_app.woooo
 
 import LoginView
+import android.content.Context
+import android.content.Intent
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -21,12 +23,14 @@ import com.wgroup.woooo_app.woooo.feature.settings.views.application.LanguageVie
 import com.wgroup.woooo_app.woooo.feature.settings.views.application.SoundAndVibrationView
 import com.wgroup.woooo_app.woooo.feature.wallet.views.SendCurrencyView
 import com.wgroup.woooo_app.woooo.feature.wallet.views.TransactionsView
+import eu.siacs.conversations.ui.WelcomeActivity
 import woooo_app.woooo.feature.auth.screen.ConfirmAccountScreen
 import woooo_app.woooo.feature.auth.screen.ForgotPasswordView
 import woooo_app.woooo.feature.auth.screen.SignUpView
 import woooo_app.woooo.feature.auth.screen.VerifyOtpView
 import woooo_app.woooo.feature.profile.views.UpdateProfileView
 import woooo_app.woooo.feature.wallet.views.WalletMainView
+
 @Destination
 @Composable
 fun LoginScreen(navigator: DestinationsNavigator) {
@@ -137,11 +141,13 @@ fun TransactionMainScreen(navigator: DestinationsNavigator) {
 fun WalletMainScreen(navigator: DestinationsNavigator) {
     WalletMainView(navigator)
 }
+
 @Destination
 @Composable
 fun ForgotPasswordScreen(navigator: DestinationsNavigator) {
     ForgotPasswordView(navigator)
 }
+
 @Destination
 @Composable
 fun VerifyOTPScreen(navigator: DestinationsNavigator) {
@@ -152,6 +158,17 @@ fun VerifyOTPScreen(navigator: DestinationsNavigator) {
 @Composable
 fun ConfirmAccountMainScreen(navigator: DestinationsNavigator) {
     ConfirmAccountScreen(navigator)
+}
+
+fun goToWelcomeActivity(context: Context) {
+    val intent = Intent(context, WelcomeActivity::class.java)
+    intent.flags =
+        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION
+    context.startActivity(intent)
+}
+
+fun finishActivity(context: Context){
+
 }
 
 //@Destination

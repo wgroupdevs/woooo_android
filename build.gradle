@@ -159,8 +159,7 @@ dependencies {
     implementation("com.marosseleng.android:compose-material3-datetime-pickers:0.7.2")
     //DataStore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
-////    image pick
-//    implementation("io.coil-kt:coil-compose:2.3.0")
+z
 }
 
 ext {
