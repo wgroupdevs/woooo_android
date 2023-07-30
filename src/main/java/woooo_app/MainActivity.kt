@@ -18,15 +18,20 @@ import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.spec.Route
 import com.wgroup.woooo_app.woooo.theme.Woooo_androidTheme
 import dagger.hilt.android.AndroidEntryPoint
+import eu.siacs.conversations.http.services.UserBasicInfo
 import kotlinx.coroutines.runBlocking
 import woooo_app.woooo.NavGraphs
 import woooo_app.woooo.data.datasource.local.UserPreferences
 import woooo_app.woooo.destinations.ForgotPasswordScreenDestination
+import woooo_app.woooo.destinations.HomeScreenDestination
 import woooo_app.woooo.destinations.SignUpScreenDestination
 import woooo_app.woooo.goToWelcomeActivity
 import woooo_app.woooo.utils.CONST_KEY_INTENT
 import woooo_app.woooo.utils.FORGOT_PASSWORD_INTENT
+import woooo_app.woooo.utils.HOME_INTENT
 import woooo_app.woooo.utils.SIGNUP_INTENT
+import woooo_app.woooo.utils.USER_INFO_KEY_INTENT
+import woooo_app.woooo.utils.USER_TOKEN_KEY_INTENT
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -57,13 +62,15 @@ class MainActivity : ComponentActivity() {
     fun MainScreen() {
         val context = LocalContext.current
         val navController = rememberNavController()
-        // 👇 this avoids a jump in the UI that would happen if we relied only on ShowLoginWhenLoggedOut
+
         var startRoute = NavGraphs.root.startRoute
 
         val navIntent = intent?.getStringExtra(CONST_KEY_INTENT)
 
+
         Log.d(TAG, "INTENT : " + navIntent.toString())
-        startRoute = SignUpScreenDestination
+
+
 
         Woooo_androidTheme {
             Box(
@@ -79,6 +86,10 @@ class MainActivity : ComponentActivity() {
                     if (getToken().isEmpty()) {
                         goToWelcomeActivity(context)
                         return@Box
+                    } else {
+
+                        startRoute = HomeScreenDestination
+                        navigateTo(navController = navController, startRoute = startRoute)
                     }
                 }
 
@@ -94,6 +105,30 @@ class MainActivity : ComponentActivity() {
                             startRoute = ForgotPasswordScreenDestination
                             navigateTo(navController = navController, startRoute = startRoute)
                             Log.d(TAG, "SHOW FORGOT PASSWORD VIEW")
+                        }
+
+                        HOME_INTENT -> {
+                            runBlocking {
+                                var userInfo = intent?.getSerializableExtra(USER_INFO_KEY_INTENT)
+                                var token = intent?.getStringExtra(USER_TOKEN_KEY_INTENT)
+
+                                if (userInfo != null && token != null) {
+                                    userInfo = userInfo as UserBasicInfo
+                                    Log.d(TAG, "Token : $token")
+                                    Log.d(TAG, "AccountId : " + userInfo.accountId)
+                                    Log.d(TAG, "Email : " + userInfo.email)
+                                    Log.d(TAG, "PhoneNumber : " + userInfo.phoneNumber)
+                                    Log.d(TAG, "jid : " + userInfo.jid)
+                                    Log.d(TAG, "FirstName : " + userInfo.firstName)
+                                    Log.d(TAG, "LastName : " + userInfo.lastName)
+
+                                    saveUserInfoToPreferences(token, userInfo)
+                                }
+
+                                startRoute = HomeScreenDestination
+                                Log.d(TAG, "SHOW Home Page VIEW")
+                            }
+                            navigateTo(navController = navController, startRoute = startRoute)
                         }
 
                         else -> {
@@ -120,6 +155,16 @@ class MainActivity : ComponentActivity() {
         userPreferences.getAuthToke()
     }
 
+    private suspend fun saveUserInfoToPreferences(token: String, user: UserBasicInfo) {
+        userPreferences.setAuthToken(token)
+        userPreferences.setEmail(user.email)
+        userPreferences.setFirstName(user.firstName)
+        userPreferences.setLastName(user.lastName)
+        userPreferences.setPhone(user.phoneNumber)
+        userPreferences.setProfileImage(user.imageURL)
+
+    }
+
     @Composable
     fun navigateTo(navController: NavHostController, startRoute: Route) {
         DestinationsNavHost(
@@ -128,4 +173,5 @@ class MainActivity : ComponentActivity() {
             startRoute = startRoute
         )
     }
+
 }

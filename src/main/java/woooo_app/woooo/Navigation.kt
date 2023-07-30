@@ -167,9 +167,6 @@ fun goToWelcomeActivity(context: Context) {
     context.startActivity(intent)
 }
 
-fun finishActivity(context: Context){
-
-}
 
 //@Destination
 //@Composable

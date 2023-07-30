@@ -6,29 +6,47 @@ package eu.siacs.conversations.http.services;
 Root root = om.readValue(myJsonString, Root.class); */
 
 
-public class LoginAPIResponseJAVA{
+import java.io.Serializable;
+
+public class LoginAPIResponseJAVA implements Serializable {
 
     public boolean Success;
     public String Message;
     public Object Error;
     public Data Data;
 
+    public LoginAPIResponseJAVA.Data getData() {
+        return Data;
+    }
 
-    public class Data{
+    public void setData(LoginAPIResponseJAVA.Data data) {
+        Data = data;
+    }
+
+
+    public class Data implements Serializable {
         public String token;
-        public User user;
+
+        public UserBasicInfo user;
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
+
+        public UserBasicInfo getUser() {
+            return user;
+        }
+
+        public void setUser(UserBasicInfo user) {
+            this.user = user;
+        }
+
     }
 
-    public class User{
-        public String accountId;
-        public String firstName;
-        public String lastName;
-        public String email;
-        public String phoneNumber;
-        public String imageURL;
-        public int id;
-        public String jId;
-    }
 }
 
 

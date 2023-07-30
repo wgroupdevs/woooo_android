@@ -190,10 +190,13 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
             return false;
         }
         boolean isConversationsListEmpty = xmppConnectionService.isConversationsListEmpty(ignore);
+        if (isConversationsListEmpty) {
+            return false;
+        }
+
         if (isConversationsListEmpty && mRedirectInProcess.compareAndSet(false, true)) {
             final Intent intent = SignupUtils.getRedirectionIntent(this);
-
-
+            Log.d(TAG, "performRedirectIfNecessary Called");
             if (noAnimation) {
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             }

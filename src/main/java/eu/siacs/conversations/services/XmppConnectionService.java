@@ -973,8 +973,8 @@ public class XmppConnectionService extends Service {
     }
 
 
-    public void loginUserOnWoooo(String email,String password,WooooAuthService.OnLoginAPiResult onLoginAPiResult) {
-        wooooAuthService.login(email,password,onLoginAPiResult);
+    public void loginUserOnWoooo(Boolean isLoginWithEmail,String email,String phone,String password,WooooAuthService.OnLoginAPiResult onLoginAPiResult) {
+        wooooAuthService.login(isLoginWithEmail,email,phone,password,onLoginAPiResult);
     }
 
 

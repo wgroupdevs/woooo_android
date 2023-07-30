@@ -21,5 +21,5 @@ data class User (
     val phoneNumber: String? = null,
     val imageURL: String? = null,
     val id: Long? = null,
-    val jID: String? = null
+    val jid: String? = null
 )

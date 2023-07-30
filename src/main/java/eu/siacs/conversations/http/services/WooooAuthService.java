@@ -5,21 +5,13 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.google.common.base.Strings;
-import com.google.common.cache.CacheBuilder;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import eu.siacs.conversations.Config;
-import eu.siacs.conversations.entities.Room;
 import eu.siacs.conversations.http.HttpConnectionManager;
-import eu.siacs.conversations.services.ChannelDiscoveryService;
 import eu.siacs.conversations.services.XmppConnectionService;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -27,7 +19,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import woooo_app.woooo.data.models.auth.LoginModel;
 import woooo_app.woooo.data.models.auth.requestmodels.LoginRequestParams;
 
 public class WooooAuthService {
@@ -59,13 +50,13 @@ public class WooooAuthService {
     }
 
 
-    public void login(String email, String password, OnLoginAPiResult listener) {
+    public void login(Boolean isLoginWithEmail,String email,String phone, String password, OnLoginAPiResult listener) {
         Log.d("WooooAuthService",
                 "LOGIN STARTED...");
         final LoginRequestParams requestParams =
-                new LoginRequestParams(email, "", password, "", "", "");
+                new LoginRequestParams(email, phone, password, "", "", "");
         final Call<LoginAPIResponseJAVA> searchResultCall =
-                wooooService.login(true, requestParams);
+                wooooService.login(isLoginWithEmail, requestParams);
         searchResultCall.enqueue(
                 new Callback<LoginAPIResponseJAVA>() {
                     @Override
@@ -80,7 +71,7 @@ public class WooooAuthService {
                         Log.d("WooooAuthService",
                                 "API RESPONSE " + response.code());
                         Log.d("WooooAuthService",
-                                "API RESPONSE " + response.body());
+                                "API RESPONSE BODY " + response.body());
                         if (body == null) {
 
                             Log.d("WooooAuthService",
@@ -101,9 +92,8 @@ public class WooooAuthService {
                                 throw new RuntimeException(e);
                             }
 
-//                            logError(response);
-                            return;
                         } else {
+
                             listener.onLoginApiResultFound(body);
                         }
 

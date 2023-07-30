@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.shared.components
+package woooo_app.woooo.shared.components
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon

@@ -1,7 +1,6 @@
 package woooo_app.woooo.feature.auth.screen
 
 import ShowLoader
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,6 +28,7 @@ import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.JoinInner
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,7 +47,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.CountryPicker
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
-import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageSignUpView
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.PasswordValidator
@@ -58,9 +57,11 @@ import com.wgroup.woooo_app.woooo.shared.components.view_models.PasswordValidato
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
+import woooo_app.MainActivity
 import woooo_app.woooo.destinations.ConfirmAccountMainScreenDestination
 import woooo_app.woooo.feature.auth.EmailForAuthModule
 import woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
+import woooo_app.woooo.shared.components.CustomIcon
 import woooo_app.woooo.shared.components.view_models.CountryPickerViewModel
 import woooo_app.woooo.utils.Dimension
 
@@ -68,16 +69,11 @@ import woooo_app.woooo.utils.Dimension
 fun SignUpView(navigator: DestinationsNavigator) {
     val signUpViewModel: SignUpViewModel = hiltViewModel()
     val countryPickerViewModel: CountryPickerViewModel = hiltViewModel()
-    val context = LocalContext.current
+    val context = LocalContext.current as MainActivity
     val customPasswordValidator: PasswordValidatorViewModel = hiltViewModel()
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .clickable (onClick = {
-
-                Log.d("SignUP", "CLICKEDDDD")
-
-            })
             .padding(Dimension.dimen_10)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -87,14 +83,17 @@ fun SignUpView(navigator: DestinationsNavigator) {
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            CustomIcon(
-                icon = Icons.Rounded.ArrowBack, modifier = Modifier.clickable(onClick = {
-                    Log.d("SignUp", "Clicked...")
-                })
-            )
+            IconButton(onClick = { context.finish() }) {
+                CustomIcon(
+                    icon = Icons.Rounded.ArrowBack, modifier = Modifier
+                        .size(26.dp)
+                )
+            }
 
-//            HorizontalSpacer()
-//            Text(text = Strings.reg, style = MaterialTheme.typography.bodyLarge)
+            HorizontalSpacer(Dimension.dimen_5)
+            Text(text = Strings.reg, style = MaterialTheme.typography.bodyLarge)
+
+
         }
         VerticalSpacer(Dimension.dimen_20)
         // ap logo On top
@@ -310,7 +309,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
         CustomButton(
             border = BorderStroke(1.dp, Color.White),
             onClick = {
-                navigator.popBackStack()
+                context.finish()
             },
             content = {
                 Text(

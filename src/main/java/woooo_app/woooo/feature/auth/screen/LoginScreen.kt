@@ -40,7 +40,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.CountryPicker
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.CustomDivider
-import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
+import woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageForLoginWithEmail
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageLoginWithPhone
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer

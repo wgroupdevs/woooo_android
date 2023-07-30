@@ -3,7 +3,6 @@ package woooo_app.woooo.feature.auth.screen
 import ShowLoader
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,22 +28,23 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
-import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageForgetPasswordView
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
+import woooo_app.MainActivity
 import woooo_app.woooo.destinations.VerifyOTPScreenDestination
 import woooo_app.woooo.feature.auth.EmailForAuthModule
 import woooo_app.woooo.feature.auth.viewmodel.ForgotPasswordViewModel
+import woooo_app.woooo.shared.components.CustomIcon
 import woooo_app.woooo.utils.Dimension
 
 @Composable
 fun ForgotPasswordView(navigator: DestinationsNavigator) {
 
-    val context = LocalContext.current
+    val context = LocalContext.current as MainActivity
     val forgotPassViewModel: ForgotPasswordViewModel = hiltViewModel()
 
     Column(
@@ -59,15 +60,17 @@ fun ForgotPasswordView(navigator: DestinationsNavigator) {
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            CustomIcon(
-                icon = Icons.Rounded.ArrowBack,modifier = Modifier
-                    .clickable(onClick = {
-                        navigator.popBackStack()
-                    })
-                    .size(26.dp)
-            )
-            HorizontalSpacer()
-            Text(text = Strings.forgotTextNewPassView,style = MaterialTheme.typography.bodyLarge)
+            IconButton(onClick = { context.finish() }) {
+                CustomIcon(
+                    icon = Icons.Rounded.ArrowBack, modifier = Modifier
+                        .size(26.dp)
+                )
+            }
+
+
+
+            HorizontalSpacer(Dimension.dimen_5)
+            Text(text = Strings.forgotTextNewPassView, style = MaterialTheme.typography.bodyLarge)
         }
         VerticalSpacer(Dimension.dimen_30)
         // ap logo On top
@@ -79,7 +82,7 @@ fun ForgotPasswordView(navigator: DestinationsNavigator) {
         )
         VerticalSpacer(Dimension.dimen_30)
         // forgot text
-        Text(text = Strings.forgotTextNewPassView,style = MaterialTheme.typography.bodyLarge)
+        Text(text = Strings.forgotTextNewPassView, style = MaterialTheme.typography.bodyLarge)
         VerticalSpacer(Dimension.dimen_40)
         // enter email
         WooTextField(
@@ -99,7 +102,7 @@ fun ForgotPasswordView(navigator: DestinationsNavigator) {
         VerticalSpacer(Dimension.dimen_30)
         // recover button
         CustomButton(
-            border = BorderStroke(1.dp,Color.White),
+            border = BorderStroke(1.dp, Color.White),
             onClick = {
 
                 if (forgotPassViewModel.validateEmail()) {
@@ -132,7 +135,7 @@ fun ForgotPasswordView(navigator: DestinationsNavigator) {
                 message = forgotPassViewModel.forgotPasswordState.value.message,
                 onClick = {
                     clickOnSuccessDialogForgotPassword(
-                        forgotPasswordViewModel = forgotPassViewModel,navigator = navigator
+                        forgotPasswordViewModel = forgotPassViewModel, navigator = navigator
                     )
                 })
         }
@@ -140,7 +143,7 @@ fun ForgotPasswordView(navigator: DestinationsNavigator) {
 }
 
 private fun clickOnSuccessDialogForgotPassword(
-    forgotPasswordViewModel: ForgotPasswordViewModel,navigator: DestinationsNavigator
+    forgotPasswordViewModel: ForgotPasswordViewModel, navigator: DestinationsNavigator
 ) {
     forgotPasswordViewModel.forgotPasswordState.value.apply {
         isSucceed.value = false

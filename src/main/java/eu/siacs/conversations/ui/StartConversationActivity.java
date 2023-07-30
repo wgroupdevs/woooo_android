@@ -32,6 +32,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -271,7 +272,6 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_start_conversation);
         setSupportActionBar(binding.toolbar);
         configureActionBar(getSupportActionBar());
-
         inflateFab(binding.speedDial, R.menu.start_conversation_fab_submenu);
         binding.tabLayout.setupWithViewPager(binding.startConversationViewPager);
         binding.startConversationViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -336,6 +336,10 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
             }
             return false;
         });
+
+
+        ImageView backButton = binding.toolbar.findViewById(R.id.toolbar_back_button);
+        backButton.setOnClickListener(v->finish());
     }
 
     private void inflateFab(final SpeedDialView speedDialView, final @MenuRes int menuRes) {
@@ -378,7 +382,7 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
     @Override
     public void onStart() {
 
-        Log.d(TAG,"OnStarted...");
+        Log.d(TAG, "OnStarted...");
         super.onStart();
         final int theme = findTheme();
         if (this.mTheme != theme) {
@@ -1020,6 +1024,7 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
     }
 
     private void navigateBack() {
+
         if (!createdByViewIntent && xmppConnectionService != null && !xmppConnectionService.isConversationsListEmpty(null)) {
             Intent intent = new Intent(this, ConversationsActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

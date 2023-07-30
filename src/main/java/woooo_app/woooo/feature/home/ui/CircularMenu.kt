@@ -34,7 +34,7 @@ import com.wgroup.woooo_app.woooo.feature.home.viewmodel.CircularMenuViewModel
 import com.wgroup.woooo_app.woooo.feature.wallet.views.Wallet_Pin_Verify_Dialog
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import eu.siacs.conversations.R
-import eu.siacs.conversations.ui.ConversationActivity
+import eu.siacs.conversations.ui.StartConversationActivity
 import kotlinx.coroutines.launch
 import woooo_app.woooo.destinations.MiningMainScreenDestination
 import woooo_app.woooo.feature.wallet.views.PieChart
@@ -159,7 +159,8 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                     }
                     scopeAntiClockWise.launch {
                         circularMenuViewModel.rotateMiddleCircleAntiClockWise()
-                        context.startActivity(Intent(context,ConversationActivity::class.java))
+//                        context.startActivity(Intent(context,ConversationActivity::class.java))
+                        context.startActivity(Intent(context,StartConversationActivity::class.java))
                         indexToBePressed = 0
                     }
 

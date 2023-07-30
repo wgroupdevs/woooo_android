@@ -17,5 +17,6 @@ interface UserPreferences {
     suspend fun setPhone(phone: String)
     suspend fun setAuthToken(authToken: String)
     suspend fun setProfileImage(image: String)
+    suspend fun clear()
 
 }

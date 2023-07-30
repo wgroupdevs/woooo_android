@@ -24,7 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.wgroup.woooo_app.woooo.shared.components.CustomIcon
+import woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.theme.WooColor
 
 @OptIn(ExperimentalMaterial3Api::class)

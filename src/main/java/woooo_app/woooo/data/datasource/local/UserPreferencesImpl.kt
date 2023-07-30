@@ -45,6 +45,12 @@ class UserPreferencesImpl(private val dataStore: DataStore<Preferences>) : UserP
         dataStore.edit { it[UserPreferencesKey.PROFILE_IMAGE] = image }
     }
 
+    override suspend fun clear() {
+        dataStore.edit {
+            it.clear()
+        }
+    }
+
     override fun getFirstName(): Flow<String> {
         return dataStore.data.catch { emit(emptyPreferences()) }.map {
             it[UserPreferencesKey.FIRST_NAME] ?: ""
