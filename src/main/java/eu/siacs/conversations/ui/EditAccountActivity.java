@@ -2,6 +2,7 @@ package eu.siacs.conversations.ui;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -152,6 +153,21 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     private final OnClickListener mloginButtonClickListener = v -> loginAccountXMPP();
     private final OnClickListener newAccount = v -> goToMainActivity(NavIntentConstantKt.SIGNUP_INTENT);
     private final OnClickListener forgotPassword = v -> goToMainActivity(NavIntentConstantKt.FORGOT_PASSWORD_INTENT);
+    private ProgressDialog progressDialog;
+
+    public void showProgressDialog(Context context) {
+        progressDialog = new ProgressDialog(context);
+//        progressDialog.setTitle("Loading...");
+        progressDialog.setMessage("Please wait");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
+    public void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+    }
 
 
     private void goToMainActivity(String navIntentConst) {
@@ -306,10 +322,20 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
         String mobileNumber = countryCode + phoneNumber;
         Log.d(TAG, "Mobile Number : " + mobileNumber);
-        if (mUsernameMode && binding.accountJid.getText().toString().contains("@")) {
+        Log.d(TAG, "isLoginWithEmail : " + isLoginWithEmail);
+        if (mUsernameMode && email.contains("@")) {
             binding.accountJidLayout.setError(getString(R.string.invalid_username));
             removeErrorsOnAllBut(binding.accountJidLayout);
             binding.accountJid.requestFocus();
+            return;
+        }
+        if (!isLoginWithEmail) {
+            if (phoneNumber.isEmpty() || phoneNumber.length() < 9) {
+                return;
+            }
+        }
+
+        if (password.isEmpty()) {
             return;
         }
 
@@ -331,6 +357,8 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             }
             return;
         }
+
+        showProgressDialog(this);
 
         //Login User with credentials
         xmppConnectionService.loginUserOnWoooo(isLoginWithEmail, email, mobileNumber, password, EditAccountActivity.this);
@@ -542,6 +570,8 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             }
             StartConversationActivity.addInviteUri(intent, getIntent());
+
+            hideProgressDialog();
             startActivity(intent);
             finish();
         });
@@ -708,16 +738,17 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         this.binding.actionEditYourName.setOnClickListener(this::onEditYourNameClicked);
 
         binding.lgnwithEmailBtn.setOnClickListener(view -> {
+            isLoginWithEmail = !isLoginWithEmail;
             if (isLoginWithEmail) {
                 binding.loginWithEmailLayout.setVisibility(View.VISIBLE);
                 binding.loginWithPhoneLayout.setVisibility(View.GONE);
-                binding.lgnwithEmailBtn.setText("Login With Email");
+                binding.lgnwithEmailBtn.setText("Login With Phone Number");
             } else {
                 binding.loginWithEmailLayout.setVisibility(View.GONE);
                 binding.loginWithPhoneLayout.setVisibility(View.VISIBLE);
-                binding.lgnwithEmailBtn.setText("Login With Phone Number");
+                binding.lgnwithEmailBtn.setText("Login With Email");
             }
-            isLoginWithEmail = !isLoginWithEmail;
+
         });
 
         // when country piker change county this listner works
