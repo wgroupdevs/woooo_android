@@ -11,22 +11,47 @@
         android:paddingRight="?attr/dialog_horizontal_padding"
         android:paddingBottom="?attr/dialog_vertical_padding">
 
-        <TextView
-            style="@style/InputLabel"
+                <TextView
+                    style="@style/InputLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/your_account"
+                    android:visibility="gone"
+                    />
+
+                <Spinner
+                    android:id="@+id/account"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+
+                    android:visibility="gone"
+                    />
+        <RadioGroup
+            android:id="@+id/radioGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/your_account" />
+            android:layout_below="@+id/txtLastNameSignUp"
+            android:layout_margin="20dp"
+            android:orientation="horizontal">
 
-        <Spinner
-            android:id="@+id/account"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"/>
+            <RadioButton
+                android:id="@+id/email_radio_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Email" />
+
+            <RadioButton
+                android:id="@+id/phn_radio_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Phone" />
+        </RadioGroup>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/jid_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/account_settings_jabber_id"
             app:errorTextAppearance="@style/TextAppearance.Conversations.Design.Error"
             app:hintTextAppearance="@style/TextAppearance.Conversations.Design.Hint">
 

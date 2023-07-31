@@ -89,7 +89,7 @@ import eu.siacs.conversations.xmpp.Jid;
 import eu.siacs.conversations.xmpp.OnUpdateBlocklist;
 import eu.siacs.conversations.xmpp.XmppConnection;
 
-public class StartConversationActivity extends XmppActivity implements XmppConnectionService.OnConversationUpdate, OnRosterUpdate, OnUpdateBlocklist, CreatePrivateGroupChatDialog.CreateConferenceDialogListener, JoinConferenceDialog.JoinConferenceDialogListener, SwipeRefreshLayout.OnRefreshListener, CreatePublicChannelDialog.CreatePublicChannelDialogListener {
+public class StartConversationActivity extends XmppActivity implements XmppConnectionService.OnConversationUpdate, OnRosterUpdate, OnUpdateBlocklist, CreatePrivateGroupChatDialog.CreateConferenceDialogListener, JoinConferenceDialog.JoinConferenceDialogListener, SwipeRefreshLayout.OnRefreshListener, CreatePublicChannelDialog.CreatePublicChannelDialogListener{
 
     public static final String EXTRA_INVITE_URI = "eu.siacs.conversations.invite_uri";
     private static final String TAG = "StartConversationAtvy";
@@ -339,7 +339,7 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
 
 
         ImageView backButton = binding.toolbar.findViewById(R.id.toolbar_back_button);
-        backButton.setOnClickListener(v->finish());
+        backButton.setOnClickListener(v -> finish());
     }
 
     private void inflateFab(final SpeedDialView speedDialView, final @MenuRes int menuRes) {
@@ -516,6 +516,8 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
         if (prev != null) {
             ft.remove(prev);
         }
+
+        Log.d(TAG, "showCreateContactDialog Called..");
         ft.addToBackStack(null);
         EnterJidDialog dialog = EnterJidDialog.newInstance(
                 mActivatedAccounts,

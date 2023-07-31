@@ -41,6 +41,12 @@ class UserPreferencesImpl(private val dataStore: DataStore<Preferences>) : UserP
         }
     }
 
+    override suspend fun setJID(jid: String) {
+        dataStore.edit {
+            it[UserPreferencesKey.ACCOUNT_JID] = jid
+        }
+    }
+
     override suspend fun setProfileImage(image: String) {
         dataStore.edit { it[UserPreferencesKey.PROFILE_IMAGE] = image }
     }
@@ -65,6 +71,11 @@ class UserPreferencesImpl(private val dataStore: DataStore<Preferences>) : UserP
 
     override suspend fun getAuthToke(): String {
         return dataStore.data.first()[UserPreferencesKey.AUTH_TOKEN] ?: ""
+    }
+
+    override suspend fun getJID(): String {
+        return dataStore.data.first()[UserPreferencesKey.ACCOUNT_JID] ?: ""
+
     }
 
     override suspend fun getProfileImage(): String {

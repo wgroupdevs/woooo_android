@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 
@@ -19,16 +20,20 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.databinding.EnterJidDialogBinding;
+import eu.siacs.conversations.http.model.SearchAccountAPIResponse;
+import eu.siacs.conversations.http.services.BaseModelAPIResponse;
+import eu.siacs.conversations.http.services.WooooAuthService;
 import eu.siacs.conversations.services.XmppConnectionService;
 import eu.siacs.conversations.ui.adapter.KnownHostsAdapter;
 import eu.siacs.conversations.ui.interfaces.OnBackendConnected;
 import eu.siacs.conversations.ui.util.DelayedHintHelper;
 import eu.siacs.conversations.xmpp.Jid;
+import woooo_app.woooo.utils.UserInfoKt;
 
-public class EnterJidDialog extends DialogFragment implements OnBackendConnected, TextWatcher {
+
+public class EnterJidDialog extends DialogFragment implements OnBackendConnected, TextWatcher, WooooAuthService.OnSearchAccountAPiResult {
 
     private static final List<String> SUSPICIOUS_DOMAINS =
             Arrays.asList("conference", "muc", "room", "rooms", "chat");
@@ -51,6 +56,9 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
     private boolean sanityCheckJid = false;
 
     private boolean issuedWarning = false;
+
+    private boolean searchWithEmail = true;
+
 
     public static EnterJidDialog newInstance(
             final List<String> activatedAccounts,
@@ -123,7 +131,7 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
         } else {
             ArrayAdapter<String> adapter =
                     new ArrayAdapter<>(
-                            getActivity(), R.layout.simple_list_item, new String[] {account});
+                            getActivity(), R.layout.simple_list_item, new String[]{account});
             binding.account.setEnabled(false);
             adapter.setDropDownViewResource(R.layout.simple_list_item);
             binding.account.setAdapter(adapter);
@@ -136,62 +144,111 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
 
         View.OnClickListener dialogOnClick =
                 v -> {
-                    handleEnter(binding, account);
+
+                    Log.d("Enter_Jid_dialog", "dialogOnClick");
+                    Log.d("Enter_Jid_dialog", "Account " + account);
+                    Log.d("Enter_Jid_dialog", "Account " + UserInfoKt.getUSER_JID());
+                    searchAccount(binding);
+//                    handleEnter(binding, account);
+
                 };
 
         binding.jid.setOnEditorActionListener(
                 (v, actionId, event) -> {
-                    handleEnter(binding, account);
+
+                    Log.d("Enter_Jid_dialog", "setOnEditorActionListener");
+
+//                    handleEnter(binding, account);
                     return true;
                 });
+        binding.jid.setHint("Enter email");
+        binding.radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            binding.jid.setHint("");
+            if (checkedId == R.id.email_radio_btn) {
+                searchWithEmail = true;
+                binding.jid.setHint("Enter email");
+            } else if (checkedId == R.id.phn_radio_btn) {
+                searchWithEmail = false;
+                binding.jid.setHint("Enter phone number");
+            }
+        });
+
 
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(dialogOnClick);
         return dialog;
     }
 
-    private void handleEnter(EnterJidDialogBinding binding, String account) {
-        final Jid accountJid;
-        if (!binding.account.isEnabled() && account == null) {
-            return;
-        }
-        try {
-            if (Config.DOMAIN_LOCK != null) {
-                accountJid =
-                        Jid.ofEscaped(
-                                (String) binding.account.getSelectedItem(),
-                                Config.DOMAIN_LOCK,
-                                null);
-            } else {
-                accountJid = Jid.ofEscaped((String) binding.account.getSelectedItem());
+
+    private void searchAccount(EnterJidDialogBinding binding) {
+
+        String value = binding.jid.getText().toString();
+
+
+        if (searchWithEmail) {
+            if (!value.contains("@")) {
+                binding.jidLayout.setError(getActivity().getString(R.string.invalid_jid));
+                return;
             }
-        } catch (final IllegalArgumentException e) {
-            return;
-        }
-        final Jid contactJid;
-        try {
-            contactJid = Jid.ofEscaped(binding.jid.getText().toString().trim());
-        } catch (final IllegalArgumentException e) {
-            binding.jidLayout.setError(getActivity().getString(R.string.invalid_jid));
-            return;
+        } else {
+            if (value.length() < 9) {
+                return;
+            }
         }
 
-        if (!issuedWarning && sanityCheckJid) {
-            if (contactJid.isDomainJid()) {
-                binding.jidLayout.setError(
-                        getActivity().getString(R.string.this_looks_like_a_domain));
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setText(R.string.add_anway);
-                issuedWarning = true;
-                return;
-            }
-            if (suspiciousSubDomain(contactJid.getDomain().toEscapedString())) {
-                binding.jidLayout.setError(
-                        getActivity().getString(R.string.this_looks_like_channel));
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setText(R.string.add_anway);
-                issuedWarning = true;
-                return;
-            }
-        }
+        final WooooAuthService wooooAuthService = WooooAuthService.getInstance();
+
+        wooooAuthService.searchAccount(value, true, this);
+
+    }
+
+
+    private void handleEnter(String accountJID, String contactJId) {
+
+        Log.d("Enter_Jid_dialog", "handleEnter Called..");
+
+        final Jid accountJid = Jid.ofEscaped((accountJID));
+        final Jid contactJid = Jid.ofEscaped(contactJId);
+//        if (!binding.account.isEnabled() && account == null) {
+//            return;
+//        }
+//        try {
+//            if (Config.DOMAIN_LOCK != null) {
+//                accountJid =
+//                        Jid.ofEscaped(
+//                                (String) binding.account.getSelectedItem(),
+//                                Config.DOMAIN_LOCK,
+//                                null);
+//            } else {
+//                accountJid = Jid.ofEscaped((String) binding.account.getSelectedItem());
+//            }
+//        } catch (final IllegalArgumentException e) {
+//            return;
+//        }
+//        final Jid contactJid;
+//        try {
+//            contactJid = Jid.ofEscaped(binding.jid.getText().toString().trim());
+//        } catch (final IllegalArgumentException e) {
+//            binding.jidLayout.setError(getActivity().getString(R.string.invalid_jid));
+//            return;
+//        }
+
+//        if (!issuedWarning && sanityCheckJid) {
+//            if (contactJid.isDomainJid()) {
+//                binding.jidLayout.setError(
+//                        getActivity().getString(R.string.this_looks_like_a_domain));
+//                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setText(R.string.add_anway);
+//                issuedWarning = true;
+//                return;
+//            }
+//            if (suspiciousSubDomain(contactJid.getDomain().toEscapedString())) {
+//                binding.jidLayout.setError(
+//                        getActivity().getString(R.string.this_looks_like_channel));
+//                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setText(R.string.add_anway);
+//                issuedWarning = true;
+//                return;
+//            }
+//        }
 
         if (mListener != null) {
             try {
@@ -229,10 +286,12 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
     }
 
     @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    }
 
     @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {}
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    }
 
     @Override
     public void afterTextChanged(Editable s) {
@@ -241,6 +300,49 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
             binding.jidLayout.setError(null);
             issuedWarning = false;
         }
+    }
+
+    @Override
+    public <T> void onSearchAccountApiResultFound(T searchAccount) {
+
+
+        getActivity().runOnUiThread(() -> {
+
+            if (searchAccount != null) {
+
+                if (searchAccount instanceof SearchAccountAPIResponse) {
+
+                    try {
+                        SearchAccountAPIResponse apiResponse = ((SearchAccountAPIResponse) searchAccount);
+                        Log.d("SEARCH_ACCOUNT_API ", " SearchAccountAPIResponse Called in EditActivity " + apiResponse.Message);
+                        Log.d("SEARCH_ACCOUNT_API ", " SearchAccountAPIResponse Called in EditActivity " + apiResponse.Data.jid);
+
+                        handleEnter(UserInfoKt.getUSER_JID(), apiResponse.Data.jid);
+
+                    } catch (Exception e) {
+                    }
+                    Log.d("ENTER_DIALOG", "mesg");
+
+
+                } else if (searchAccount instanceof BaseModelAPIResponse) {
+                    Log.d("SEARCH_ACCOUNT_API ", " BaseModelAPIResponse Called in EditActivity " + ((BaseModelAPIResponse) searchAccount).Message);
+                    binding.jidLayout.setError("Account not found");
+//                    Toast.makeText(getActivity(), ((BaseModelAPIResponse) searchAccount).Message,
+//                            Toast.LENGTH_LONG).show();
+
+//                    dialog.dismiss();
+                }
+
+            } else {
+                dialog.dismiss();
+                Log.d("onLoginApiResultFound", "ECEPTION FOUND... " + searchAccount);
+
+            }
+
+
+        });
+
+
     }
 
     public interface OnEnterJidDialogPositiveListener {

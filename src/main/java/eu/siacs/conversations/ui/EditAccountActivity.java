@@ -58,7 +58,7 @@ import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.entities.Presence;
 import eu.siacs.conversations.entities.PresenceTemplate;
 import eu.siacs.conversations.http.services.BaseModelAPIResponse;
-import eu.siacs.conversations.http.services.LoginAPIResponseJAVA;
+import eu.siacs.conversations.http.model.LoginAPIResponseJAVA;
 import eu.siacs.conversations.http.services.WooooAuthService;
 import eu.siacs.conversations.services.BarcodeProvider;
 import eu.siacs.conversations.services.QuickConversationsService;

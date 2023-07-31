@@ -8,6 +8,7 @@ interface UserPreferences {
     fun getFirstName(): Flow<String>
     fun getLastName(): Flow<String>
     suspend fun getAuthToke(): String
+    suspend fun getJID(): String
     suspend fun getProfileImage(): String
 
     //    set
@@ -16,6 +17,7 @@ interface UserPreferences {
     suspend fun setEmail(email: String)
     suspend fun setPhone(phone: String)
     suspend fun setAuthToken(authToken: String)
+    suspend fun setJID(jid: String)
     suspend fun setProfileImage(image: String)
     suspend fun clear()
 

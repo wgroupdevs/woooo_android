@@ -1,4 +1,4 @@
-package eu.siacs.conversations.http.services;
+package eu.siacs.conversations.http.model;
 
 import java.io.Serializable;
 

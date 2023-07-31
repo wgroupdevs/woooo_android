@@ -117,6 +117,7 @@ import eu.siacs.conversations.generator.MessageGenerator;
 import eu.siacs.conversations.generator.PresenceGenerator;
 import eu.siacs.conversations.http.HttpConnectionManager;
 import eu.siacs.conversations.http.services.WooooAuthService;
+import eu.siacs.conversations.http.services.WooooService;
 import eu.siacs.conversations.parser.AbstractParser;
 import eu.siacs.conversations.parser.IqParser;
 import eu.siacs.conversations.parser.MessageParser;
@@ -227,7 +228,7 @@ public class XmppConnectionService extends Service {
     private final NotificationService mNotificationService = new NotificationService(this);
     private final UnifiedPushBroker unifiedPushBroker = new UnifiedPushBroker(this);
     private final ChannelDiscoveryService mChannelDiscoveryService = new ChannelDiscoveryService(this);
-    private final WooooAuthService wooooAuthService = new WooooAuthService(this);
+    private WooooAuthService wooooAuthService;
     private final ShortcutService mShortcutService = new ShortcutService(this);
     private final AtomicBoolean mInitialAddressbookSyncCompleted = new AtomicBoolean(false);
     private final AtomicBoolean mForceForegroundService = new AtomicBoolean(false);
@@ -973,8 +974,18 @@ public class XmppConnectionService extends Service {
     }
 
 
-    public void loginUserOnWoooo(Boolean isLoginWithEmail,String email,String phone,String password,WooooAuthService.OnLoginAPiResult onLoginAPiResult) {
-        wooooAuthService.login(isLoginWithEmail,email,phone,password,onLoginAPiResult);
+    public void loginUserOnWoooo(boolean isLoginWithEmail, String email, String phone, String password, WooooAuthService.OnLoginAPiResult onLoginAPiResult) {
+
+      Log.d(TAG,"loginUserOnWoooo" + wooooAuthService);
+       if(wooooAuthService==null){
+           wooooAuthService= WooooAuthService.getInstance();
+       }
+
+        wooooAuthService.login(isLoginWithEmail, email, phone, password, onLoginAPiResult);
+    }
+
+    public void searchAccount(String value, boolean isEmail, WooooAuthService.OnSearchAccountAPiResult onSearchAccountAPiResult) {
+        wooooAuthService.searchAccount(value, isEmail, onSearchAccountAPiResult);
     }
 
 
@@ -1168,7 +1179,7 @@ public class XmppConnectionService extends Service {
             mNotificationService.initializeChannels();
         }
         mChannelDiscoveryService.initializeMuclumbusService();
-        wooooAuthService.initializeWOOOOService();
+        wooooAuthService = WooooAuthService.getInstance();
         mForceDuringOnCreate.set(Compatibility.runsAndTargetsTwentySix(this));
         toggleForegroundService();
         this.destroyed = false;
@@ -2354,7 +2365,7 @@ public class XmppConnectionService extends Service {
 
     public void createAccount(final Account account) {
 
-        Log.d(TAG,"xmppConnectionService.createAccount");
+        Log.d(TAG, "xmppConnectionService.createAccount");
         account.initAccountServices(this);
         databaseBackend.createAccount(account);
         this.accounts.add(account);
