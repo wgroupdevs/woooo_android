@@ -45,6 +45,7 @@ import woooo_app.woooo.destinations.UpdateProfileMainScreenDestination
 import woooo_app.woooo.goToWelcomeActivity
 import woooo_app.woooo.shared.components.ViewDivider
 import woooo_app.woooo.utils.Dimension
+import woooo_app.woooo.utils.FIRST_NAME
 
 @Composable
 fun AppDrawer(
@@ -65,7 +66,7 @@ fun AppDrawer(
             ),
         drawerContainerColor = Color.Transparent
     ) {
-        DrawerHeader( modifier, navigator)
+        DrawerHeader(modifier, navigator)
 //        Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.spacer_padding)))
         Column(modifier = Modifier.padding(Dimension.dimen_10)) {
 
@@ -182,7 +183,7 @@ fun DrawerHeader(
 
         ) {
             Text(
-                text = "Muhammad Ehsan",
+                text = FIRST_NAME,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onPrimary,

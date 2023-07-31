@@ -19,6 +19,7 @@ import com.ramcosta.composedestinations.spec.Route
 import com.wgroup.woooo_app.woooo.theme.Woooo_androidTheme
 import dagger.hilt.android.AndroidEntryPoint
 import eu.siacs.conversations.http.model.UserBasicInfo
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import woooo_app.woooo.NavGraphs
 import woooo_app.woooo.data.datasource.local.UserPreferences
@@ -27,6 +28,7 @@ import woooo_app.woooo.destinations.HomeScreenDestination
 import woooo_app.woooo.destinations.SignUpScreenDestination
 import woooo_app.woooo.goToWelcomeActivity
 import woooo_app.woooo.utils.CONST_KEY_INTENT
+import woooo_app.woooo.utils.FIRST_NAME
 import woooo_app.woooo.utils.FORGOT_PASSWORD_INTENT
 import woooo_app.woooo.utils.HOME_INTENT
 import woooo_app.woooo.utils.SIGNUP_INTENT
@@ -84,7 +86,7 @@ class MainActivity : ComponentActivity() {
 //                navigateTo(navController = navController, startRoute = startRoute)
 
                 if (navIntent.isNullOrBlank()) {
-                    if (getToken().isEmpty()) {
+                    if (getDataPreferences().isEmpty()) {
                         goToWelcomeActivity(context)
                         return@Box
                     } else {
@@ -124,7 +126,7 @@ class MainActivity : ComponentActivity() {
                                     Log.d(TAG, "LastName : " + userInfo.lastName)
 
                                     saveUserInfoToPreferences(token, userInfo)
-                                    getToken()
+                                    getDataPreferences()
                                 }
 
                                 startRoute = HomeScreenDestination
@@ -134,7 +136,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         else -> {
-                            if (getToken().isEmpty()) {
+                            if (getDataPreferences().isEmpty()) {
                                 Log.d(TAG, "Auth Token not found")
                                 goToWelcomeActivity(context)
                                 return@Box
@@ -153,8 +155,9 @@ class MainActivity : ComponentActivity() {
 
     }
 
-    fun getToken(): String = runBlocking {
+    fun getDataPreferences(): String = runBlocking {
         USER_JID = userPreferences.getJID()
+        FIRST_NAME = userPreferences.getFirstName().first()
         userPreferences.getAuthToke()
 
     }

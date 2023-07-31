@@ -49,19 +49,19 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.feature.wallet.viewmodel.WalletMainViewViewModel
-import woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
 import woooo_app.woooo.destinations.SendCurrencyMainScreenDestination
 import woooo_app.woooo.destinations.TransactionMainScreenDestination
+import woooo_app.woooo.shared.components.CustomIcon
 import woooo_app.woooo.utils.Dimension
 
 @Composable
 fun WalletMainView(navigator: DestinationsNavigator) {
     val colors = mutableListOf<Color>(
-        WooColor.Yellow,Color.Cyan
+        WooColor.Yellow, Color.Cyan
     )
     val walletMainViewModel: WalletMainViewViewModel = hiltViewModel()
 
@@ -69,27 +69,29 @@ fun WalletMainView(navigator: DestinationsNavigator) {
         horizontalAlignment = Alignment.CenterHorizontally,
 //        modifier = Modifier.verticalScroll(rememberScrollState())
     ) {
-        VerticalSpacer(100.dp)
+        VerticalSpacer(20.dp)
         // pie Chart
         Box {
             PieChart(
                 data = mapOf(
-                    Pair("Sample-1",100),
-                    Pair("Sample-2",7),
+                    Pair("Sample-1", 100),
+                    Pair("Sample-2", 7),
                 ),
-                listOfColors = colors
+                listOfColors = colors,
+                radiusOuter = 140.dp,
+                chartBarWidth = 30.dp
             )
             // pie chart center Currency
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.align(Alignment.Center)
             ) {
-                Text(text = "Woo",fontSize = 25.sp)
-                Text(text = "4.0",fontSize = 15.sp)
+                Text(text = "Woo", fontSize = 25.sp)
+                Text(text = "4.0", fontSize = 15.sp)
 
             }
         }
-        VerticalSpacer(30.dp)
+        VerticalSpacer(Dimension.dimen_20)
 
         // Row of Currencies
 
@@ -103,7 +105,7 @@ fun WalletMainView(navigator: DestinationsNavigator) {
 //                    shape = RoundedCornerShape(5.dp)
 //                )
                 .border(
-                    BorderStroke(1.dp,WooColor.white),shape = RoundedCornerShape(10.dp)
+                    BorderStroke(1.dp, WooColor.white), shape = RoundedCornerShape(10.dp)
                 )
                 .fillMaxWidth(0.5f)
                 .padding(10.dp)
@@ -163,8 +165,8 @@ fun WalletMainView(navigator: DestinationsNavigator) {
 
         LazyColumn {
 
-            val listItems = listOf("Item 1","Item 2","Item 3","Item 4")
-            items(count = listItems.size,itemContent = {
+            val listItems = listOf("Item 1", "Item 2", "Item 3", "Item 4")
+            items(count = listItems.size, itemContent = {
 
                 ListItem(modifier = Modifier
                     .clickable(onClick = {
@@ -173,9 +175,9 @@ fun WalletMainView(navigator: DestinationsNavigator) {
                         )
                     })
                     .padding(5.dp)
-                    .padding(start = 10.dp,end = 10.dp)
+                    .padding(start = 10.dp, end = 10.dp)
                     .border(
-                        BorderStroke(1.dp,WooColor.white),shape = RoundedCornerShape(30.dp)
+                        BorderStroke(1.dp, WooColor.white), shape = RoundedCornerShape(30.dp)
                     )
                     .fillMaxWidth()
 //                        .wrapContentHeight()
@@ -222,16 +224,16 @@ fun DropdownMenuExample() {
         DropdownMenuItem(onClick = {
             walletMainViewModel.setCurrentValueOption("USD")
             walletMainViewModel.setCurrencyPopUpValue(false)
-        },text = { Text("USD") })
+        }, text = { Text("USD") })
         DropdownMenuItem(onClick = {
             walletMainViewModel.setCurrentValueOption("YEN")
             walletMainViewModel.setCurrencyPopUpValue(false)
-        },text = { Text("YEN") })
+        }, text = { Text("YEN") })
 
         DropdownMenuItem(onClick = {
             walletMainViewModel.setCurrentValueOption("EURO")
             walletMainViewModel.setCurrencyPopUpValue(false)
-        },text = { Text("EURO") })
+        }, text = { Text("EURO") })
 
     }
 }
@@ -239,7 +241,7 @@ fun DropdownMenuExample() {
 //}
 @Composable
 fun PieChart(
-    data: Map<String,Int>,
+    data: Map<String, Int>,
     radiusOuter: Dp = 80.dp,
     chartBarWidth: Dp = 25.dp,
     animDuration: Int = 2000,
@@ -249,8 +251,8 @@ fun PieChart(
     val totalSum = data.values.sum()
     val floatValue = mutableListOf<Float>()
 
-    data.values.forEachIndexed { index,values ->
-        floatValue.add(index,360 * values.toFloat() / totalSum.toFloat())
+    data.values.forEachIndexed { index, values ->
+        floatValue.add(index, 360 * values.toFloat() / totalSum.toFloat())
     }
 
     var animationPlayed by remember { mutableStateOf(false) }
@@ -259,16 +261,16 @@ fun PieChart(
 
     // it is the diameter value of the Pie
     val animateSize by animateFloatAsState(
-        targetValue = if (animationPlayed) radiusOuter.value * 2f else 0f,animationSpec = tween(
-            durationMillis = animDuration,delayMillis = 0,easing = LinearOutSlowInEasing
+        targetValue = if (animationPlayed) radiusOuter.value * 2f else 0f, animationSpec = tween(
+            durationMillis = animDuration, delayMillis = 0, easing = LinearOutSlowInEasing
         )
     )
 
     // if you want to stabilize the Pie Chart you can use value -90f
     // 90f is used to complete 1/4 of the rotation
     val animateRotation by animateFloatAsState(
-        targetValue = if (animationPlayed) 90f * 11f else 0f,animationSpec = tween(
-            durationMillis = animDuration,delayMillis = 0,easing = LinearOutSlowInEasing
+        targetValue = if (animationPlayed) 90f * 11f else 0f, animationSpec = tween(
+            durationMillis = animDuration, delayMillis = 0, easing = LinearOutSlowInEasing
         )
     )
 
@@ -278,12 +280,12 @@ fun PieChart(
     }
 
     Column(
-        modifier = Modifier.fillMaxWidth(),horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         // Pie Chart using Canvas Arc
         Box(
-            modifier = Modifier.size(animateSize.dp),contentAlignment = Alignment.Center
+            modifier = Modifier.size(animateSize.dp), contentAlignment = Alignment.Center
         ) {
             Canvas(
                 modifier = Modifier
@@ -291,13 +293,13 @@ fun PieChart(
                     .rotate(animateRotation)
             ) {
                 // draw each Arc for each data entry in Pie Chart
-                floatValue.forEachIndexed { index,value ->
+                floatValue.forEachIndexed { index, value ->
                     drawArc(
                         color = listOfColors[index],
                         lastValue,
                         value,
                         useCenter = false,
-                        style = Stroke(chartBarWidth.toPx(),cap = StrokeCap.Butt)
+                        style = Stroke(chartBarWidth.toPx(), cap = StrokeCap.Butt)
                     )
                     lastValue += value
                 }
