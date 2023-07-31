@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.feature.wallet.views
+package woooo_app.woooo.feature.wallet.views
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -34,73 +34,76 @@ import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
+import woooo_app.woooo.shared.base.AppBackGround
+import woooo_app.woooo.utils.Dimension
 
 @Composable
 fun SendCurrencyView(navigator: DestinationsNavigator) {
     val sendCurrencyViewModel: SendCurrencyViewModel = hiltViewModel()
-    Column(horizontalAlignment = Alignment.CenterHorizontally,modifier = Modifier.padding(10.dp)) {
-        TopBarForSetting(onBackPressed = { navigator.popBackStack() })
-        VerticalSpacer(Dimension.dimen_20)
-        Image(
-            modifier = Modifier
-                .size(200.dp)
-                .clip(CircleShape),
-            painter = rememberAsyncImagePainter(model = "https://lh3.googleusercontent.com/a/AAcHTtctn9GPUdxTYkvu3P7QyCsQQhuZzxJwVXb6SNAiXe83M5w=s396-c-no"),
-            contentDescription = ""
-        )
-        VerticalSpacer()
-        Text(text = "0.0 BTC",fontSize = 13.sp)
-        VerticalSpacer()
+   AppBackGround {
+       Column(horizontalAlignment = Alignment.CenterHorizontally,modifier = Modifier.padding(10.dp)) {
+           TopBarForSetting(onBackPressed = { navigator.popBackStack() })
+           VerticalSpacer(Dimension.dimen_20)
+           Image(
+               modifier = Modifier
+                   .size(200.dp)
+                   .clip(CircleShape),
+               painter = rememberAsyncImagePainter(model = "https://lh3.googleusercontent.com/a/AAcHTtctn9GPUdxTYkvu3P7QyCsQQhuZzxJwVXb6SNAiXe83M5w=s396-c-no"),
+               contentDescription = ""
+           )
+           VerticalSpacer()
+           Text(text = "0.0 BTC",fontSize = 13.sp)
+           VerticalSpacer()
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth(.7f)
-                .align(Alignment.CenterHorizontally)
-        ) {
-            Button(
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (sendCurrencyViewModel.getButtonState.value) WooColor.selectedButtonColor
-                    else WooColor.textFieldBackGround
-                ),
+           Row(
+               modifier = Modifier
+                   .fillMaxWidth(.7f)
+                   .align(Alignment.CenterHorizontally)
+           ) {
+               Button(
+                   colors = ButtonDefaults.buttonColors(
+                       containerColor = if (sendCurrencyViewModel.getButtonState.value) WooColor.selectedButtonColor
+                       else WooColor.textFieldBackGround
+                   ),
 
-                onClick = { sendCurrencyViewModel.setButtonStateValue(true) },
-                modifier = Modifier
-                    .weight(.5f)
-                    .border(
-                        BorderStroke(
-                            // Change the width of the border when the button is touched
-                            width = if (sendCurrencyViewModel.getButtonState.value) 2.dp else 1.dp,
-                            color = Color.White,
-                        ),shape = RoundedCornerShape(10.dp)
+                   onClick = { sendCurrencyViewModel.setButtonStateValue(true) },
+                   modifier = Modifier
+                       .weight(.5f)
+                       .border(
+                           BorderStroke(
+                               // Change the width of the border when the button is touched
+                               width = if (sendCurrencyViewModel.getButtonState.value) 2.dp else 1.dp,
+                               color = Color.White,
+                           ),shape = RoundedCornerShape(10.dp)
 
-                    ),
-                shape = RoundedCornerShape(10.dp),
-            ) { Text(text = Strings.sndText) }
-            Button(
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (!sendCurrencyViewModel.getButtonState.value) WooColor.selectedButtonColor
-                    else WooColor.textFieldBackGround
-                ),
-                onClick = { sendCurrencyViewModel.setButtonStateValue(false) },
-                shape = RoundedCornerShape(10.dp),
-                modifier = Modifier
-                    .weight(.5f)
+                       ),
+                   shape = RoundedCornerShape(10.dp),
+               ) { Text(text = Strings.sndText) }
+               Button(
+                   colors = ButtonDefaults.buttonColors(
+                       containerColor = if (!sendCurrencyViewModel.getButtonState.value) WooColor.selectedButtonColor
+                       else WooColor.textFieldBackGround
+                   ),
+                   onClick = { sendCurrencyViewModel.setButtonStateValue(false) },
+                   shape = RoundedCornerShape(10.dp),
+                   modifier = Modifier
+                       .weight(.5f)
 
-                    .border(
-                        BorderStroke(
-                            // Change the width of the border when the button is touched
-                            width = if (!sendCurrencyViewModel.getButtonState.value) 2.dp else 0.5.dp,
-                            color = Color.White,
-                        ),shape = RoundedCornerShape(10.dp)
-                    )
-            ) { Text(text = Strings.receiveText) }
-        }
+                       .border(
+                           BorderStroke(
+                               // Change the width of the border when the button is touched
+                               width = if (!sendCurrencyViewModel.getButtonState.value) 2.dp else 0.5.dp,
+                               color = Color.White,
+                           ),shape = RoundedCornerShape(10.dp)
+                       )
+               ) { Text(text = Strings.receiveText) }
+           }
 //        if (sendCurrencyViewModel.getButtonState.value) SendByAddress() else SendByScan()
-        SendByScan()
-    }
+           SendByScan()
+       }
 
+   }
 
 }
 

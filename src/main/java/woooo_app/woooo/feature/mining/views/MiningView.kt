@@ -32,15 +32,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import woooo_app.woooo.shared.components.BarGraph
-import woooo_app.woooo.shared.components.BarType
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
-import woooo_app.woooo.shared.components.ViewDivider
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
+import woooo_app.woooo.shared.base.AppBackGround
+import woooo_app.woooo.shared.components.BarGraph
+import woooo_app.woooo.shared.components.BarType
+import woooo_app.woooo.shared.components.ViewDivider
+import woooo_app.woooo.utils.Dimension
 
 @Composable
 fun MiningMainView(
@@ -54,399 +55,401 @@ fun MiningMainView(
         floatValue.add(index = index,element = value.toFloat() / dataList.max().toFloat())
     }
 
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+  AppBackGround {
+      Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
 
-        // top  bar
-        TopBarForSetting(onBackPressed = { navigator.popBackStack() })
-        Column(modifier = Modifier.padding(10.dp)) {
-            // upper Row
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = Strings.todays)
-                    Text(text = "0.3 Woo")
-                }
-                Box {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(60.dp),
-                        progress = 0.7F,
-                        color = WooColor.white,
-                        trackColor = WooColor.dark,
-                        strokeWidth = 5.dp
-                    )
-                    Text(
-                        modifier = Modifier.align(Alignment.Center),
-                        text = "70%",
-                        fontSize = 12.sp,
-                        color = WooColor.circulInner
-                    )
+          // top  bar
+          TopBarForSetting(onBackPressed = { navigator.popBackStack() })
+          Column(modifier = Modifier.padding(10.dp)) {
+              // upper Row
+              Row(
+                  verticalAlignment = Alignment.CenterVertically,
+                  horizontalArrangement = Arrangement.SpaceAround,
+                  modifier = Modifier.fillMaxWidth()
+              ) {
+                  Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                      Text(text = Strings.todays)
+                      Text(text = "0.3 Woo")
+                  }
+                  Box {
+                      CircularProgressIndicator(
+                          modifier = Modifier.size(60.dp),
+                          progress = 0.7F,
+                          color = WooColor.white,
+                          trackColor = WooColor.dark,
+                          strokeWidth = 5.dp
+                      )
+                      Text(
+                          modifier = Modifier.align(Alignment.Center),
+                          text = "70%",
+                          fontSize = 12.sp,
+                          color = WooColor.circulInner
+                      )
 
-                }
-            }
-            VerticalSpacer(Dimension.dimen_5)
-            ViewDivider()
-            VerticalSpacer(Dimension.dimen_5)
-            // Daily Reward
-            Column {
-                Text(text = Strings.dailyRewardText)
-                VerticalSpacer()
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 10.dp)
+                  }
+              }
+              VerticalSpacer(Dimension.dimen_5)
+              ViewDivider()
+              VerticalSpacer(Dimension.dimen_5)
+              // Daily Reward
+              Column {
+                  Text(text = Strings.dailyRewardText)
+                  VerticalSpacer()
+                  Row(
+                      horizontalArrangement = Arrangement.SpaceBetween,
+                      modifier = Modifier
+                          .fillMaxWidth()
+                          .padding(horizontal = 10.dp)
 
-                ) {
+                  ) {
 // D1
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        TextForDays(Strings.D1)
-                        VerticalSpacer(Dimension.dimen_5)
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(RoundedCornerShape(5.dp))
-                                .background(WooColor.lightBlue)
-                        ) {
-                            Icon(
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .align(Alignment.Center),
-                                imageVector = Icons.Outlined.CardGiftcard,
-                                contentDescription = "",
-                                tint = WooColor.circulInner
-                            )
-                        }
-                        VerticalSpacer(Dimension.dimen_5)
-                        TextForCollect(Strings.collectText)
+                      Column(
+                          horizontalAlignment = Alignment.CenterHorizontally,
+                      ) {
+                          TextForDays(Strings.D1)
+                          VerticalSpacer(Dimension.dimen_5)
+                          Box(
+                              modifier = Modifier
+                                  .size(40.dp)
+                                  .clip(RoundedCornerShape(5.dp))
+                                  .background(WooColor.lightBlue)
+                          ) {
+                              Icon(
+                                  modifier = Modifier
+                                      .size(30.dp)
+                                      .align(Alignment.Center),
+                                  imageVector = Icons.Outlined.CardGiftcard,
+                                  contentDescription = "",
+                                  tint = WooColor.circulInner
+                              )
+                          }
+                          VerticalSpacer(Dimension.dimen_5)
+                          TextForCollect(Strings.collectText)
 
-                    }
+                      }
 // D2
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        TextForDays(Strings.D2)
-                        VerticalSpacer(Dimension.dimen_5)
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(RoundedCornerShape(5.dp))
-                                .background(WooColor.lightBlue)
-                        ) {
-                            Icon(
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .align(Alignment.Center),
-                                imageVector = Icons.Outlined.CardGiftcard,
-                                contentDescription = "",
-                                tint = WooColor.circulInner
-                            )
-                        }
-                        VerticalSpacer(Dimension.dimen_5)
-                        TextForCollect(Strings.collectText)
+                      Column(
+                          horizontalAlignment = Alignment.CenterHorizontally,
+                      ) {
+                          TextForDays(Strings.D2)
+                          VerticalSpacer(Dimension.dimen_5)
+                          Box(
+                              modifier = Modifier
+                                  .size(40.dp)
+                                  .clip(RoundedCornerShape(5.dp))
+                                  .background(WooColor.lightBlue)
+                          ) {
+                              Icon(
+                                  modifier = Modifier
+                                      .size(30.dp)
+                                      .align(Alignment.Center),
+                                  imageVector = Icons.Outlined.CardGiftcard,
+                                  contentDescription = "",
+                                  tint = WooColor.circulInner
+                              )
+                          }
+                          VerticalSpacer(Dimension.dimen_5)
+                          TextForCollect(Strings.collectText)
 
-                    }
+                      }
 // D3
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        TextForDays(Strings.D3)
-                        VerticalSpacer(Dimension.dimen_5)
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(RoundedCornerShape(5.dp))
-                                .background(WooColor.lightBlue)
-                        ) {
-                            Icon(
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .align(Alignment.Center),
-                                imageVector = Icons.Outlined.CardGiftcard,
-                                contentDescription = "",
-                                tint = WooColor.circulInner
-                            )
-                        }
-                        VerticalSpacer(Dimension.dimen_5)
-                        TextForCollect(Strings.collectText)
+                      Column(
+                          horizontalAlignment = Alignment.CenterHorizontally,
+                      ) {
+                          TextForDays(Strings.D3)
+                          VerticalSpacer(Dimension.dimen_5)
+                          Box(
+                              modifier = Modifier
+                                  .size(40.dp)
+                                  .clip(RoundedCornerShape(5.dp))
+                                  .background(WooColor.lightBlue)
+                          ) {
+                              Icon(
+                                  modifier = Modifier
+                                      .size(30.dp)
+                                      .align(Alignment.Center),
+                                  imageVector = Icons.Outlined.CardGiftcard,
+                                  contentDescription = "",
+                                  tint = WooColor.circulInner
+                              )
+                          }
+                          VerticalSpacer(Dimension.dimen_5)
+                          TextForCollect(Strings.collectText)
 
-                    }
+                      }
 // D4
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        TextForDays(Strings.D4)
-                        VerticalSpacer(Dimension.dimen_5)
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(RoundedCornerShape(5.dp))
-                                .background(WooColor.lightBlue)
-                        ) {
-                            Icon(
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .align(Alignment.Center),
-                                imageVector = Icons.Outlined.CardGiftcard,
-                                contentDescription = "",
-                                tint = WooColor.circulInner
-                            )
-                        }
-                        VerticalSpacer(Dimension.dimen_5)
-                        TextForCollect(Strings.collectText)
+                      Column(
+                          horizontalAlignment = Alignment.CenterHorizontally,
+                      ) {
+                          TextForDays(Strings.D4)
+                          VerticalSpacer(Dimension.dimen_5)
+                          Box(
+                              modifier = Modifier
+                                  .size(40.dp)
+                                  .clip(RoundedCornerShape(5.dp))
+                                  .background(WooColor.lightBlue)
+                          ) {
+                              Icon(
+                                  modifier = Modifier
+                                      .size(30.dp)
+                                      .align(Alignment.Center),
+                                  imageVector = Icons.Outlined.CardGiftcard,
+                                  contentDescription = "",
+                                  tint = WooColor.circulInner
+                              )
+                          }
+                          VerticalSpacer(Dimension.dimen_5)
+                          TextForCollect(Strings.collectText)
 
-                    }
+                      }
 // D5
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        TextForDays(Strings.D5)
-                        VerticalSpacer(Dimension.dimen_5)
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(RoundedCornerShape(5.dp))
-                                .background(WooColor.lightBlue)
-                        ) {
-                            Icon(
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .align(Alignment.Center),
-                                imageVector = Icons.Outlined.CardGiftcard,
-                                contentDescription = "",
-                                tint = WooColor.circulInner
-                            )
-                        }
-                        VerticalSpacer(Dimension.dimen_5)
-                        TextForCollect(Strings.collectText)
+                      Column(
+                          horizontalAlignment = Alignment.CenterHorizontally,
+                      ) {
+                          TextForDays(Strings.D5)
+                          VerticalSpacer(Dimension.dimen_5)
+                          Box(
+                              modifier = Modifier
+                                  .size(40.dp)
+                                  .clip(RoundedCornerShape(5.dp))
+                                  .background(WooColor.lightBlue)
+                          ) {
+                              Icon(
+                                  modifier = Modifier
+                                      .size(30.dp)
+                                      .align(Alignment.Center),
+                                  imageVector = Icons.Outlined.CardGiftcard,
+                                  contentDescription = "",
+                                  tint = WooColor.circulInner
+                              )
+                          }
+                          VerticalSpacer(Dimension.dimen_5)
+                          TextForCollect(Strings.collectText)
 
-                    }
+                      }
 // D6
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        TextForDays(Strings.D6)
-                        VerticalSpacer(Dimension.dimen_5)
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(RoundedCornerShape(5.dp))
-                                .background(WooColor.lightBlue)
-                        ) {
-                            Icon(
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .align(Alignment.Center),
-                                imageVector = Icons.Outlined.CardGiftcard,
-                                contentDescription = "",
-                                tint = WooColor.circulInner
-                            )
-                        }
-                        VerticalSpacer(Dimension.dimen_5)
-                        TextForCollect(Strings.collectText)
+                      Column(
+                          horizontalAlignment = Alignment.CenterHorizontally,
+                      ) {
+                          TextForDays(Strings.D6)
+                          VerticalSpacer(Dimension.dimen_5)
+                          Box(
+                              modifier = Modifier
+                                  .size(40.dp)
+                                  .clip(RoundedCornerShape(5.dp))
+                                  .background(WooColor.lightBlue)
+                          ) {
+                              Icon(
+                                  modifier = Modifier
+                                      .size(30.dp)
+                                      .align(Alignment.Center),
+                                  imageVector = Icons.Outlined.CardGiftcard,
+                                  contentDescription = "",
+                                  tint = WooColor.circulInner
+                              )
+                          }
+                          VerticalSpacer(Dimension.dimen_5)
+                          TextForCollect(Strings.collectText)
 
-                    }
+                      }
 // D7
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        TextForDays(Strings.D7)
-                        VerticalSpacer(Dimension.dimen_5)
-                        Box(
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(RoundedCornerShape(5.dp))
-                                .background(WooColor.lightBlue)
-                        ) {
-                            Icon(
-                                modifier = Modifier
-                                    .size(30.dp)
-                                    .align(Alignment.Center),
-                                imageVector = Icons.Outlined.CardGiftcard,
-                                contentDescription = "",
-                                tint = WooColor.circulInner
-                            )
-                        }
-                        VerticalSpacer(Dimension.dimen_5)
-                        TextForCollect(Strings.collectText)
+                      Column(
+                          horizontalAlignment = Alignment.CenterHorizontally,
+                      ) {
+                          TextForDays(Strings.D7)
+                          VerticalSpacer(Dimension.dimen_5)
+                          Box(
+                              modifier = Modifier
+                                  .size(40.dp)
+                                  .clip(RoundedCornerShape(5.dp))
+                                  .background(WooColor.lightBlue)
+                          ) {
+                              Icon(
+                                  modifier = Modifier
+                                      .size(30.dp)
+                                      .align(Alignment.Center),
+                                  imageVector = Icons.Outlined.CardGiftcard,
+                                  contentDescription = "",
+                                  tint = WooColor.circulInner
+                              )
+                          }
+                          VerticalSpacer(Dimension.dimen_5)
+                          TextForCollect(Strings.collectText)
 
-                    }
+                      }
 
-                }
-                VerticalSpacer()
-                Text(
-                    text = Strings.claimAssetText,
-                    modifier = Modifier.align(Alignment.End),
-                    fontSize = 14.sp
-                )
-            }
-            VerticalSpacer()
-            ViewDivider()
-            VerticalSpacer()
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = Strings.timeLeftText)
-                Text(text = "12:12:31")
-            }
-            VerticalSpacer()
-            // chat progress
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = Strings.chatText,modifier = Modifier.weight(3f))
-                CustomLinearProgressIndicator(
-                    progress = 0.9f,
-                    Color.Green,
-                    Modifier.weight(7f),
-                    Color.Green,
-                    "Send 5 Messages to Claim Asset"
-                )
-            }
-            // meeting progress
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = Strings.meetingText,modifier = Modifier.weight(3f))
-                CustomLinearProgressIndicator(
-                    progress = 0.5f,
-                    Color(0xFFFF6600),
-                    Modifier.weight(7f),
-                    Color(0xFFFF6600),
-                    "1 Meeting to Claim Asset"
-                )
-            }
-            // Call progress
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = Strings.callText,modifier = Modifier.weight(3f))
-                CustomLinearProgressIndicator(
-                    progress = 0.3f,
-                    Color.Red,
-                    Modifier.weight(7f),
-                    Color.Red,
-                    "1 Meeting to Claim Asset"
-                )
-            }
-            VerticalSpacer()
-            ViewDivider()
-            VerticalSpacer()
-            // mining History
-            Text(text = Strings.mHstryText)
-            // Weak Month Year  All
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(15.dp),
-                modifier = Modifier.padding(10.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(20.dp))
-                        .border(1.dp,WooColor.white,shape = RoundedCornerShape(20.dp))
-                        .size(40.dp)
-                        .background(WooColor.textBox)
+                  }
+                  VerticalSpacer()
+                  Text(
+                      text = Strings.claimAssetText,
+                      modifier = Modifier.align(Alignment.End),
+                      fontSize = 14.sp
+                  )
+              }
+              VerticalSpacer()
+              ViewDivider()
+              VerticalSpacer()
+              Row(
+                  horizontalArrangement = Arrangement.SpaceBetween,modifier = Modifier.fillMaxWidth()
+              ) {
+                  Text(text = Strings.timeLeftText)
+                  Text(text = "12:12:31")
+              }
+              VerticalSpacer()
+              // chat progress
+              Row(
+                  horizontalArrangement = Arrangement.SpaceBetween,
+                  verticalAlignment = Alignment.CenterVertically,
+                  modifier = Modifier.fillMaxWidth()
+              ) {
+                  Text(text = Strings.chatText,modifier = Modifier.weight(3f))
+                  CustomLinearProgressIndicator(
+                      progress = 0.9f,
+                      Color.Green,
+                      Modifier.weight(7f),
+                      Color.Green,
+                      "Send 5 Messages to Claim Asset"
+                  )
+              }
+              // meeting progress
+              Row(
+                  horizontalArrangement = Arrangement.SpaceBetween,
+                  verticalAlignment = Alignment.CenterVertically,
+                  modifier = Modifier.fillMaxWidth()
+              ) {
+                  Text(text = Strings.meetingText,modifier = Modifier.weight(3f))
+                  CustomLinearProgressIndicator(
+                      progress = 0.5f,
+                      Color(0xFFFF6600),
+                      Modifier.weight(7f),
+                      Color(0xFFFF6600),
+                      "1 Meeting to Claim Asset"
+                  )
+              }
+              // Call progress
+              Row(
+                  horizontalArrangement = Arrangement.SpaceBetween,
+                  verticalAlignment = Alignment.CenterVertically,
+                  modifier = Modifier.fillMaxWidth()
+              ) {
+                  Text(text = Strings.callText,modifier = Modifier.weight(3f))
+                  CustomLinearProgressIndicator(
+                      progress = 0.3f,
+                      Color.Red,
+                      Modifier.weight(7f),
+                      Color.Red,
+                      "1 Meeting to Claim Asset"
+                  )
+              }
+              VerticalSpacer()
+              ViewDivider()
+              VerticalSpacer()
+              // mining History
+              Text(text = Strings.mHstryText)
+              // Weak Month Year  All
+              Row(
+                  horizontalArrangement = Arrangement.spacedBy(15.dp),
+                  modifier = Modifier.padding(10.dp)
+              ) {
+                  Box(
+                      modifier = Modifier
+                          .clip(RoundedCornerShape(20.dp))
+                          .border(1.dp,WooColor.white,shape = RoundedCornerShape(20.dp))
+                          .size(40.dp)
+                          .background(WooColor.textBox)
 
-                ) {
-                    Text(text = "W",modifier = Modifier.align(Alignment.Center))
-                }
+                  ) {
+                      Text(text = "W",modifier = Modifier.align(Alignment.Center))
+                  }
 
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(20.dp))
-                        .border(1.dp,WooColor.white,shape = RoundedCornerShape(20.dp))
-                        .size(40.dp)
-                        .background(WooColor.textBox)
+                  Box(
+                      modifier = Modifier
+                          .clip(RoundedCornerShape(20.dp))
+                          .border(1.dp,WooColor.white,shape = RoundedCornerShape(20.dp))
+                          .size(40.dp)
+                          .background(WooColor.textBox)
 
-                ) {
-                    Text(text = "M",modifier = Modifier.align(Alignment.Center))
-                }
+                  ) {
+                      Text(text = "M",modifier = Modifier.align(Alignment.Center))
+                  }
 
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(20.dp))
-                        .border(1.dp,WooColor.white,shape = RoundedCornerShape(20.dp))
-                        .size(40.dp)
-                        .background(WooColor.textBox)
+                  Box(
+                      modifier = Modifier
+                          .clip(RoundedCornerShape(20.dp))
+                          .border(1.dp,WooColor.white,shape = RoundedCornerShape(20.dp))
+                          .size(40.dp)
+                          .background(WooColor.textBox)
 
-                ) {
-                    Text(text = "Y",modifier = Modifier.align(Alignment.Center))
-                }
+                  ) {
+                      Text(text = "Y",modifier = Modifier.align(Alignment.Center))
+                  }
 
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(20.dp))
-                        .border(1.dp,WooColor.white,shape = RoundedCornerShape(20.dp))
-                        .size(40.dp)
-                        .background(WooColor.textBox)
+                  Box(
+                      modifier = Modifier
+                          .clip(RoundedCornerShape(20.dp))
+                          .border(1.dp,WooColor.white,shape = RoundedCornerShape(20.dp))
+                          .size(40.dp)
+                          .background(WooColor.textBox)
 
-                ) {
-                    Text(text = "All",modifier = Modifier.align(Alignment.Center))
-                }
+                  ) {
+                      Text(text = "All",modifier = Modifier.align(Alignment.Center))
+                  }
 
-            }
-            // Graph
-            BarGraph(
-                graphBarData = floatValue,
-                xAxisScaleData = datesList,
-                barData_ = dataList,
-                height = 200.dp,
-                roundType = BarType.TOP_CURVED,
-                barWidth = 55.dp,
-                barArrangement = Arrangement.SpaceEvenly
-            )
-            VerticalSpacer()
-            ViewDivider()
-            VerticalSpacer(Dimension.dimen_5)
+              }
+              // Graph
+              BarGraph(
+                  graphBarData = floatValue,
+                  xAxisScaleData = datesList,
+                  barData_ = dataList,
+                  height = 200.dp,
+                  roundType = BarType.TOP_CURVED,
+                  barWidth = 55.dp,
+                  barArrangement = Arrangement.SpaceEvenly
+              )
+              VerticalSpacer()
+              ViewDivider()
+              VerticalSpacer(Dimension.dimen_5)
 
-            // wallet view
+              // wallet view
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Row {
-                    Icon(
-                        imageVector = Icons.Default.AccountBalanceWallet,
-                        contentDescription = "",
-                        tint = WooColor.white,
-                        modifier = Modifier.size(50.dp)
-                    )
-                    HorizontalSpacer(Dimension.dimen_5)
-                    Text(text = "4.8325 woo \n$ 57.3489",fontSize = 15.sp)
-                }
-                Box(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .border(1.dp,WooColor.white,shape = RoundedCornerShape(10.dp))
-                        .size(50.dp)
-                        .background(WooColor.textBox)
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Send,
-                        contentDescription = "",
-                        tint = WooColor.white,
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .size(27.dp)
-                    )
-                }
+              Row(
+                  verticalAlignment = Alignment.CenterVertically,
+                  modifier = Modifier
+                      .fillMaxWidth()
+                      .padding(10.dp),
+                  horizontalArrangement = Arrangement.SpaceBetween,
+              ) {
+                  Row {
+                      Icon(
+                          imageVector = Icons.Default.AccountBalanceWallet,
+                          contentDescription = "",
+                          tint = WooColor.white,
+                          modifier = Modifier.size(50.dp)
+                      )
+                      HorizontalSpacer(Dimension.dimen_5)
+                      Text(text = "4.8325 woo \n$ 57.3489",fontSize = 15.sp)
+                  }
+                  Box(
+                      modifier = Modifier
+                          .clip(RoundedCornerShape(10.dp))
+                          .border(1.dp,WooColor.white,shape = RoundedCornerShape(10.dp))
+                          .size(50.dp)
+                          .background(WooColor.textBox)
+                  ) {
+                      Icon(
+                          imageVector = Icons.Outlined.Send,
+                          contentDescription = "",
+                          tint = WooColor.white,
+                          modifier = Modifier
+                              .align(Alignment.Center)
+                              .size(27.dp)
+                      )
+                  }
 
-            }
-        }
-    }
+              }
+          }
+      }
+  }
 }
 
 @Composable

@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.feature.home.screen
+package woooo_app.woooo.feature.home.screen
 
 import TopAppBarComposable
 import android.util.Log
@@ -61,19 +61,22 @@ import woooo_app.woooo.utils.FIRST_NAME
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomePage(navigator: DestinationsNavigator, homeViewModel: HomeViewModel = hiltViewModel()) {
-    BoxWithConstraints(
-
-    ) {
+fun HomePage(navigator: DestinationsNavigator,homeViewModel: HomeViewModel = hiltViewModel()) {
+    BoxWithConstraints {
         Dimension.boxWithConstraintsScope = this
         val scope = rememberCoroutineScope()
         val scaffoldState = rememberBottomSheetScaffoldState()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+        var notificationTrayState by remember {
+            mutableStateOf(true)
+        }
+
+
 
         ModalNavigationDrawer(drawerContent = {
 
             AppDrawer(navigator = navigator)
-        }, drawerState = drawerState) {
+        },drawerState = drawerState) {
             Scaffold(
                 modifier = Modifier.then(
                     if (drawerState.isOpen) Modifier.blur(5.dp) else Modifier.blur(
@@ -99,7 +102,7 @@ fun HomePage(navigator: DestinationsNavigator, homeViewModel: HomeViewModel = hi
                             contentDescription = ""
                         )
 
-                    })
+                    },onActionClick = { notificationTrayState = !notificationTrayState })
                 },
 
                 ) { upperPadding ->
@@ -126,14 +129,14 @@ fun HomePage(navigator: DestinationsNavigator, homeViewModel: HomeViewModel = hi
                         VerticalSpacer()
                         //Name Text
                         Text(
-                            text = "Hi, $FIRST_NAME", modifier = Modifier
+                            text = "Hi, $FIRST_NAME",modifier = Modifier
                                 .align(
                                     alignment = Alignment.Start
                                 )
                                 .padding(start = Dimension.dimen_20)
                                 .clickable {
                                     navigator.navigate(SignUpScreenDestination)
-                                }, style = MaterialTheme.typography.bodyLarge
+                                },style = MaterialTheme.typography.bodyLarge
                         )
                         CircularMenu(navigator)
                         Column(
@@ -159,8 +162,21 @@ fun HomePage(navigator: DestinationsNavigator, homeViewModel: HomeViewModel = hi
 
         }
 
+//            notification tray
+        if (notificationTrayState) {
+            Box(
+                modifier = Modifier.clip(RoundedCornerShape(10.dp))
+                    .padding(top = 50.dp,end = 10.dp)
+                    .alpha(0.7f)
+                    .background(WooColor.textFieldBackGround, shape = RoundedCornerShape(10.dp))
+                    .height(450.dp)
+                    .width(320.dp)
+                    .align(Alignment.TopEnd)
+            ) {
+                Text(text = "kjnkancndcackn")
+            }
+        }
     }
-
 }
 
 //@Composable
@@ -190,14 +206,13 @@ fun HomePage(navigator: DestinationsNavigator, homeViewModel: HomeViewModel = hi
 //    // print("Text Height: ${Dimension.circleWheelTextHeight}");
 //}
 
-
 fun initCircleTextOffset(width: Dp) {
 
     Dimension.circleWheelSectorRadius = (Dimension.circleWheelHeight / 7.2F)
     Dimension.circleWheelTextHeight = (Dimension.circleWheelHeight * 0.1875F)
 
     if (width < 400.dp) {
-        Log.d("DEVICE WIDTH SMALL", width.toString())
+        Log.d("DEVICE WIDTH SMALL",width.toString())
         //Chat offset
         Dimension.chatTextOffset_X = width * 0.2F
         Dimension.chatTextOffset_Y = 58.dp
@@ -223,7 +238,7 @@ fun initCircleTextOffset(width: Dp) {
         //Meeting offset
         Dimension.meetingTextOffset_X = width * 0.2F
         Dimension.meetingTextOffset_Y = 73.dp
-        Log.d("DEVICE WIDTH MEDIUM", width.toString())
+        Log.d("DEVICE WIDTH MEDIUM",width.toString())
     }
 }
 
@@ -247,8 +262,8 @@ fun BottomSheetContent(
 
             Button(modifier = Modifier.align(
                 alignment = Alignment.CenterHorizontally
-            ), onClick = { /*TODO*/ }) {
-                Text(text = "Show more", style = MaterialTheme.typography.bodyMedium)
+            ),onClick = { /*TODO*/ }) {
+                Text(text = "Show more",style = MaterialTheme.typography.bodyMedium)
             }
 
 
@@ -278,13 +293,13 @@ fun DailyProgress() {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "Your Daily Progress", style = MaterialTheme.typography.bodyLarge)
-            Text(text = "0% to complete", style = MaterialTheme.typography.labelSmall)
+            Text(text = "Your Daily Progress",style = MaterialTheme.typography.bodyLarge)
+            Text(text = "0% to complete",style = MaterialTheme.typography.labelSmall)
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             CustomIcon(icon = Icons.Outlined.AccessTime)
             HorizontalSpacer(Dimension.dimen_5)
-            Text(text = "12 hrs", style = MaterialTheme.typography.labelSmall)
+            Text(text = "12 hrs",style = MaterialTheme.typography.labelSmall)
         }
 
     }
@@ -305,8 +320,8 @@ fun GradientProgressbar(
 ) {
 
     val animateNumber = animateFloatAsState(
-        targetValue = 80f, animationSpec = tween(
-            durationMillis = animationDuration, delayMillis = animationDelay
+        targetValue = 80f,animationSpec = tween(
+            durationMillis = animationDuration,delayMillis = animationDelay
         )
     )
 
@@ -323,8 +338,8 @@ fun GradientProgressbar(
             color = backgroundIndicatorColor,
             cap = StrokeCap.Round,
             strokeWidth = size.height,
-            start = Offset(x = 0f, y = 0f),
-            end = Offset(x = size.width, y = 0f)
+            start = Offset(x = 0f,y = 0f),
+            end = Offset(x = size.width,y = 0f)
         )
 
         // Convert the downloaded percentage into progress (width of foreground indicator)
@@ -338,8 +353,8 @@ fun GradientProgressbar(
             ),
             cap = StrokeCap.Round,
             strokeWidth = size.height,
-            start = Offset(x = 0f, y = 0f),
-            end = Offset(x = progress, y = 0f)
+            start = Offset(x = 0f,y = 0f),
+            end = Offset(x = progress,y = 0f)
         )
 
     }
@@ -359,24 +374,24 @@ fun PendingChatCallMeeting() {
         Row(
             horizontalArrangement = Arrangement.Start
         ) {
-            Text(text = "Call: ", style = MaterialTheme.typography.bodySmall)
-            Text(text = "2 calls remaining", style = MaterialTheme.typography.bodySmall)
+            Text(text = "Call: ",style = MaterialTheme.typography.bodySmall)
+            Text(text = "2 calls remaining",style = MaterialTheme.typography.bodySmall)
 
         }
         //Pending Chat
         Row(
             horizontalArrangement = Arrangement.Start
         ) {
-            Text(text = "Chat: ", style = MaterialTheme.typography.bodySmall)
-            Text(text = "5 messages remaining", style = MaterialTheme.typography.bodySmall)
+            Text(text = "Chat: ",style = MaterialTheme.typography.bodySmall)
+            Text(text = "5 messages remaining",style = MaterialTheme.typography.bodySmall)
 
         }
         //Pending Meetings
         Row(
             horizontalArrangement = Arrangement.Start
         ) {
-            Text(text = "Meeting: ", style = MaterialTheme.typography.bodySmall)
-            Text(text = "1 meeting remaining", style = MaterialTheme.typography.bodySmall)
+            Text(text = "Meeting: ",style = MaterialTheme.typography.bodySmall)
+            Text(text = "1 meeting remaining",style = MaterialTheme.typography.bodySmall)
 
         }
     }
@@ -384,7 +399,7 @@ fun PendingChatCallMeeting() {
 
 @Composable
 fun BottomSheetCard(
-    label: String, content: @Composable () -> Unit
+    label: String,content: @Composable () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -393,7 +408,7 @@ fun BottomSheetCard(
             .height(300.dp)
             .clip(RoundedCornerShape(Dimension.dimen_20))
             .border(
-                border = BorderStroke(width = 1.dp, color = WooColor.white),
+                border = BorderStroke(width = 1.dp,color = WooColor.white),
                 shape = RoundedCornerShape(Dimension.dimen_20)
             )
     ) {
@@ -410,7 +425,7 @@ fun BottomSheetCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = label, style = MaterialTheme.typography.headlineMedium)
+                Text(text = label,style = MaterialTheme.typography.headlineMedium)
                 IconButton(onClick = {}) {
                     CustomIcon(icon = Icons.Outlined.ArrowForward)
 

@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.feature.settings.views.account
+package woooo_app.woooo.feature.settings.views.account
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -21,11 +21,13 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
+import woooo_app.woooo.shared.base.AppBackGround
+import woooo_app.woooo.utils.Dimension
 
 @Composable
 fun PrivacyMainView(navigator: DestinationsNavigator) {
+AppBackGround {
 
     Column(modifier = Modifier.padding(10.dp)) {
         TopBarForSetting(onBackPressed = {navigator.popBackStack()})
@@ -102,7 +104,7 @@ fun PrivacyMainView(navigator: DestinationsNavigator) {
             onClick = {},
             trailingContent = { Icon(imageVector = Icons.Outlined.RemoveCircleOutline,contentDescription = "")},
             fontSize = 16
-        ) 
+        )
         CustomListTile(leadingIcon = {},
             title = Strings.deleteAllChatsText,
             onClick = {},
@@ -110,4 +112,5 @@ fun PrivacyMainView(navigator: DestinationsNavigator) {
             fontSize = 16
         )
     }
+}
 }

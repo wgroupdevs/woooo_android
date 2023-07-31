@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -80,7 +81,7 @@ import java.time.LocalDate
 fun UpdateProfileView(navigator: DestinationsNavigator) {
     val dateTimerPickerViewModel: DateTimerPickerViewModel = hiltViewModel()
     val updateProfileViewModel: UpdateProfileViewModel = hiltViewModel()
-    var context = LocalContext.current
+    val context = LocalContext.current
     val imagePicker =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia(),
             onResult = {
@@ -89,7 +90,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
                 updateProfileViewModel.uploadProfile(context, it!!)
             })
     Column(
-        Modifier
+        Modifier.fillMaxSize()
             .background(color = WooColor.backgroundColor)
             .padding(10.dp)
             .verticalScroll(rememberScrollState())

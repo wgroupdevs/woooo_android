@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.feature.settings.views.account
+package woooo_app.woooo.feature.settings.views.account
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -41,10 +41,11 @@ import com.wgroup.woooo_app.woooo.shared.components.TextLabel
 import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
-import woooo_app.woooo.shared.components.view_models.PasswordValidatorViewModel
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
+import woooo_app.woooo.shared.base.AppBackGround
 import woooo_app.woooo.shared.components.PasswordValidator
+import woooo_app.woooo.shared.components.view_models.PasswordValidatorViewModel
 import woooo_app.woooo.utils.Dimension
 
 @Composable
@@ -52,37 +53,39 @@ fun SecurityMainView(
     navigator: DestinationsNavigator
 ) {
     val passwordValidatorViewModel: PasswordValidatorViewModel = hiltViewModel()
-    Column {
-        TopBarForSetting(onBackPressed = { navigator.popBackStack() })
+  AppBackGround {
+      Column {
+          TopBarForSetting(onBackPressed = { navigator.popBackStack() })
 
-        Column(modifier = Modifier.padding(10.dp)) {
-            Text(
-                modifier = Modifier.padding(Dimension.dimen_10),
-                text = Strings.securityText,
-                style = MaterialTheme.typography.headlineMedium
-            )
-            CustomListTile(
-                leadingIcon = {},
-                title = Strings.setPasscodeLockText,
-                onClick = {},
-            )
+          Column(modifier = Modifier.padding(10.dp)) {
+              Text(
+                  modifier = Modifier.padding(Dimension.dimen_10),
+                  text = Strings.securityText,
+                  style = MaterialTheme.typography.headlineMedium
+              )
+              CustomListTile(
+                  leadingIcon = {},
+                  title = Strings.setPasscodeLockText,
+                  onClick = {},
+              )
 
-            CustomListTile(leadingIcon = {},title = Strings.remoteLogOutText,onClick = {})
-            CustomListTile(leadingIcon = {},title = Strings.changePasswordText,onClick = {
-                passwordValidatorViewModel.setValueOfDialoge(true)
-            })
-            CustomListTile(leadingIcon = {},title = Strings.fingerPrintText,onClick = {})
-            CustomListTile(leadingIcon = {},title = Strings.encryptionText,onClick = {})
+              CustomListTile(leadingIcon = {},title = Strings.remoteLogOutText,onClick = {})
+              CustomListTile(leadingIcon = {},title = Strings.changePasswordText,onClick = {
+                  passwordValidatorViewModel.setValueOfDialoge(true)
+              })
+              CustomListTile(leadingIcon = {},title = Strings.fingerPrintText,onClick = {})
+              CustomListTile(leadingIcon = {},title = Strings.encryptionText,onClick = {})
 
-            if (passwordValidatorViewModel.getChangePasswordDialoge.value) {
-                PassChangeDialgue(
-                    onDismissRequest = { passwordValidatorViewModel.setValueOfDialoge(false) },
-                    passwordValidatorViewModel = passwordValidatorViewModel
-                )
-            }
-        }
+              if (passwordValidatorViewModel.getChangePasswordDialoge.value) {
+                  PassChangeDialgue(
+                      onDismissRequest = { passwordValidatorViewModel.setValueOfDialoge(false) },
+                      passwordValidatorViewModel = passwordValidatorViewModel
+                  )
+              }
+          }
 
-    }
+      }
+  }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

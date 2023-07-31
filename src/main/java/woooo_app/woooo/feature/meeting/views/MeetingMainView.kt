@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.feature.meeting.views
+package woooo_app.woooo.feature.meeting.views
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,86 +21,90 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import woooo_app.woooo.shared.components.CustomIcon
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.wgroup.woooo_app.woooo.feature.meeting.views.MeetingHistoryTab
+import com.wgroup.woooo_app.woooo.feature.meeting.views.MeetingScheduleTab
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
+import woooo_app.woooo.shared.base.AppBackGround
+import woooo_app.woooo.shared.components.CustomIcon
+import woooo_app.woooo.utils.Dimension
 
-@Preview
 @Composable
-fun MeetingMainView() {
-    Column {
+fun MeetingMainView(navigator: DestinationsNavigator) {
+   AppBackGround {
+       Column {
 
-        val tabs = listOf("New","History","Schedule")
-        var selectedTabIndex = remember { mutableStateOf(0) }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(start = 5.dp,top = 5.dp)
-            ) {
-                CustomIcon(
-                    icon = Icons.Outlined.ArrowBack,modifier = Modifier.size(30.dp)
-                )
-                HorizontalSpacer(Dimension.dimen_20)
-                Text(text = Strings.meetingText,style = MaterialTheme.typography.titleMedium)
-            }
-            VerticalSpacer(Dimension.dimen_10)
-            TabRow(selectedTabIndex.value,
-                containerColor = MaterialTheme.colorScheme.background,
-                indicator = { tabPositions ->
-                    TabIndicator(
-                        tabPositions[selectedTabIndex.value],
-                    )
-                },
-                divider = {}) {
-                tabs.forEachIndexed { index,title ->
-                    Tab(
-                        selected = selectedTabIndex.value == index,
-                        onClick = { selectedTabIndex.value = index },
-                        modifier = Modifier.padding(12.dp)
-                    ) {
-                        Text(
-                            title,
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.titleSmall
-                        )
-                    }
-                }
-            }
+           val tabs = listOf("New","History","Schedule")
+           var selectedTabIndex = remember { mutableStateOf(0) }
+           Column(
+               modifier = Modifier
+                   .fillMaxWidth()
+                   .padding(10.dp)
+           ) {
+               Row(
+                   verticalAlignment = Alignment.CenterVertically,
+                   modifier = Modifier.padding(start = 5.dp,top = 5.dp)
+               ) {
+                   CustomIcon(
+                       icon = Icons.Outlined.ArrowBack,modifier = Modifier.size(30.dp)
+                   )
+                   HorizontalSpacer(Dimension.dimen_20)
+                   Text(text = Strings.meetingText,style = MaterialTheme.typography.titleMedium)
+               }
+               VerticalSpacer(Dimension.dimen_10)
+               TabRow(selectedTabIndex.value,
+                   containerColor = MaterialTheme.colorScheme.background,
+                   indicator = { tabPositions ->
+                       TabIndicator(
+                           tabPositions[selectedTabIndex.value],
+                       )
+                   },
+                   divider = {}) {
+                   tabs.forEachIndexed { index,title ->
+                       Tab(
+                           selected = selectedTabIndex.value == index,
+                           onClick = { selectedTabIndex.value = index },
+                           modifier = Modifier.padding(12.dp)
+                       ) {
+                           Text(
+                               title,
+                               textAlign = TextAlign.Center,
+                               style = MaterialTheme.typography.titleSmall
+                           )
+                       }
+                   }
+               }
 
-            // Content for the selected tab
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                when (selectedTabIndex.value) {
-                    0 -> {
-                        // Content for New Meeting
-                        NewMeetingTabView()
-                    }
+               // Content for the selected tab
+               Column(
+                   modifier = Modifier.fillMaxWidth(),
+                   horizontalAlignment = Alignment.CenterHorizontally
+               ) {
+                   when (selectedTabIndex.value) {
+                       0 -> {
+                           // Content for New Meeting
+                           NewMeetingTabView()
+                       }
 
-                    1 -> {
-                        // Content for Meeting History
-                        MeetingHistoryTab()
-                    }
+                       1 -> {
+                           // Content for Meeting History
+                           MeetingHistoryTab()
+                       }
 
-                    2 -> {
-                        // Content for Schedule
-                        MeetingScheduleTab()
-                    }
-                }
-            }
-        }
-    }
+                       2 -> {
+                           // Content for Schedule
+                           MeetingScheduleTab()
+                       }
+                   }
+               }
+           }
+       }
+   }
 }
 
 @Composable

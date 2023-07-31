@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.feature.meeting.views
+package woooo_app.woooo.feature.meeting.views
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -29,14 +29,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
-import woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.TextLabel
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
+import woooo_app.woooo.shared.components.CustomIcon
+import woooo_app.woooo.utils.Dimension
 
 @Composable
 fun NewMeetingTabView() {

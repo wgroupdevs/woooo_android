@@ -2,10 +2,12 @@ package woooo_app.woooo.feature.auth.screen
 
 import ShowLoader
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -23,15 +25,16 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
-import woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageVerifyOtp
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.TextLabel
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
+import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
 import woooo_app.woooo.destinations.LoginScreenDestination
 import woooo_app.woooo.feature.auth.viewmodel.VerifyOtpViewModel
+import woooo_app.woooo.shared.components.CustomIcon
 import woooo_app.woooo.utils.Dimension
 
 @Composable
@@ -39,7 +42,11 @@ fun VerifyOtpView(navigator: DestinationsNavigator) {
     val context = LocalContext.current
 
     val verifyOtpViewModel: VerifyOtpViewModel = hiltViewModel()
-    Column(Modifier.padding(Dimension.dimen_10)) {
+    Column(
+        modifier = Modifier.fillMaxSize()
+            .background(color = WooColor.backgroundColor)
+            .padding(Dimension.dimen_10),
+    ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,modifier = Modifier.fillMaxWidth()
         ) {

@@ -18,77 +18,80 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 import woooo_app.woooo.destinations.AudioVideoMainScreenDestination
 import woooo_app.woooo.destinations.DisplayMainScreenDestination
 import woooo_app.woooo.destinations.LanguageMainScreenDestination
 import woooo_app.woooo.destinations.SoundAndVibrationMainScreenDestination
+import woooo_app.woooo.shared.base.AppBackGround
+import woooo_app.woooo.utils.Dimension
 
 @Composable
 fun ApplicationMainView(navigator: DestinationsNavigator) {
 
-    Column {
-        TopBarForSetting(onBackPressed = { navigator.popBackStack() })
+   AppBackGround {
+       Column {
+           TopBarForSetting(onBackPressed = { navigator.popBackStack() })
 
-        Column(modifier = Modifier.padding(12.dp)) {
+           Column(modifier = Modifier.padding(12.dp)) {
 
-            Text(
-                modifier = Modifier.padding(Dimension.dimen_10),
-                text = Strings.appText,
-                style = MaterialTheme.typography.headlineMedium
-            )
+               Text(
+                   modifier = Modifier.padding(Dimension.dimen_10),
+                   text = Strings.appText,
+                   style = MaterialTheme.typography.headlineMedium
+               )
 
 
-            CustomListTile(
-                leadingIcon = {
-                    Icon(
-                        tint = WooColor.white,
+               CustomListTile(
+                   leadingIcon = {
+                       Icon(
+                           tint = WooColor.white,
 
-                        modifier = Modifier.size(
-                            36.dp
-                        ),
-                        imageVector = Icons.Outlined.VolumeUp,contentDescription = "",
-                    )
-                },
-                title = Strings.soundText,
-                onClick = {
-                    navigator.navigate(SoundAndVibrationMainScreenDestination)
-                },
-            )
-            CustomListTile(leadingIcon = {
-                Icon(
-                    tint = WooColor.white,modifier = Modifier.size(
-                        36.dp
-                    ),imageVector = Icons.Outlined.WbSunny,contentDescription = ""
-                )
-            },title = Strings.displyText,onClick = {
-                navigator.navigate(DisplayMainScreenDestination)
-            })
-            CustomListTile(leadingIcon = {
-                Icon(
-                    tint = WooColor.white,
+                           modifier = Modifier.size(
+                               36.dp
+                           ),
+                           imageVector = Icons.Outlined.VolumeUp,contentDescription = "",
+                       )
+                   },
+                   title = Strings.soundText,
+                   onClick = {
+                       navigator.navigate(SoundAndVibrationMainScreenDestination)
+                   },
+               )
+               CustomListTile(leadingIcon = {
+                   Icon(
+                       tint = WooColor.white,modifier = Modifier.size(
+                           36.dp
+                       ),imageVector = Icons.Outlined.WbSunny,contentDescription = ""
+                   )
+               },title = Strings.displyText,onClick = {
+                   navigator.navigate(DisplayMainScreenDestination)
+               })
+               CustomListTile(leadingIcon = {
+                   Icon(
+                       tint = WooColor.white,
 
-                    modifier = Modifier.size(
-                        36.dp
-                    ),imageVector = Icons.Outlined.Mic,contentDescription = ""
-                )
-            },title = Strings.audioVideoText,onClick = {
-                navigator.navigate(
-                    AudioVideoMainScreenDestination
-                )
-            })
-            CustomListTile(leadingIcon = {
-                Icon(
-                    tint = WooColor.white,
+                       modifier = Modifier.size(
+                           36.dp
+                       ),imageVector = Icons.Outlined.Mic,contentDescription = ""
+                   )
+               },title = Strings.audioVideoText,onClick = {
+                   navigator.navigate(
+                       AudioVideoMainScreenDestination
+                   )
+               })
+               CustomListTile(leadingIcon = {
+                   Icon(
+                       tint = WooColor.white,
 
-                    modifier = Modifier.size(
-                        36.dp
-                    ),imageVector = Icons.Outlined.Language,contentDescription = ""
-                )
-            },
-                title = Strings.lanText,
-                onClick = { navigator.navigate(LanguageMainScreenDestination) })
-        }
-    }
+                       modifier = Modifier.size(
+                           36.dp
+                       ),imageVector = Icons.Outlined.Language,contentDescription = ""
+                   )
+               },
+                   title = Strings.lanText,
+                   onClick = { navigator.navigate(LanguageMainScreenDestination) })
+           }
+       }
+   }
 }

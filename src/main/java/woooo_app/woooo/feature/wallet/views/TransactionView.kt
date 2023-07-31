@@ -27,8 +27,9 @@ import com.wgroup.woooo_app.woooo.shared.components.CustomDivider
 import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
+import woooo_app.woooo.shared.base.AppBackGround
+import woooo_app.woooo.utils.Dimension
 
 @Composable
 fun TransactionsView(navigator: DestinationsNavigator) {
@@ -43,62 +44,64 @@ fun TransactionsView(navigator: DestinationsNavigator) {
 
         return list
     }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(10.dp)
-    ) {
+   AppBackGround {
+       Column(
+           modifier = Modifier
+               .fillMaxSize()
+               .padding(10.dp)
+       ) {
 
-        TopBarForSetting(onBackPressed = { navigator.popBackStack() })
-        VerticalSpacer(Dimension.dimen_5)
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(55.dp)
-        ) {
-            Text(text = "dr12@gmail.com")
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(
-                    modifier = Modifier.size(24.dp),
-                    imageVector = Icons.Rounded.DateRange,
-                    contentDescription = "",
-                    tint = WooColor.white,
-                )
-                Text(text = "Last 30 Days",fontSize = 13.sp)
-            }
-        }
-        VerticalSpacer()
-        CustomDivider(false)
-        VerticalSpacer()
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = Strings.rcntTransText)
-            Icon(imageVector = Icons.Rounded.Refresh,contentDescription = "",tint = WooColor.white)
-        }
-        VerticalSpacer(Dimension.dimen_20)
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Date",fontSize = 14.sp)
-            Text(text = "Currency",fontSize = 14.sp)
-            Text(text = "Type",fontSize = 14.sp)
-            Text(text = "Amount",fontSize = 14.sp)
+           TopBarForSetting(onBackPressed = { navigator.popBackStack() })
+           VerticalSpacer(Dimension.dimen_5)
+           Row(
+               horizontalArrangement = Arrangement.SpaceBetween,
+               verticalAlignment = Alignment.CenterVertically,
+               modifier = Modifier
+                   .fillMaxWidth()
+                   .height(55.dp)
+           ) {
+               Text(text = "dr12@gmail.com")
+               Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                   Icon(
+                       modifier = Modifier.size(24.dp),
+                       imageVector = Icons.Rounded.DateRange,
+                       contentDescription = "",
+                       tint = WooColor.white,
+                   )
+                   Text(text = "Last 30 Days",fontSize = 13.sp)
+               }
+           }
+           VerticalSpacer()
+           CustomDivider(false)
+           VerticalSpacer()
+           Row(
+               horizontalArrangement = Arrangement.SpaceBetween,
+               verticalAlignment = Alignment.CenterVertically,
+               modifier = Modifier.fillMaxWidth()
+           ) {
+               Text(text = Strings.rcntTransText)
+               Icon(imageVector = Icons.Rounded.Refresh,contentDescription = "",tint = WooColor.white)
+           }
+           VerticalSpacer(Dimension.dimen_20)
+           Row(
+               horizontalArrangement = Arrangement.SpaceBetween,
+               verticalAlignment = Alignment.CenterVertically,
+               modifier = Modifier.fillMaxWidth()
+           ) {
+               Text(text = "Date",fontSize = 14.sp)
+               Text(text = "Currency",fontSize = 14.sp)
+               Text(text = "Type",fontSize = 14.sp)
+               Text(text = "Amount",fontSize = 14.sp)
 
-        }
-        LazyColumn(content = {
-            items(inputData()) { item ->
-                History(img = item.img,name = item.name,title = item.title,titlee = item.titlee)
-            }
-        })
-    }
+           }
+           LazyColumn(content = {
+               items(inputData()) { item ->
+                   History(img = item.img,name = item.name,title = item.title,titlee = item.titlee)
+               }
+           })
+       }
 
+   }
 }
 
 @Composable

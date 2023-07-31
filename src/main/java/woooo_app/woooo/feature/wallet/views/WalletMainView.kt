@@ -55,159 +55,159 @@ import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
 import woooo_app.woooo.destinations.SendCurrencyMainScreenDestination
 import woooo_app.woooo.destinations.TransactionMainScreenDestination
+import woooo_app.woooo.shared.base.AppBackGround
 import woooo_app.woooo.shared.components.CustomIcon
 import woooo_app.woooo.utils.Dimension
 
 @Composable
 fun WalletMainView(navigator: DestinationsNavigator) {
     val colors = mutableListOf<Color>(
-        WooColor.Yellow, Color.Cyan
+        WooColor.Yellow,Color.Cyan
     )
     val walletMainViewModel: WalletMainViewViewModel = hiltViewModel()
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.background(color = WooColor.backgroundColor)
+    AppBackGround {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.background(color = WooColor.backgroundColor)
 
-    ) {
-        VerticalSpacer(20.dp)
-        // pie Chart
-        Box {
-            PieChart(
-                data = mapOf(
-                    Pair("Sample-1", 100),
-                    Pair("Sample-2", 7),
-                ),
-                listOfColors = colors,
-                radiusOuter = 140.dp,
-                chartBarWidth = 30.dp
-            )
-            // pie chart center Currency
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.align(Alignment.Center)
-            ) {
-                Text(text = "Woo", fontSize = 25.sp)
-                Text(text = "4.0", fontSize = 15.sp)
+        ) {
+            VerticalSpacer(20.dp)
+            // pie Chart
+            Box {
+                PieChart(
+                    data = mapOf(
+                        Pair("Sample-1",100),
+                        Pair("Sample-2",7),
+                    ),listOfColors = colors,radiusOuter = 140.dp,chartBarWidth = 30.dp
+                )
+                // pie chart center Currency
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.align(Alignment.Center)
+                ) {
+                    Text(text = "Woo",fontSize = 25.sp)
+                    Text(text = "4.0",fontSize = 15.sp)
 
+                }
             }
-        }
-        VerticalSpacer(Dimension.dimen_20)
+            VerticalSpacer(Dimension.dimen_20)
 
-        // Row of Currencies
+            // Row of Currencies
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .height(50.dp)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .height(50.dp)
 
 //                .clip(
 //                    shape = RoundedCornerShape(5.dp)
 //                )
-                .border(
-                    BorderStroke(1.dp, WooColor.white), shape = RoundedCornerShape(10.dp)
-                )
-                .fillMaxWidth(0.5f)
-                .padding(10.dp)
-
-        ) {
-            Text(text = "5.796")
-            Row(verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.clickable { walletMainViewModel.setCurrencyPopUpValue(true) }) {
-                Divider(
-                    modifier = Modifier
-                        .height(40.dp)
-                        .width(2.dp)
-//                        .background(Color.White),
-                )
-                HorizontalSpacer(5.dp)
-                Text(text = walletMainViewModel.getCurrentValueOption.value)
-//                HorizontalSpacer(Dimension.dimen_5)
-                CustomIcon(icon = Icons.Outlined.ArrowDropDown)
-                DropdownMenuExample()
-            }
-
-        }
-
-        // Row of transaction and Wallet text
-
-        Row(
-            horizontalArrangement = Arrangement.SpaceAround,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp)
-        ) {
-
-            Row(
-                modifier = Modifier.clickable(onClick = {
-                    navigator.navigate(
-                        TransactionMainScreenDestination
-                    )
-                }),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(text = Strings.trnscetgText)
-                HorizontalSpacer(5.dp)
-                CustomIcon(icon = Icons.Rounded.ArrowForwardIos)
-
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(text = Strings.walletText)
-                HorizontalSpacer(5.dp)
-                CustomIcon(icon = Icons.Rounded.ArrowForwardIos)
-
-            }
-        }
-
-        // list of Wallets
-
-        LazyColumn {
-
-            val listItems = listOf("Item 1", "Item 2", "Item 3", "Item 4")
-            items(count = listItems.size, itemContent = {
-
-                ListItem(modifier = Modifier
-                    .clickable(onClick = {
-                        navigator.navigate(
-                            SendCurrencyMainScreenDestination
-                        )
-                    })
-                    .padding(5.dp)
-                    .padding(start = 10.dp, end = 10.dp)
                     .border(
-                        BorderStroke(1.dp, WooColor.white), shape = RoundedCornerShape(30.dp)
+                        BorderStroke(1.dp,WooColor.white),shape = RoundedCornerShape(10.dp)
                     )
+                    .fillMaxWidth(0.5f)
+                    .padding(10.dp)
+
+            ) {
+                Text(text = "5.796")
+                Row(verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable { walletMainViewModel.setCurrencyPopUpValue(true) }) {
+                    Divider(
+                        modifier = Modifier
+                            .height(40.dp)
+                            .width(2.dp)
+//                        .background(Color.White),
+                    )
+                    HorizontalSpacer(5.dp)
+                    Text(text = walletMainViewModel.getCurrentValueOption.value)
+//                HorizontalSpacer(Dimension.dimen_5)
+                    CustomIcon(icon = Icons.Outlined.ArrowDropDown)
+                    DropdownMenuExample()
+                }
+
+            }
+
+            // Row of transaction and Wallet text
+
+            Row(
+                horizontalArrangement = Arrangement.SpaceAround,
+                modifier = Modifier
                     .fillMaxWidth()
-//                        .wrapContentHeight()
-                    .background(WooColor.textFieldBackGround),
-                    colors = ListItemDefaults.colors(containerColor = WooColor.primary),
-                    headlineContent = {
-                        Text(
-                            fontSize = 10.sp,
-                            text = listItems[0],
-                            style = MaterialTheme.typography.headlineMedium
+                    .padding(20.dp)
+            ) {
+
+                Row(
+                    modifier = Modifier.clickable(onClick = {
+                        navigator.navigate(
+                            TransactionMainScreenDestination
                         )
-                    },
-                    leadingContent = {
-                        CustomIcon(icon = Icons.Rounded.ArrowForwardIos)
-                    },
-                    trailingContent = {
-                        Row(horizontalArrangement = Arrangement.Center) {
-                            Text(text = " 0.0  BTC")
-                            HorizontalSpacer(Dimension.dimen_5)
-                            CustomIcon(icon = Icons.Rounded.Forward10)
+                    }),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(text = Strings.trnscetgText)
+                    HorizontalSpacer(5.dp)
+                    CustomIcon(icon = Icons.Rounded.ArrowForwardIos)
+
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(text = Strings.walletText)
+                    HorizontalSpacer(5.dp)
+                    CustomIcon(icon = Icons.Rounded.ArrowForwardIos)
+
+                }
+            }
+
+            // list of Wallets
+
+            LazyColumn {
+
+                val listItems = listOf("Item 1","Item 2","Item 3","Item 4")
+                items(count = listItems.size,itemContent = {
+
+                    ListItem(modifier = Modifier
+                        .clickable(onClick = {
+                            navigator.navigate(
+                                SendCurrencyMainScreenDestination
+                            )
+                        })
+                        .padding(5.dp)
+                        .padding(start = 10.dp,end = 10.dp)
+                        .border(
+                            BorderStroke(1.dp,WooColor.white),shape = RoundedCornerShape(30.dp)
+                        )
+                        .fillMaxWidth()
+//                        .wrapContentHeight()
+                        .background(WooColor.textFieldBackGround),
+                        colors = ListItemDefaults.colors(containerColor = WooColor.primary),
+                        headlineContent = {
+                            Text(
+                                fontSize = 10.sp,
+                                text = listItems[0],
+                                style = MaterialTheme.typography.headlineMedium
+                            )
+                        },
+                        leadingContent = {
+                            CustomIcon(icon = Icons.Rounded.ArrowForwardIos)
+                        },
+                        trailingContent = {
+                            Row(horizontalArrangement = Arrangement.Center) {
+                                Text(text = " 0.0  BTC")
+                                HorizontalSpacer(Dimension.dimen_5)
+                                CustomIcon(icon = Icons.Rounded.Forward10)
+                            }
                         }
-                    }
 
-                )
+                    )
 
-            })
+                })
+
+            }
 
         }
-
     }
 }
 
@@ -225,16 +225,16 @@ fun DropdownMenuExample() {
         DropdownMenuItem(onClick = {
             walletMainViewModel.setCurrentValueOption("USD")
             walletMainViewModel.setCurrencyPopUpValue(false)
-        }, text = { Text("USD") })
+        },text = { Text("USD") })
         DropdownMenuItem(onClick = {
             walletMainViewModel.setCurrentValueOption("YEN")
             walletMainViewModel.setCurrencyPopUpValue(false)
-        }, text = { Text("YEN") })
+        },text = { Text("YEN") })
 
         DropdownMenuItem(onClick = {
             walletMainViewModel.setCurrentValueOption("EURO")
             walletMainViewModel.setCurrencyPopUpValue(false)
-        }, text = { Text("EURO") })
+        },text = { Text("EURO") })
 
     }
 }
@@ -242,7 +242,7 @@ fun DropdownMenuExample() {
 //}
 @Composable
 fun PieChart(
-    data: Map<String, Int>,
+    data: Map<String,Int>,
     radiusOuter: Dp = 80.dp,
     chartBarWidth: Dp = 25.dp,
     animDuration: Int = 2000,
@@ -252,8 +252,8 @@ fun PieChart(
     val totalSum = data.values.sum()
     val floatValue = mutableListOf<Float>()
 
-    data.values.forEachIndexed { index, values ->
-        floatValue.add(index, 360 * values.toFloat() / totalSum.toFloat())
+    data.values.forEachIndexed { index,values ->
+        floatValue.add(index,360 * values.toFloat() / totalSum.toFloat())
     }
 
     var animationPlayed by remember { mutableStateOf(false) }
@@ -262,16 +262,16 @@ fun PieChart(
 
     // it is the diameter value of the Pie
     val animateSize by animateFloatAsState(
-        targetValue = if (animationPlayed) radiusOuter.value * 2f else 0f, animationSpec = tween(
-            durationMillis = animDuration, delayMillis = 0, easing = LinearOutSlowInEasing
+        targetValue = if (animationPlayed) radiusOuter.value * 2f else 0f,animationSpec = tween(
+            durationMillis = animDuration,delayMillis = 0,easing = LinearOutSlowInEasing
         )
     )
 
     // if you want to stabilize the Pie Chart you can use value -90f
     // 90f is used to complete 1/4 of the rotation
     val animateRotation by animateFloatAsState(
-        targetValue = if (animationPlayed) 90f * 11f else 0f, animationSpec = tween(
-            durationMillis = animDuration, delayMillis = 0, easing = LinearOutSlowInEasing
+        targetValue = if (animationPlayed) 90f * 11f else 0f,animationSpec = tween(
+            durationMillis = animDuration,delayMillis = 0,easing = LinearOutSlowInEasing
         )
     )
 
@@ -281,12 +281,12 @@ fun PieChart(
     }
 
     Column(
-        modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.fillMaxWidth(),horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         // Pie Chart using Canvas Arc
         Box(
-            modifier = Modifier.size(animateSize.dp), contentAlignment = Alignment.Center
+            modifier = Modifier.size(animateSize.dp),contentAlignment = Alignment.Center
         ) {
             Canvas(
                 modifier = Modifier
@@ -294,13 +294,13 @@ fun PieChart(
                     .rotate(animateRotation)
             ) {
                 // draw each Arc for each data entry in Pie Chart
-                floatValue.forEachIndexed { index, value ->
+                floatValue.forEachIndexed { index,value ->
                     drawArc(
                         color = listOfColors[index],
                         lastValue,
                         value,
                         useCenter = false,
-                        style = Stroke(chartBarWidth.toPx(), cap = StrokeCap.Butt)
+                        style = Stroke(chartBarWidth.toPx(),cap = StrokeCap.Butt)
                     )
                     lastValue += value
                 }

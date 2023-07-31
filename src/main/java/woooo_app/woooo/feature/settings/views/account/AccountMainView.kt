@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.feature.settings.views.account
+package woooo_app.woooo.feature.settings.views.account
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -19,73 +19,76 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import woooo_app.woooo.utils.Dimension
 import com.wgroup.woooo_app.woooo.utils.Strings
 import woooo_app.woooo.destinations.PrivacyMainScreenDestination
 import woooo_app.woooo.destinations.SecurityMainScreenDestination
+import woooo_app.woooo.shared.base.AppBackGround
+import woooo_app.woooo.utils.Dimension
 
 @Composable
 fun AccountMainView(navigator: DestinationsNavigator) {
-    Column {
-        TopBarForSetting(onBackPressed = {navigator.popBackStack()})
-        Column(modifier = Modifier.padding(12.dp)) {
-            Text(
-                modifier = Modifier.padding(Dimension.dimen_10),
-                text = Strings.accountText,
-                style = MaterialTheme.typography.headlineMedium
-            )
-            CustomListTile(
-                leadingIcon = {
+    AppBackGround {
+        Column {
+            TopBarForSetting(onBackPressed = {navigator.popBackStack()})
+            Column(modifier = Modifier.padding(12.dp)) {
+                Text(
+                    modifier = Modifier.padding(Dimension.dimen_10),
+                    text = Strings.accountText,
+                    style = MaterialTheme.typography.headlineMedium
+                )
+                CustomListTile(
+                    leadingIcon = {
+                        Icon(
+                            tint = WooColor.white,
+
+                            modifier = Modifier.size(
+                                36.dp
+                            ),
+                            imageVector = Icons.Outlined.Lock,contentDescription = "",
+                        )
+                    },
+                    title = Strings.privacyText,onClick = {navigator.navigate(
+                        PrivacyMainScreenDestination
+                    )},
+                )
+                CustomListTile(leadingIcon = {
+                    Icon(
+                        tint = WooColor.white,modifier = Modifier.size(
+                            36.dp
+                        ),imageVector = Icons.Outlined.Security,contentDescription = ""
+                    )
+                },title = Strings.securityText,onClick = {navigator.navigate(
+                    SecurityMainScreenDestination
+                )})
+                CustomListTile(leadingIcon = {
                     Icon(
                         tint = WooColor.white,
 
                         modifier = Modifier.size(
                             36.dp
-                        ),
-                        imageVector = Icons.Outlined.Lock,contentDescription = "",
+                        ),imageVector = Icons.Default.Compare,contentDescription = ""
                     )
-                },
-                title = Strings.privacyText,onClick = {navigator.navigate(
-                    PrivacyMainScreenDestination
-                )},
-            )
-            CustomListTile(leadingIcon = {
-                Icon(
-                    tint = WooColor.white,modifier = Modifier.size(
-                        36.dp
-                    ),imageVector = Icons.Outlined.Security,contentDescription = ""
-                )
-            },title = Strings.securityText,onClick = {navigator.navigate(
-                SecurityMainScreenDestination
-            )})
-            CustomListTile(leadingIcon = {
-                Icon(
-                    tint = WooColor.white,
+                },title = Strings.changeNumberText,onClick = {})
+                CustomListTile(leadingIcon = {
+                    Icon(
+                        tint = WooColor.white,
 
-                    modifier = Modifier.size(
-                        36.dp
-                    ),imageVector = Icons.Default.Compare,contentDescription = ""
-                )
-            },title = Strings.changeNumberText,onClick = {})
-            CustomListTile(leadingIcon = {
-                Icon(
-                    tint = WooColor.white,
+                        modifier = Modifier.size(
+                            36.dp
+                        ),imageVector = Icons.Outlined.Delete,contentDescription = ""
+                    )
+                },title = Strings.deleteAccountText,onClick = {})
+                CustomListTile(leadingIcon = {
+                    Icon(
+                        tint = WooColor.white,
 
-                    modifier = Modifier.size(
-                        36.dp
-                    ),imageVector = Icons.Outlined.Delete,contentDescription = ""
-                )
-            },title = Strings.deleteAccountText,onClick = {})
-            CustomListTile(leadingIcon = {
-                Icon(
-                    tint = WooColor.white,
+                        modifier = Modifier.size(
+                            36.dp
+                        ),imageVector = Icons.Outlined.Backup,contentDescription = ""
+                    )
+                },title = Strings.backupText,onClick = {})
+            }
 
-                    modifier = Modifier.size(
-                        36.dp
-                    ),imageVector = Icons.Outlined.Backup,contentDescription = ""
-                )
-            },title = Strings.backupText,onClick = {})
         }
-
     }
 }

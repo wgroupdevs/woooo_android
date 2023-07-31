@@ -10,25 +10,26 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.feature.home.screen.DashboardView
-import com.wgroup.woooo_app.woooo.feature.home.screen.HomePage
+import woooo_app.woooo.feature.home.screen.HomePage
 import com.wgroup.woooo_app.woooo.feature.mining.views.MiningMainView
 import com.wgroup.woooo_app.woooo.feature.settings.views.ApplicationMainView
-import com.wgroup.woooo_app.woooo.feature.settings.views.SettingMainView
-import com.wgroup.woooo_app.woooo.feature.settings.views.account.AccountMainView
-import com.wgroup.woooo_app.woooo.feature.settings.views.account.PrivacyMainView
-import com.wgroup.woooo_app.woooo.feature.settings.views.account.SecurityMainView
-import com.wgroup.woooo_app.woooo.feature.settings.views.application.AudioVideoView
-import com.wgroup.woooo_app.woooo.feature.settings.views.application.DisplayView
-import com.wgroup.woooo_app.woooo.feature.settings.views.application.LanguageView
-import com.wgroup.woooo_app.woooo.feature.settings.views.application.SoundAndVibrationView
-import com.wgroup.woooo_app.woooo.feature.wallet.views.SendCurrencyView
 import com.wgroup.woooo_app.woooo.feature.wallet.views.TransactionsView
 import eu.siacs.conversations.ui.WelcomeActivity
 import woooo_app.woooo.feature.auth.screen.ConfirmAccountScreen
 import woooo_app.woooo.feature.auth.screen.ForgotPasswordView
 import woooo_app.woooo.feature.auth.screen.SignUpView
 import woooo_app.woooo.feature.auth.screen.VerifyOtpView
+import woooo_app.woooo.feature.meeting.views.MeetingMainView
 import woooo_app.woooo.feature.profile.views.UpdateProfileView
+import woooo_app.woooo.feature.settings.views.SettingMainView
+import woooo_app.woooo.feature.settings.views.account.AccountMainView
+import woooo_app.woooo.feature.settings.views.account.PrivacyMainView
+import woooo_app.woooo.feature.settings.views.account.SecurityMainView
+import woooo_app.woooo.feature.settings.views.application.AudioVideoView
+import woooo_app.woooo.feature.settings.views.application.DisplayView
+import woooo_app.woooo.feature.settings.views.application.LanguageView
+import woooo_app.woooo.feature.settings.views.application.SoundAndVibrationView
+import woooo_app.woooo.feature.wallet.views.SendCurrencyView
 import woooo_app.woooo.feature.wallet.views.WalletMainView
 
 @Destination
@@ -158,6 +159,12 @@ fun VerifyOTPScreen(navigator: DestinationsNavigator) {
 @Composable
 fun ConfirmAccountMainScreen(navigator: DestinationsNavigator) {
     ConfirmAccountScreen(navigator)
+}
+
+@Destination
+@Composable
+fun MeetingMainViewScreen(navigator: DestinationsNavigator) {
+    MeetingMainView(navigator)
 }
 
 fun goToWelcomeActivity(context: Context) {
