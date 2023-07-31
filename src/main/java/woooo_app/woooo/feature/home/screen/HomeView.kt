@@ -1,6 +1,7 @@
 package com.wgroup.woooo_app.woooo.feature.home.screen
 
 import TopAppBarComposable
+import android.util.Log
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
@@ -49,7 +50,6 @@ import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import eu.siacs.conversations.R
-import ir.kaaveh.sdpcompose.sdp
 import kotlinx.coroutines.launch
 import woooo_app.woooo.destinations.SignUpScreenDestination
 import woooo_app.woooo.feature.home.ui.AppDrawer
@@ -63,7 +63,6 @@ import woooo_app.woooo.utils.FIRST_NAME
 @Composable
 fun HomePage(navigator: DestinationsNavigator, homeViewModel: HomeViewModel = hiltViewModel()) {
     BoxWithConstraints(
-        Modifier.padding(top = Dimension.dimen_10)
 
     ) {
         Dimension.boxWithConstraintsScope = this
@@ -164,35 +163,68 @@ fun HomePage(navigator: DestinationsNavigator, homeViewModel: HomeViewModel = hi
 
 }
 
-@Composable
+//@Composable
+//fun initCircleTextOffset(width: Dp) {
+//
+//    Dimension.circleWheelSectorRadius = (Dimension.circleWheelHeight / 7.2F)
+//    Dimension.circleWheelTextHeight = (Dimension.circleWheelHeight * 0.1875F)
+//
+//    Dimension.chatTextOffset_X = 60.sdp
+//    Dimension.chatTextOffset_Y = 55.sdp
+//    //Call offset
+//    Dimension.callTextOffset_X = 56.sdp
+//    Dimension.callTextOffset_Y = 60.sdp
+//    //Wallet offset
+//    Dimension.walletTextOffset_X = 60.sdp
+//    Dimension.walletTextOffset_Y = 57.sdp
+//    //Meeting offset
+//    Dimension.meetingTextOffset_X = 63.sdp
+//    Dimension.meetingTextOffset_Y = 56.sdp
+//
+//    //
+//    // print("Circle Wheel Height: ${Dimension.circleWheelHeight}");
+//    // print("Circle Middle Wheel Height: ${Dimension.circleMiddleWheelHeight}");
+//    // print("Circle Inner Wheel Height: ${Dimension.circleInnerWheelHeight}");
+//    // print("Center Space Radius: ${Dimension.circleWheelCenterSpaceRadius}");
+//    // print("Sector Radius: ${Dimension.circleWheelSectorRadius}");
+//    // print("Text Height: ${Dimension.circleWheelTextHeight}");
+//}
+
+
 fun initCircleTextOffset(width: Dp) {
 
     Dimension.circleWheelSectorRadius = (Dimension.circleWheelHeight / 7.2F)
     Dimension.circleWheelTextHeight = (Dimension.circleWheelHeight * 0.1875F)
 
-    Dimension.chatTextOffset_X = 60.sdp
-    Dimension.chatTextOffset_Y = 55.sdp
-    //Call offset
-    Dimension.callTextOffset_X = 56.sdp
-    Dimension.callTextOffset_Y = 60.sdp
-    //Wallet offset
-    Dimension.walletTextOffset_X = 60.sdp
-    Dimension.walletTextOffset_Y = 57.sdp
-    //Meeting offset
-    Dimension.meetingTextOffset_X = 63.sdp
-    Dimension.meetingTextOffset_Y = 56.sdp
-
-    //
-    // print("Circle Wheel Height: ${Dimension.circleWheelHeight}");
-    // print("Circle Middle Wheel Height: ${Dimension.circleMiddleWheelHeight}");
-    // print("Circle Inner Wheel Height: ${Dimension.circleInnerWheelHeight}");
-    // print("Center Space Radius: ${Dimension.circleWheelCenterSpaceRadius}");
-    // print("Sector Radius: ${Dimension.circleWheelSectorRadius}");
-    // print("Text Height: ${Dimension.circleWheelTextHeight}");
-}
-
-enum class ExpandedType {
-    HALF, FULL, COLLAPSED
+    if (width < 400.dp) {
+        Log.d("DEVICE WIDTH SMALL", width.toString())
+        //Chat offset
+        Dimension.chatTextOffset_X = width * 0.2F
+        Dimension.chatTextOffset_Y = 58.dp
+        //Call offset
+        Dimension.callTextOffset_X = width * 0.185F
+        Dimension.callTextOffset_Y = 60.dp
+        //Wallet offset
+        Dimension.walletTextOffset_X = width * 0.2F
+        Dimension.walletTextOffset_Y = 60.dp
+        //Meeting offset
+        Dimension.meetingTextOffset_X = width * 0.20F
+        Dimension.meetingTextOffset_Y = 59.dp
+    } else {
+        //Chat offset
+        Dimension.chatTextOffset_X = width * 0.2F
+        Dimension.chatTextOffset_Y = 70.dp
+        //Call offset
+        Dimension.callTextOffset_X = width * 0.2F
+        Dimension.callTextOffset_Y = 74.dp
+        //Wallet offset
+        Dimension.walletTextOffset_X = width * 0.2F
+        Dimension.walletTextOffset_Y = 73.dp
+        //Meeting offset
+        Dimension.meetingTextOffset_X = width * 0.2F
+        Dimension.meetingTextOffset_Y = 73.dp
+        Log.d("DEVICE WIDTH MEDIUM", width.toString())
+    }
 }
 
 @Composable

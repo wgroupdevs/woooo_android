@@ -74,6 +74,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(color = WooColor.backgroundColor)
             .padding(Dimension.dimen_10)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally

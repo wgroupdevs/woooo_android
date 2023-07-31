@@ -67,7 +67,8 @@ fun WalletMainView(navigator: DestinationsNavigator) {
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-//        modifier = Modifier.verticalScroll(rememberScrollState())
+        modifier = Modifier.background(color = WooColor.backgroundColor)
+
     ) {
         VerticalSpacer(20.dp)
         // pie Chart

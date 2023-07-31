@@ -6,9 +6,8 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -16,7 +15,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.spec.Route
-import com.wgroup.woooo_app.woooo.theme.Woooo_androidTheme
+import com.wgroup.woooo_app.woooo.theme.WooColor
 import dagger.hilt.android.AndroidEntryPoint
 import eu.siacs.conversations.http.model.UserBasicInfo
 import kotlinx.coroutines.flow.first
@@ -27,6 +26,7 @@ import woooo_app.woooo.destinations.ForgotPasswordScreenDestination
 import woooo_app.woooo.destinations.HomeScreenDestination
 import woooo_app.woooo.destinations.SignUpScreenDestination
 import woooo_app.woooo.goToWelcomeActivity
+import woooo_app.woooo.theme.Woooo_androidTheme
 import woooo_app.woooo.utils.CONST_KEY_INTENT
 import woooo_app.woooo.utils.FIRST_NAME
 import woooo_app.woooo.utils.FORGOT_PASSWORD_INTENT
@@ -76,10 +76,10 @@ class MainActivity : ComponentActivity() {
 
 
         Woooo_androidTheme {
-            Box(
+            Surface(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = MaterialTheme.colorScheme.background),
+                    .background(color = WooColor.backgroundColor),
             ) {
 
 
@@ -88,7 +88,6 @@ class MainActivity : ComponentActivity() {
                 if (navIntent.isNullOrBlank()) {
                     if (getDataPreferences().isEmpty()) {
                         goToWelcomeActivity(context)
-                        return@Box
                     } else {
 
                         startRoute = HomeScreenDestination
@@ -139,7 +138,6 @@ class MainActivity : ComponentActivity() {
                             if (getDataPreferences().isEmpty()) {
                                 Log.d(TAG, "Auth Token not found")
                                 goToWelcomeActivity(context)
-                                return@Box
                             } else {
                                 Log.d(TAG, "AuthToken : Found")
                                 navigateTo(navController = navController, startRoute = startRoute)

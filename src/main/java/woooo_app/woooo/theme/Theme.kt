@@ -1,7 +1,6 @@
-package com.wgroup.woooo_app.woooo.theme
+package woooo_app.woooo.theme
 
 import android.app.Activity
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -10,20 +9,19 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import woooo_app.woooo.theme.Typography
+import com.wgroup.woooo_app.woooo.theme.Shapes
+import com.wgroup.woooo_app.woooo.theme.WooColor
 
 private val DarkColorScheme = darkColorScheme(
     primary = WooColor.primary,
-    secondary = WooColor.PurpleGrey80,
+    secondary = WooColor.primary,
     tertiary = WooColor.Pink80,
     background = WooColor.backgroundColor,
-    
-
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = WooColor.primary,
-    secondary = WooColor.PurpleGrey40,
+    secondary = WooColor.primary,
     tertiary = WooColor.Pink40,
     background = WooColor.backgroundColor
 
@@ -40,7 +38,7 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun Woooo_androidTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = false,
     // Dynamic color is available on Android 12+
 //    dynamicColor: Boolean = true,
     content: @Composable () -> Unit

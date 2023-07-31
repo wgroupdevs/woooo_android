@@ -3,6 +3,7 @@ package woooo_app.woooo.feature.auth.screen
 import ShowLoader
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +33,7 @@ import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageForgetPasswordVi
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
+import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
 import woooo_app.MainActivity
@@ -51,6 +53,7 @@ fun ForgotPasswordView(navigator: DestinationsNavigator) {
 
         modifier = Modifier
             .fillMaxSize()
+            .background(color = WooColor.backgroundColor)
             .verticalScroll(rememberScrollState())
             .padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally

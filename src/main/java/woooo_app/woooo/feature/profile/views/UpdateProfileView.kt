@@ -86,10 +86,11 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             onResult = {
                 updateProfileViewModel.profileImage.value = it.toString()
 //                updateProfileViewModel.setUserProfile()
-                updateProfileViewModel.uploadProfile(context,it!!)
+                updateProfileViewModel.uploadProfile(context, it!!)
             })
     Column(
         Modifier
+            .background(color = WooColor.backgroundColor)
             .padding(10.dp)
             .verticalScroll(rememberScrollState())
     ) {
@@ -127,8 +128,8 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
                     modifier = Modifier
                         .height(150.dp)
                         .width(150.dp)
-                        .background(color = Color.Transparent,shape = CircleShape)
-                        .border(2.dp,Color.White,shape = CircleShape),
+                        .background(color = Color.Transparent, shape = CircleShape)
+                        .border(2.dp, Color.White, shape = CircleShape),
                     contentDescription = "This is a circular image",
                     contentScale = ContentScale.FillBounds
                 )
@@ -152,7 +153,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
         Box(
             modifier = Modifier
                 .height(150.dp)
-                .background(WooColor.textFieldBackGround,shape = RoundedCornerShape(10.dp))
+                .background(WooColor.textFieldBackGround, shape = RoundedCornerShape(10.dp))
         ) {
             OutlinedTextField(
 
@@ -208,7 +209,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             hint = Strings.firstNameText,
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Person,contentDescription = "",tint = Color.White
+                    imageVector = Icons.Rounded.Person, contentDescription = "", tint = Color.White
                 )
             })
         // last name
@@ -228,7 +229,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             hint = Strings.lastNameText,
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Person,contentDescription = "",tint = Color.White
+                    imageVector = Icons.Rounded.Person, contentDescription = "", tint = Color.White
                 )
             })
         //email
@@ -246,11 +247,11 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
 //                    ErrorMessageUpdateProfileView()
 //                }
 //            },
-            hint = Strings.emailText,leadingIcon = {
+            hint = Strings.emailText, leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Email,contentDescription = "",tint = Color.White
+                    imageVector = Icons.Rounded.Email, contentDescription = "", tint = Color.White
                 )
-            },readOnly = true
+            }, readOnly = true
         )
         //phone number
         TextLabel(label = Strings.phoneNmbrText)
@@ -322,7 +323,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             hint = "2010-05-15",
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Cake,contentDescription = "",tint = Color.White
+                    imageVector = Icons.Rounded.Cake, contentDescription = "", tint = Color.White
                 )
             },
 
@@ -367,7 +368,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             hint = Strings.pstlCodeText,
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Pin,contentDescription = "",tint = Color.White
+                    imageVector = Icons.Rounded.Pin, contentDescription = "", tint = Color.White
                 )
             })
         VerticalSpacer()
@@ -379,7 +380,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
                 .wrapContentWidth()
         ) {
             CustomButton(
-                border = BorderStroke(1.dp,Color.White),
+                border = BorderStroke(1.dp, Color.White),
                 onClick = {
                     updateProfileViewModel.updateProfile(context)
 //                    updateProfileViewModel.validateSignUpFields()
@@ -408,7 +409,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
                 updateProfileViewModel.updateProfileStates.value.apply {
                     isSucceed.value = false
                 }
-                navigator.popBackStack(HomeScreenDestination,false)
+                navigator.popBackStack(HomeScreenDestination, false)
             })
     }
     // enable date of birth picker
@@ -416,7 +417,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
         onDateChange = {
 //            pass value to controller
             updateProfileViewModel.setDOBControllerValue(it.toString())
-            Log.d("date of birth ...",updateProfileViewModel.getDOBController.value)
+            Log.d("date of birth ...", updateProfileViewModel.getDOBController.value)
             // convert it to local to show in text field
             val date = LocalDate.parse(it.toString())
             dateTimerPickerViewModel.setDateTextValueForUpdateProfile(date)
