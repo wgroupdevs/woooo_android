@@ -1,6 +1,7 @@
 package woooo_app.woooo.feature.auth.screen
 
 import ShowLoader
+import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -29,7 +30,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
-import woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageConfirmAccountView
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.TextLabel
@@ -39,6 +39,8 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
 import woooo_app.woooo.destinations.LoginScreenDestination
 import woooo_app.woooo.feature.auth.viewmodel.ConfirmAccountViewModel
+import woooo_app.woooo.goToWelcomeActivity
+import woooo_app.woooo.shared.components.CustomIcon
 import woooo_app.woooo.utils.Dimension
 
 @Composable
@@ -57,18 +59,18 @@ fun ConfirmAccountScreen(navigator: DestinationsNavigator) {
                 .fillMaxWidth()
         ) {
             CustomIcon(
-                icon = Icons.Rounded.ArrowBack,modifier = Modifier.clickable(onClick = {
+                icon = Icons.Rounded.ArrowBack, modifier = Modifier.clickable(onClick = {
                     navigator.popBackStack(
-                        LoginScreenDestination,inclusive = false
+                        LoginScreenDestination, inclusive = false
                     )
                 })
             )
             HorizontalSpacer()
-            Text(text = Strings.confirmAccount,style = MaterialTheme.typography.bodyLarge)
+            Text(text = Strings.confirmAccount, style = MaterialTheme.typography.bodyLarge)
         }
         VerticalSpacer(Dimension.dimen_20)
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,modifier = Modifier.fillMaxSize()
+            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()
         ) {
             Image(
                 painter = painterResource(id = R.drawable.woooo_logo),
@@ -99,13 +101,13 @@ fun ConfirmAccountScreen(navigator: DestinationsNavigator) {
                 onClick = { confirmAccountViewModel.resentCodeForConfirmAccount(context) },
                 content = {
                     Text(
-                        text = Strings.resentOTP,style = MaterialTheme.typography.bodyMedium
+                        text = Strings.resentOTP, style = MaterialTheme.typography.bodyMedium
                     )
                 })
             // verify Button
             VerticalSpacer(Dimension.dimen_40)
             CustomButton(
-                border = BorderStroke(1.dp,Color.White),
+                border = BorderStroke(1.dp, Color.White),
                 onClick = {
                     if (confirmAccountViewModel.validateConfirmAccountFields()) {
                         confirmAccountViewModel.confirmAccount(context)
@@ -130,6 +132,7 @@ fun ConfirmAccountScreen(navigator: DestinationsNavigator) {
                 onClick =
                 {
                     clickOnSuccessDialogVerifyAccount(
+                        context,
                         confirmAccountViewModel = confirmAccountViewModel,
                         navigator = navigator
                     )
@@ -154,15 +157,18 @@ fun ConfirmAccountScreen(navigator: DestinationsNavigator) {
 }
 
 private fun clickOnSuccessDialogVerifyAccount(
-    confirmAccountViewModel: ConfirmAccountViewModel,navigator: DestinationsNavigator
+    context: Context,
+    confirmAccountViewModel: ConfirmAccountViewModel, navigator: DestinationsNavigator
 ) {
     confirmAccountViewModel.confirmAccountState.value.apply {
         isSucceed.value = false
     }
-    navigator.popBackStack(
-        LoginScreenDestination,inclusive = false
-    )
+//    navigator.popBackStack(
+//        LoginScreenDestination,inclusive = false
+//    )
+    goToWelcomeActivity(context)
     confirmAccountViewModel.clearSignUpFields()
+
 
 }
 
