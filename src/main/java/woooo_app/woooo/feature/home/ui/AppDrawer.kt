@@ -40,7 +40,6 @@ import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import eu.siacs.conversations.R
 import kotlinx.coroutines.runBlocking
-import woooo_app.woooo.data.datasource.local.UserPreferences
 import woooo_app.woooo.destinations.SettingsScreenDestination
 import woooo_app.woooo.destinations.UpdateProfileMainScreenDestination
 import woooo_app.woooo.goToWelcomeActivity
@@ -57,7 +56,6 @@ fun AppDrawer(
 ) {
 
     val context = LocalContext.current
-    lateinit var preferences: UserPreferences
 
 
 
@@ -128,7 +126,7 @@ fun AppDrawer(
                 )
             },onClick = {
                 runBlocking {
-                    preferences.clear()
+//                    preferences.clear()
                     goToWelcomeActivity(context)
                 }
             })
