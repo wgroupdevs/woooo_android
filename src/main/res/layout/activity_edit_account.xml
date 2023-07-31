@@ -282,7 +282,7 @@
                                 android:background="@drawable/button"
                                 android:enabled="true"
                                 android:padding="10dp"
-                                android:text="Login with Phone Number"
+                                android:text="Login with Email"
                                 android:textAllCaps="false"
                                 android:textColor="@color/white"
                                 android:textSize="17sp" />

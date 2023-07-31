@@ -751,7 +751,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
         });
 
-        // when country piker change county this listner works
+        // when country piker change county this listener works
 
         binding.countryCodePicker.setOnCountryChangeListener(() -> {
             // getting the country code

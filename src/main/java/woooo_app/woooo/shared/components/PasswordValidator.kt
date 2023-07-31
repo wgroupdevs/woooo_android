@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.shared.components
+package woooo_app.woooo.shared.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -23,8 +23,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.wgroup.woooo_app.woooo.shared.components.view_models.PasswordValidatorViewModel
+import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
+import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.theme.WooColor
+import woooo_app.woooo.shared.components.view_models.PasswordValidatorViewModel
 import woooo_app.woooo.utils.Dimension
 
 @Composable

@@ -49,11 +49,9 @@ import com.wgroup.woooo_app.woooo.shared.components.CountryPicker
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageSignUpView
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
-import com.wgroup.woooo_app.woooo.shared.components.PasswordValidator
 import com.wgroup.woooo_app.woooo.shared.components.TextLabel
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
-import com.wgroup.woooo_app.woooo.shared.components.view_models.PasswordValidatorViewModel
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
@@ -62,7 +60,9 @@ import woooo_app.woooo.destinations.ConfirmAccountMainScreenDestination
 import woooo_app.woooo.feature.auth.EmailForAuthModule
 import woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import woooo_app.woooo.shared.components.CustomIcon
+import woooo_app.woooo.shared.components.PasswordValidator
 import woooo_app.woooo.shared.components.view_models.CountryPickerViewModel
+import woooo_app.woooo.shared.components.view_models.PasswordValidatorViewModel
 import woooo_app.woooo.utils.Dimension
 
 @Composable
@@ -80,20 +80,16 @@ fun SignUpView(navigator: DestinationsNavigator) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
+            verticalAlignment = Alignment.CenterVertically,modifier = Modifier.fillMaxWidth()
         ) {
             IconButton(onClick = { context.finish() }) {
                 CustomIcon(
-                    icon = Icons.Rounded.ArrowBack, modifier = Modifier
-                        .size(26.dp)
+                    icon = Icons.Rounded.ArrowBack,modifier = Modifier.size(26.dp)
                 )
             }
 
             HorizontalSpacer(Dimension.dimen_5)
-            Text(text = Strings.reg, style = MaterialTheme.typography.bodyLarge)
-
+            Text(text = Strings.reg,style = MaterialTheme.typography.bodyLarge)
 
         }
         VerticalSpacer(Dimension.dimen_20)
@@ -131,7 +127,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 },
                 hint = Strings.firstNameText,
                 leadingIcon = {
-                    CustomIcon(icon = Icons.Rounded.Person, modifier = Modifier)
+                    CustomIcon(icon = Icons.Rounded.Person,modifier = Modifier)
                 })
             VerticalSpacer(Dimension.dimen_5)
             // last name
@@ -152,7 +148,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 },
                 hint = Strings.lastNameText,
                 leadingIcon = {
-                    CustomIcon(icon = Icons.Rounded.Person, modifier = Modifier)
+                    CustomIcon(icon = Icons.Rounded.Person,modifier = Modifier)
                 })
             VerticalSpacer(Dimension.dimen_5)
             //phone number
@@ -210,7 +206,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 },
                 hint = Strings.emailText,
                 leadingIcon = {
-                    CustomIcon(icon = Icons.Rounded.Email, modifier = Modifier)
+                    CustomIcon(icon = Icons.Rounded.Email,modifier = Modifier)
                 })
             VerticalSpacer(Dimension.dimen_5)
 
@@ -236,7 +232,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 }
             },
                 onValueChange = {
-                    customPasswordValidator.passwordValidator(it, true)
+                    customPasswordValidator.passwordValidator(it,true)
                     signUpViewModel.setPasswordControllerValue(it)
                     signUpViewModel.setPasswordErrorValue(false)
 
@@ -275,10 +271,10 @@ fun SignUpView(navigator: DestinationsNavigator) {
             //Referral Code
             TextLabel(label = Strings.referralCodeText)
             VerticalSpacer()
-            WooTextField(hint = Strings.referralCodeText, leadingIcon = {
+            WooTextField(hint = Strings.referralCodeText,leadingIcon = {
 
                 CustomIcon(icon = Icons.Rounded.JoinInner)
-            }, onValueChange = {
+            },onValueChange = {
                 if (it.length <= 10) {
                     signUpViewModel.setReferralCodeControllerValue(it)
                 }
@@ -288,10 +284,13 @@ fun SignUpView(navigator: DestinationsNavigator) {
         // sign up button
         VerticalSpacer(Dimension.dimen_40)
         CustomButton(
-            border = BorderStroke(1.dp, Color.White),
+            border = BorderStroke(1.dp,Color.White),
             onClick = {
 
-                if (signUpViewModel.validateSignUpFields()) {
+                if (signUpViewModel.validateSignUpFields() && customPasswordValidator.passwordValidator(
+                        signUpViewModel.getPasswordController.value,true
+                    )
+                ) {
                     signUpViewModel.signUp()
                 }
             },
@@ -308,7 +307,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
 
         VerticalSpacer(Dimension.dimen_40)
         CustomButton(
-            border = BorderStroke(1.dp, Color.White),
+            border = BorderStroke(1.dp,Color.White),
             onClick = {
                 context.finish()
             },
@@ -328,17 +327,16 @@ fun SignUpView(navigator: DestinationsNavigator) {
             signUpViewModel.setShowCountryPickerValue(
                 false
             )
-        }, viewModel = signUpViewModel)
+        },viewModel = signUpViewModel)
         // enable Loader when Api Hit
         if (signUpViewModel.signUpResponseState.value.isLoading.value) ShowLoader()
         // enabled success dialogue when api hit successfully
         if (signUpViewModel.signUpResponseState.value.isSucceed.value) {
-            SuccessDialogAuth(
-                title = Strings.regPass,
+            SuccessDialogAuth(title = Strings.regPass,
                 message = signUpViewModel.signUpResponseState.value.message,
                 onClick = {
                     clickOnSuccessDialog(
-                        signUpViewModel = signUpViewModel, navigator = navigator
+                        signUpViewModel = signUpViewModel,navigator = navigator
                     )
                 })
         }
@@ -346,8 +344,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
 
         if (signUpViewModel.signUpResponseState.value.isFailed.value) {
 
-            SuccessDialogAuth(
-                title = Strings.regFail,
+            SuccessDialogAuth(title = Strings.regFail,
                 message = signUpViewModel.signUpResponseState.value.message,
                 onClick = {
                     clickOnFailureDialog(signUpViewModel = signUpViewModel)
@@ -361,7 +358,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
 
 // common function to handle the state when success dialog is disappear
 private fun clickOnSuccessDialog(
-    signUpViewModel: SignUpViewModel, navigator: DestinationsNavigator
+    signUpViewModel: SignUpViewModel,navigator: DestinationsNavigator
 ) {
     signUpViewModel.signUpResponseState.value.apply {
         isSucceed.value = false

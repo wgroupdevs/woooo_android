@@ -40,6 +40,7 @@ import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import eu.siacs.conversations.R
 import kotlinx.coroutines.runBlocking
+import woooo_app.woooo.data.datasource.local.UserPreferences
 import woooo_app.woooo.destinations.SettingsScreenDestination
 import woooo_app.woooo.destinations.UpdateProfileMainScreenDestination
 import woooo_app.woooo.goToWelcomeActivity
@@ -56,96 +57,81 @@ fun AppDrawer(
 ) {
 
     val context = LocalContext.current
+    lateinit var preferences: UserPreferences
+
 
 
     ModalDrawerSheet(
-        modifier = modifier
-            .border(
-                border = BorderStroke(width = 0.5.dp, color = WooColor.white),
-                shape = RoundedCornerShape(0.dp, 15.dp, 15.dp, 0.dp)
-            ),
-        drawerContainerColor = Color.Transparent
+        modifier = modifier.border(
+            border = BorderStroke(width = 0.5.dp,color = WooColor.white),
+            shape = RoundedCornerShape(0.dp,15.dp,15.dp,0.dp)
+        ),drawerContainerColor = Color.Transparent
     ) {
-        DrawerHeader(modifier, navigator)
+        DrawerHeader(modifier,navigator)
 //        Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.spacer_padding)))
         Column(modifier = Modifier.padding(Dimension.dimen_10)) {
 
             ViewDivider()
             VerticalSpacer()
-            CustomListTile(
-                title = "Settings",
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Settings,
-                        contentDescription = "Settings",
-                        tint = WooColor.white
-                    )
-                }, onClick = {
-                    navigator.navigate(SettingsScreenDestination)
-                })
+            CustomListTile(title = "Settings",leadingIcon = {
+                Icon(
+                    imageVector = Icons.Outlined.Settings,
+                    contentDescription = "Settings",
+                    tint = WooColor.white
+                )
+            },onClick = {
+                navigator.navigate(SettingsScreenDestination)
+            })
 
-            CustomListTile(
-                title = "Invite friend",
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Person,
-                        contentDescription = "Invite friend",
-                        tint = WooColor.white
-                    )
-                }, onClick = {
-                    navigator.navigate(SettingsScreenDestination)
-                })
+            CustomListTile(title = "Invite friend",leadingIcon = {
+                Icon(
+                    imageVector = Icons.Outlined.Person,
+                    contentDescription = "Invite friend",
+                    tint = WooColor.white
+                )
+            },onClick = {
+                navigator.navigate(SettingsScreenDestination)
+            })
 
-            CustomListTile(
-                title = "Help & Feedback",
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Info,
-                        contentDescription = "Feedback",
-                        tint = WooColor.white
-                    )
-                }, onClick = {
-                    navigator.navigate(SettingsScreenDestination)
-                })
-            CustomListTile(
-                title = "Share referral code",
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Share,
-                        contentDescription = "Referral",
-                        tint = WooColor.white
-                    )
-                }, onClick = {
-                    navigator.navigate(SettingsScreenDestination)
-                })
-            CustomListTile(
-                title = "Add invitation Code",
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Pin,
-                        contentDescription = "invitation",
-                        tint = WooColor.white
-                    )
-                }, onClick = {
-                    navigator.navigate(SettingsScreenDestination)
-                })
-            CustomListTile(
-                title = "Logout",
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Logout,
-                        contentDescription = "Logout",
-                        tint = WooColor.white
-                    )
-                }, onClick = {
-                    runBlocking {
-//                        val preferences: UserPreferences
-//
-//                        preferences.clear()
-
-                        goToWelcomeActivity(context)
-                    }
-                })
+            CustomListTile(title = "Help & Feedback",leadingIcon = {
+                Icon(
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = "Feedback",
+                    tint = WooColor.white
+                )
+            },onClick = {
+                navigator.navigate(SettingsScreenDestination)
+            })
+            CustomListTile(title = "Share referral code",leadingIcon = {
+                Icon(
+                    imageVector = Icons.Outlined.Share,
+                    contentDescription = "Referral",
+                    tint = WooColor.white
+                )
+            },onClick = {
+                navigator.navigate(SettingsScreenDestination)
+            })
+            CustomListTile(title = "Add invitation Code",leadingIcon = {
+                Icon(
+                    imageVector = Icons.Outlined.Pin,
+                    contentDescription = "invitation",
+                    tint = WooColor.white
+                )
+            },onClick = {
+                navigator.navigate(SettingsScreenDestination)
+            })
+            CustomListTile(title = "Logout",leadingIcon = {
+                Icon(
+                    imageVector = Icons.Outlined.Logout,
+                    contentDescription = "Logout",
+                    tint = WooColor.white
+                )
+            },onClick = {
+                runBlocking {
+                    preferences.clear()
+                    goToWelcomeActivity(context)
+                }
+            })
         }
 
     }
@@ -155,8 +141,7 @@ fun AppDrawer(
 
 @Composable
 fun DrawerHeader(
-    modifier: Modifier,
-    navigator: DestinationsNavigator
+    modifier: Modifier,navigator: DestinationsNavigator
 ) {
     Row(
         horizontalArrangement = Arrangement.Start,
@@ -188,8 +173,7 @@ fun DrawerHeader(
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onPrimary,
             )
-            Text(
-                text = "Edit profile",
+            Text(text = "Edit profile",
                 style = MaterialTheme.typography.labelMedium,
                 modifier = Modifier.clickable {
                     navigator.navigate(
