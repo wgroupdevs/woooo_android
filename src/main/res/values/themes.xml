@@ -6,6 +6,7 @@
         <item name="colorPrimaryDark">@color/blue_primary300</item>
         <item name="colorAccent">@color/white</item>
         <item name="android:windowBackground">@color/blue_primary100</item>
+        <item name="android:windowDisablePreview">true</item>
         <item name="popupOverlayStyle">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="android:fontFamily">@font/nasalization</item>
         <item name="android:textColor">@color/white</item>
@@ -13,9 +14,14 @@
         <item name="color_background_secondary">@color/blue_primary100</item>
         <item name="color_background_tertiary">@color/blue_primary100</item>
         <item name="colorBackgroundFloating">
-            @color/blue_primary100</item>
+            @color/blue_primary100
+        </item>
         <item name="android:colorBackgroundFloating" tools:targetApi="23">
-            @color/blue_primary100</item>
+            @color/blue_primary100
+        </item>
+
+        <!--        <item name="android:windowIsTranslucent">true</item>-->
+
 
         <item name="android:textColorHint">@color/white70</item>
         <item name="color_background_overlay">@color/black12</item>
@@ -24,7 +30,7 @@
         <item name="TextColorError">@color/red800</item>
         <item name="edit_text_color">@color/black87</item>
         <item name="icon_tint">@color/white</item>
-<!--        <item name="tint">@color/white</item>-->
+        <!--        <item name="tint">@color/white</item>-->
         <item name="popupMenuStyle">@style/PopupMenuStyle</item>
         <item name="actionOverflowButtonStyle">@style/OverFlow</item>
         <item name="android:itemBackground">@color/blue_primary300</item>
@@ -64,7 +70,7 @@
         <item name="ic_send_voice_offline" type="reference">@drawable/ic_send_voice_offline</item>
 
         <item name="ic_attach_camera" type="reference">@drawable/ic_attach_camera_white</item>
-        <item name="ic_attach_videocam" type="reference" >@drawable/ic_attach_videocam_white</item>
+        <item name="ic_attach_videocam" type="reference">@drawable/ic_attach_videocam_white</item>
         <item name="ic_attach_document" type="reference">@drawable/ic_attach_document_white</item>
         <item name="ic_attach_location" type="reference">@drawable/ic_attach_location_white</item>
         <item name="ic_attach_photo" type="reference">@drawable/ic_attach_photo_white</item>
@@ -92,7 +98,8 @@
         <item name="dialog_vertical_padding">16dp</item>
 
         <item name="media_preview_image" type="reference">@drawable/ic_image_black_48dp</item>
-        <item name="media_preview_document" type="reference">@drawable/ic_description_black_48dp</item>
+        <item name="media_preview_document" type="reference">@drawable/ic_description_black_48dp
+        </item>
         <item name="media_preview_recording" type="reference">@drawable/ic_mic_black_48dp</item>
         <item name="media_preview_audio" type="reference">@drawable/ic_headset_black_48dp</item>
         <item name="media_preview_location" type="reference">@drawable/ic_room_black_48dp</item>
@@ -159,10 +166,12 @@
         </item>
     </style>
 
+
     <!-- Popup Menu -->
     <style name="OverFlow" parent="@style/Widget.AppCompat.Light.ActionButton.Overflow">
         <item name="android:src">@drawable/baseline_more_vert_24</item>
     </style>
+
     <style name="PopupMenuStyle" parent="Widget.AppCompat.PopupMenu">
         <item name="android:textColorSecondary">@color/white</item>
         <item name="tint">@color/white</item>
@@ -175,6 +184,7 @@
 
 
     </style>
+
     <style name="Widget.ActionButton.Overflow" parent="@android:style/Widget.Holo.ActionButton.Overflow">
         <item name="android:color">@color/white</item>
     </style>
@@ -185,7 +195,8 @@
         <item name="colorAccent">@color/blue_a100</item>
         <item name="popupOverlayStyle">@style/ThemeOverlay.AppCompat.Dark</item>
         <item name="android:navigationBarColor" tools:targetApi="21">@color/black</item>
-
+        <item name="android:windowBackground">@color/blue_primary100</item>
+        <item name="android:windowDisablePreview">true</item>
         <item name="color_background_primary">@color/grey800</item>
         <item name="color_background_secondary">@color/grey900</item>
         <item name="color_background_tertiary">@color/grey700</item>
@@ -268,7 +279,8 @@
         <item name="dialog_vertical_padding">16dp</item>
 
         <item name="media_preview_image" type="reference">@drawable/ic_image_white_48dp</item>
-        <item name="media_preview_document" type="reference">@drawable/ic_description_white_48dp</item>
+        <item name="media_preview_document" type="reference">@drawable/ic_description_white_48dp
+        </item>
         <item name="media_preview_recording" type="reference">@drawable/ic_mic_white_48dp</item>
         <item name="media_preview_audio" type="reference">@drawable/ic_headset_white_48dp</item>
         <item name="media_preview_location" type="reference">@drawable/ic_room_white_48dp</item>

@@ -134,7 +134,7 @@ fun AppDrawer(
             }, onClick = {
                 runBlocking {
 
-                    localDbViewModel.clearLocalDatabase()
+                    localDbViewModel.clearAllSessions()
 
                     userPreferencesViewModel.clearPreference()
 

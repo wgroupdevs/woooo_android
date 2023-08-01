@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,7 +17,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.spec.Route
-import com.wgroup.woooo_app.woooo.theme.WooColor
 import dagger.hilt.android.AndroidEntryPoint
 import eu.siacs.conversations.http.model.UserBasicInfo
 import kotlinx.coroutines.runBlocking
@@ -74,12 +74,11 @@ class MainActivity : ComponentActivity() {
         Log.d(TAG, "INTENT : " + navIntent.toString())
 
 
-
         Woooo_androidTheme {
             Surface(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(color = WooColor.backgroundColor),
+                    .background(color = MaterialTheme.colorScheme.primary),
             ) {
 
 

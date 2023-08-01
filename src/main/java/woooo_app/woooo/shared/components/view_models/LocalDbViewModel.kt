@@ -18,7 +18,7 @@ class LocalDbViewModel @Inject constructor(
     }
 
 
-    fun clearLocalDatabase() {
+    fun clearAllSessions() {
         mDatabaseBackend.clearDatabase()
     }
 
