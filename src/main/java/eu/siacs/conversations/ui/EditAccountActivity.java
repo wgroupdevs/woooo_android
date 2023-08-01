@@ -345,8 +345,13 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                 Toast.makeText(context, "Please Enter Valid Number", Toast.LENGTH_SHORT).show();
                 return;
             }
-        }
+        } else {
+            if (email.isEmpty()) {
+                Toast.makeText(context, "Please Enter Email", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
+        }
         if (password.isEmpty()) {
             Toast.makeText(context, "Please Enter Password", Toast.LENGTH_SHORT).show();
             return;
@@ -1633,10 +1638,6 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                 Log.d("onLoginApiResultFound", "ECEPTION FOUND... " + loginModel);
 
             }
-
-
         });
-
-
     }
 }
