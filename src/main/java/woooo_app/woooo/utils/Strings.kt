@@ -91,7 +91,7 @@ object Strings {
     var regFail = "Registration Failed"
     var regPass = "Registration Success"
     val reSendSuccess = "Successfully Sent"
-    var resetSuccess = ""
+    var resetSuccess = "Password Reset"
 
     //
 //    // speed Dial chat main view keys

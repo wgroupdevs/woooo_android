@@ -37,7 +37,6 @@ import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
-import woooo_app.woooo.destinations.LoginScreenDestination
 import woooo_app.woooo.feature.auth.viewmodel.ConfirmAccountViewModel
 import woooo_app.woooo.goToWelcomeActivity
 import woooo_app.woooo.shared.base.AppBackGround
@@ -62,9 +61,7 @@ fun ConfirmAccountScreen(navigator: DestinationsNavigator) {
          ) {
              CustomIcon(
                  icon = Icons.Rounded.ArrowBack, modifier = Modifier.clickable(onClick = {
-                     navigator.popBackStack(
-                         LoginScreenDestination, inclusive = false
-                     )
+                     goToWelcomeActivity(context)
                  })
              )
              HorizontalSpacer()

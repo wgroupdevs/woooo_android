@@ -1,6 +1,7 @@
 package woooo_app.woooo.feature.auth.screen
 
 import ShowLoader
+import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,8 +33,8 @@ import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
-import woooo_app.woooo.destinations.LoginScreenDestination
 import woooo_app.woooo.feature.auth.viewmodel.VerifyOtpViewModel
+import woooo_app.woooo.goToWelcomeActivity
 import woooo_app.woooo.shared.base.AppBackGround
 import woooo_app.woooo.shared.components.CustomIcon
 import woooo_app.woooo.utils.Dimension
@@ -169,10 +170,11 @@ fun VerifyOtpView(navigator: DestinationsNavigator) {
                 // enable success dialog when reSent OTp Api hit
                 if (verifyOtpViewModel.resetPasswordState.value.isSucceed.value) {
 
-                    SuccessDialogAuth(title = Strings.reSendSuccess,
+                    SuccessDialogAuth(title = Strings.resetSuccess,
                         message = verifyOtpViewModel.resetPasswordState.value.message,
                         onClick = {
                             clickOnSuccessResentPass(
+                                context,
                                 verifyOtpViewModel = verifyOtpViewModel,navigator = navigator
                             )
                         })
@@ -189,10 +191,13 @@ fun clickOnSuccessResentOtp(verifyOtpViewModel: VerifyOtpViewModel) {
 }
 
 fun clickOnSuccessResentPass(
+    context:Context,
     verifyOtpViewModel: VerifyOtpViewModel,navigator: DestinationsNavigator
 ) {
     verifyOtpViewModel.resetPasswordState.value.apply {
         isSucceed.value = false
     }
-    navigator.popBackStack(LoginScreenDestination,false)
+
+    goToWelcomeActivity(context)
+//    navigator.popBackStack(LoginScreenDestination,false)
 }
