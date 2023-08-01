@@ -11,6 +11,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -18,14 +19,13 @@ import com.ramcosta.composedestinations.spec.Route
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import dagger.hilt.android.AndroidEntryPoint
 import eu.siacs.conversations.http.model.UserBasicInfo
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import woooo_app.woooo.NavGraphs
-import woooo_app.woooo.data.datasource.local.UserPreferences
 import woooo_app.woooo.destinations.ForgotPasswordScreenDestination
 import woooo_app.woooo.destinations.HomeScreenDestination
 import woooo_app.woooo.destinations.SignUpScreenDestination
 import woooo_app.woooo.goToWelcomeActivity
+import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel
 import woooo_app.woooo.theme.Woooo_androidTheme
 import woooo_app.woooo.utils.CONST_KEY_INTENT
 import woooo_app.woooo.utils.FIRST_NAME
@@ -35,14 +35,12 @@ import woooo_app.woooo.utils.SIGNUP_INTENT
 import woooo_app.woooo.utils.USER_INFO_KEY_INTENT
 import woooo_app.woooo.utils.USER_JID
 import woooo_app.woooo.utils.USER_TOKEN_KEY_INTENT
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     val TAG = "MainActivityLOGS"
 
-    @Inject
-    lateinit var userPreferences: UserPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -66,6 +64,8 @@ class MainActivity : ComponentActivity() {
         val context = LocalContext.current
         val navController = rememberNavController()
 
+        val userPreferences: UserPreferencesViewModel = hiltViewModel()
+
         var startRoute = NavGraphs.root.startRoute
 
         val navIntent = intent?.getStringExtra(CONST_KEY_INTENT)
@@ -86,7 +86,7 @@ class MainActivity : ComponentActivity() {
 //                navigateTo(navController = navController, startRoute = startRoute)
 
                 if (navIntent.isNullOrBlank()) {
-                    if (getDataPreferences().isEmpty()) {
+                    if (getDataPreferences(userPreferences).isEmpty()) {
                         goToWelcomeActivity(context)
                     } else {
 
@@ -124,8 +124,8 @@ class MainActivity : ComponentActivity() {
                                     Log.d(TAG, "FirstName : " + userInfo.firstName)
                                     Log.d(TAG, "LastName : " + userInfo.lastName)
 
-                                    saveUserInfoToPreferences(token, userInfo)
-                                    getDataPreferences()
+                                    saveUserInfoToPreferences(userPreferences, token, userInfo)
+                                    getDataPreferences(userPreferences)
                                 }
 
                                 startRoute = HomeScreenDestination
@@ -135,7 +135,7 @@ class MainActivity : ComponentActivity() {
                         }
 
                         else -> {
-                            if (getDataPreferences().isEmpty()) {
+                            if (getDataPreferences(userPreferences).isEmpty()) {
                                 Log.d(TAG, "Auth Token not found")
                                 goToWelcomeActivity(context)
                             } else {
@@ -153,14 +153,18 @@ class MainActivity : ComponentActivity() {
 
     }
 
-    fun getDataPreferences(): String = runBlocking {
+    fun getDataPreferences(userPreferences: UserPreferencesViewModel): String = runBlocking {
         USER_JID = userPreferences.getJID()
-        FIRST_NAME = userPreferences.getFirstName().first()
+        FIRST_NAME = userPreferences.getFirstName()
         userPreferences.getAuthToke()
 
     }
 
-    private suspend fun saveUserInfoToPreferences(token: String, user: UserBasicInfo) {
+    private suspend fun saveUserInfoToPreferences(
+        userPreferences: UserPreferencesViewModel,
+        token: String,
+        user: UserBasicInfo
+    ) {
         userPreferences.setAuthToken(token)
         userPreferences.setEmail(user.email)
         userPreferences.setFirstName(user.firstName)

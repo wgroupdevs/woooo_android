@@ -1,5 +1,6 @@
 package woooo_app.woooo.data.datasource.local
 
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -10,6 +11,8 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class UserPreferencesImpl(private val dataStore: DataStore<Preferences>) : UserPreferences {
+
+    val TAG = "UserPreferences"
 
     override suspend fun setFirstName(firstName: String) {
         dataStore.edit {
@@ -51,12 +54,6 @@ class UserPreferencesImpl(private val dataStore: DataStore<Preferences>) : UserP
         dataStore.edit { it[UserPreferencesKey.PROFILE_IMAGE] = image }
     }
 
-    override suspend fun clear() {
-        dataStore.edit {
-            it.clear()
-        }
-    }
-
     override fun getFirstName(): Flow<String> {
         return dataStore.data.catch { emit(emptyPreferences()) }.map {
             it[UserPreferencesKey.FIRST_NAME] ?: ""
@@ -75,11 +72,17 @@ class UserPreferencesImpl(private val dataStore: DataStore<Preferences>) : UserP
 
     override suspend fun getJID(): String {
         return dataStore.data.first()[UserPreferencesKey.ACCOUNT_JID] ?: ""
-
     }
 
     override suspend fun getProfileImage(): String {
         return dataStore.data.first()[UserPreferencesKey.PROFILE_IMAGE] ?: ""
+    }
+
+    override suspend fun clear() {
+        dataStore.edit {
+            Log.d(TAG, "Clearing UserPreference")
+            it.clear()
+        }
     }
 
 }
