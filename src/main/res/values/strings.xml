@@ -1009,5 +1009,7 @@
     <string name="decline">Decline</string>
     <string name="delete_from_server">Remove account from server</string>
     <string name="could_not_delete_account_from_server">Could not delete account from server</string>
+    <string name="don_t_have_an_account_sign_up">Don\'t have an account? Sign Up</string>
+    <string name="forgot_password">Forgot Password ?</string>
 
 </resources>
