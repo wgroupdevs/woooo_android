@@ -68,7 +68,7 @@ fun HomePage(navigator: DestinationsNavigator,homeViewModel: HomeViewModel = hil
         val scaffoldState = rememberBottomSheetScaffoldState()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         var notificationTrayState by remember {
-            mutableStateOf(true)
+            mutableStateOf(false)
         }
 
 

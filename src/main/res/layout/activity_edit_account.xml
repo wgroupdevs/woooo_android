@@ -8,13 +8,9 @@
         android:layout_height="match_parent"
         android:background="?attr/color_background_secondary">
 
-        <!--        <include android:id="@+id/toolbar"-->
-        <!--            layout="@layout/toolbar" />-->
-
         <ScrollView
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true">
+            android:layout_height="fill_parent">
 
             <LinearLayout
                 android:id="@+id/account_main_layout"
@@ -35,6 +31,7 @@
                     app:cardElevation="0dp">
 
                     <RelativeLayout
+                        android:id="@+id/relativeLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="@dimen/card_padding_regular">
@@ -179,7 +176,7 @@
                                             android:background="@drawable/textfield_background"
                                             android:hint="Phone Number"
                                             android:imeOptions="actionNext"
-                                            android:inputType="textEmailAddress"
+                                            android:inputType="phone"
                                             android:paddingVertical="@dimen/_10sdp"
                                             android:paddingStart="@dimen/_5sdp"
                                             android:textColor="@color/white" />
@@ -202,7 +199,7 @@
                                 app:hintTextAppearance="@style/TextAppearance.Conversations.Design.Hint"
                                 app:passwordToggleDrawable="@drawable/visibility_toggle_drawable"
                                 app:passwordToggleEnabled="true"
-                                app:passwordToggleTint="?android:textColorSecondary">
+                                app:passwordToggleTint="@color/white">
 
                                 <eu.siacs.conversations.ui.widget.TextInputEditText
                                     android:id="@+id/account_password"
@@ -225,11 +222,13 @@
                                 android:id="@+id/forgot_password"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="left"
+                                android:layout_gravity="start"
                                 android:layout_marginTop="@dimen/_5sdp"
+                                android:height="@dimen/_40sdp"
                                 android:clickable="true"
+                                android:focusable="true"
                                 android:paddingStart="5dp"
-                                android:text="Forgot Password ?"
+                                android:text="@string/forgot_password"
                                 android:textColor="@color/white"
                                 android:textSize="14sp" />
 
@@ -308,70 +307,70 @@
                             <!--                            </LinearLayout>-->
 
 
-                            <LinearLayout
-                                android:id="@+id/name_port"
-                                android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:orientation="horizontal"
-                                android:weightSum="1">
+                            <!--                            <LinearLayout-->
+                            <!--                                android:id="@+id/name_port"-->
+                            <!--                                android:layout_width="fill_parent"-->
+                            <!--                                android:layout_height="wrap_content"-->
+                            <!--                                android:layout_marginTop="8dp"-->
+                            <!--                                android:orientation="horizontal"-->
+                            <!--                                android:weightSum="1">-->
 
-                                <LinearLayout
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="0.8"
-                                    android:orientation="vertical">
+                            <!--                                <LinearLayout-->
+                            <!--                                    android:layout_width="0dp"-->
+                            <!--                                    android:layout_height="match_parent"-->
+                            <!--                                    android:layout_weight="0.8"-->
+                            <!--                                    android:orientation="vertical">-->
 
-                                    <com.google.android.material.textfield.TextInputLayout
-                                        android:id="@+id/hostname_layout"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:hint="@string/account_settings_hostname"
-                                        app:errorTextAppearance="@style/TextAppearance.Conversations.Design.Error"
-                                        app:hintTextAppearance="@style/TextAppearance.Conversations.Design.Hint">
+                            <!--&lt;!&ndash;                                    <com.google.android.material.textfield.TextInputLayout&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                        android:id="@+id/hostname_layout"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                        android:layout_width="match_parent"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                        android:layout_height="wrap_content"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                        android:hint="@string/account_settings_hostname"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                        app:errorTextAppearance="@style/TextAppearance.Conversations.Design.Error"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                        app:hintTextAppearance="@style/TextAppearance.Conversations.Design.Hint">&ndash;&gt;-->
 
-                                        <EditText
-                                            android:id="@+id/hostname"
-                                            style="@style/Widget.Conversations.EditText"
-                                            android:layout_width="fill_parent"
-                                            android:layout_height="wrap_content"
-                                            android:inputType="textWebEmailAddress" />
-                                    </com.google.android.material.textfield.TextInputLayout>
-                                </LinearLayout>
+                            <!--&lt;!&ndash;                                        <EditText&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                            android:id="@+id/hostname"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                            style="@style/Widget.Conversations.EditText"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                            android:layout_width="fill_parent"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                            android:layout_height="wrap_content"&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                            android:inputType="textWebEmailAddress" />&ndash;&gt;-->
+                            <!--&lt;!&ndash;                                    </com.google.android.material.textfield.TextInputLayout>&ndash;&gt;-->
+                            <!--                                </LinearLayout>-->
 
-                                <LinearLayout
-                                    android:layout_width="0dp"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="0.2"
-                                    android:orientation="vertical">
+                            <!--                                <LinearLayout-->
+                            <!--                                    android:layout_width="0dp"-->
+                            <!--                                    android:layout_height="match_parent"-->
+                            <!--                                    android:layout_weight="0.2"-->
+                            <!--                                    android:orientation="vertical">-->
 
-                                    <com.google.android.material.textfield.TextInputLayout
-                                        android:id="@+id/port_layout"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:hint="@string/account_settings_port"
-                                        app:errorTextAppearance="@style/TextAppearance.Conversations.Design.Error"
-                                        app:hintTextAppearance="@style/TextAppearance.Conversations.Design.Hint">
+                            <!--                                    <com.google.android.material.textfield.TextInputLayout-->
+                            <!--                                        android:id="@+id/port_layout"-->
+                            <!--                                        android:layout_width="match_parent"-->
+                            <!--                                        android:layout_height="wrap_content"-->
+                            <!--                                        android:hint="@string/account_settings_port"-->
+                            <!--                                        app:errorTextAppearance="@style/TextAppearance.Conversations.Design.Error"-->
+                            <!--                                        app:hintTextAppearance="@style/TextAppearance.Conversations.Design.Hint">-->
 
-                                        <EditText
-                                            android:id="@+id/port"
-                                            style="@style/Widget.Conversations.EditText"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="match_parent"
-                                            android:autofillHints="true"
-                                            android:inputType="number"
-                                            android:maxLength="5" />
-                                    </com.google.android.material.textfield.TextInputLayout>
-                                </LinearLayout>
-                            </LinearLayout>
+                            <!--                                        <EditText-->
+                            <!--                                            android:id="@+id/port"-->
+                            <!--                                            style="@style/Widget.Conversations.EditText"-->
+                            <!--                                            android:layout_width="match_parent"-->
+                            <!--                                            android:layout_height="match_parent"-->
+                            <!--                                            android:autofillHints="true"-->
+                            <!--                                            android:inputType="number"-->
+                            <!--                                            android:maxLength="5" />-->
+                            <!--                                    </com.google.android.material.textfield.TextInputLayout>-->
+                            <!--                                </LinearLayout>-->
+                            <!--                            </LinearLayout>-->
 
-                            <CheckBox
-                                android:id="@+id/account_register_new"
-                                style="@style/Widget.Conversations.CheckBox"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="8dp"
-                                android:text="@string/register_account" />
+                            <!--                            <CheckBox-->
+                            <!--                                android:id="@+id/account_register_new"-->
+                            <!--                                style="@style/Widget.Conversations.CheckBox"-->
+                            <!--                                android:layout_width="wrap_content"-->
+                            <!--                                android:layout_height="wrap_content"-->
+                            <!--                                android:layout_marginTop="8dp"-->
+                            <!--                                android:text="@string/register_account" />-->
                         </LinearLayout>
                     </RelativeLayout>
                 </androidx.cardview.widget.CardView>
@@ -854,46 +853,48 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/other_device_keys_card"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:visibility="gone">
+<!--                <androidx.cardview.widget.CardView-->
+<!--                    android:id="@+id/other_device_keys_card"-->
+<!--                    android:layout_width="fill_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginLeft="@dimen/activity_horizontal_margin"-->
+<!--                    android:layout_marginTop="@dimen/activity_vertical_margin"-->
+<!--                    android:layout_marginRight="@dimen/activity_horizontal_margin"-->
+<!--                    android:layout_marginBottom="@dimen/activity_vertical_margin"-->
+<!--                    android:visibility="visible">-->
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="@dimen/card_padding_list">
+<!--                    <LinearLayout-->
+<!--                        android:layout_width="match_parent"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:orientation="vertical"-->
+<!--                        android:padding="@dimen/card_padding_list">-->
 
-                        <TextView
-                            android:id="@+id/other_device_keys_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="@dimen/list_padding"
-                            android:text="@string/other_devices"
-                            android:textAppearance="@style/TextAppearance.Conversations.Title" />
+<!--                        <TextView-->
+<!--                            android:id="@+id/other_device_keys_title"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_margin="@dimen/list_padding"-->
+<!--                            android:text="@string/other_devices"-->
+<!--                            android:textAppearance="@style/TextAppearance.Conversations.Title" />-->
 
-                        <LinearLayout
-                            android:id="@+id/other_device_keys"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical" />
+<!--                        <LinearLayout-->
+<!--                            android:id="@+id/other_device_keys"-->
+<!--                            android:layout_width="fill_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:orientation="vertical" />-->
 
-                        <Button
-                            android:id="@+id/clear_devices"
-                            style="@style/Widget.Conversations.Button.Borderless"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_horizontal"
-                            android:text="@string/clear_other_devices"
-                            android:textColor="?colorAccent" />
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
+<!--                        <Button-->
+<!--                            android:id="@+id/clear_devices"-->
+<!--                            style="@style/Widget.Conversations.Button.Borderless"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_gravity="center_horizontal"-->
+<!--                            android:text="@string/clear_other_devices"-->
+<!--                            android:textColor="?colorAccent" />-->
+<!--                    </LinearLayout>-->
+<!--                </androidx.cardview.widget.CardView>-->
+
+
             </LinearLayout>
         </ScrollView>
 
@@ -908,10 +909,10 @@
             android:clickable="true"
             android:focusable="true"
             android:gravity="center|bottom"
-            android:text="Don't have an account? Sign Up"
+            android:text="@string/don_t_have_an_account_sign_up"
             android:textAppearance="@style/TextAppearance.Conversations.Subhead"
-            android:textColor="@color/white" />
-
+            android:textColor="@color/white"
+            android:visibility="visible" />
 
     </RelativeLayout>
 </layout>
