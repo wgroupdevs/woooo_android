@@ -719,7 +719,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getContactList();
+
         if (savedInstanceState != null) {
             this.mSavedInstanceAccount = savedInstanceState.getString("account");
             this.mSavedInstanceInit = savedInstanceState.getBoolean("initMode", false);
@@ -1624,6 +1624,8 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                 performXMPPLoginAttempt(jid, password, 5222, null);
 
             } else if (loginModel instanceof BaseModelAPIResponse) {
+                Toast.makeText(context, ((BaseModelAPIResponse) loginModel).Message, Toast.LENGTH_LONG).show();
+
                 hideProgressDialog();
                 Log.d("onLoginApiResultFound", " BaseModelAPIResponse Called in EditActivity " + ((BaseModelAPIResponse) loginModel).Message);
             } else {

@@ -40,6 +40,7 @@ import woooo_app.MainActivity
 import woooo_app.woooo.destinations.VerifyOTPScreenDestination
 import woooo_app.woooo.feature.auth.EmailForAuthModule
 import woooo_app.woooo.feature.auth.viewmodel.ForgotPasswordViewModel
+import woooo_app.woooo.shared.base.AppBackGround
 import woooo_app.woooo.shared.components.CustomIcon
 import woooo_app.woooo.utils.Dimension
 
@@ -49,100 +50,102 @@ fun ForgotPasswordView(navigator: DestinationsNavigator) {
     val context = LocalContext.current as MainActivity
     val forgotPassViewModel: ForgotPasswordViewModel = hiltViewModel()
 
-    Column(
+ AppBackGround {
+     Column(
 
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = WooColor.backgroundColor)
-            .verticalScroll(rememberScrollState())
-            .padding(10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            IconButton(onClick = { context.finish() }) {
-                CustomIcon(
-                    icon = Icons.Rounded.ArrowBack, modifier = Modifier
-                        .size(26.dp)
-                )
-            }
+         modifier = Modifier
+             .fillMaxSize()
+             .background(color = WooColor.backgroundColor)
+             .verticalScroll(rememberScrollState())
+             .padding(10.dp),
+         horizontalAlignment = Alignment.CenterHorizontally
+     ) {
+         Row(
+             verticalAlignment = Alignment.CenterVertically,
+             modifier = Modifier
+                 .fillMaxWidth()
+         ) {
+             IconButton(onClick = { context.finish() }) {
+                 CustomIcon(
+                     icon = Icons.Rounded.ArrowBack, modifier = Modifier
+                         .size(26.dp)
+                 )
+             }
 
 
 
-            HorizontalSpacer(Dimension.dimen_5)
-            Text(text = Strings.forgotTextNewPassView, style = MaterialTheme.typography.bodyLarge)
-        }
-        VerticalSpacer(Dimension.dimen_30)
-        // ap logo On top
+             HorizontalSpacer(Dimension.dimen_5)
+             Text(text = Strings.forgotTextNewPassView, style = MaterialTheme.typography.bodyLarge)
+         }
+         VerticalSpacer(Dimension.dimen_30)
+         // ap logo On top
 
-        Image(
-            painter = painterResource(id = R.drawable.woooo_logo),
-            contentDescription = "",
-            modifier = Modifier.size(200.dp)
-        )
-        VerticalSpacer(Dimension.dimen_30)
-        // forgot text
-        Text(text = Strings.forgotTextNewPassView, style = MaterialTheme.typography.bodyLarge)
-        VerticalSpacer(Dimension.dimen_40)
-        // enter email
-        WooTextField(
-            onValueChange = {
-                EmailForAuthModule.setEmailValue(it)
-                forgotPassViewModel.setErrorValueForEmail(false)
-            },
-            value = EmailForAuthModule.getEmail.value,
-            isError = forgotPassViewModel.getErrorEmailController.value,
-            supportingText = {
-                if (forgotPassViewModel.getErrorEmailController.value) {
-                    ErrorMessageForgetPasswordView()
-                }
-            },
-            hint = Strings.enterEmailText
-        )
-        VerticalSpacer(Dimension.dimen_30)
-        // recover button
-        CustomButton(
-            border = BorderStroke(1.dp, Color.White),
-            onClick = {
+         Image(
+             painter = painterResource(id = R.drawable.woooo_logo),
+             contentDescription = "",
+             modifier = Modifier.size(200.dp)
+         )
+         VerticalSpacer(Dimension.dimen_30)
+         // forgot text
+         Text(text = Strings.forgotTextNewPassView, style = MaterialTheme.typography.bodyLarge)
+         VerticalSpacer(Dimension.dimen_40)
+         // enter email
+         WooTextField(
+             onValueChange = {
+                 EmailForAuthModule.setEmailValue(it)
+                 forgotPassViewModel.setErrorValueForEmail(false)
+             },
+             value = EmailForAuthModule.getEmail.value,
+             isError = forgotPassViewModel.getErrorEmailController.value,
+             supportingText = {
+                 if (forgotPassViewModel.getErrorEmailController.value) {
+                     ErrorMessageForgetPasswordView()
+                 }
+             },
+             hint = Strings.enterEmailText
+         )
+         VerticalSpacer(Dimension.dimen_30)
+         // recover button
+         CustomButton(
+             border = BorderStroke(1.dp, Color.White),
+             onClick = {
 
-                if (forgotPassViewModel.validateEmail()) {
-                    forgotPassViewModel.forgotPassword(context)
-                }
-            },
-            content = {
-                Text(
-                    text = Strings.recoverText,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center,
-                    fontSize = 16.sp
-                )
-            },
-        )
-        VerticalSpacer(Dimension.dimen_30)
-        //Last text
-        Text(
-            text = Strings.emailNotFoundDes,
-            style = MaterialTheme.typography.bodySmall,
-            textAlign = TextAlign.Center
-        )
-        // enable Loader when Api Hit
-        if (forgotPassViewModel.forgotPasswordState.value.isLoading.value) ShowLoader()
-        // enabled success dialogue when api hit successfully
-        if (forgotPassViewModel.forgotPasswordState.value.isSucceed.value) {
+                 if (forgotPassViewModel.validateEmail()) {
+                     forgotPassViewModel.forgotPassword(context)
+                 }
+             },
+             content = {
+                 Text(
+                     text = Strings.recoverText,
+                     style = MaterialTheme.typography.bodyMedium,
+                     textAlign = TextAlign.Center,
+                     fontSize = 16.sp
+                 )
+             },
+         )
+         VerticalSpacer(Dimension.dimen_30)
+         //Last text
+         Text(
+             text = Strings.emailNotFoundDes,
+             style = MaterialTheme.typography.bodySmall,
+             textAlign = TextAlign.Center
+         )
+         // enable Loader when Api Hit
+         if (forgotPassViewModel.forgotPasswordState.value.isLoading.value) ShowLoader()
+         // enabled success dialogue when api hit successfully
+         if (forgotPassViewModel.forgotPasswordState.value.isSucceed.value) {
 
-            SuccessDialogAuth(
-                title = Strings.forgotTextNewPassView,
-                message = forgotPassViewModel.forgotPasswordState.value.message,
-                onClick = {
-                    clickOnSuccessDialogForgotPassword(
-                        forgotPasswordViewModel = forgotPassViewModel, navigator = navigator
-                    )
-                })
-        }
-    }
+             SuccessDialogAuth(
+                 title = Strings.forgotTextNewPassView,
+                 message = forgotPassViewModel.forgotPasswordState.value.message,
+                 onClick = {
+                     clickOnSuccessDialogForgotPassword(
+                         forgotPasswordViewModel = forgotPassViewModel, navigator = navigator
+                     )
+                 })
+         }
+     }
+ }
 }
 
 private fun clickOnSuccessDialogForgotPassword(

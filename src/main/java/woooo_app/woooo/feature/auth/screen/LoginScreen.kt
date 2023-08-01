@@ -1,4 +1,3 @@
-
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -40,7 +39,6 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.CountryPicker
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.CustomDivider
-import woooo_app.woooo.shared.components.CustomIcon
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageForLoginWithEmail
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageLoginWithPhone
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
@@ -51,8 +49,10 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
 import woooo_app.woooo.destinations.ForgotPasswordScreenDestination
 import woooo_app.woooo.destinations.SignUpScreenDestination
+import woooo_app.woooo.feature.auth.EmailForAuthModule
 import woooo_app.woooo.feature.auth.viewmodel.LoginWithEmailViewModel
 import woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
+import woooo_app.woooo.shared.components.CustomIcon
 import woooo_app.woooo.shared.components.view_models.CountryPickerViewModel
 import woooo_app.woooo.utils.Dimension
 
@@ -207,7 +207,10 @@ fun LoginWithPhoneNumber(
             ) {
                 TextButton(
 
-                    onClick = { navigator.navigate(ForgotPasswordScreenDestination) },
+                    onClick = {
+                        navigator.navigate(ForgotPasswordScreenDestination)
+                        EmailForAuthModule.setEmailValue("")
+                    },
                     contentPadding = PaddingValues(0.dp)
 
                 ) {

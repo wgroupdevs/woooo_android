@@ -40,6 +40,7 @@ import eu.siacs.conversations.R
 import woooo_app.woooo.destinations.LoginScreenDestination
 import woooo_app.woooo.feature.auth.viewmodel.ConfirmAccountViewModel
 import woooo_app.woooo.goToWelcomeActivity
+import woooo_app.woooo.shared.base.AppBackGround
 import woooo_app.woooo.shared.components.CustomIcon
 import woooo_app.woooo.utils.Dimension
 
@@ -47,113 +48,115 @@ import woooo_app.woooo.utils.Dimension
 fun ConfirmAccountScreen(navigator: DestinationsNavigator) {
     val context = LocalContext.current
     val confirmAccountViewModel: ConfirmAccountViewModel = hiltViewModel()
-    Column(
-        Modifier
-            .padding(10.dp)
-            .fillMaxSize()
-    ) {
+ AppBackGround {
+     Column(
+         Modifier
+             .padding(10.dp)
+             .fillMaxSize()
+     ) {
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            CustomIcon(
-                icon = Icons.Rounded.ArrowBack, modifier = Modifier.clickable(onClick = {
-                    navigator.popBackStack(
-                        LoginScreenDestination, inclusive = false
-                    )
-                })
-            )
-            HorizontalSpacer()
-            Text(text = Strings.confirmAccount, style = MaterialTheme.typography.bodyLarge)
-        }
-        VerticalSpacer(Dimension.dimen_20)
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.woooo_logo),
-                contentDescription = "",
-                modifier = Modifier.size(200.dp)
-            )
-            VerticalSpacer(Dimension.dimen_20)
-            //OTP text field
-            TextLabel(label = Strings.pleaseEnterOtp)
-            VerticalSpacer(Dimension.dimen_15)
-            WooTextField(
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                onValueChange = {
-                    confirmAccountViewModel.setOTPValue(it)
-                    confirmAccountViewModel.setOTPStateValue(false)
-                },
-                value = confirmAccountViewModel.getOTP.value,
-                isError = confirmAccountViewModel.getOTPError.value,
-                supportingText = {
-                    if (confirmAccountViewModel.getOTPError.value) {
-                        ErrorMessageConfirmAccountView()
-                    }
-                },
-                hint = Strings.verifyCode
-            )
-            // resent OTP Button
-            TextButton(modifier = Modifier.align(Alignment.End),
-                onClick = { confirmAccountViewModel.resentCodeForConfirmAccount(context) },
-                content = {
-                    Text(
-                        text = Strings.resentOTP, style = MaterialTheme.typography.bodyMedium
-                    )
-                })
-            // verify Button
-            VerticalSpacer(Dimension.dimen_40)
-            CustomButton(
-                border = BorderStroke(1.dp, Color.White),
-                onClick = {
-                    if (confirmAccountViewModel.validateConfirmAccountFields()) {
-                        confirmAccountViewModel.confirmAccount(context)
-                    }
-                },
-                content = {
-                    Text(
-                        text = Strings.vrfyText,
-                        style = MaterialTheme.typography.bodyMedium,
-                        textAlign = TextAlign.Center,
-                        fontSize = 16.sp
-                    )
-                },
-            )
-        }
-        // enable Loader when Api Hit
-        if (confirmAccountViewModel.confirmAccountState.value.isLoading.value) ShowLoader()
-        // enable success dialog when verify OTp Api hit
-        if (confirmAccountViewModel.confirmAccountState.value.isSucceed.value) {
-            SuccessDialogAuth(title = Strings.regPass,
-                message = confirmAccountViewModel.confirmAccountState.value.message,
-                onClick =
-                {
-                    clickOnSuccessDialogVerifyAccount(
-                        context,
-                        confirmAccountViewModel = confirmAccountViewModel,
-                        navigator = navigator
-                    )
-                })
-        }
-        // enable Loader when Api Hit
-        if (confirmAccountViewModel.resentCodeState.value.isLoading.value) ShowLoader()
-        // enable success dialog when reSent OTp Api hit
-        if (confirmAccountViewModel.resentCodeState.value.isSucceed.value) {
+         Row(
+             verticalAlignment = Alignment.CenterVertically,
+             modifier = Modifier
+                 .fillMaxWidth()
+         ) {
+             CustomIcon(
+                 icon = Icons.Rounded.ArrowBack, modifier = Modifier.clickable(onClick = {
+                     navigator.popBackStack(
+                         LoginScreenDestination, inclusive = false
+                     )
+                 })
+             )
+             HorizontalSpacer()
+             Text(text = Strings.confirmAccount, style = MaterialTheme.typography.bodyLarge)
+         }
+         VerticalSpacer(Dimension.dimen_20)
+         Column(
+             horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxSize()
+         ) {
+             Image(
+                 painter = painterResource(id = R.drawable.woooo_logo),
+                 contentDescription = "",
+                 modifier = Modifier.size(200.dp)
+             )
+             VerticalSpacer(Dimension.dimen_20)
+             //OTP text field
+             TextLabel(label = Strings.pleaseEnterOtp)
+             VerticalSpacer(Dimension.dimen_15)
+             WooTextField(
+                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                 onValueChange = {
+                     confirmAccountViewModel.setOTPValue(it)
+                     confirmAccountViewModel.setOTPStateValue(false)
+                 },
+                 value = confirmAccountViewModel.getOTP.value,
+                 isError = confirmAccountViewModel.getOTPError.value,
+                 supportingText = {
+                     if (confirmAccountViewModel.getOTPError.value) {
+                         ErrorMessageConfirmAccountView()
+                     }
+                 },
+                 hint = Strings.verifyCode
+             )
+             // resent OTP Button
+             TextButton(modifier = Modifier.align(Alignment.End),
+                 onClick = { confirmAccountViewModel.resentCodeForConfirmAccount(context) },
+                 content = {
+                     Text(
+                         text = Strings.resentOTP, style = MaterialTheme.typography.bodyMedium
+                     )
+                 })
+             // verify Button
+             VerticalSpacer(Dimension.dimen_40)
+             CustomButton(
+                 border = BorderStroke(1.dp, Color.White),
+                 onClick = {
+                     if (confirmAccountViewModel.validateConfirmAccountFields()) {
+                         confirmAccountViewModel.confirmAccount(context)
+                     }
+                 },
+                 content = {
+                     Text(
+                         text = Strings.vrfyText,
+                         style = MaterialTheme.typography.bodyMedium,
+                         textAlign = TextAlign.Center,
+                         fontSize = 16.sp
+                     )
+                 },
+             )
+         }
+         // enable Loader when Api Hit
+         if (confirmAccountViewModel.confirmAccountState.value.isLoading.value) ShowLoader()
+         // enable success dialog when verify OTp Api hit
+         if (confirmAccountViewModel.confirmAccountState.value.isSucceed.value) {
+             SuccessDialogAuth(title = Strings.regPass,
+                 message = confirmAccountViewModel.confirmAccountState.value.message,
+                 onClick =
+                 {
+                     clickOnSuccessDialogVerifyAccount(
+                         context,
+                         confirmAccountViewModel = confirmAccountViewModel,
+                         navigator = navigator
+                     )
+                 })
+         }
+         // enable Loader when Api Hit
+         if (confirmAccountViewModel.resentCodeState.value.isLoading.value) ShowLoader()
+         // enable success dialog when reSent OTp Api hit
+         if (confirmAccountViewModel.resentCodeState.value.isSucceed.value) {
 
-            SuccessDialogAuth(
-                title = Strings.reSendSuccess,
-                message = confirmAccountViewModel.resentCodeState.value.message,
-                onClick = {
-                    clickOnSuccessDialogReSentOTP(
-                        confirmAccountViewModel = confirmAccountViewModel
-                    )
-                },
-            )
-        }
-    }
+             SuccessDialogAuth(
+                 title = Strings.reSendSuccess,
+                 message = confirmAccountViewModel.resentCodeState.value.message,
+                 onClick = {
+                     clickOnSuccessDialogReSentOTP(
+                         confirmAccountViewModel = confirmAccountViewModel
+                     )
+                 },
+             )
+         }
+     }
+ }
 }
 
 private fun clickOnSuccessDialogVerifyAccount(
