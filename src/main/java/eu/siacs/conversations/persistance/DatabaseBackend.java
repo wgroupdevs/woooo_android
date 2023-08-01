@@ -199,7 +199,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         final SQLiteDatabase db = getWritableDatabase();
         final Stopwatch stopwatch = Stopwatch.createStarted();
         db.execSQL(COPY_PREEXISTING_ENTRIES);
-        Log.d(Config.LOGTAG,"rebuilt message index in "+ stopwatch.stop().toString());
+        Log.d(Config.LOGTAG, "rebuilt message index in " + stopwatch.stop().toString());
     }
 
     public static synchronized DatabaseBackend getInstance(Context context) {
@@ -950,7 +950,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 contactJid.asBareJid().toString() + "/%",
                 contactJid.asBareJid().toString()
         };
-        try(final Cursor cursor = db.query(Conversation.TABLENAME, null,
+        try (final Cursor cursor = db.query(Conversation.TABLENAME, null,
                 Conversation.ACCOUNT + "=? AND (" + Conversation.CONTACTJID
                         + " like ? OR " + Conversation.CONTACTJID + "=?)", selectionArgs, null, null, null)) {
             if (cursor.getCount() == 0) {
@@ -995,7 +995,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     private List<Account> getAccounts(SQLiteDatabase db) {
         final List<Account> list = new ArrayList<>();
         try (final Cursor cursor =
-                db.query(Account.TABLENAME, null, null, null, null, null, null)) {
+                     db.query(Account.TABLENAME, null, null, null, null, null, null)) {
             while (cursor != null && cursor.moveToNext()) {
                 list.add(Account.fromCursor(cursor));
             }
@@ -1038,7 +1038,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         final SQLiteDatabase db = this.getReadableDatabase();
         final String[] args = {roster.getAccount().getUuid()};
         try (final Cursor cursor =
-                db.query(Contact.TABLENAME, null, Contact.ACCOUNT + "=?", args, null, null, null)) {
+                     db.query(Contact.TABLENAME, null, Contact.ACCOUNT + "=?", args, null, null, null)) {
             while (cursor.moveToNext()) {
                 roster.initContact(Contact.fromCursor(cursor));
             }
@@ -1255,6 +1255,16 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 SQLiteAxolotlStore.ACCOUNT + "=? AND "
                         + SQLiteAxolotlStore.NAME + " = ?",
                 args);
+    }
+
+    public void clearDatabase() {
+
+        Log.d("DATABASE_BACKEND", "clearDatabase Called");
+        SQLiteDatabase db = this.getWritableDatabase();
+        String[] args = {};
+        db.delete(Account.TABLENAME, null, args);
+        db.delete(SQLiteAxolotlStore.SESSION_TABLENAME, null, args);
+
     }
 
     private Cursor getCursorForPreKey(Account account, int preKeyId) {

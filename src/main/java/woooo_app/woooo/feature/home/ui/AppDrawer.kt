@@ -34,6 +34,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
@@ -42,8 +43,11 @@ import eu.siacs.conversations.R
 import kotlinx.coroutines.runBlocking
 import woooo_app.woooo.destinations.SettingsScreenDestination
 import woooo_app.woooo.destinations.UpdateProfileMainScreenDestination
+import woooo_app.woooo.feature.home.viewmodel.HomeViewModel
 import woooo_app.woooo.goToWelcomeActivity
 import woooo_app.woooo.shared.components.ViewDivider
+import woooo_app.woooo.shared.components.view_models.LocalDbViewModel
+import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel
 import woooo_app.woooo.utils.Dimension
 import woooo_app.woooo.utils.FIRST_NAME
 
@@ -51,6 +55,9 @@ import woooo_app.woooo.utils.FIRST_NAME
 fun AppDrawer(
     modifier: Modifier = Modifier,
     navigator: DestinationsNavigator,
+    homeViewModel: HomeViewModel = hiltViewModel(),
+    userPreferencesViewModel: UserPreferencesViewModel = hiltViewModel(),
+    localDbViewModel: LocalDbViewModel = hiltViewModel(),
     navigateToSettings: () -> Unit = {},
     closeDrawer: () -> Unit = {},
 ) {
@@ -61,72 +68,76 @@ fun AppDrawer(
 
     ModalDrawerSheet(
         modifier = modifier.border(
-            border = BorderStroke(width = 0.5.dp,color = WooColor.white),
-            shape = RoundedCornerShape(0.dp,15.dp,15.dp,0.dp)
-        ),drawerContainerColor = Color.Transparent
+            border = BorderStroke(width = 0.5.dp, color = WooColor.white),
+            shape = RoundedCornerShape(0.dp, 15.dp, 15.dp, 0.dp)
+        ), drawerContainerColor = Color.Transparent
     ) {
-        DrawerHeader(modifier,navigator)
+        DrawerHeader(modifier, navigator)
 //        Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.spacer_padding)))
         Column(modifier = Modifier.padding(Dimension.dimen_10)) {
 
             ViewDivider()
             VerticalSpacer()
-            CustomListTile(title = "Settings",leadingIcon = {
+            CustomListTile(title = "Settings", leadingIcon = {
                 Icon(
                     imageVector = Icons.Outlined.Settings,
                     contentDescription = "Settings",
                     tint = WooColor.white
                 )
-            },onClick = {
+            }, onClick = {
                 navigator.navigate(SettingsScreenDestination)
             })
 
-            CustomListTile(title = "Invite friend",leadingIcon = {
+            CustomListTile(title = "Invite friend", leadingIcon = {
                 Icon(
                     imageVector = Icons.Outlined.Person,
                     contentDescription = "Invite friend",
                     tint = WooColor.white
                 )
-            },onClick = {
+            }, onClick = {
                 navigator.navigate(SettingsScreenDestination)
             })
 
-            CustomListTile(title = "Help & Feedback",leadingIcon = {
+            CustomListTile(title = "Help & Feedback", leadingIcon = {
                 Icon(
                     imageVector = Icons.Outlined.Info,
                     contentDescription = "Feedback",
                     tint = WooColor.white
                 )
-            },onClick = {
+            }, onClick = {
                 navigator.navigate(SettingsScreenDestination)
             })
-            CustomListTile(title = "Share referral code",leadingIcon = {
+            CustomListTile(title = "Share referral code", leadingIcon = {
                 Icon(
                     imageVector = Icons.Outlined.Share,
                     contentDescription = "Referral",
                     tint = WooColor.white
                 )
-            },onClick = {
+            }, onClick = {
                 navigator.navigate(SettingsScreenDestination)
             })
-            CustomListTile(title = "Add invitation Code",leadingIcon = {
+            CustomListTile(title = "Add invitation Code", leadingIcon = {
                 Icon(
                     imageVector = Icons.Outlined.Pin,
                     contentDescription = "invitation",
                     tint = WooColor.white
                 )
-            },onClick = {
+            }, onClick = {
                 navigator.navigate(SettingsScreenDestination)
             })
-            CustomListTile(title = "Logout",leadingIcon = {
+            CustomListTile(title = "Logout", leadingIcon = {
                 Icon(
                     imageVector = Icons.Outlined.Logout,
                     contentDescription = "Logout",
                     tint = WooColor.white
                 )
-            },onClick = {
+            }, onClick = {
                 runBlocking {
-//                    preferences.clear()
+
+                    localDbViewModel.clearLocalDatabase()
+
+                    userPreferencesViewModel.clearPreference()
+
                     goToWelcomeActivity(context)
                 }
             })
@@ -139,7 +150,8 @@ fun AppDrawer(
 
 @Composable
 fun DrawerHeader(
-    modifier: Modifier,navigator: DestinationsNavigator
+    modifier: Modifier,
+    navigator: DestinationsNavigator
 ) {
     Row(
         horizontalArrangement = Arrangement.Start,
