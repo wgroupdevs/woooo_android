@@ -719,7 +719,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getContactList();
+//        getContactList();
         if (savedInstanceState != null) {
             this.mSavedInstanceAccount = savedInstanceState.getString("account");
             this.mSavedInstanceInit = savedInstanceState.getBoolean("initMode", false);
