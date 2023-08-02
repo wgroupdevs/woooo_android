@@ -125,7 +125,6 @@ import eu.siacs.conversations.utils.Compatibility;
 import eu.siacs.conversations.utils.GeoHelper;
 import eu.siacs.conversations.utils.MessageUtils;
 import eu.siacs.conversations.utils.NickValidityChecker;
-import eu.siacs.conversations.utils.Patterns;
 import eu.siacs.conversations.utils.PermissionUtils;
 import eu.siacs.conversations.utils.QuickLoader;
 import eu.siacs.conversations.utils.StylingHelper;
@@ -1334,7 +1333,7 @@ public class ConversationFragment extends XmppFragment
             MenuItem openWith = menu.findItem(R.id.open_with);
             MenuItem copyMessage = menu.findItem(R.id.copy_message);
             MenuItem copyLink = menu.findItem(R.id.copy_link);
-            MenuItem quoteMessage = menu.findItem(R.id.quote_message);
+            MenuItem replyMessage = menu.findItem(R.id.reply_message);
             MenuItem retryDecryption = menu.findItem(R.id.retry_decryption);
             MenuItem correctMessage = menu.findItem(R.id.correct_message);
             MenuItem shareWith = menu.findItem(R.id.share_with);
@@ -1356,7 +1355,7 @@ public class ConversationFragment extends XmppFragment
                     && !unInitiatedButKnownSize
                     && t == null) {
                 copyMessage.setVisible(true);
-                quoteMessage.setVisible(!showError && MessageUtils.prepareQuote(m).length() > 0);
+                replyMessage.setVisible(!showError && MessageUtils.prepareQuote(m).length() > 0);
                 final String scheme = ShareUtil.getLinkScheme(m.getMergedBody());
                 if ("xmpp".equals(scheme)) {
                     copyLink.setTitle(R.string.copy_jabber_id);
@@ -1445,7 +1444,7 @@ public class ConversationFragment extends XmppFragment
         } else if (itemId == R.id.copy_link) {
             ShareUtil.copyLinkToClipboard(activity, selectedMessage);
             return true;
-        } else if (itemId == R.id.quote_message) {
+        } else if (itemId == R.id.reply_message) {
             quoteMessage(selectedMessage);
             return true;
         } else if (itemId == R.id.send_again) {
