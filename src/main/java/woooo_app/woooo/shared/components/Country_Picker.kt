@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
-import woooo_app.woooo.feature.auth.viewmodel.LoginWithPhoneViewModel
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import woooo_app.woooo.shared.components.ViewDivider
@@ -85,9 +84,7 @@ fun SearchResults(query: String,viewModel: ViewModel) {
     }
 
     // Display the filtered results
-    LazyColumn(modifier = Modifier.clickable {
-
-    }) {
+    LazyColumn {
         items(filteredCountryList.size) { pair ->
             Column {
                 Text(
@@ -101,15 +98,6 @@ fun SearchResults(query: String,viewModel: ViewModel) {
                                 is SignUpViewModel -> viewModel.setShowCountryPickerValue(
                                     false
                                 )
-
-                                is LoginWithPhoneViewModel -> {
-                                    viewModel.setShowCountryPickerValue(
-                                        false
-                                    )
-                                    countryPickerViewModel.setSelectedCountryValue(
-                                        filteredCountryList[pair].name
-                                    )
-                                }
                             }
 
                         },

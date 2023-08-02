@@ -11,9 +11,32 @@ class UserPreferencesViewModel @Inject constructor(
     private val userPreferences: UserPreferences
 ) : ViewModel() {
 
-
     suspend fun setFirstName(firstName: String) {
         userPreferences.setFirstName(firstName)
+    }
+
+    suspend fun setAbout(about: String) {
+        userPreferences.setAbout(about)
+    }
+
+    suspend fun getAbout(): String {
+        return userPreferences.getAbout()
+    }
+
+    suspend fun setDOB(dob: String) {
+        userPreferences.setDOB(dob)
+    }
+
+    suspend fun getDOB(): String {
+        return userPreferences.getDOB()
+    }
+
+    suspend fun setPostalCode(postalCode: String) {
+        userPreferences.setAddress(postalCode)
+    }
+
+    suspend fun getPostalCode(): String {
+        return userPreferences.getPostalCode()
     }
 
     suspend fun setLastName(lastName: String) {
@@ -27,14 +50,21 @@ class UserPreferencesViewModel @Inject constructor(
     suspend fun setPhone(phone: String) {
         userPreferences.setPhone(phone)
     }
+    suspend fun getPhone():String{
+        return userPreferences.getPhone()
+    }
+
 
     suspend fun setAuthToken(authToken: String) {
         userPreferences.setAuthToken(authToken)
     }
 
-
     suspend fun setJID(jid: String) {
         userPreferences.setJID(jid)
+    }
+
+    suspend fun getProfileImage(): String {
+        return userPreferences.getProfileImage()
     }
 
     suspend fun setProfileImage(image: String) {
@@ -58,7 +88,7 @@ class UserPreferencesViewModel @Inject constructor(
     }
 
     suspend fun clearPreference() {
-        userPreferences.clear();
+        userPreferences.clear()
     }
 
 

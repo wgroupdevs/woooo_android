@@ -33,6 +33,7 @@ import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
+import woooo_app.woooo.feature.auth.EmailForAuthModule
 import woooo_app.woooo.feature.auth.viewmodel.VerifyOtpViewModel
 import woooo_app.woooo.goToWelcomeActivity
 import woooo_app.woooo.shared.base.AppBackGround
@@ -173,9 +174,9 @@ fun VerifyOtpView(navigator: DestinationsNavigator) {
                     SuccessDialogAuth(title = Strings.resetSuccess,
                         message = verifyOtpViewModel.resetPasswordState.value.message,
                         onClick = {
-                            clickOnSuccessResentPass(
+                            clickOnSuccessResetPass(
                                 context,
-                                verifyOtpViewModel = verifyOtpViewModel,navigator = navigator
+                                verifyOtpViewModel = verifyOtpViewModel
                             )
                         })
                 }
@@ -190,14 +191,13 @@ fun clickOnSuccessResentOtp(verifyOtpViewModel: VerifyOtpViewModel) {
     }
 }
 
-fun clickOnSuccessResentPass(
-    context:Context,
-    verifyOtpViewModel: VerifyOtpViewModel,navigator: DestinationsNavigator
+fun clickOnSuccessResetPass(
+    context: Context,verifyOtpViewModel: VerifyOtpViewModel
 ) {
     verifyOtpViewModel.resetPasswordState.value.apply {
         isSucceed.value = false
     }
+    EmailForAuthModule.clearEmailField()
 
     goToWelcomeActivity(context)
-//    navigator.popBackStack(LoginScreenDestination,false)
 }

@@ -1,6 +1,5 @@
 package woooo_app.woooo
 
-import LoginView
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -10,7 +9,6 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.feature.home.screen.DashboardView
-import woooo_app.woooo.feature.home.screen.HomePage
 import com.wgroup.woooo_app.woooo.feature.mining.views.MiningMainView
 import com.wgroup.woooo_app.woooo.feature.settings.views.ApplicationMainView
 import com.wgroup.woooo_app.woooo.feature.wallet.views.TransactionsView
@@ -19,6 +17,7 @@ import woooo_app.woooo.feature.auth.screen.ConfirmAccountScreen
 import woooo_app.woooo.feature.auth.screen.ForgotPasswordView
 import woooo_app.woooo.feature.auth.screen.SignUpView
 import woooo_app.woooo.feature.auth.screen.VerifyOtpView
+import woooo_app.woooo.feature.home.screen.HomePage
 import woooo_app.woooo.feature.meeting.views.MeetingMainView
 import woooo_app.woooo.feature.profile.views.UpdateProfileView
 import woooo_app.woooo.feature.settings.views.SettingMainView
@@ -31,12 +30,6 @@ import woooo_app.woooo.feature.settings.views.application.LanguageView
 import woooo_app.woooo.feature.settings.views.application.SoundAndVibrationView
 import woooo_app.woooo.feature.wallet.views.SendCurrencyView
 import woooo_app.woooo.feature.wallet.views.WalletMainView
-
-@Destination
-@Composable
-fun LoginScreen(navigator: DestinationsNavigator) {
-    LoginView(navigator)
-}
 
 @RootNavGraph(start = true)
 @Destination
