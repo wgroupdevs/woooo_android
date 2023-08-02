@@ -1,5 +1,6 @@
 package woooo_app.woooo.feature.home.ui
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,15 +36,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewModelScope
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import eu.siacs.conversations.R
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.whispersystems.libsignal.logging.Log
 import woooo_app.woooo.destinations.SettingsScreenDestination
 import woooo_app.woooo.destinations.UpdateProfileMainScreenDestination
 import woooo_app.woooo.feature.home.viewmodel.HomeViewModel
@@ -73,74 +71,74 @@ fun AppDrawer(
 
     ModalDrawerSheet(
         modifier = modifier.border(
-            border = BorderStroke(width = 0.5.dp,color = WooColor.white),
-            shape = RoundedCornerShape(0.dp,15.dp,15.dp,0.dp)
-        ),drawerContainerColor = Color.Transparent
+            border = BorderStroke(width = 0.5.dp, color = WooColor.white),
+            shape = RoundedCornerShape(0.dp, 15.dp, 15.dp, 0.dp)
+        ), drawerContainerColor = Color.Transparent
     ) {
-        DrawerHeader(modifier,navigator)
+        DrawerHeader(modifier, navigator)
 //        Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.spacer_padding)))
         Column(modifier = Modifier.padding(Dimension.dimen_10)) {
 
             ViewDivider()
             VerticalSpacer()
-            CustomListTile(title = "Settings",leadingIcon = {
+            CustomListTile(title = "Settings", leadingIcon = {
                 Icon(
                     imageVector = Icons.Outlined.Settings,
                     contentDescription = "Settings",
                     tint = WooColor.white
                 )
-            },onClick = {
-                Log.d("asdcasdcsadc","dcasdcasdcsadcs")
-                fillUserInfo(updateProfileViewModel,userPreferencesViewModel)
+            }, onClick = {
+                Log.d("APP_DRAWER", "Settings Button Pressed")
+                fillUserInfo(updateProfileViewModel, userPreferencesViewModel)
                 navigator.navigate(SettingsScreenDestination)
             })
 
-            CustomListTile(title = "Invite friend",leadingIcon = {
+            CustomListTile(title = "Invite friend", leadingIcon = {
                 Icon(
                     imageVector = Icons.Outlined.Person,
                     contentDescription = "Invite friend",
                     tint = WooColor.white
                 )
-            },onClick = {
-                Log.d("aascas","ascascasc")
+            }, onClick = {
+                Log.d("aascas", "ascascasc")
 
                 navigator.navigate(SettingsScreenDestination)
             })
 
-            CustomListTile(title = "Help & Feedback",leadingIcon = {
+            CustomListTile(title = "Help & Feedback", leadingIcon = {
                 Icon(
                     imageVector = Icons.Outlined.Info,
                     contentDescription = "Feedback",
                     tint = WooColor.white
                 )
-            },onClick = {
+            }, onClick = {
                 navigator.navigate(SettingsScreenDestination)
             })
-            CustomListTile(title = "Share referral code",leadingIcon = {
+            CustomListTile(title = "Share referral code", leadingIcon = {
                 Icon(
                     imageVector = Icons.Outlined.Share,
                     contentDescription = "Referral",
                     tint = WooColor.white
                 )
-            },onClick = {
+            }, onClick = {
                 navigator.navigate(SettingsScreenDestination)
             })
-            CustomListTile(title = "Add invitation Code",leadingIcon = {
+            CustomListTile(title = "Add invitation Code", leadingIcon = {
                 Icon(
                     imageVector = Icons.Outlined.Pin,
                     contentDescription = "invitation",
                     tint = WooColor.white
                 )
-            },onClick = {
+            }, onClick = {
                 navigator.navigate(SettingsScreenDestination)
             })
-            CustomListTile(title = "Logout",leadingIcon = {
+            CustomListTile(title = "Logout", leadingIcon = {
                 Icon(
                     imageVector = Icons.Outlined.Logout,
                     contentDescription = "Logout",
                     tint = WooColor.white
                 )
-            },onClick = {
+            }, onClick = {
                 runBlocking {
 
                     localDbViewModel.clearAllSessions()
@@ -159,7 +157,7 @@ fun AppDrawer(
 
 @Composable
 fun DrawerHeader(
-    modifier: Modifier,navigator: DestinationsNavigator
+    modifier: Modifier, navigator: DestinationsNavigator
 ) {
     Row(
         horizontalArrangement = Arrangement.Start,
@@ -195,7 +193,7 @@ fun DrawerHeader(
             Text(text = "Edit profile",
                 style = MaterialTheme.typography.labelMedium,
                 modifier = Modifier.clickable {
-                    Log.d("sdcnasnasdoivc","djcnasnasjn")
+                    Log.d("sdcnasnasdoivc", "djcnasnasjn")
                     navigator.navigate(
                         UpdateProfileMainScreenDestination
                     )
@@ -209,9 +207,9 @@ fun fillUserInfo(
     updateProfileViewModel: UpdateProfileViewModel,
     userPreferencesViewModel: UserPreferencesViewModel
 ) {
-    Log.d("Presswededed","aasasd")
-updateProfileViewModel.viewModelScope.launch {
-    updateProfileViewModel.profileImage.value = userPreferencesViewModel.getProfileImage()
+    Log.d("APP_DRAWER", "fillUserInfo Called.....")
+    runBlocking {
+        updateProfileViewModel.profileImage.value = userPreferencesViewModel.getProfileImage()
         updateProfileViewModel.setAboutControllerValue(userPreferencesViewModel.getAbout())
         updateProfileViewModel.setNameControllerValue(userPreferencesViewModel.getFirstName())
         updateProfileViewModel.setLastNameControllerValue(userPreferencesViewModel.getLastName())
@@ -219,5 +217,8 @@ updateProfileViewModel.viewModelScope.launch {
         updateProfileViewModel.getPhoneController = userPreferencesViewModel.getPhone()
         updateProfileViewModel.setDOBControllerValue(userPreferencesViewModel.getDOB())
         updateProfileViewModel.setPostalCodeControllerValue(userPreferencesViewModel.getPostalCode())
-}
+    }
+
+    Log.d("APP_DRAWER", "fillUserInfo Called END .....")
+
 }
