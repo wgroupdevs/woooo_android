@@ -88,11 +88,41 @@ class UserPreferencesImpl(private val dataStore: DataStore<Preferences>) : UserP
 
     }
 
+    override suspend fun getAbout(): String {
+        return dataStore.data.first()[UserPreferencesKey.ABOUT] ?: ""
+    }
+
+    override suspend fun getAddress(): String {
+        return dataStore.data.first()[UserPreferencesKey.ADDRESS] ?: ""
+    }
+
+    override suspend fun getPostalCode(): String {
+        return dataStore.data.first()[UserPreferencesKey.POSTAL_CODE] ?: ""
+    }
+
+    override suspend fun getPhone(): String {
+        return dataStore.data.first()[UserPreferencesKey.PHONE_NUMBER] ?: ""
+    }
+
     override suspend fun clear() {
         dataStore.edit {
-            Log.d(TAG, "Clearing UserPreference")
+            Log.d(TAG,"Clearing UserPreference")
             it.clear()
         }
     }
+
+    override suspend fun setAbout(about: String) {
+        dataStore.edit { it[UserPreferencesKey.ABOUT] = about }
+
+    }
+
+    override suspend fun setAddress(address: String) {
+        dataStore.edit { it[UserPreferencesKey.ADDRESS] = address }
+    }
+
+    override suspend fun setPostalCode(postalCode: String) {
+        dataStore.edit { it[UserPreferencesKey.POSTAL_CODE] = postalCode }
+    }
+
 
 }

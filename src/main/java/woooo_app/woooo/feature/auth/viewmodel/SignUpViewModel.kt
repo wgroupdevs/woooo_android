@@ -122,6 +122,12 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
         _setReferralCodeController.value = value
     }
 
+    private val _setPhoneWithCode = mutableStateOf("")
+    var getPhoneWithCode: State<String> = _setPhoneWithCode
+    fun setPhoneWithCode(value: String) {
+        _setPhoneWithCode.value = value
+    }
+
 //    val setSuccessDialog = mutableStateOf(false)
 //    val getSuccessDialog: State<Boolean> = setSuccessDialog
 
@@ -131,7 +137,7 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
         signUpUseCase.invoke(
             SignUpRequestModel(
                 email = EmailForAuthModule.getEmail.value.trim(),
-                phoneNumber = getPhoneNumberController.value.trim(),
+                phoneNumber = getPhoneWithCode.value.trim(),
                 password = getPasswordController.value.trim(),
                 userReferralCode = getReferralCodeController.value.trim(),
                 firstName = getNameController.value.trim(),

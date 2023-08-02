@@ -9,4 +9,8 @@ object EmailForAuthModule {
     fun setEmailValue(value: String) {
         setEmail.value = value
     }
+
+    fun clearEmailField(){
+        setEmailValue("")
+    }
 }

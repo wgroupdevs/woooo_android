@@ -1,6 +1,7 @@
 package woooo_app.woooo.feature.auth.screen
 
 import ShowLoader
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -295,8 +296,12 @@ fun SignUpView(navigator: DestinationsNavigator) {
                             signUpViewModel.getPasswordController.value,true
                         )
                     ) {
-                        signUpViewModel.signUp()
+                        signUpViewModel.setPhoneWithCode(countryPickerViewModel.getSelectedCountryDialCode.value + signUpViewModel.getPhoneNumberController.value)
+//                        signUpViewModel.signUp()
+
                     }
+
+                    Log.d(signUpViewModel.getPhoneWithCode.value,"Phone With Code")
                 },
                 content = {
                     Text(

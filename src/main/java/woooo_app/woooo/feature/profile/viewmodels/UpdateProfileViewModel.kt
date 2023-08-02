@@ -13,7 +13,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
-import woooo_app.woooo.data.datasource.local.UserPreferences
 import woooo_app.woooo.data.models.profile.UpdateProfileRequestModel
 import woooo_app.woooo.domain.usecase.UpdateProfileUseCase
 import woooo_app.woooo.domain.usecase.UploadProfileUseCase
@@ -26,7 +25,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UpdateProfileViewModel @Inject constructor(
-    private val userPreferences: UserPreferences,
     private val updateProfileUseCase: UpdateProfileUseCase,
     private val uploadProfileUseCase: UploadProfileUseCase,
 ) : ViewModel() {
@@ -128,12 +126,15 @@ class UpdateProfileViewModel @Inject constructor(
         _setPostalCodeError.value = value
     }
 
+    var getEmailController = ""
+    var getPhoneController = ""
+
     // set profile image of user
     var profileImage = mutableStateOf<String>(value = "")
-    fun setUserProfile() = viewModelScope.launch {
-        profileImage.value = userPreferences.getProfileImage()
-        Log.d(profileImage.value,"UserProfile Image")
-    }
+//    fun setUserProfile() = viewModelScope.launch {
+//        profileImage.value = userPreferences.getProfileImage()
+//        Log.d(profileImage.value,"UserProfile Image")
+//    }
 
     //upload profile
     fun uploadProfile(context: Context,fileUri: Uri) = viewModelScope.launch {
@@ -207,7 +208,7 @@ class UpdateProfileViewModel @Inject constructor(
         }.collect {}
     }
 
-    fun validateSignUpFields(): Boolean {
+    fun validateUpdateProfileFields(): Boolean {
         if (getAboutController.value.trim() == "") {
             // pass error text to show below in text field
             setErrorValueText(Strings.enterAboutText)

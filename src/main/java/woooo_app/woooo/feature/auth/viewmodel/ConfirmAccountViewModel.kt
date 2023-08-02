@@ -73,7 +73,7 @@ class ConfirmAccountViewModel @Inject constructor(
                 isSucceed.value = it.Success ?: false
                 isLoading.value = false
             }
-            EmailForAuthModule.setEmailValue("")
+            EmailForAuthModule.clearEmailField()
             Log.d("Confirm Account Success","Account Confirmed")
         }.doOnFailure {
             _confirmAccountState.value.apply {
@@ -94,7 +94,7 @@ class ConfirmAccountViewModel @Inject constructor(
     // ResentCode Api Function
 
     fun resentCodeForConfirmAccount(context: Context) = viewModelScope.launch {
-
+Log.d(EmailForAuthModule.getEmail.value, "scnsadncaosdcsdmsdc ")
         reSendCodeUseCase.invoke(
             BaseResendCodeReqParam(
                 email = ReSentOTPRequestModel(email = EmailForAuthModule.getEmail.value),

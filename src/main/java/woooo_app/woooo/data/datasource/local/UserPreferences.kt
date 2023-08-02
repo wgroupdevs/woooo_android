@@ -11,6 +11,10 @@ interface UserPreferences {
     suspend fun getJID(): String
     suspend fun getProfileImage(): String
     suspend fun getDOB(): String
+    suspend fun getAbout(): String
+    suspend fun getAddress(): String
+    suspend fun getPostalCode(): String
+    suspend fun getPhone(): String
 
     //    set
     suspend fun setFirstName(firstName: String)
@@ -22,5 +26,8 @@ interface UserPreferences {
     suspend fun setProfileImage(image: String)
     suspend fun setDOB(dob: String)
     suspend fun clear()
+    suspend fun setAbout(about: String)
+    suspend fun setAddress(address: String)
+    suspend fun setPostalCode(postalCode: String)
 
 }

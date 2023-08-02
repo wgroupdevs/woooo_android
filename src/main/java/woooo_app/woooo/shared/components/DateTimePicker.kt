@@ -28,13 +28,14 @@ import java.time.LocalTime
 @Composable
 fun CustomDateTimePicker(
     onDateChange: (LocalDate) -> Unit = {},
+    onDismissRequest: () -> Unit
 ) {
     DatePickerDialog(
         modifier = Modifier
             .clip(RoundedCornerShape(10.dp))
             .alpha(0.7f),
         containerColor = WooColor.primary,
-        onDismissRequest = { },
+        onDismissRequest = onDismissRequest,
         onDateChange = onDateChange,
         buttonColors = ButtonDefaults.textButtonColors(
             contentColor = WooColor.dark,
