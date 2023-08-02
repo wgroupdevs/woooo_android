@@ -171,7 +171,6 @@ class MainActivity : ComponentActivity() {
         userPreferences.setPhone(user.phoneNumber)
         userPreferences.setProfileImage(user.imageURL)
         userPreferences.setJID(user.jid)
-
     }
 
     @Composable

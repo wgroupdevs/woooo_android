@@ -140,6 +140,7 @@ class UpdateProfileViewModel @Inject constructor(
         val file = File(fileUri.path!!)
         val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
         uploadProfileUseCase.invoke(params = requestFile).doOnSuccess {
+
             _uploadProfileStates.value.apply {
                 data = it
                 message = it.Message.toString()

@@ -30,17 +30,17 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import woooo_app.woooo.feature.home.screen.initCircleTextOffset
 import com.wgroup.woooo_app.woooo.feature.home.viewmodel.CircularMenuViewModel
 import com.wgroup.woooo_app.woooo.feature.wallet.views.Wallet_Pin_Verify_Dialog
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import eu.siacs.conversations.R
-import eu.siacs.conversations.ui.StartConversationActivity
+import eu.siacs.conversations.ui.ConversationActivity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 import woooo_app.woooo.destinations.MeetingMainViewScreenDestination
 import woooo_app.woooo.destinations.MiningMainScreenDestination
+import woooo_app.woooo.feature.home.screen.initCircleTextOffset
 import woooo_app.woooo.feature.wallet.views.PieChart
 import woooo_app.woooo.utils.Dimension
 
@@ -165,12 +165,12 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                         }
                         scopeAntiClockWise.launch {
                             circularMenuViewModel.rotateMiddleCircleAntiClockWise()
-//                        context.startActivity(Intent(context,ConversationActivity::class.java))
-                            context.startActivity(
-                                Intent(
-                                    context,StartConversationActivity::class.java
-                                )
-                            )
+                        context.startActivity(Intent(context, ConversationActivity::class.java))
+//                            context.startActivity(
+//                                Intent(
+//                                    context,StartConversationActivity::class.java
+//                                )
+//                            )
                             indexToBePressed = 0
                         }
                     })

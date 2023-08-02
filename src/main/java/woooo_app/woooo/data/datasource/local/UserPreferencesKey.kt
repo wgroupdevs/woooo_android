@@ -10,4 +10,5 @@ object UserPreferencesKey {
     val PHONE_NUMBER = stringPreferencesKey("PHONE_NUMBER")
     val EMAIL = stringPreferencesKey("EMAIL")
     val PROFILE_IMAGE = stringPreferencesKey("PROFILE_IMAGE")
+    val DATE_OF_BIRTH = stringPreferencesKey("DATE_OF_BIRTH")
 }

@@ -10,6 +10,7 @@ interface UserPreferences {
     suspend fun getAuthToke(): String
     suspend fun getJID(): String
     suspend fun getProfileImage(): String
+    suspend fun getDOB(): String
 
     //    set
     suspend fun setFirstName(firstName: String)
@@ -19,6 +20,7 @@ interface UserPreferences {
     suspend fun setAuthToken(authToken: String)
     suspend fun setJID(jid: String)
     suspend fun setProfileImage(image: String)
+    suspend fun setDOB(dob: String)
     suspend fun clear()
 
 }
