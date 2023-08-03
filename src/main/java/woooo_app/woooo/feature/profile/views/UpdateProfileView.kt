@@ -66,6 +66,7 @@ import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.Shapes
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
+import eu.siacs.conversations.http.model.UserBasicInfo
 import kotlinx.coroutines.runBlocking
 import woooo_app.woooo.destinations.HomeScreenDestination
 import woooo_app.woooo.feature.auth.screen.SuccessDialogAuth
@@ -89,18 +90,17 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
     val gg = remember {
         mutableStateOf(false)
     }
-    LaunchedEffect(key1 = "To_Call_fillUserInfo()_Only_One_Time ",block = {
+    LaunchedEffect(key1 = "To_Call_fillUserInfo()_Only_One_Time",block = {
         fillUserInfo(updateProfileViewModel,userPreferencesViewModel)
     })
-    val imagePicker = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = {
-            if (gg.value) updateProfileViewModel.profileImage.value = it.toString()
-            updateProfileViewModel.uploadProfile(
-                context,it!!
-            )
-
-        })
+    val imagePicker =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia(),
+            onResult = {
+                if (gg.value) updateProfileViewModel.profileImage.value = it.toString()
+                updateProfileViewModel.uploadProfile(
+                    context,it!!
+                )
+            })
     Column(
         Modifier
             .fillMaxSize()
@@ -408,6 +408,15 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
         // enabled success dialgue
         if (updateProfileViewModel.updateProfileStates.value.isSucceed.value) {
 
+            var basicInfo: UserBasicInfo =
+                updateProfileViewModel.updateProfileStates.value.data.Data!!
+
+            runBlocking {
+                updateProfileViewModel.saveUserInfoToPreferencesOnUpdateProfile(
+                    userPreferencesViewModel,basicInfo
+                )
+            }
+
             SuccessDialogAuth(title = Strings.updateSuccess,
                 message = updateProfileViewModel.updateProfileStates.value.message,
                 onClick = {
@@ -453,7 +462,8 @@ private fun fillUserInfo(
         updateProfileViewModel.setLastNameControllerValue(userPreferencesViewModel.getLastName())
         updateProfileViewModel.getEmailController = userPreferencesViewModel.getEmail()
         updateProfileViewModel.getPhoneController = userPreferencesViewModel.getPhone()
-        updateProfileViewModel.setDOBControllerValue(convertDOBinLocal(userPreferencesViewModel))
+        updateProfileViewModel.setDOBControllerValue(userPreferencesViewModel.getDOB())
+//        updateProfileViewModel.setDOBControllerValue(convertDOBinLocal(userPreferencesViewModel))
         updateProfileViewModel.setPostalCodeControllerValue(userPreferencesViewModel.getPostalCode())
         updateProfileViewModel.setAddressControllerValue(userPreferencesViewModel.getAddress())
         updateProfileViewModel.language.value = userPreferencesViewModel.getLanguage()
@@ -464,10 +474,17 @@ private fun fillUserInfo(
 
 @RequiresApi(Build.VERSION_CODES.O)
 suspend fun convertDOBinLocal(userPreferencesViewModel: UserPreferencesViewModel): String {
+    userPreferencesViewModel.setDOB("2023-08-03T08:12:31.869Z")
     val serverDateTimeString = userPreferencesViewModel.getDOB()
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
-    val dateTime = LocalDateTime.parse(serverDateTimeString,formatter)
-    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    val dateString = dateTime.format(dateFormatter)
-    return dateString
+    return if (serverDateTimeString.equals(formatter)) {
+        val dateTime = LocalDateTime.parse(serverDateTimeString,formatter)
+        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val dateString = dateTime.format(dateFormatter)
+        Log.d("yes Coming ","")
+        dateString
+    } else {
+        userPreferencesViewModel.getDOB()
+    }
+
 }

@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wgroup.woooo_app.woooo.utils.Strings
 import dagger.hilt.android.lifecycle.HiltViewModel
+import eu.siacs.conversations.http.model.UserBasicInfo
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -21,6 +22,7 @@ import woooo_app.woooo.shared.base.doOnFailure
 import woooo_app.woooo.shared.base.doOnLoading
 import woooo_app.woooo.shared.base.doOnSuccess
 import woooo_app.woooo.shared.components.showToast
+import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
@@ -180,7 +182,7 @@ class UpdateProfileViewModel @Inject constructor(
             UpdateProfileRequestModel(
                 firstName = getNameController.value,
                 lastName = getLastNameController.value,
-                dateOfBirth = getDOBController.value + "T09:55:09.417",
+                dateOfBirth = getDOBController.value,
                 language = language.value,
                 description = getAboutController.value,
                 address1 = getAddressController.value,
@@ -198,6 +200,7 @@ class UpdateProfileViewModel @Inject constructor(
                 isLoading.value = false
             }
             Log.d("Update Profile Success",it.Message.toString())
+
         }.doOnFailure {
             _updateProfileStates.value.apply {
                 message = it?.Message.toString()
@@ -213,6 +216,7 @@ class UpdateProfileViewModel @Inject constructor(
                 isLoading.value = true
             }
         }.collect {}
+
     }
 
     fun validateUpdateProfileFields(): Boolean {
@@ -254,6 +258,25 @@ class UpdateProfileViewModel @Inject constructor(
             return false
         }
         return true
+    }
+
+    suspend fun saveUserInfoToPreferencesOnUpdateProfile(
+        userPreferences: UserPreferencesViewModel,user: UserBasicInfo
+    ) {
+        userPreferences.setEmail(user.email ?: "")
+        userPreferences.setFirstName(user.firstName ?: "")
+        userPreferences.setLastName(user.lastName ?: "")
+        userPreferences.setPhone(user.phoneNumber ?: "")
+        userPreferences.setProfileImage(user.imageURL ?: "")
+        userPreferences.setJID(user.jid ?: "")
+        userPreferences.setAbout(user.about ?: "")
+        userPreferences.setAddress(user.address ?: "")
+        userPreferences.setPostalCode(user.postalCode ?: "")
+        userPreferences.setLanguage(user.language ?: "")
+        userPreferences.setLanguageCode(user.languageCode ?: "")
+        userPreferences.setDOB(user.dob ?: "")
+
+
     }
 }
 

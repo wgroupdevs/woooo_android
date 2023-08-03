@@ -1,9 +1,12 @@
 package woooo_app.woooo.data.models.profile
+
+import eu.siacs.conversations.http.model.UserBasicInfo
+
 data class UpdateProfileModel (
     val Success: Boolean? = null,
     val Message: String? = null,
     val Error: String? = null,
-    val Data: UpdateProfileModelData? = null
+    val Data: UserBasicInfo? = null
 )
 
 data class UpdateProfileModelData (

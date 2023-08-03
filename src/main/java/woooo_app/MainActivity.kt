@@ -160,18 +160,18 @@ class MainActivity : ComponentActivity() {
         userPreferences: UserPreferencesViewModel,token: String,user: UserBasicInfo
     ) {
         userPreferences.setAuthToken(token)
-        userPreferences.setEmail(user.email)
-        userPreferences.setFirstName(user.firstName)
-        userPreferences.setLastName(user.lastName)
-        userPreferences.setPhone(user.phoneNumber)
-        userPreferences.setProfileImage(user.imageURL)
-        userPreferences.setJID(user.jid)
-        userPreferences.setAbout(user.about)
-        userPreferences.setAddress(user.address)
-        userPreferences.setPostalCode(user.postalCode)
-        userPreferences.setLanguage(user.language)
-        userPreferences.setLanguageCode(user.languageCode)
-        userPreferences.setDOB(user.dob)
+        userPreferences.setEmail(user.email?: "")
+        userPreferences.setFirstName(user.firstName?: "")
+        userPreferences.setLastName(user.lastName?: "")
+        userPreferences.setPhone(user.phoneNumber?: "")
+        userPreferences.setProfileImage(user.imageURL?: "")
+        userPreferences.setJID(user.jid?: "")
+        userPreferences.setAbout(user.about?: "")
+        userPreferences.setAddress(user.address?: "")
+        userPreferences.setPostalCode(user.postalCode?: "")
+        userPreferences.setLanguage(user.language?: "")
+        userPreferences.setLanguageCode(user.languageCode?: "")
+        userPreferences.setDOB(user.dob?: "")
 
 
     }
