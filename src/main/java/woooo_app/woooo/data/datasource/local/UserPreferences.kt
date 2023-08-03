@@ -15,6 +15,9 @@ interface UserPreferences {
     suspend fun getAddress(): String
     suspend fun getPostalCode(): String
     suspend fun getPhone(): String
+    suspend fun getEmail(): String
+    suspend fun getLanguage(): String
+    suspend fun getLanguageCode(): String
 
     //    set
     suspend fun setFirstName(firstName: String)
@@ -29,5 +32,7 @@ interface UserPreferences {
     suspend fun setAbout(about: String)
     suspend fun setAddress(address: String)
     suspend fun setPostalCode(postalCode: String)
+    suspend fun setLanguage(language: String)
+    suspend fun setLanguageCode(languageCode: String)
 
 }

@@ -1,6 +1,5 @@
 package woooo_app.woooo.data.datasource.remote.auth
 
-import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -24,6 +23,7 @@ import woooo_app.woooo.data.models.auth.requestmodels.SignUpRequestModel
 import woooo_app.woooo.data.models.profile.UpdateProfileModel
 import woooo_app.woooo.data.models.profile.UpdateProfileRequestModel
 import woooo_app.woooo.data.models.profile.UploadProfileModel
+import java.io.File
 
 interface AuthApiService {
     companion object {
@@ -63,6 +63,6 @@ interface AuthApiService {
     @Multipart
     @POST("/api/v1/Account/ProfilePic") // Replace with your API endpoint
     suspend fun uploadFile(
-        @Part("AccountUniqueId") accountUniqueId: String,@Part("Image") image: RequestBody
+        @Part("AccountUniqueId") accountUniqueId: String, @Part("Image") image: File
     ): Response<UploadProfileModel>
 }

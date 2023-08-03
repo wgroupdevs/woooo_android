@@ -3,8 +3,7 @@ package eu.siacs.conversations.http.model;
 import java.io.Serializable;
 
 
-
-public  class UserBasicInfo implements Serializable {
+public class UserBasicInfo implements Serializable {
     public String accountId;
     public String firstName;
     public String lastName;
@@ -14,10 +13,58 @@ public  class UserBasicInfo implements Serializable {
     public String imageURL;
     public int id;
     public String jid;
+    public String description;
+    public String dateOfBirth;
+    public String address;
+    public String postalCode;
+    public String language;
+    public String languageCode;
+
 
     public String getAccountId() {
         return accountId;
     }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public String getLanguageCode() {
+        return languageCode;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getDOB() {
+        return dateOfBirth;
+    }
+
+    public void setDOB(String dob) {
+        this.dateOfBirth = dob;
+    }
+
+    public String getAbout() {
+        return description;
+    }
+
+    public void setAbout(String about) {
+        this.description = about;
+    }
+
 
     public String getFirstName() {
         return firstName;
@@ -41,6 +88,14 @@ public  class UserBasicInfo implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public void setLanguageCode(String email) {
+        this.languageCode = languageCode;
     }
 
     public Boolean getVarified() {

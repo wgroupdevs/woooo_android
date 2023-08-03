@@ -19,6 +19,7 @@ import woooo_app.woooo.data.models.profile.UploadProfileModel
 import woooo_app.woooo.domain.repository.AuthRepository
 import woooo_app.woooo.shared.base.APIResult
 import woooo_app.woooo.shared.base.BaseUseCase
+import java.io.File
 import javax.inject.Inject
 
 typealias LoginBaseUseCase = BaseUseCase<LoginRequestParams,Flow<APIResult<LoginModel>>>
@@ -28,7 +29,7 @@ typealias ReSendCodeBaseUseCase = BaseUseCase<BaseResendCodeReqParam,Flow<APIRes
 typealias ForgotPasswordBaseUseCase = BaseUseCase<ForgotPasswordRequestModel,Flow<APIResult<ForgotPasswordModel>>>
 typealias ResetPasswordBaseUseCase = BaseUseCase<ResetPasswordRequestModel,Flow<APIResult<ResetPasswordModel>>>
 typealias UpdateProfileBaseUseCase = BaseUseCase<UpdateProfileRequestModel,Flow<APIResult<UpdateProfileModel>>>
-typealias UploadProfileBaseUseCase = BaseUseCase<RequestBody,Flow<APIResult<UploadProfileModel>>>
+typealias UploadProfileBaseUseCase = BaseUseCase<File,Flow<APIResult<UploadProfileModel>>>
 
 /**
  * use case to login user
@@ -87,6 +88,6 @@ class UpdateProfileUseCase @Inject constructor(private val profileRepository: Au
 
 class UploadProfileUseCase @Inject constructor(private val profileRepository: AuthRepository) :
     UploadProfileBaseUseCase {
-    override suspend fun invoke(params: RequestBody): Flow<APIResult<UploadProfileModel>> =
+    override suspend fun invoke(params: File): Flow<APIResult<UploadProfileModel>> =
         profileRepository.uploadProfile(params)
 }

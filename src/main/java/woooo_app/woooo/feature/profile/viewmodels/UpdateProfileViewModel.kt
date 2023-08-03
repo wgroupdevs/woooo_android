@@ -12,7 +12,8 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import woooo_app.woooo.data.models.profile.UpdateProfileRequestModel
 import woooo_app.woooo.domain.usecase.UpdateProfileUseCase
 import woooo_app.woooo.domain.usecase.UploadProfileUseCase
@@ -20,7 +21,9 @@ import woooo_app.woooo.shared.base.doOnFailure
 import woooo_app.woooo.shared.base.doOnLoading
 import woooo_app.woooo.shared.base.doOnSuccess
 import woooo_app.woooo.shared.components.showToast
+import java.io.ByteArrayOutputStream
 import java.io.File
+import java.io.InputStream
 import javax.inject.Inject
 
 @HiltViewModel
@@ -130,7 +133,9 @@ class UpdateProfileViewModel @Inject constructor(
     var getPhoneController = ""
 
     // set profile image of user
-    var profileImage = mutableStateOf<String>(value = "")
+    var profileImage = mutableStateOf(value = "")
+    var language = mutableStateOf(value = "")
+    var languageCode = mutableStateOf(value = "")
 //    fun setUserProfile() = viewModelScope.launch {
 //        profileImage.value = userPreferences.getProfileImage()
 //        Log.d(profileImage.value,"UserProfile Image")
@@ -138,9 +143,12 @@ class UpdateProfileViewModel @Inject constructor(
 
     //upload profile
     fun uploadProfile(context: Context,fileUri: Uri) = viewModelScope.launch {
-        val file = File(fileUri.path!!)
-        val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())
-        uploadProfileUseCase.invoke(params = requestFile).doOnSuccess {
+        var file = File(fileUri.path!!)
+        val byteArray = uriToByteArray(context,fileUri)
+        val requestBody = byteArray?.toRequestBody("image/jpeg".toMediaTypeOrNull())
+        val imagePart = MultipartBody.Part.createFormData("Image","image.jpg",requestBody!!)
+
+        uploadProfileUseCase.invoke(params = file).doOnSuccess {
 
             _uploadProfileStates.value.apply {
                 data = it
@@ -172,16 +180,15 @@ class UpdateProfileViewModel @Inject constructor(
             UpdateProfileRequestModel(
                 firstName = getNameController.value,
                 lastName = getLastNameController.value,
-                imageURL = "",
-                dateOfBirth = getDOBController.value,
-                language = "userPreferences.getUserLanguage",
-                description = getAboutController.value + "T11:39:08.478Z",
+                dateOfBirth = getDOBController.value + "T09:55:09.417",
+                language = language.value,
+                description = getAboutController.value,
                 address1 = getAddressController.value,
                 city = "userPreferences.getUserAddress",
                 country = "userPreferences.getUserCountry",
                 zipCode = getPostalCodeController.value,
                 state = "userPreferences.getUserState",
-                languageCode = "userPreferences.getUserLanguageCode"
+                languageCode = languageCode.value
             )
         ).doOnSuccess {
             _updateProfileStates.value.apply {
@@ -227,7 +234,7 @@ class UpdateProfileViewModel @Inject constructor(
             // enabled value of error in text field
             setLastNameErrorValue(true)
             return false
-        } else if (getDOBController.value.trim() == "") {
+        } else if (getDOBController.value.isEmpty()) {
             // pass error text to show below in text field
             setErrorValueText(Strings.enterDobTex)
             // enabled value of error in text field
@@ -248,4 +255,39 @@ class UpdateProfileViewModel @Inject constructor(
         }
         return true
     }
+}
+
+fun uriToByteArray(context: Context,imageUri: Uri): ByteArray? {
+    var inputStream: InputStream? = null
+    var byteArray: ByteArray? = null
+
+    try {
+        // Open an input stream from the image URI
+        inputStream = context.contentResolver.openInputStream(imageUri)
+
+        if (inputStream != null) {
+            // Convert the input stream to a byte array
+            byteArray = getBytesFromInputStream(inputStream)
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+    } finally {
+        inputStream?.close()
+    }
+
+    return byteArray
+}
+
+fun getBytesFromInputStream(inputStream: InputStream): ByteArray {
+    // Read the input stream and write the data to a ByteArrayOutputStream
+    val buffer = ByteArray(8192)
+    val outputStream = ByteArrayOutputStream()
+
+    var bytesRead: Int
+    while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+        outputStream.write(buffer,0,bytesRead)
+    }
+
+    // Convert the ByteArrayOutputStream to a byte array
+    return outputStream.toByteArray()
 }

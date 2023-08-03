@@ -104,6 +104,18 @@ class UserPreferencesImpl(private val dataStore: DataStore<Preferences>) : UserP
         return dataStore.data.first()[UserPreferencesKey.PHONE_NUMBER] ?: ""
     }
 
+    override suspend fun getEmail(): String {
+        return dataStore.data.first()[UserPreferencesKey.EMAIL] ?: ""
+    }
+
+    override suspend fun getLanguage(): String {
+        return dataStore.data.first()[UserPreferencesKey.LANGUAGE] ?: ""
+    }
+
+    override suspend fun getLanguageCode(): String {
+        return dataStore.data.first()[UserPreferencesKey.LANGUAGE_CODE] ?: ""
+    }
+
     override suspend fun clear() {
         dataStore.edit {
             Log.d(TAG,"Clearing UserPreference")
@@ -122,6 +134,14 @@ class UserPreferencesImpl(private val dataStore: DataStore<Preferences>) : UserP
 
     override suspend fun setPostalCode(postalCode: String) {
         dataStore.edit { it[UserPreferencesKey.POSTAL_CODE] = postalCode }
+    }
+
+    override suspend fun setLanguage(language: String) {
+        dataStore.edit { it[UserPreferencesKey.LANGUAGE] = language }
+    }
+
+    override suspend fun setLanguageCode(languageCode: String) {
+        dataStore.edit { it[UserPreferencesKey.LANGUAGE_CODE] = languageCode }
     }
 
 

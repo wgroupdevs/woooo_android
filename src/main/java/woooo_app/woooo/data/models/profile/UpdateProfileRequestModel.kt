@@ -7,7 +7,6 @@ data class UpdateProfileRequestModel(
     val dateOfBirth: String,
     val description: String,
     val firstName: String,
-    val imageURL: String,
     val language: String,
     val languageCode: String,
     val lastName: String,
@@ -18,7 +17,6 @@ data class UpdateProfileRequestModel(
         return mapOf(
             "firstName" to firstName,
             "lastName" to lastName,
-            "imageURL" to imageURL,
             "dateOfBirth" to dateOfBirth,
             "language" to language,
             "description" to description,
