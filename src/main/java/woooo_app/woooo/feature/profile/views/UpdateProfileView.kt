@@ -108,6 +108,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
 
 
         })
+
     Column(
         Modifier
             .fillMaxSize()
@@ -415,6 +416,15 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
         // enabled success dialgue
         if (updateProfileViewModel.updateProfileStates.value.isSucceed.value) {
 
+            var basicInfo: UserBasicInfo =
+                updateProfileViewModel.updateProfileStates.value.data.Data!!
+
+            runBlocking {
+                updateProfileViewModel.saveUserInfoToPreferencesOnUpdateProfile(
+                    userPreferencesViewModel,basicInfo
+                )
+            }
+
             SuccessDialogAuth(title = Strings.updateSuccess,
                 message = updateProfileViewModel.updateProfileStates.value.message,
                 onClick = {
@@ -460,6 +470,8 @@ private fun fillUserInfo(
         updateProfileViewModel.setLastNameControllerValue(userPreferencesViewModel.getLastName())
         updateProfileViewModel.getEmailController = userPreferencesViewModel.getEmail()
         updateProfileViewModel.getPhoneController = userPreferencesViewModel.getPhone()
+        updateProfileViewModel.setDOBControllerValue(userPreferencesViewModel.getDOB())
+//        updateProfileViewModel.setDOBControllerValue(convertDOBinLocal(userPreferencesViewModel))
 //        if(userPreferencesViewModel.getDOB().isNotEmpty()){
 //
 //            updateProfileViewModel.setDOBControllerValue(convertDOBinLocal(userPreferencesViewModel))
@@ -478,8 +490,14 @@ private fun fillUserInfo(
 suspend fun convertDOBinLocal(userPreferencesViewModel: UserPreferencesViewModel): String {
     val serverDateTimeString = userPreferencesViewModel.getDOB()
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
-    val dateTime = LocalDateTime.parse(serverDateTimeString, formatter)
-    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-    val dateString = dateTime.format(dateFormatter)
-    return dateString
+    return if (serverDateTimeString.equals(formatter)) {
+        val dateTime = LocalDateTime.parse(serverDateTimeString,formatter)
+        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val dateString = dateTime.format(dateFormatter)
+        Log.d("yes Coming ","")
+        dateString
+    } else {
+        userPreferencesViewModel.getDOB()
+    }
+
 }

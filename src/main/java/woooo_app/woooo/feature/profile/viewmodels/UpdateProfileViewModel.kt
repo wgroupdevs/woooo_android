@@ -205,7 +205,7 @@ class UpdateProfileViewModel @Inject constructor(
             UpdateProfileRequestModel(
                 firstName = getNameController.value,
                 lastName = getLastNameController.value,
-                dateOfBirth = getDOBController.value + "T09:55:09.417",
+                dateOfBirth = getDOBController.value,
                 language = language.value,
                 description = getAboutController.value,
                 address1 = getAddressController.value,
@@ -222,6 +222,8 @@ class UpdateProfileViewModel @Inject constructor(
                 isSucceed.value = it.Success ?: false
                 isLoading.value = false
             }
+            Log.d("Update Profile Success",it.Message.toString())
+
             Log.d("Update Profile Success", it.Message.toString())
         }.doOnFailure {
             _updateProfileStates.value.apply {
@@ -238,6 +240,7 @@ class UpdateProfileViewModel @Inject constructor(
                 isLoading.value = true
             }
         }.collect {}
+
     }
 
     fun validateUpdateProfileFields(): Boolean {
@@ -280,9 +283,28 @@ class UpdateProfileViewModel @Inject constructor(
         }
         return true
     }
+
+    suspend fun saveUserInfoToPreferencesOnUpdateProfile(
+        userPreferences: UserPreferencesViewModel,user: UserBasicInfo
+    ) {
+        userPreferences.setEmail(user.email ?: "")
+        userPreferences.setFirstName(user.firstName ?: "")
+        userPreferences.setLastName(user.lastName ?: "")
+        userPreferences.setPhone(user.phoneNumber ?: "")
+        userPreferences.setProfileImage(user.imageURL ?: "")
+        userPreferences.setJID(user.jid ?: "")
+        userPreferences.setAbout(user.about ?: "")
+        userPreferences.setAddress(user.address ?: "")
+        userPreferences.setPostalCode(user.postalCode ?: "")
+        userPreferences.setLanguage(user.language ?: "")
+        userPreferences.setLanguageCode(user.languageCode ?: "")
+        userPreferences.setDOB(user.dob ?: "")
+
+
+    }
 }
 
-fun uriToByteArray(context: Context, imageUri: Uri): ByteArray? {
+fun uriToByteArray(context: Context,imageUri: Uri): ByteArray? {
     var inputStream: InputStream? = null
     var byteArray: ByteArray? = null
 
@@ -310,7 +332,7 @@ fun getBytesFromInputStream(inputStream: InputStream): ByteArray {
 
     var bytesRead: Int
     while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-        outputStream.write(buffer, 0, bytesRead)
+        outputStream.write(buffer,0,bytesRead)
     }
 
     // Convert the ByteArrayOutputStream to a byte array
