@@ -62,6 +62,7 @@ import eu.siacs.conversations.databinding.DialogPresenceBinding;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.entities.Presence;
 import eu.siacs.conversations.entities.PresenceTemplate;
+import eu.siacs.conversations.http.model.GetWooContactsModel;
 import eu.siacs.conversations.http.model.LoginAPIResponseJAVA;
 import eu.siacs.conversations.http.services.BaseModelAPIResponse;
 import eu.siacs.conversations.http.services.WooooAuthService;
@@ -96,11 +97,11 @@ import woooo_app.MainActivity;
 import woooo_app.woooo.feature.auth.EmailForAuthModule;
 import woooo_app.woooo.utils.NavIntentConstantKt;
 
-public class EditAccountActivity extends OmemoActivity implements OnAccountUpdate, OnUpdateBlocklist, OnKeyStatusUpdated, OnCaptchaRequested, KeyChainAliasCallback, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnMamPreferencesFetched, WooooAuthService.OnLoginAPiResult {
+public class EditAccountActivity extends OmemoActivity implements OnAccountUpdate, OnUpdateBlocklist, OnKeyStatusUpdated, OnCaptchaRequested, KeyChainAliasCallback, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnMamPreferencesFetched, WooooAuthService.OnLoginAPiResult,WooooAuthService.OnGetWooContactAPiResult{
     Boolean isLoginWithEmail = false;
     CountryCodePicker codePicker;
     Context context;
-    List<String> contactsFromPhoneBook = new ArrayList<>();
+    ArrayList<String> contactsFromPhoneBook = new ArrayList<>();
 
 
     public static final String EXTRA_OPENED_FROM_NOTIFICATION = "opened_from_notification";
@@ -179,6 +180,16 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
 
     private void goToMainActivity(String navIntentConst) {
+//        getContactList();
+//        GetWooContactsRequestParams getWooContactsRequestParams = new GetWooContactsRequestParams();
+//        getWooContactsRequestParams.number = contactsFromPhoneBook;
+//        getWooContactsRequestParams.accountId = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
+//
+//
+//
+//        Log.d(getWooContactsRequestParams.number.toString(),"adadsvsadsad");
+////        setSupportActionBar(binding.toolbar);
+//        xmppConnectionService.getWooContacts(getWooContactsRequestParams, EditAccountActivity.this);
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(NavIntentConstantKt.CONST_KEY_INTENT, navIntentConst);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -733,7 +744,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         }
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_edit_account);
         context = this;
-//        setSupportActionBar(binding.toolbar);
+
         binding.accountJid.addTextChangedListener(this.mTextWatcher);
         binding.accountJid.setOnFocusChangeListener(this.mEditTextFocusListener);
         this.binding.accountPassword.addTextChangedListener(this.mTextWatcher);
@@ -1629,6 +1640,33 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                 final String password = binding.accountPassword.getText().toString();
                 loginAPIResponseJAVA = (LoginAPIResponseJAVA) loginModel;
                 performXMPPLoginAttempt(jid, password, 5222, null);
+
+            } else if (loginModel instanceof BaseModelAPIResponse) {
+                Toast.makeText(context, ((BaseModelAPIResponse) loginModel).Message, Toast.LENGTH_LONG).show();
+
+                hideProgressDialog();
+                Log.d("onLoginApiResultFound", " BaseModelAPIResponse Called in EditActivity " + ((BaseModelAPIResponse) loginModel).Message);
+            } else {
+                hideProgressDialog();
+                Log.d("onLoginApiResultFound", "ECEPTION FOUND... " + loginModel);
+
+            }
+        });
+    }
+
+    @Override
+    public <T> void OnGetWooContactAPiResultFound(T loginModel) {
+        runOnUiThread(() -> {
+            if (loginModel instanceof GetWooContactsModel) {
+                Log.d("onLoginApiResultFound", " LoginAPIResponseJAVA Called in EditActivity " + ((GetWooContactsModel) loginModel).Data.size());
+//                Log.d("onLoginApiResultFound", " LoginAPIResponseJAVA Called in EditActivity " + ((GetWooContactsModel) loginModel).Data.user.jid);
+//                Log.d("onLoginApiResultFound", " LoginAPIResponseJAVA Called in EditActivity " + ((GetWooContactsModel) loginModel).Data.user.email);
+//                String userJid = ((GetWooContactsModel) loginModel).Data.user.jid;
+//                Jid jid = Jid.ofEscaped(userJid);
+//                Resolver.checkDomain(jid);
+//                final String password = binding.accountPassword.getText().toString();
+//                loginAPIResponseJAVA = (GetWooContactsModel) loginModel;
+//                performXMPPLoginAttempt(jid, password, 5222, null);
 
             } else if (loginModel instanceof BaseModelAPIResponse) {
                 Toast.makeText(context, ((BaseModelAPIResponse) loginModel).Message, Toast.LENGTH_LONG).show();
