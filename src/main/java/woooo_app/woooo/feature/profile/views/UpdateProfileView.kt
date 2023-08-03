@@ -66,6 +66,7 @@ import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.Shapes
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
+import eu.siacs.conversations.http.model.UserBasicInfo
 import kotlinx.coroutines.runBlocking
 import woooo_app.woooo.destinations.HomeScreenDestination
 import woooo_app.woooo.feature.auth.screen.SuccessDialogAuth

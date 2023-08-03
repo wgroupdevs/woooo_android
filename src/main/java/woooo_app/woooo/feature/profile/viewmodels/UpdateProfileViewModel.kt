@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wgroup.woooo_app.woooo.utils.Strings
 import dagger.hilt.android.lifecycle.HiltViewModel
+import eu.siacs.conversations.http.model.UserBasicInfo
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -25,6 +26,7 @@ import woooo_app.woooo.shared.base.doOnFailure
 import woooo_app.woooo.shared.base.doOnLoading
 import woooo_app.woooo.shared.base.doOnSuccess
 import woooo_app.woooo.shared.components.showToast
+import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import javax.inject.Inject
@@ -285,7 +287,7 @@ class UpdateProfileViewModel @Inject constructor(
     }
 
     suspend fun saveUserInfoToPreferencesOnUpdateProfile(
-        userPreferences: UserPreferencesViewModel,user: UserBasicInfo
+        userPreferences: UserPreferencesViewModel, user: UserBasicInfo
     ) {
         userPreferences.setEmail(user.email ?: "")
         userPreferences.setFirstName(user.firstName ?: "")
