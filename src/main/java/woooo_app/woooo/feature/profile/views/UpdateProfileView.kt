@@ -89,16 +89,23 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
     val gg = remember {
         mutableStateOf(false)
     }
-    LaunchedEffect(key1 = "To_Call_fillUserInfo()_Only_One_Time ",block = {
-        fillUserInfo(updateProfileViewModel,userPreferencesViewModel)
+    LaunchedEffect(key1 = "To_Call_fillUserInfo()_Only_One_Time ", block = {
+        fillUserInfo(updateProfileViewModel, userPreferencesViewModel)
     })
     val imagePicker = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = {
-            if (gg.value) updateProfileViewModel.profileImage.value = it.toString()
-            updateProfileViewModel.uploadProfile(
-                context,it!!
-            )
+            it.let {
+                if (gg.value) updateProfileViewModel.profileImage.value = it.toString()
+                if (it != null) {
+                    updateProfileViewModel.uploadProfile(
+                        "id",
+                        context,
+                        it
+                    )
+                }
+            }
+
 
         })
     Column(
@@ -143,8 +150,8 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
                     modifier = Modifier
                         .height(150.dp)
                         .width(150.dp)
-                        .background(color = Color.Transparent,shape = CircleShape)
-                        .border(2.dp,Color.White,shape = CircleShape),
+                        .background(color = Color.Transparent, shape = CircleShape)
+                        .border(2.dp, Color.White, shape = CircleShape),
                     contentDescription = "This is a circular image",
                     contentScale = ContentScale.FillBounds
                 )
@@ -168,7 +175,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
         Box(
             modifier = Modifier
                 .height(150.dp)
-                .background(WooColor.textFieldBackGround,shape = RoundedCornerShape(10.dp))
+                .background(WooColor.textFieldBackGround, shape = RoundedCornerShape(10.dp))
         ) {
             OutlinedTextField(
 
@@ -224,7 +231,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             hint = Strings.firstNameText,
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Person,contentDescription = "",tint = Color.White
+                    imageVector = Icons.Rounded.Person, contentDescription = "", tint = Color.White
                 )
             })
         // last name
@@ -244,7 +251,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             hint = Strings.lastNameText,
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Person,contentDescription = "",tint = Color.White
+                    imageVector = Icons.Rounded.Person, contentDescription = "", tint = Color.White
                 )
             })
         //email
@@ -254,24 +261,24 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             onValueChange = {
 //                updateProfileViewModel.setEmailControllerValue(it)
 //                updateProfileViewModel.setEmailErrorValue(false)
-            },value = updateProfileViewModel.getEmailController,
+            }, value = updateProfileViewModel.getEmailController,
 //            isError = signUpViewModel.getEmailError.value,
 //            supportingText = {
 //                if (signUpViewModel.getEmailError.value) {
 //                    ErrorMessageUpdateProfileView()
 //                }
 //            },
-            hint = Strings.emailText,leadingIcon = {
+            hint = Strings.emailText, leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Email,contentDescription = "",tint = Color.White
+                    imageVector = Icons.Rounded.Email, contentDescription = "", tint = Color.White
                 )
-            },readOnly = true
+            }, readOnly = true
         )
         //phone number
         TextLabel(label = Strings.phoneNmbrText)
         VerticalSpacer()
         WooTextField(
-            hint = Strings.enterNumberText,value = updateProfileViewModel.getPhoneController,
+            hint = Strings.enterNumberText, value = updateProfileViewModel.getPhoneController,
 //            leadingIcon = {
 //                Row(
 //                    horizontalArrangement = Arrangement.Start,
@@ -326,7 +333,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             hint = "2010-05-15",
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Cake,contentDescription = "",tint = Color.White
+                    imageVector = Icons.Rounded.Cake, contentDescription = "", tint = Color.White
                 )
             },
 
@@ -371,7 +378,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             hint = Strings.pstlCodeText,
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Pin,contentDescription = "",tint = Color.White
+                    imageVector = Icons.Rounded.Pin, contentDescription = "", tint = Color.White
                 )
             })
         VerticalSpacer()
@@ -383,7 +390,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
                 .wrapContentWidth()
         ) {
             CustomButton(
-                border = BorderStroke(1.dp,Color.White),
+                border = BorderStroke(1.dp, Color.White),
                 onClick = {
                     if (updateProfileViewModel.validateUpdateProfileFields()) {
 
@@ -414,7 +421,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
                     updateProfileViewModel.updateProfileStates.value.apply {
                         isSucceed.value = false
                     }
-                    navigator.popBackStack(HomeScreenDestination,false)
+                    navigator.popBackStack(HomeScreenDestination, false)
                 })
         }
         // enable date of birth picker
@@ -424,7 +431,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
                 updateProfileViewModel.setDOBControllerValue(it.toString())
                 updateProfileViewModel.setDOBErrorValue(false)
 
-                Log.d("date of birth ...",updateProfileViewModel.getDOBController.value)
+                Log.d("date of birth ...", updateProfileViewModel.getDOBController.value)
                 // convert it to local to show in text field
                 val date = LocalDate.parse(it.toString())
                 dateTimerPickerViewModel.setDateTextValueForUpdateProfile(date)
@@ -453,7 +460,12 @@ private fun fillUserInfo(
         updateProfileViewModel.setLastNameControllerValue(userPreferencesViewModel.getLastName())
         updateProfileViewModel.getEmailController = userPreferencesViewModel.getEmail()
         updateProfileViewModel.getPhoneController = userPreferencesViewModel.getPhone()
-        updateProfileViewModel.setDOBControllerValue(convertDOBinLocal(userPreferencesViewModel))
+//        if(userPreferencesViewModel.getDOB().isNotEmpty()){
+//
+//            updateProfileViewModel.setDOBControllerValue(convertDOBinLocal(userPreferencesViewModel))
+//        }
+
+        updateProfileViewModel.setDOBControllerValue("")
         updateProfileViewModel.setPostalCodeControllerValue(userPreferencesViewModel.getPostalCode())
         updateProfileViewModel.setAddressControllerValue(userPreferencesViewModel.getAddress())
         updateProfileViewModel.language.value = userPreferencesViewModel.getLanguage()
@@ -466,7 +478,7 @@ private fun fillUserInfo(
 suspend fun convertDOBinLocal(userPreferencesViewModel: UserPreferencesViewModel): String {
     val serverDateTimeString = userPreferencesViewModel.getDOB()
     val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
-    val dateTime = LocalDateTime.parse(serverDateTimeString,formatter)
+    val dateTime = LocalDateTime.parse(serverDateTimeString, formatter)
     val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     val dateString = dateTime.format(dateFormatter)
     return dateString

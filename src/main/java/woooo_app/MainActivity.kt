@@ -168,7 +168,7 @@ class MainActivity : ComponentActivity() {
         userPreferences.setJID(user.jid)
         userPreferences.setAbout(user.about)
         userPreferences.setAddress(user.address)
-        userPreferences.setPostalCode(user.postalCode)
+        userPreferences.setPostalCode(user.postalCode?:"")
         userPreferences.setLanguage(user.language)
         userPreferences.setLanguageCode(user.languageCode)
         userPreferences.setDOB(user.dob)

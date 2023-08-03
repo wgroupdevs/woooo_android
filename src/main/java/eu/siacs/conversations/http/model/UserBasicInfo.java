@@ -4,21 +4,21 @@ import java.io.Serializable;
 
 
 public class UserBasicInfo implements Serializable {
-    public String accountId;
-    public String firstName;
-    public String lastName;
-    public String email;
-    public Boolean isVarified;
-    public String phoneNumber;
-    public String imageURL;
-    public int id;
-    public String jid;
-    public String description;
-    public String dateOfBirth;
-    public String address;
-    public String postalCode;
-    public String language;
-    public String languageCode;
+    public String accountId = "";
+    public String firstName = "";
+    public String lastName = "";
+    public String email = "";
+    public boolean isVarified = false;
+    public String phoneNumber = "";
+    public String imageURL = "";
+    public int id = 0;
+    public String jid = "";
+    public String description = "";
+    public String dateOfBirth = "";
+    public String address = "";
+    public String postalCode = "";
+    public String language = "";
+    public String languageCode = "";
 
 
     public String getAccountId() {

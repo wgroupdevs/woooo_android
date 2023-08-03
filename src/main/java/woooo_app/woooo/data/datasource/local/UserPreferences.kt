@@ -28,11 +28,11 @@ interface UserPreferences {
     suspend fun setJID(jid: String)
     suspend fun setProfileImage(image: String)
     suspend fun setDOB(dob: String)
-    suspend fun clear()
+
     suspend fun setAbout(about: String)
     suspend fun setAddress(address: String)
     suspend fun setPostalCode(postalCode: String)
     suspend fun setLanguage(language: String)
     suspend fun setLanguageCode(languageCode: String)
-
+    suspend fun clear()
 }
