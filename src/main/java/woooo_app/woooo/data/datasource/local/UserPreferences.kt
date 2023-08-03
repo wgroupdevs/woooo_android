@@ -18,6 +18,7 @@ interface UserPreferences {
     suspend fun getEmail(): String
     suspend fun getLanguage(): String
     suspend fun getLanguageCode(): String
+    suspend fun getAccountUniqueId(): String
 
     //    set
     suspend fun setFirstName(firstName: String)
@@ -34,5 +35,6 @@ interface UserPreferences {
     suspend fun setPostalCode(postalCode: String)
     suspend fun setLanguage(language: String)
     suspend fun setLanguageCode(languageCode: String)
+    suspend fun setAccountUniqueId(uniqueId: String)
     suspend fun clear()
 }

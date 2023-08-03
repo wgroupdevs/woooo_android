@@ -24,11 +24,11 @@ import woooo_app.woooo.NavGraphs
 import woooo_app.woooo.destinations.ForgotPasswordScreenDestination
 import woooo_app.woooo.destinations.HomeScreenDestination
 import woooo_app.woooo.destinations.SignUpScreenDestination
+import woooo_app.woooo.feature.auth.GV
 import woooo_app.woooo.goToWelcomeActivity
 import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel
 import woooo_app.woooo.theme.Woooo_androidTheme
 import woooo_app.woooo.utils.CONST_KEY_INTENT
-import woooo_app.woooo.utils.FIRST_NAME
 import woooo_app.woooo.utils.FORGOT_PASSWORD_INTENT
 import woooo_app.woooo.utils.HOME_INTENT
 import woooo_app.woooo.utils.SIGNUP_INTENT
@@ -86,6 +86,10 @@ class MainActivity : ComponentActivity() {
                     if (getDataPreferences(userPreferences).isEmpty()) {
                         goToWelcomeActivity(context)
                     } else {
+                        runBlocking {
+                            GV.getUserProfileImage.value = userPreferences.getProfileImage()
+                            GV.getFirstName.value = userPreferences.getFirstName()
+                        }
                         startRoute = HomeScreenDestination
                         navigateTo(navController = navController,startRoute = startRoute)
                     }
@@ -136,6 +140,7 @@ class MainActivity : ComponentActivity() {
                                 Log.d(TAG,"Auth Token not found")
                                 goToWelcomeActivity(context)
                             } else {
+
                                 Log.d(TAG,"AuthToken : Found")
                                 navigateTo(navController = navController,startRoute = startRoute)
                             }
@@ -150,8 +155,10 @@ class MainActivity : ComponentActivity() {
     }
 
     fun getDataPreferences(userPreferences: UserPreferencesViewModel): String = runBlocking {
+        GV.getUserProfileImage.value = userPreferences.getProfileImage()
+        GV.getFirstName.value = userPreferences.getFirstName()
+
         USER_JID = userPreferences.getJID()
-        FIRST_NAME = userPreferences.getFirstName()
         userPreferences.getAuthToke()
 
     }
@@ -168,10 +175,11 @@ class MainActivity : ComponentActivity() {
         userPreferences.setJID(user.jid)
         userPreferences.setAbout(user.about)
         userPreferences.setAddress(user.address)
-        userPreferences.setPostalCode(user.postalCode?:"")
+        userPreferences.setPostalCode(user.postalCode ?: "")
         userPreferences.setLanguage(user.language)
         userPreferences.setLanguageCode(user.languageCode)
         userPreferences.setDOB(user.dob)
+        userPreferences.setAccountUniqueId(user.accountId ?: "")
 
 
     }

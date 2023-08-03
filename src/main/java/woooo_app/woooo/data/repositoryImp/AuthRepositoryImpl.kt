@@ -73,7 +73,7 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun uploadProfile(params: ProfilePicRequestParams): Flow<APIResult<UploadProfileModel>> =
         safeApiCall {
-            Log.d("Profile Upload Params", params.accountUniqueId.toString())
+            Log.d("${params.imageFile} <image  ${params.accountUniqueId}","Upload Profile Pic ")
 //            apiService.uploadFile("0D163635-2ED2-4C36-8EBB-77EF90C74023", params)
             apiService.uploadFile(params.accountUniqueId,params.imageFile)
         }

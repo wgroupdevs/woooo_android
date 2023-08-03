@@ -15,7 +15,7 @@ import woooo_app.woooo.data.models.auth.requestmodels.ConfirmAccountRequestModel
 import woooo_app.woooo.data.models.auth.requestmodels.ReSentOTPRequestModel
 import woooo_app.woooo.domain.usecase.ConfirmAccountUseCase
 import woooo_app.woooo.domain.usecase.ReSendCodeUseCase
-import woooo_app.woooo.feature.auth.EmailForAuthModule
+import woooo_app.woooo.feature.auth.GV
 import woooo_app.woooo.shared.base.doOnFailure
 import woooo_app.woooo.shared.base.doOnLoading
 import woooo_app.woooo.shared.base.doOnSuccess
@@ -61,7 +61,7 @@ class ConfirmAccountViewModel @Inject constructor(
     // Confirm Account Api Function
     fun confirmAccount(context: Context) = viewModelScope.launch {
         val params = ConfirmAccountRequestModel(
-            email = EmailForAuthModule.getEmail.value,code = getOTP.value.trim()
+            email = GV.getEmail.value,code = getOTP.value.trim()
         )
 
         confirmAccountUseCase.invoke(
@@ -73,7 +73,7 @@ class ConfirmAccountViewModel @Inject constructor(
                 isSucceed.value = it.Success ?: false
                 isLoading.value = false
             }
-            EmailForAuthModule.clearEmailField()
+            GV.clearEmailField()
             Log.d("Confirm Account Success","Account Confirmed")
         }.doOnFailure {
             _confirmAccountState.value.apply {
@@ -94,10 +94,10 @@ class ConfirmAccountViewModel @Inject constructor(
     // ResentCode Api Function
 
     fun resentCodeForConfirmAccount(context: Context) = viewModelScope.launch {
-Log.d(EmailForAuthModule.getEmail.value, "scnsadncaosdcsdmsdc ")
+Log.d(GV.getEmail.value, "scnsadncaosdcsdmsdc ")
         reSendCodeUseCase.invoke(
             BaseResendCodeReqParam(
-                email = ReSentOTPRequestModel(email = EmailForAuthModule.getEmail.value),
+                email = ReSentOTPRequestModel(email = GV.getEmail.value),
                 IsOtpForAccount = true
             )
         ).doOnSuccess {

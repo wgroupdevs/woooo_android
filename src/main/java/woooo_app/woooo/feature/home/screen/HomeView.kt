@@ -6,13 +6,11 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -40,24 +38,23 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import woooo_app.woooo.feature.home.viewmodel.HomeViewModel
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import eu.siacs.conversations.R
 import kotlinx.coroutines.launch
 import woooo_app.woooo.destinations.SignUpScreenDestination
+import woooo_app.woooo.feature.auth.GV
 import woooo_app.woooo.feature.home.ui.AppDrawer
 import woooo_app.woooo.feature.home.ui.CircularMenu
+import woooo_app.woooo.feature.home.viewmodel.HomeViewModel
 import woooo_app.woooo.shared.components.CustomIcon
+import woooo_app.woooo.shared.components.UserProfileImage
 import woooo_app.woooo.shared.components.ViewDivider
 import woooo_app.woooo.utils.Dimension
-import woooo_app.woooo.utils.FIRST_NAME
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,23 +83,16 @@ fun HomePage(navigator: DestinationsNavigator,homeViewModel: HomeViewModel = hil
 
                 topBar = {
                     TopAppBarComposable(navigationIcon = {
-                        Image(
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .size(
-                                    50.dp
-                                )
-                                .clickable {
-                                    scope.launch {
-                                        drawerState.open()
-                                    }
+                        UserProfileImage(50.dp,onClick =
+                        {
+                            scope.launch {
+                                drawerState.open()
+                            }
+                        })
 
-                                },
-                            painter = painterResource(id = R.drawable.woooo_logo),
-                            contentDescription = ""
-                        )
-
-                    },onActionClick = { notificationTrayState = !notificationTrayState })
+                    },onActionClick = {
+//                        notificationTrayState = !notificationTrayState
+                    })
                 },
 
                 ) { upperPadding ->
@@ -129,7 +119,7 @@ fun HomePage(navigator: DestinationsNavigator,homeViewModel: HomeViewModel = hil
                         VerticalSpacer()
                         //Name Text
                         Text(
-                            text = "Hi, $FIRST_NAME",modifier = Modifier
+                            text = "Hi, ${GV.getFirstName.value}",modifier = Modifier
                                 .align(
                                     alignment = Alignment.Start
                                 )
@@ -165,10 +155,11 @@ fun HomePage(navigator: DestinationsNavigator,homeViewModel: HomeViewModel = hil
 //            notification tray
         if (notificationTrayState) {
             Box(
-                modifier = Modifier.clip(RoundedCornerShape(10.dp))
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp))
                     .padding(top = 50.dp,end = 10.dp)
                     .alpha(0.7f)
-                    .background(WooColor.textFieldBackGround, shape = RoundedCornerShape(10.dp))
+                    .background(WooColor.textFieldBackGround,shape = RoundedCornerShape(10.dp))
                     .height(450.dp)
                     .width(320.dp)
                     .align(Alignment.TopEnd)

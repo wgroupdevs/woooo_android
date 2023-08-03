@@ -87,6 +87,7 @@ class UpdateProfileUseCase @Inject constructor(private val profileRepository: Au
 
 class UploadProfileUseCase @Inject constructor(private val profileRepository: AuthRepository) :
     UploadProfileBaseUseCase {
+
     override suspend fun invoke(params: ProfilePicRequestParams): Flow<APIResult<UploadProfileModel>> =
         profileRepository.uploadProfile(params)
 }

@@ -12,7 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import woooo_app.woooo.data.models.auth.requestmodels.ForgotPasswordRequestModel
 import woooo_app.woooo.domain.usecase.ForgotPasswordUseCase
-import woooo_app.woooo.feature.auth.EmailForAuthModule
+import woooo_app.woooo.feature.auth.GV
 import woooo_app.woooo.shared.base.doOnFailure
 import woooo_app.woooo.shared.base.doOnLoading
 import woooo_app.woooo.shared.base.doOnSuccess
@@ -45,14 +45,14 @@ class ForgotPasswordViewModel @Inject constructor(private val forgotPasswordUseC
     }
 
     fun validateEmail(): Boolean {
-        if (EmailForAuthModule.getEmail.value.trim() == "") {
+        if (GV.getEmail.value.trim() == "") {
             // pass error text to show below in text field
             setErrorTextValue(Strings.enterEmailText)
             // enabled value of error in text field
             setErrorValueForEmail(true)
             return false
         }
-        if (!Validators.isValidEmail(EmailForAuthModule.getEmail.value.trim())) {
+        if (!Validators.isValidEmail(GV.getEmail.value.trim())) {
             // pass error text to show below in text field
             setErrorTextValue(Strings.entrVldEml)
             // enabled value of error in text field
@@ -64,7 +64,7 @@ class ForgotPasswordViewModel @Inject constructor(private val forgotPasswordUseC
 
     fun forgotPassword(context: Context) = viewModelScope.launch {
         forgotPasswordUseCase.invoke(
-            ForgotPasswordRequestModel(email = EmailForAuthModule.getEmail.value.trim())
+            ForgotPasswordRequestModel(email = GV.getEmail.value.trim())
         ).doOnSuccess {
             _forgotPasswordState.value.apply {
                 data = it

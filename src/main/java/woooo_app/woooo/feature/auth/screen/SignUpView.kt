@@ -58,7 +58,7 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
 import woooo_app.MainActivity
 import woooo_app.woooo.destinations.ConfirmAccountMainScreenDestination
-import woooo_app.woooo.feature.auth.EmailForAuthModule
+import woooo_app.woooo.feature.auth.GV
 import woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import woooo_app.woooo.shared.base.AppBackGround
 import woooo_app.woooo.shared.components.CustomIcon
@@ -199,10 +199,10 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 TextLabel(label = Strings.emailText)
                 VerticalSpacer()
                 WooTextField(onValueChange = {
-                    EmailForAuthModule.setEmailValue(it)
+                    GV.setEmailValue(it)
                     signUpViewModel.setEmailErrorValue(false)
                 },
-                    value = EmailForAuthModule.getEmail.value,
+                    value = GV.getEmail.value,
                     isError = signUpViewModel.getEmailError.value,
                     supportingText = {
                         if (signUpViewModel.getEmailError.value) {
