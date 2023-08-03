@@ -1348,6 +1348,8 @@ public class ConversationFragment extends XmppFragment
                     m.getStatus() == Message.STATUS_SEND_FAILED
                             && m.getErrorMessage() != null
                             && !Message.ERROR_MESSAGE_CANCELLED.equals(m.getErrorMessage());
+            replyMessage.setVisible(true);
+
             if (!m.isFileOrImage()
                     && !encrypted
                     && !m.isGeoUri()
@@ -1355,7 +1357,8 @@ public class ConversationFragment extends XmppFragment
                     && !unInitiatedButKnownSize
                     && t == null) {
                 copyMessage.setVisible(true);
-                replyMessage.setVisible(!showError && MessageUtils.prepareQuote(m).length() > 0);
+//                replyMessage.setVisible(!showError && MessageUtils.prepareQuote(m).length() > 0);
+
                 final String scheme = ShareUtil.getLinkScheme(m.getMergedBody());
                 if ("xmpp".equals(scheme)) {
                     copyLink.setTitle(R.string.copy_jabber_id);
@@ -1407,7 +1410,11 @@ public class ConversationFragment extends XmppFragment
                 cancelTransmission.setVisible(true);
             }
             if (m.isFileOrImage() && !deleted && !cancelable) {
+
+
                 final String path = m.getRelativeFilePath();
+                Log.d("populateContextMenu", "File Path :" + path);
+
                 if (path == null
                         || !path.startsWith("/")
                         || FileBackend.inConversationsDirectory(requireActivity(), path)) {
