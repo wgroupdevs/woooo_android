@@ -12,6 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.http.HttpConnectionManager;
+import eu.siacs.conversations.http.model.GetWooContactsModel;
 import eu.siacs.conversations.http.model.LoginAPIResponseJAVA;
 import eu.siacs.conversations.http.model.SearchAccountAPIResponse;
 import okhttp3.OkHttpClient;
@@ -20,6 +21,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import woooo_app.woooo.data.models.auth.requestmodels.GetWooContactsRequestParams;
 import woooo_app.woooo.data.models.auth.requestmodels.LoginRequestParams;
 
 public class WooooAuthService {
@@ -40,13 +42,7 @@ public class WooooAuthService {
             builder.connectTimeout(40, TimeUnit.SECONDS);
             builder.readTimeout(40, TimeUnit.SECONDS);
             builder.writeTimeout(40, TimeUnit.SECONDS);
-            final Retrofit retrofit =
-                    new Retrofit.Builder()
-                            .client(builder.build())
-                            .baseUrl(Config.WOOOO_BASE_URL)
-                            .addConverterFactory(GsonConverterFactory.create())
-                            .callbackExecutor(Executors.newSingleThreadExecutor())
-                            .build();
+            final Retrofit retrofit = new Retrofit.Builder().client(builder.build()).baseUrl(Config.WOOOO_BASE_URL).addConverterFactory(GsonConverterFactory.create()).callbackExecutor(Executors.newSingleThreadExecutor()).build();
             wooooService = retrofit.create(WooooService.class);
         }
 
@@ -56,126 +52,138 @@ public class WooooAuthService {
 
 
     public void login(boolean isLoginWithEmail, String email, String phone, String password, OnLoginAPiResult listener) {
-        Log.d("WooooAuthService",
-                "LOGIN STARTED...");
-        final LoginRequestParams requestParams =
-                new LoginRequestParams(email, phone, password, "", "", "");
-        final Call<LoginAPIResponseJAVA> searchResultCall =
-                wooooService.login(isLoginWithEmail, requestParams);
-        searchResultCall.enqueue(
-                new Callback<LoginAPIResponseJAVA>() {
-                    @Override
-                    public void onResponse(
-                            @NonNull Call<LoginAPIResponseJAVA> call,
-                            @NonNull Response<LoginAPIResponseJAVA> response) {
-                        final LoginAPIResponseJAVA body = response.body();
+        Log.d("WooooAuthService", "LOGIN STARTED...");
+        final LoginRequestParams requestParams = new LoginRequestParams(email, phone, password, "", "", "");
+        final Call<LoginAPIResponseJAVA> searchResultCall = wooooService.login(isLoginWithEmail, requestParams);
+        searchResultCall.enqueue(new Callback<LoginAPIResponseJAVA>() {
+            @Override
+            public void onResponse(@NonNull Call<LoginAPIResponseJAVA> call, @NonNull Response<LoginAPIResponseJAVA> response) {
+                final LoginAPIResponseJAVA body = response.body();
 
 
-                        Log.d("WooooAuthService",
-                                "API RESPONSE " + response.isSuccessful());
-                        Log.d("WooooAuthService",
-                                "API RESPONSE " + response.code());
-                        Log.d("WooooAuthService",
-                                "API RESPONSE BODY " + response.body());
-                        if (body == null) {
+                Log.d("WooooAuthService", "API RESPONSE " + response.isSuccessful());
+                Log.d("WooooAuthService", "API RESPONSE " + response.code());
+                Log.d("WooooAuthService", "API RESPONSE BODY " + response.body());
+                if (body == null) {
 
-                            Log.d("WooooAuthService",
-                                    "API RESPONSE ");
-                            assert response.errorBody() != null;
-                            try {
-                                String errorBodyFound = response.errorBody().byteString().utf8();
+                    Log.d("WooooAuthService", "API RESPONSE ");
+                    assert response.errorBody() != null;
+                    try {
+                        String errorBodyFound = response.errorBody().byteString().utf8();
 
-                                Log.d("WooooAuthService",
-                                        "API RESPONSE " + errorBodyFound);
+                        Log.d("WooooAuthService", "API RESPONSE " + errorBodyFound);
 
-                                listener.onLoginApiResultFound(parseErrorBody(errorBodyFound));
-                            } catch (IOException e) {
+                        listener.onLoginApiResultFound(parseErrorBody(errorBodyFound));
+                    } catch (IOException e) {
 
-                                Log.d("WooooAuthService",
-                                        "API Exception " + e.getStackTrace().toString());
+                        Log.d("WooooAuthService", "API Exception " + e.getStackTrace().toString());
 
-                                throw new RuntimeException(e);
-                            }
-
-                        } else {
-
-                            listener.onLoginApiResultFound(body);
-                        }
-
+                        throw new RuntimeException(e);
                     }
 
-                    @Override
-                    public void onFailure(
-                            @NonNull Call<LoginAPIResponseJAVA> call,
-                            @NonNull Throwable throwable) {
-                        Log.d(
-                                Config.LOGTAG,
-                                "Unable to query WoooService on " + Config.WOOOO_BASE_URL,
-                                throwable);
+                } else {
+
+                    listener.onLoginApiResultFound(body);
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<LoginAPIResponseJAVA> call, @NonNull Throwable throwable) {
+                Log.d(Config.LOGTAG, "Unable to query WoooService on " + Config.WOOOO_BASE_URL, throwable);
 //                        listener.);
-                    }
-                });
+            }
+        });
     }
 
     public void searchAccount(String value, boolean isEmail, OnSearchAccountAPiResult listener) {
-        Log.d("WooooAuthService",
-                "searchAccount STARTED...");
+        Log.d("WooooAuthService", "searchAccount STARTED...");
 
-        final Call<SearchAccountAPIResponse> searchResultCall =
-                wooooService.searchAccount(value, isEmail);
-        searchResultCall.enqueue(
-                new Callback<SearchAccountAPIResponse>() {
-                    @Override
-                    public void onResponse(
-                            @NonNull Call<SearchAccountAPIResponse> call,
-                            @NonNull Response<SearchAccountAPIResponse> response) {
-                        final SearchAccountAPIResponse body = response.body();
+        final Call<SearchAccountAPIResponse> searchResultCall = wooooService.searchAccount(value, isEmail);
+        searchResultCall.enqueue(new Callback<SearchAccountAPIResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<SearchAccountAPIResponse> call, @NonNull Response<SearchAccountAPIResponse> response) {
+                final SearchAccountAPIResponse body = response.body();
 
 
-                        Log.d("WooooAuthService",
-                                "API RESPONSE " + response.isSuccessful());
-                        Log.d("WooooAuthService",
-                                "API RESPONSE " + response.code());
-                        Log.d("WooooAuthService",
-                                "API RESPONSE BODY " + response.body());
-                        if (body == null) {
+                Log.d("WooooAuthService", "API RESPONSE " + response.isSuccessful());
+                Log.d("WooooAuthService", "API RESPONSE " + response.code());
+                Log.d("WooooAuthService", "API RESPONSE BODY " + response.body());
+                if (body == null) {
 
-                            Log.d("WooooAuthService",
-                                    "API RESPONSE ");
-                            assert response.errorBody() != null;
-                            try {
-                                String errorBodyFound = response.errorBody().byteString().utf8();
+                    Log.d("WooooAuthService", "API RESPONSE ");
+                    assert response.errorBody() != null;
+                    try {
+                        String errorBodyFound = response.errorBody().byteString().utf8();
 
-                                Log.d("WooooAuthService",
-                                        "API RESPONSE " + errorBodyFound);
+                        Log.d("WooooAuthService", "API RESPONSE " + errorBodyFound);
 
-                                listener.onSearchAccountApiResultFound(parseErrorBody(errorBodyFound));
-                            } catch (IOException e) {
+                        listener.onSearchAccountApiResultFound(parseErrorBody(errorBodyFound));
+                    } catch (IOException e) {
 
-                                Log.d("WooooAuthService",
-                                        "API Exception " + e.getStackTrace().toString());
+                        Log.d("WooooAuthService", "API Exception " + e.getStackTrace().toString());
 
-                                throw new RuntimeException(e);
-                            }
-
-                        } else {
-
-                            listener.onSearchAccountApiResultFound(body);
-                        }
-
+                        throw new RuntimeException(e);
                     }
 
-                    @Override
-                    public void onFailure(
-                            @NonNull Call<SearchAccountAPIResponse> call,
-                            @NonNull Throwable throwable) {
-                        Log.d(
-                                Config.LOGTAG,
-                                "Unable to query WoooService on " + Config.WOOOO_BASE_URL,
-                                throwable);
+                } else {
+
+                    listener.onSearchAccountApiResultFound(body);
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<SearchAccountAPIResponse> call, @NonNull Throwable throwable) {
+                Log.d(Config.LOGTAG, "Unable to query WoooService on " + Config.WOOOO_BASE_URL, throwable);
 //                        listener.);
+            }
+        });
+    }
+
+    public void getWooContact(GetWooContactsRequestParams params, OnGetWooContactAPiResult listener) {
+        Log.d("WooooAuthService", "getWooContact STARTED...");
+
+        final Call<GetWooContactsModel> searchResultCall = wooooService.getWooContacts(params);
+        searchResultCall.enqueue(new Callback<GetWooContactsModel>() {
+            @Override
+            public void onResponse(@NonNull Call<GetWooContactsModel> call, @NonNull Response<GetWooContactsModel> response) {
+                final GetWooContactsModel body = response.body();
+
+
+                Log.d("WooooAuthService", "API RESPONSE " + response.isSuccessful());
+                Log.d("WooooAuthService", "API RESPONSE " + response.code());
+                Log.d("WooooAuthService", "API RESPONSE BODY " + response.body());
+                if (body == null) {
+
+                    Log.d("WooooAuthService", "API RESPONSE ");
+                    assert response.errorBody() != null;
+                    try {
+                        String errorBodyFound = response.errorBody().byteString().utf8();
+
+                        Log.d("WooooAuthService", "API RESPONSE " + errorBodyFound);
+
+                        listener.OnGetWooContactAPiResultFound(parseErrorBody(errorBodyFound));
+                    } catch (IOException e) {
+
+                        Log.d("WooooAuthService", "API Exception " + e.getStackTrace().toString());
+
+                        throw new RuntimeException(e);
                     }
-                });
+
+                } else {
+
+                    listener.OnGetWooContactAPiResultFound(body);
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<GetWooContactsModel> call, @NonNull Throwable throwable) {
+                Log.d(Config.LOGTAG, "Unable to query WoooService on " + Config.WOOOO_BASE_URL, throwable);
+//                        listener.);
+            }
+        });
     }
 
 
@@ -185,6 +193,10 @@ public class WooooAuthService {
 
     public interface OnSearchAccountAPiResult {
         <T> void onSearchAccountApiResultFound(T loginModel);
+    }
+
+    public interface OnGetWooContactAPiResult {
+        <T> void OnGetWooContactAPiResultFound(T loginModel);
     }
 
 
