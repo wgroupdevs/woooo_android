@@ -13,12 +13,10 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -45,6 +43,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -67,14 +66,18 @@ import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.Shapes
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
+import kotlinx.coroutines.runBlocking
 import woooo_app.woooo.destinations.HomeScreenDestination
 import woooo_app.woooo.feature.auth.screen.SuccessDialogAuth
 import woooo_app.woooo.feature.profile.viewmodels.UpdateProfileViewModel
 import woooo_app.woooo.shared.components.CustomDateTimePicker
 import woooo_app.woooo.shared.components.ViewDivider
 import woooo_app.woooo.shared.components.view_models.DateTimerPickerViewModel
+import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel
 import woooo_app.woooo.utils.Dimension
 import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -82,13 +85,22 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
     val dateTimerPickerViewModel: DateTimerPickerViewModel = hiltViewModel()
     val updateProfileViewModel: UpdateProfileViewModel = hiltViewModel()
     val context = LocalContext.current
-    val imagePicker =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia(),
-            onResult = {
-                updateProfileViewModel.profileImage.value = it.toString()
-//                updateProfileViewModel.setUserProfile()
-                updateProfileViewModel.uploadProfile(context,it!!)
-            })
+    val userPreferencesViewModel: UserPreferencesViewModel = hiltViewModel()
+    val gg = remember {
+        mutableStateOf(false)
+    }
+    LaunchedEffect(key1 = "To_Call_fillUserInfo()_Only_One_Time ",block = {
+        fillUserInfo(updateProfileViewModel,userPreferencesViewModel)
+    })
+    val imagePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = {
+            if (gg.value) updateProfileViewModel.profileImage.value = it.toString()
+            updateProfileViewModel.uploadProfile(
+                context,it!!
+            )
+
+        })
     Column(
         Modifier
             .fillMaxSize()
@@ -105,7 +117,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
                 imageVector = Icons.Outlined.ArrowBackIosNew,
                 contentDescription = "",
                 tint = WooColor.white,
-                modifier = Modifier.clickable(onClick = {navigator.popBackStack()})
+                modifier = Modifier.clickable(onClick = { navigator.popBackStack() })
             )
             HorizontalSpacer()
             Text(text = "Profile")
@@ -120,6 +132,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
                 Modifier
                     .clip(CircleShape)
                     .clickable(onClick = {
+                        gg.value = true
                         imagePicker.launch(
                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                         )
@@ -258,39 +271,28 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
         TextLabel(label = Strings.phoneNmbrText)
         VerticalSpacer()
         WooTextField(
-            hint = Strings.enterNumberText,
-//            interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->
-//                LaunchedEffect(interactionSource) {
-//                    interactionSource.interactions.collect {
-//                        if (it is PressInteraction.Release) {
-//                            // open date picker
-//                            dateTimerPickerViewModel.setDateDialogueValueForUpdateProfile(
-//                                true
-//                            )
-//                        }
-//                    }
+            hint = Strings.enterNumberText,value = updateProfileViewModel.getPhoneController,
+//            leadingIcon = {
+//                Row(
+//                    horizontalArrangement = Arrangement.Start,
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    Text(
+//                        text = "+81",
+//                        style = MaterialTheme.typography.labelMedium,
+//
+//                        )
+//                    HorizontalSpacer()
+//                    Box(
+//                        modifier = Modifier
+//                            .fillMaxHeight()
+//                            .width(1.dp)
+//                            .background(WooColor.hintText)
+//                            .padding(5.dp)
+//                    )
 //                }
 //            },
-            value = updateProfileViewModel.getPhoneController,leadingIcon = {
-                Row(
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "+81",
-                        style = MaterialTheme.typography.labelMedium,
-
-                        )
-                    HorizontalSpacer()
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .width(1.dp)
-                            .background(WooColor.hintText)
-                            .padding(5.dp)
-                    )
-                }
-            },readOnly = true
+            readOnly = true
         )
         VerticalSpacer()
         // date of birth
@@ -310,11 +312,11 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
                 }
             },
             onValueChange = {
-                updateProfileViewModel.setDOBControllerValue(it)
+//                updateProfileViewModel.setDOBControllerValue(it)
                 updateProfileViewModel.setDOBErrorValue(false)
             },
             readOnly = true,
-            value = dateTimerPickerViewModel.getDatePickerTextForUpdateProfile.value,
+            value = updateProfileViewModel.getDOBController.value,
             isError = updateProfileViewModel.getDOBError.value,
             supportingText = {
                 if (updateProfileViewModel.getDOBError.value) {
@@ -383,9 +385,10 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             CustomButton(
                 border = BorderStroke(1.dp,Color.White),
                 onClick = {
-                    Log.d("asdcasdcsadc","dcasdcasdcsadcs")
-//                    updateProfileViewModel.updateProfile(context)
-//                    updateProfileViewModel.validateSignUpFields()
+                    if (updateProfileViewModel.validateUpdateProfileFields()) {
+
+                        updateProfileViewModel.updateProfile(context)
+                    }
                 },
                 content = {
                     Text(
@@ -398,36 +401,73 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             )
         }
         Box(modifier = Modifier.height(400.dp))
-    }
-    // enable Loader when Api Hit
-    if (updateProfileViewModel.updateProfileStates.value.isLoading.value) ShowLoader()
 
-    // enabled success dialgue
-    if (updateProfileViewModel.updateProfileStates.value.isSucceed.value) {
+        // enable Loader when Api Hit
+        if (updateProfileViewModel.updateProfileStates.value.isLoading.value) ShowLoader()
 
-        SuccessDialogAuth(title = Strings.updateSuccess,
-            message = updateProfileViewModel.updateProfileStates.value.message,
-            onClick = {
-                updateProfileViewModel.updateProfileStates.value.apply {
-                    isSucceed.value = false
-                }
-                navigator.popBackStack(HomeScreenDestination,false)
+        // enabled success dialgue
+        if (updateProfileViewModel.updateProfileStates.value.isSucceed.value) {
+
+            SuccessDialogAuth(title = Strings.updateSuccess,
+                message = updateProfileViewModel.updateProfileStates.value.message,
+                onClick = {
+                    updateProfileViewModel.updateProfileStates.value.apply {
+                        isSucceed.value = false
+                    }
+                    navigator.popBackStack(HomeScreenDestination,false)
+                })
+        }
+        // enable date of birth picker
+        if (dateTimerPickerViewModel.getDateDialogueShowForUpdateProfile.value) CustomDateTimePicker(
+            onDateChange = {
+//            pass value to controller
+                updateProfileViewModel.setDOBControllerValue(it.toString())
+                updateProfileViewModel.setDOBErrorValue(false)
+
+                Log.d("date of birth ...",updateProfileViewModel.getDOBController.value)
+                // convert it to local to show in text field
+                val date = LocalDate.parse(it.toString())
+                dateTimerPickerViewModel.setDateTextValueForUpdateProfile(date)
+                dateTimerPickerViewModel.setDateDialogueValueForUpdateProfile(false)
+//            updateProfileViewModel.setDOBControllerValue(dateTimerPickerViewModel.getDatePickerTextForUpdateProfile.value)
+
+            },
+            onDismissRequest = {
+                dateTimerPickerViewModel.setDateDialogueValueForUpdateProfile(false)
+
             })
     }
-    // enable date of birth picker
-    if (dateTimerPickerViewModel.getDateDialogueShowForUpdateProfile.value) CustomDateTimePicker(
-        onDateChange = {
-//            pass value to controller
-            updateProfileViewModel.setDOBControllerValue(it.toString())
-            Log.d("date of birth ...",updateProfileViewModel.getDOBController.value)
-            // convert it to local to show in text field
-            val date = LocalDate.parse(it.toString())
-            dateTimerPickerViewModel.setDateTextValueForUpdateProfile(date)
-            dateTimerPickerViewModel.setDateDialogueValueForUpdateProfile(false)
-        },
-        onDismissRequest = {
-            dateTimerPickerViewModel.setDateDialogueValueForUpdateProfile(false)
-
-        })
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
+private fun fillUserInfo(
+    updateProfileViewModel: UpdateProfileViewModel,
+    userPreferencesViewModel: UserPreferencesViewModel
+) {
+
+    runBlocking {
+
+        updateProfileViewModel.profileImage.value = userPreferencesViewModel.getProfileImage()
+        updateProfileViewModel.setAboutControllerValue(userPreferencesViewModel.getAbout())
+        updateProfileViewModel.setNameControllerValue(userPreferencesViewModel.getFirstName())
+        updateProfileViewModel.setLastNameControllerValue(userPreferencesViewModel.getLastName())
+        updateProfileViewModel.getEmailController = userPreferencesViewModel.getEmail()
+        updateProfileViewModel.getPhoneController = userPreferencesViewModel.getPhone()
+        updateProfileViewModel.setDOBControllerValue(convertDOBinLocal(userPreferencesViewModel))
+        updateProfileViewModel.setPostalCodeControllerValue(userPreferencesViewModel.getPostalCode())
+        updateProfileViewModel.setAddressControllerValue(userPreferencesViewModel.getAddress())
+        updateProfileViewModel.language.value = userPreferencesViewModel.getLanguage()
+        updateProfileViewModel.languageCode.value = userPreferencesViewModel.getLanguageCode()
+
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+suspend fun convertDOBinLocal(userPreferencesViewModel: UserPreferencesViewModel): String {
+    val serverDateTimeString = userPreferencesViewModel.getDOB()
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
+    val dateTime = LocalDateTime.parse(serverDateTimeString,formatter)
+    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    val dateString = dateTime.format(dateFormatter)
+    return dateString
+}

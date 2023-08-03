@@ -40,7 +40,6 @@ import woooo_app.woooo.utils.USER_TOKEN_KEY_INTENT
 class MainActivity : ComponentActivity() {
     val TAG = "MainActivityLOGS"
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -55,7 +54,7 @@ class MainActivity : ComponentActivity() {
 
         val navIntentConst = intent?.getStringExtra("navIntentConst")
 
-        Log.d(TAG, navIntentConst.toString())
+        Log.d(TAG,navIntentConst.toString())
 
     }
 
@@ -71,7 +70,7 @@ class MainActivity : ComponentActivity() {
         val navIntent = intent?.getStringExtra(CONST_KEY_INTENT)
 
 
-        Log.d(TAG, "INTENT : " + navIntent.toString())
+        Log.d(TAG,"INTENT : " + navIntent.toString())
 
 
         Woooo_androidTheme {
@@ -81,16 +80,14 @@ class MainActivity : ComponentActivity() {
                     .background(color = MaterialTheme.colorScheme.primary),
             ) {
 
-
 //                navigateTo(navController = navController, startRoute = startRoute)
 
                 if (navIntent.isNullOrBlank()) {
                     if (getDataPreferences(userPreferences).isEmpty()) {
                         goToWelcomeActivity(context)
                     } else {
-
                         startRoute = HomeScreenDestination
-                        navigateTo(navController = navController, startRoute = startRoute)
+                        navigateTo(navController = navController,startRoute = startRoute)
                     }
                 }
 
@@ -98,14 +95,14 @@ class MainActivity : ComponentActivity() {
                     when (it) {
                         SIGNUP_INTENT -> {
                             startRoute = SignUpScreenDestination
-                            navigateTo(navController = navController, startRoute = startRoute)
-                            Log.d(TAG, "SHOW SIGNUP VIEW")
+                            navigateTo(navController = navController,startRoute = startRoute)
+                            Log.d(TAG,"SHOW SIGNUP VIEW")
                         }
 
                         FORGOT_PASSWORD_INTENT -> {
                             startRoute = ForgotPasswordScreenDestination
-                            navigateTo(navController = navController, startRoute = startRoute)
-                            Log.d(TAG, "SHOW FORGOT PASSWORD VIEW")
+                            navigateTo(navController = navController,startRoute = startRoute)
+                            Log.d(TAG,"SHOW FORGOT PASSWORD VIEW")
                         }
 
                         HOME_INTENT -> {
@@ -115,36 +112,36 @@ class MainActivity : ComponentActivity() {
 
                                 if (userInfo != null && token != null) {
                                     userInfo = userInfo as UserBasicInfo
-                                    Log.d(TAG, "Token : $token")
-                                    Log.d(TAG, "AccountId : " + userInfo.accountId)
-                                    Log.d(TAG, "Email : " + userInfo.email)
-                                    Log.d(TAG, "PhoneNumber : " + userInfo.phoneNumber)
-                                    Log.d(TAG, "jid : " + userInfo.jid)
-                                    Log.d(TAG, "FirstName : " + userInfo.firstName)
-                                    Log.d(TAG, "LastName : " + userInfo.lastName)
+                                    Log.d(TAG,"Token : $token")
+                                    Log.d(TAG,"AccountId : " + userInfo.accountId)
+                                    Log.d(TAG,"Email : " + userInfo.email)
+                                    Log.d(TAG,"PhoneNumber : " + userInfo.phoneNumber)
+                                    Log.d(TAG,"jid : " + userInfo.jid)
+                                    Log.d(TAG,"FirstName : " + userInfo.firstName)
+                                    Log.d(TAG,"LastName : " + userInfo.lastName)
+                                    Log.d(TAG,"DOB : " + userInfo.dateOfBirth)
 
-                                    saveUserInfoToPreferences(userPreferences, token, userInfo)
+                                    saveUserInfoToPreferences(userPreferences,token,userInfo)
                                     getDataPreferences(userPreferences)
                                 }
 
                                 startRoute = HomeScreenDestination
-                                Log.d(TAG, "SHOW Home Page VIEW")
+                                Log.d(TAG,"SHOW Home Page VIEW")
                             }
-                            navigateTo(navController = navController, startRoute = startRoute)
+                            navigateTo(navController = navController,startRoute = startRoute)
                         }
 
                         else -> {
                             if (getDataPreferences(userPreferences).isEmpty()) {
-                                Log.d(TAG, "Auth Token not found")
+                                Log.d(TAG,"Auth Token not found")
                                 goToWelcomeActivity(context)
                             } else {
-                                Log.d(TAG, "AuthToken : Found")
-                                navigateTo(navController = navController, startRoute = startRoute)
+                                Log.d(TAG,"AuthToken : Found")
+                                navigateTo(navController = navController,startRoute = startRoute)
                             }
                         }
                     }
                 }
-
 
             }
         }
@@ -160,9 +157,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private suspend fun saveUserInfoToPreferences(
-        userPreferences: UserPreferencesViewModel,
-        token: String,
-        user: UserBasicInfo
+        userPreferences: UserPreferencesViewModel,token: String,user: UserBasicInfo
     ) {
         userPreferences.setAuthToken(token)
         userPreferences.setEmail(user.email)
@@ -171,14 +166,20 @@ class MainActivity : ComponentActivity() {
         userPreferences.setPhone(user.phoneNumber)
         userPreferences.setProfileImage(user.imageURL)
         userPreferences.setJID(user.jid)
+        userPreferences.setAbout(user.about)
+        userPreferences.setAddress(user.address)
+        userPreferences.setPostalCode(user.postalCode)
+        userPreferences.setLanguage(user.language)
+        userPreferences.setLanguageCode(user.languageCode)
+        userPreferences.setDOB(user.dob)
+
+
     }
 
     @Composable
-    fun navigateTo(navController: NavHostController, startRoute: Route) {
+    fun navigateTo(navController: NavHostController,startRoute: Route) {
         DestinationsNavHost(
-            navController = navController,
-            navGraph = NavGraphs.root,
-            startRoute = startRoute
+            navController = navController,navGraph = NavGraphs.root,startRoute = startRoute
         )
     }
 

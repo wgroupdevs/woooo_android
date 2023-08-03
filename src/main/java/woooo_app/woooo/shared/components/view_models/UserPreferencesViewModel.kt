@@ -31,8 +31,16 @@ class UserPreferencesViewModel @Inject constructor(
         return userPreferences.getDOB()
     }
 
+    suspend fun setAddress(address: String) {
+        userPreferences.setAddress(address)
+    }
+
+    suspend fun getAddress(): String {
+        return userPreferences.getAddress()
+    }
+
     suspend fun setPostalCode(postalCode: String) {
-        userPreferences.setAddress(postalCode)
+        userPreferences.setPostalCode(postalCode)
     }
 
     suspend fun getPostalCode(): String {
@@ -47,13 +55,33 @@ class UserPreferencesViewModel @Inject constructor(
         userPreferences.setEmail(email)
     }
 
+    suspend fun getLanguage(): String {
+        return userPreferences.getLanguage()
+    }
+
+    suspend fun setLanguage(language: String) {
+        userPreferences.setLanguage(language)
+    }
+
+    suspend fun getLanguageCode(): String {
+        return userPreferences.getLanguageCode()
+    }
+
+    suspend fun setLanguageCode(languageCode: String) {
+        userPreferences.setLanguageCode(languageCode)
+    }
+
+    suspend fun getEmail(): String {
+        return userPreferences.getEmail()
+    }
+
     suspend fun setPhone(phone: String) {
         userPreferences.setPhone(phone)
     }
-    suspend fun getPhone():String{
+
+    suspend fun getPhone(): String {
         return userPreferences.getPhone()
     }
-
 
     suspend fun setAuthToken(authToken: String) {
         userPreferences.setAuthToken(authToken)

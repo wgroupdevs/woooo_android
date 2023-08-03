@@ -21,11 +21,13 @@ import woooo_app.woooo.data.models.profile.UploadProfileModel
 import woooo_app.woooo.domain.repository.AuthRepository
 import woooo_app.woooo.shared.base.APIResult
 import woooo_app.woooo.shared.base.BaseRepository
+import java.io.File
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val apiService: AuthApiService
 ) : BaseRepository(),AuthRepository {
+
     override suspend fun login(user: LoginRequestParams): Flow<APIResult<LoginModel>> =
         safeApiCall {
             Log.d("LOGIN API CALL",user.toString())
@@ -67,12 +69,13 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun updateProfile(params: UpdateProfileRequestModel): Flow<APIResult<UpdateProfileModel>> =
         safeApiCall {
             Log.d("update Profile params ","${params.toMap()}")
-            apiService.updateProfile("DE751AA2-227E-42F1-BEE6-B1F05C143246",params)
+            apiService.updateProfile("0102600C-AB5F-4385-A7AC-8D6C6754FABD",params)
         }
 
-    override suspend fun uploadProfile(params: RequestBody): Flow<APIResult<UploadProfileModel>> =
+    override suspend fun uploadProfile(params: File): Flow<APIResult<UploadProfileModel>> =
         safeApiCall {
-            apiService.uploadFile("DE751AA2-227E-42F1-BEE6-B1F05C143246",params)
+            Log.d("Profile Upload Params",params.toString())
+            apiService.uploadFile("0D163635-2ED2-4C36-8EBB-77EF90C74023",params)
         }
 
 }
