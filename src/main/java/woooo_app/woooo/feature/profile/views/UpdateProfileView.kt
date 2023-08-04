@@ -67,6 +67,7 @@ import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.Shapes
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
+import eu.siacs.conversations.http.model.UserBasicInfo
 import kotlinx.coroutines.runBlocking
 import woooo_app.woooo.feature.auth.GV
 import woooo_app.woooo.feature.profile.viewmodels.UpdateProfileViewModel
@@ -392,7 +393,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
                     if (updateProfileViewModel.validateUpdateProfileFields()) {
                         runBlocking {
 
-                            if (isProfileChange.value){
+                            if (isProfileChange.value) {
                                 updateProfileViewModel.uploadProfile(
                                     userPreferencesViewModel.getAccountUniqueId(),
                                     context,
@@ -421,11 +422,21 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             }
         }
         // enable Loader when update account Api Hit
-        if (updateProfileViewModel.updateProfileStates.value.isLoading.value) ShowLoader()
+        if (updateProfileViewModel.updateProfileStates.value.isLoading.value) {
+            ShowLoader()
+            runBlocking {
+                val basicInfo: UserBasicInfo =
+                    updateProfileViewModel.updateProfileStates.value.data.Data!!
+                updateProfileViewModel.saveUserInfoToPreferencesOnUpdateProfile(
+                    userPreferencesViewModel,basicInfo
+                )
+            }
+            navigator.popBackStack()
+        }
         // enable Loader when upload profile Api Hit
         if (updateProfileViewModel.uploadProfileStates.value.isLoading.value) ShowLoader()
 
-//        // enabled success dialgue
+        // enabled success dialgue
 //        if (updateProfileViewModel.updateProfileStates.value.isSucceed.value) {
 //            runBlocking {
 //                val basicInfo: UserBasicInfo =
