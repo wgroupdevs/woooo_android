@@ -92,22 +92,41 @@
 
                 </androidx.recyclerview.widget.RecyclerView>
 
-                <eu.siacs.conversations.ui.widget.EditMessage
-                    android:id="@+id/textinput"
-                    style="@style/Widget.Conversations.EditText"
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_border"
-                    android:ems="10"
-                    android:imeOptions="flagNoExtractUi|actionSend"
-                    android:inputType="textShortMessage|textMultiLine|textCapSentences"
-                    android:maxLines="8"
-                    android:minHeight="48dp"
-                    android:minLines="1"
-                    android:padding="8dp"
-                    >
-                    <requestFocus />
-                </eu.siacs.conversations.ui.widget.EditMessage>
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <eu.siacs.conversations.ui.widget.EditMessage
+                        android:id="@+id/textinput"
+                        style="@style/Widget.Conversations.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_border"
+                        android:ems="10"
+                        android:imeOptions="flagNoExtractUi|actionSend"
+                        android:inputType="textShortMessage|textMultiLine|textCapSentences"
+                        android:maxLines="8"
+                        android:minHeight="48dp"
+                        android:minLines="1"
+                        android:padding="8dp"
+                        android:paddingEnd="@dimen/_15sdp">
+
+                        <requestFocus />
+                    </eu.siacs.conversations.ui.widget.EditMessage>
+
+                    <ImageView
+                        android:id="@+id/attachmentsIv"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:src="?attr/icon_new_attachment" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 
