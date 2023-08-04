@@ -31,6 +31,13 @@ public class MessagePacket extends AbstractAcknowledgeableStanza {
         this.children.add(0, body);
     }
 
+
+    public void setForwardedElement(String text) {
+        Element forwarded = new Element("forwarded");
+        forwarded.setContent(text);
+        this.children.add(0, forwarded);
+    }
+
     public void setAxolotlMessage(Element axolotlMessage) {
         this.children.remove(findChild("body"));
         this.children.add(0, axolotlMessage);
