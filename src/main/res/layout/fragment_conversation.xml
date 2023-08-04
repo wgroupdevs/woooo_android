@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/color_background_secondary">
+
         <ListView
             android:id="@+id/messages_view"
             android:layout_width="fill_parent"
@@ -14,6 +16,10 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
+            android:layout_marginStart="-2dp"
+            android:layout_marginLeft="-2dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="-677dp"
             android:background="?attr/color_background_secondary"
             android:divider="@null"
             android:dividerHeight="0dp"
@@ -21,6 +27,7 @@
             android:stackFromBottom="true"
             android:transcriptMode="normal"
             tools:listitem="@layout/message_sent">
+
         </ListView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -67,9 +74,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
+                android:layout_marginHorizontal="@dimen/_5sdp"
                 android:layout_toStartOf="@+id/textSendButton"
                 android:layout_toLeftOf="@+id/textSendButton"
-                android:layout_marginHorizontal="@dimen/_5sdp"
                 android:orientation="vertical">
 
                 <TextView
@@ -96,22 +103,41 @@
 
                 </androidx.recyclerview.widget.RecyclerView>
 
-                <eu.siacs.conversations.ui.widget.EditMessage
-                    android:id="@+id/textinput"
-                    style="@style/Widget.Conversations.EditText"
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_border"
-                    android:ems="10"
-                    android:imeOptions="flagNoExtractUi|actionSend"
-                    android:inputType="textShortMessage|textMultiLine|textCapSentences"
-                    android:maxLines="8"
-                    android:minHeight="48dp"
-                    android:minLines="1"
-                    android:padding="8dp"
-                    >
-                    <requestFocus />
-                </eu.siacs.conversations.ui.widget.EditMessage>
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <eu.siacs.conversations.ui.widget.EditMessage
+                        android:id="@+id/textinput"
+                        style="@style/Widget.Conversations.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_border"
+                        android:ems="10"
+                        android:imeOptions="flagNoExtractUi|actionSend"
+                        android:inputType="textShortMessage|textMultiLine|textCapSentences"
+                        android:maxLines="8"
+                        android:minHeight="48dp"
+                        android:minLines="1"
+                        android:padding="8dp"
+                        android:paddingEnd="@dimen/_15sdp">
+
+                        <requestFocus />
+                    </eu.siacs.conversations.ui.widget.EditMessage>
+
+                    <ImageView
+                        android:id="@+id/AttachmentsIv"
+                        android:layout_width="@dimen/_20sdp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:layout_marginEnd="@dimen/_5sdp"
+                        android:src="?attr/icon_new_attachment" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 
@@ -120,10 +146,9 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:background="@drawable/bg_border"
                 android:layout_marginEnd="@dimen/_2sdp"
+                android:background="@drawable/bg_border"
                 android:contentDescription="@string/send_message"
                 android:src="@drawable/outline_send_34" />
         </RelativeLayout>
@@ -168,6 +193,85 @@
                 android:textAppearance="@style/TextAppearance.Conversations.Body1.OnDark"
                 android:textStyle="bold" />
         </RelativeLayout>
+
+<!--        <RelativeLayout-->
+<!--            android:id="@+id/AttachmentsContainer"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="@dimen/_200sdp"-->
+<!--            android:layout_alignParentStart="true"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_marginStart="0dp"-->
+<!--            android:layout_marginEnd="0dp"-->
+<!--            android:layout_marginBottom="@dimen/_45sdp">-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:orientation="vertical">-->
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:padding="@dimen/_10sdp">-->
+<!--                    &lt;!&ndash; Files Button &ndash;&gt;-->
+<!--                    <ImageButton-->
+<!--                        android:id="@+id/btnFiles"-->
+<!--                        android:layout_width="50dp"-->
+<!--                        android:layout_height="50dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:src="@android:color/background_dark" />-->
+
+<!--                    &lt;!&ndash; File Button &ndash;&gt;-->
+<!--                    <ImageButton-->
+<!--                        android:id="@+id/btnImage"-->
+<!--                        android:layout_width="50dp"-->
+<!--                        android:layout_height="50dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:src="@android:color/background_dark" />-->
+<!--                    &lt;!&ndash;Take Picture&ndash;&gt;-->
+<!--                    <ImageButton-->
+<!--                        android:id="@+id/btnCamera"-->
+<!--                        android:layout_width="50dp"-->
+<!--                        android:layout_height="50dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:src="@android:color/background_dark" />-->
+
+<!--                    &lt;!&ndash; Other Buttons can be added similarly &ndash;&gt;-->
+<!--                </LinearLayout>-->
+
+<!--                <LinearLayout-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:orientation="horizontal"-->
+<!--                    android:padding="@dimen/_10sdp">-->
+<!--                    &lt;!&ndash; Files Button &ndash;&gt;-->
+<!--                    <ImageButton-->
+<!--                        android:layout_width="50dp"-->
+<!--                        android:layout_height="50dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:src="@android:color/background_dark" />-->
+
+<!--                    &lt;!&ndash; File Button &ndash;&gt;-->
+<!--                    <ImageButton-->
+<!--                        android:layout_width="50dp"-->
+<!--                        android:layout_height="50dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:src="@android:color/background_dark" />-->
+<!--                    &lt;!&ndash;Take Picture&ndash;&gt;-->
+<!--                    <ImageButton-->
+<!--                        android:layout_width="50dp"-->
+<!--                        android:layout_height="50dp"-->
+<!--                        android:layout_weight="1"-->
+<!--                        android:src="@android:color/background_dark" />-->
+
+<!--                    &lt;!&ndash; Other Buttons can be added similarly &ndash;&gt;-->
+<!--                </LinearLayout>-->
+
+<!--            </LinearLayout>-->
+
+<!--        </RelativeLayout>-->
 
     </RelativeLayout>
 </layout>
