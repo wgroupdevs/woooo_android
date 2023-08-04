@@ -163,7 +163,7 @@ public class ConversationFragment extends XmppFragment
     public static final int ATTACHMENT_CHOICE_LOCATION = 0x0305;
     public static final int ATTACHMENT_CHOICE_INVALID = 0x0306;
     public static final int ATTACHMENT_CHOICE_RECORD_VIDEO = 0x0307;
-    private final String TAG = "ConversationFragment";
+    private final String TAG = "ConversationFrgmt_TAG";
     public static final String RECENTLY_USED_QUICK_ACTION = "recently_used_quick_action";
     public static final String STATE_CONVERSATION_UUID =
             ConversationFragment.class.getName() + ".uuid";
@@ -1168,7 +1168,7 @@ public class ConversationFragment extends XmppFragment
         final MenuItem menuOngoingCall = menu.findItem(R.id.action_ongoing_call);
         final MenuItem menuVideoCall = menu.findItem(R.id.action_video_call);
         final MenuItem menuTogglePinned = menu.findItem(R.id.action_toggle_pinned);
-
+        Log.d("onCreateOptionsMenu", "onCreateOptionsMenu.....");
         if (conversation != null) {
             if (conversation.getMode() == Conversation.MODE_MULTI) {
                 menuContactDetails.setVisible(false);
@@ -1490,6 +1490,9 @@ public class ConversationFragment extends XmppFragment
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
+
+
+
         if (MenuDoubleTabUtil.shouldIgnoreTap()) {
             return false;
         } else if (conversation == null) {
@@ -1498,12 +1501,16 @@ public class ConversationFragment extends XmppFragment
         int itemId = item.getItemId();
         if (itemId == R.id.encryption_choice_axolotl || itemId == R.id.encryption_choice_pgp || itemId == R.id.encryption_choice_none) {
             handleEncryptionSelection(item);
+        } else if (itemId == R.id.action_attach_file) {
+
+
         } else if (itemId == R.id.attach_choose_picture
                 || itemId == R.id.attach_take_picture
                 || itemId == R.id.attach_record_video
                 || itemId == R.id.attach_choose_file
                 || itemId == R.id.attach_record_voice
                 || itemId == R.id.attach_location) {
+
             handleAttachmentSelection(item);
         } else if (itemId == R.id.action_search) {
             startSearch();

@@ -85,6 +85,7 @@ public class RtpSessionActivity extends XmppActivity
     public static final String ACTION_MAKE_VIDEO_CALL = "action_make_video_call";
 
     private static final int CALL_DURATION_UPDATE_INTERVAL = 333;
+    private static final String TAG ="RtpSessionActivity_TAG" ;
 
     private static final List<RtpEndUserState> END_CARD =
             Arrays.asList(
@@ -512,6 +513,10 @@ public class RtpSessionActivity extends XmppActivity
         final Account account = extractAccount(intent);
         final Jid with = Jid.ofEscaped(intent.getStringExtra(EXTRA_WITH));
         final String sessionId = intent.getStringExtra(EXTRA_SESSION_ID);
+        Log.d(TAG,"onBackendConnected account :" +account);
+        Log.d(TAG,"onBackendConnected with :" +with);
+        Log.d(TAG,"onBackendConnected sessionId :" +sessionId);
+
         if (sessionId != null) {
             if (initializeActivityWithRunningRtpSession(account, with, sessionId)) {
                 return;

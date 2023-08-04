@@ -20,7 +20,7 @@
             @color/blue_primary100
         </item>
 
-        <!--        <item name="android:windowIsTranslucent">true</item>-->
+                <item name="android:windowIsTranslucent">true</item>
 
 
         <item name="android:textColorHint">@color/white70</item>
