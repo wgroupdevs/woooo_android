@@ -130,13 +130,14 @@
                     <ImageView
                         android:id="@+id/attachmentsIv"
                         android:layout_width="@dimen/_20sdp"
-                        android:clickable="true"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerInParent="true"
                         android:layout_marginTop="@dimen/_10sdp"
                         android:layout_marginEnd="@dimen/_5sdp"
-                        android:src="?attr/icon_new_attachment" />
+                        android:clickable="true"
+                        android:src="?attr/icon_new_attachment"
+                        android:focusable="true" />
 
                 </RelativeLayout>
 
