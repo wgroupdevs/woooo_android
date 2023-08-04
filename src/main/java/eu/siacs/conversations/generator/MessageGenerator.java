@@ -1,5 +1,7 @@
 package eu.siacs.conversations.generator;
 
+import android.util.Log;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,6 +28,7 @@ import eu.siacs.conversations.xmpp.stanzas.MessagePacket;
 public class MessageGenerator extends AbstractGenerator {
     private static final String OMEMO_FALLBACK_MESSAGE = "I sent you an OMEMO encrypted message but your client doesn’t seem to support that. Find more information on https://conversations.im/omemo";
     private static final String PGP_FALLBACK_MESSAGE = "I sent you a PGP encrypted message but your client doesn’t seem to support that.";
+    private final String TAG = "MessageGenerator_TAG";
 
     public MessageGenerator(XmppConnectionService service) {
         super(service);
@@ -85,6 +88,8 @@ public class MessageGenerator extends AbstractGenerator {
         packet.addChild("encryption", "urn:xmpp:eme:0")
                 .setAttribute("name", "OMEMO")
                 .setAttribute("namespace", AxolotlService.PEP_PREFIX);
+        Log.d(TAG, "generateAxolotlChat Called");
+
         return packet;
     }
 
@@ -94,6 +99,10 @@ public class MessageGenerator extends AbstractGenerator {
         packet.setTo(to);
         packet.setAxolotlMessage(axolotlMessage.toElement());
         packet.addChild("store", "urn:xmpp:hints");
+
+        Log.d(TAG, "generateKeyTransportMessage Called...");
+
+
         return packet;
     }
 
@@ -107,6 +116,11 @@ public class MessageGenerator extends AbstractGenerator {
         } else {
             content = message.getBody();
         }
+
+        packet.addChild("forwarded", Namespace.FORWARD);
+
+        Log.d(TAG, "generateChat Called...");
+
         packet.setBody(content);
         return packet;
     }

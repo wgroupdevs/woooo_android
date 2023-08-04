@@ -113,6 +113,7 @@ public class XmppConnection implements Runnable {
     private static final int PACKET_IQ = 0;
     private static final int PACKET_MESSAGE = 1;
     private static final int PACKET_PRESENCE = 2;
+    private final String TAG="XmppConnection_TAG";
     public final OnIqPacketReceived registrationResponseListener =
             (account, packet) -> {
                 if (packet.getType() == IqPacket.TYPE.RESULT) {
@@ -1207,6 +1208,8 @@ public class XmppConnection implements Runnable {
     }
 
     private void processMessage(final Tag currentTag) throws IOException {
+
+        Log.d(TAG,"processMessage Called " + currentTag.toString());
         final MessagePacket packet = (MessagePacket) processPacket(currentTag, PACKET_MESSAGE);
         if (!packet.valid()) {
             Log.e(
@@ -2283,6 +2286,7 @@ public class XmppConnection implements Runnable {
         }
         synchronized (this.mStanzaQueue) {
             if (force || isBound) {
+
                 tagWriter.writeStanzaAsync(packet);
             } else {
                 Log.d(

@@ -163,7 +163,7 @@ public class ConversationFragment extends XmppFragment
     public static final int ATTACHMENT_CHOICE_LOCATION = 0x0305;
     public static final int ATTACHMENT_CHOICE_INVALID = 0x0306;
     public static final int ATTACHMENT_CHOICE_RECORD_VIDEO = 0x0307;
-
+    private final String TAG = "ConversationFragment";
     public static final String RECENTLY_USED_QUICK_ACTION = "recently_used_quick_action";
     public static final String STATE_CONVERSATION_UUID =
             ConversationFragment.class.getName() + ".uuid";
@@ -862,12 +862,18 @@ public class ConversationFragment extends XmppFragment
         if (conversation.getCorrectingMessage() == null) {
             message = new Message(conversation, body, conversation.getNextEncryption());
             Message.configurePrivateMessage(message);
+
+            Log.d(TAG, "configurePrivateMessage Called");
+
         } else {
             message = conversation.getCorrectingMessage();
             message.setBody(body);
             message.putEdited(message.getUuid(), message.getServerMsgId());
             message.setServerMsgId(null);
             message.setUuid(UUID.randomUUID().toString());
+
+            Log.d(TAG, "UUID.randomUUID().toString()");
+
         }
         switch (conversation.getNextEncryption()) {
             case Message.ENCRYPTION_PGP:
@@ -1269,7 +1275,7 @@ public class ConversationFragment extends XmppFragment
         messageListAdapter.setOnContactPictureLongClicked(null);
     }
 
-    private void quoteText(String text) {
+    private void replyText(String text) {
         if (binding.textinput.isEnabled()) {
             binding.textinput.insertAsQuote(text);
             binding.textinput.requestFocus();
@@ -1283,8 +1289,8 @@ public class ConversationFragment extends XmppFragment
         }
     }
 
-    private void quoteMessage(Message message) {
-        quoteText(MessageUtils.prepareQuote(message));
+    private void replyMessage(Message message) {
+        replyText(MessageUtils.prepareQuote(message));
     }
 
     @Override
@@ -1452,7 +1458,7 @@ public class ConversationFragment extends XmppFragment
             ShareUtil.copyLinkToClipboard(activity, selectedMessage);
             return true;
         } else if (itemId == R.id.reply_message) {
-            quoteMessage(selectedMessage);
+            replyMessage(selectedMessage);
             return true;
         } else if (itemId == R.id.send_again) {
             resendMessage(selectedMessage);
@@ -2567,7 +2573,7 @@ public class ConversationFragment extends XmppFragment
                 toggleInputMethod();
                 return;
             } else if (text != null && asQuote) {
-                quoteText(text);
+                replyText(text);
             } else {
                 appendText(text, doNotAppend);
             }
@@ -3094,6 +3100,7 @@ public class ConversationFragment extends XmppFragment
     }
 
     protected void sendMessage(Message message) {
+        Log.d(TAG, "activity.xmppConnectionService.sendMessage(message) Called");
         activity.xmppConnectionService.sendMessage(message);
         messageSent();
     }
