@@ -99,6 +99,14 @@ class UserPreferencesViewModel @Inject constructor(
         userPreferences.setProfileImage(image)
     }
 
+    suspend fun setAccountUniqueId(uniqueId: String) {
+        userPreferences.setAccountUniqueId(uniqueId)
+    }
+
+    suspend fun getAccountUniqueId(): String {
+        return userPreferences.getAccountUniqueId()
+    }
+
     suspend fun getFirstName(): String {
         return userPreferences.getFirstName().first()
     }

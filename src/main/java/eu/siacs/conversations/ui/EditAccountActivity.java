@@ -94,7 +94,7 @@ import eu.siacs.conversations.xmpp.forms.Data;
 import eu.siacs.conversations.xmpp.pep.Avatar;
 import okhttp3.HttpUrl;
 import woooo_app.MainActivity;
-import woooo_app.woooo.feature.auth.EmailForAuthModule;
+import woooo_app.woooo.feature.auth.GV;
 import woooo_app.woooo.utils.NavIntentConstantKt;
 
 public class EditAccountActivity extends OmemoActivity implements OnAccountUpdate, OnUpdateBlocklist, OnKeyStatusUpdated, OnCaptchaRequested, KeyChainAliasCallback, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnMamPreferencesFetched, WooooAuthService.OnLoginAPiResult,WooooAuthService.OnGetWooContactAPiResult{
@@ -193,7 +193,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(NavIntentConstantKt.CONST_KEY_INTENT, navIntentConst);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        EmailForAuthModule.INSTANCE.clearEmailField();
+        GV.INSTANCE.clearEmailField();
         startActivity(intent);
     }
 

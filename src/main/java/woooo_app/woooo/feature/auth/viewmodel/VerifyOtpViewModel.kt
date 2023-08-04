@@ -15,7 +15,7 @@ import woooo_app.woooo.data.models.auth.requestmodels.ReSentOTPRequestModel
 import woooo_app.woooo.data.models.auth.requestmodels.ResetPasswordRequestModel
 import woooo_app.woooo.domain.usecase.ReSendCodeUseCase
 import woooo_app.woooo.domain.usecase.ResetPasswordUseCase
-import woooo_app.woooo.feature.auth.EmailForAuthModule
+import woooo_app.woooo.feature.auth.GV
 import woooo_app.woooo.shared.base.doOnFailure
 import woooo_app.woooo.shared.base.doOnLoading
 import woooo_app.woooo.shared.base.doOnSuccess
@@ -85,7 +85,7 @@ class VerifyOtpViewModel @Inject constructor(
     fun resetPassword(context: Context) = viewModelScope.launch {
         resetPasswordUseCase.invoke(
             ResetPasswordRequestModel(
-                email = EmailForAuthModule.getEmail.value,
+                email = GV.getEmail.value,
                 otp = getOtpCodeText.value,
                 password = getNewPassText.value,
                 confirmPassword = getConfirmPassText.value
@@ -121,7 +121,7 @@ class VerifyOtpViewModel @Inject constructor(
 
         reSendCodeUseCase.invoke(
             BaseResendCodeReqParam(
-                email = ReSentOTPRequestModel(email = EmailForAuthModule.getEmail.value),
+                email = ReSentOTPRequestModel(email = GV.getEmail.value),
                 IsOtpForAccount = false
             )
         ).doOnSuccess {

@@ -7,7 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBackIosNew
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemColors
@@ -85,7 +85,7 @@ fun TopBarForSetting(
             ) {
 
             CustomIcon(
-                icon = Icons.Outlined.ArrowBackIosNew,
+                icon = Icons.Outlined.ArrowBack,
                 modifier = Modifier
                     .padding(end = 10.dp)
                     .clickable(onClick = onBackPressed)

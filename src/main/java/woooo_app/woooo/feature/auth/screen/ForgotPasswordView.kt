@@ -38,7 +38,7 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
 import woooo_app.MainActivity
 import woooo_app.woooo.destinations.VerifyOTPScreenDestination
-import woooo_app.woooo.feature.auth.EmailForAuthModule
+import woooo_app.woooo.feature.auth.GV
 import woooo_app.woooo.feature.auth.viewmodel.ForgotPasswordViewModel
 import woooo_app.woooo.shared.base.AppBackGround
 import woooo_app.woooo.shared.components.CustomIcon
@@ -92,10 +92,10 @@ fun ForgotPasswordView(navigator: DestinationsNavigator) {
          // enter email
          WooTextField(
              onValueChange = {
-                 EmailForAuthModule.setEmailValue(it)
+                 GV.setEmailValue(it)
                  forgotPassViewModel.setErrorValueForEmail(false)
              },
-             value = EmailForAuthModule.getEmail.value,
+             value = GV.getEmail.value,
              isError = forgotPassViewModel.getErrorEmailController.value,
              supportingText = {
                  if (forgotPassViewModel.getErrorEmailController.value) {

@@ -29,7 +29,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowBackIosNew
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.rounded.AddLocation
 import androidx.compose.material.icons.rounded.Cake
@@ -54,6 +54,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -66,10 +67,8 @@ import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.Shapes
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
-import eu.siacs.conversations.http.model.UserBasicInfo
 import kotlinx.coroutines.runBlocking
-import woooo_app.woooo.destinations.HomeScreenDestination
-import woooo_app.woooo.feature.auth.screen.SuccessDialogAuth
+import woooo_app.woooo.feature.auth.GV
 import woooo_app.woooo.feature.profile.viewmodels.UpdateProfileViewModel
 import woooo_app.woooo.shared.components.CustomDateTimePicker
 import woooo_app.woooo.shared.components.ViewDivider
@@ -77,8 +76,8 @@ import woooo_app.woooo.shared.components.view_models.DateTimerPickerViewModel
 import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel
 import woooo_app.woooo.utils.Dimension
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+
+private val profileImage = mutableStateOf("")
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -87,28 +86,24 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
     val updateProfileViewModel: UpdateProfileViewModel = hiltViewModel()
     val context = LocalContext.current
     val userPreferencesViewModel: UserPreferencesViewModel = hiltViewModel()
-    val gg = remember {
+    val isProfileChange = remember {
         mutableStateOf(false)
     }
-    LaunchedEffect(key1 = "To_Call_fillUserInfo()_Only_One_Time ", block = {
-        fillUserInfo(updateProfileViewModel, userPreferencesViewModel)
+
+    LaunchedEffect(key1 = "To_Call_fillUserInfo()_Only_One_Time ",block = {
+        fillUserInfo(updateProfileViewModel,userPreferencesViewModel)
     })
     val imagePicker = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = {
-            it.let {
-                if (gg.value) updateProfileViewModel.profileImage.value = it.toString()
-                if (it != null) {
-                    updateProfileViewModel.uploadProfile(
-                        "id",
-                        context,
-                        it
-                    )
-                }
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) {
+        it.let {
+            if (it == null) {
+                isProfileChange.value = false
+                return@let
             }
-
-
-        })
+            if (isProfileChange.value) profileImage.value = it.toString()
+        }
+    }
 
     Column(
         Modifier
@@ -123,7 +118,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             modifier = Modifier.clickable(onClick = { navigator.popBackStack() })
         ) {
             Icon(
-                imageVector = Icons.Outlined.ArrowBackIosNew,
+                imageVector = Icons.Outlined.ArrowBack,
                 contentDescription = "",
                 tint = WooColor.white,
                 modifier = Modifier.clickable(onClick = { navigator.popBackStack() })
@@ -141,19 +136,19 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
                 Modifier
                     .clip(CircleShape)
                     .clickable(onClick = {
-                        gg.value = true
+                        isProfileChange.value = true
                         imagePicker.launch(
                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                         )
                     })
             ) {
                 AsyncImage(
-                    model = updateProfileViewModel.profileImage.value,
+                    model = profileImage.value,
                     modifier = Modifier
                         .height(150.dp)
                         .width(150.dp)
-                        .background(color = Color.Transparent, shape = CircleShape)
-                        .border(2.dp, Color.White, shape = CircleShape),
+                        .background(color = Color.Transparent,shape = CircleShape)
+                        .border(2.dp,Color.White,shape = CircleShape),
                     contentDescription = "This is a circular image",
                     contentScale = ContentScale.FillBounds
                 )
@@ -177,7 +172,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
         Box(
             modifier = Modifier
                 .height(150.dp)
-                .background(WooColor.textFieldBackGround, shape = RoundedCornerShape(10.dp))
+                .background(WooColor.textFieldBackGround,shape = RoundedCornerShape(10.dp))
         ) {
             OutlinedTextField(
 
@@ -233,7 +228,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             hint = Strings.firstNameText,
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Person, contentDescription = "", tint = Color.White
+                    imageVector = Icons.Rounded.Person,contentDescription = "",tint = Color.White
                 )
             })
         // last name
@@ -253,7 +248,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             hint = Strings.lastNameText,
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Person, contentDescription = "", tint = Color.White
+                    imageVector = Icons.Rounded.Person,contentDescription = "",tint = Color.White
                 )
             })
         //email
@@ -263,24 +258,24 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             onValueChange = {
 //                updateProfileViewModel.setEmailControllerValue(it)
 //                updateProfileViewModel.setEmailErrorValue(false)
-            }, value = updateProfileViewModel.getEmailController,
+            },value = updateProfileViewModel.getEmailController,
 //            isError = signUpViewModel.getEmailError.value,
 //            supportingText = {
 //                if (signUpViewModel.getEmailError.value) {
 //                    ErrorMessageUpdateProfileView()
 //                }
 //            },
-            hint = Strings.emailText, leadingIcon = {
+            hint = Strings.emailText,leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Email, contentDescription = "", tint = Color.White
+                    imageVector = Icons.Rounded.Email,contentDescription = "",tint = Color.White
                 )
-            }, readOnly = true
+            },readOnly = true
         )
         //phone number
         TextLabel(label = Strings.phoneNmbrText)
         VerticalSpacer()
         WooTextField(
-            hint = Strings.enterNumberText, value = updateProfileViewModel.getPhoneController,
+            hint = Strings.enterNumberText,value = updateProfileViewModel.getPhoneController,
 //            leadingIcon = {
 //                Row(
 //                    horizontalArrangement = Arrangement.Start,
@@ -335,7 +330,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             hint = "2010-05-15",
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Cake, contentDescription = "", tint = Color.White
+                    imageVector = Icons.Rounded.Cake,contentDescription = "",tint = Color.White
                 )
             },
 
@@ -380,7 +375,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             hint = Strings.pstlCodeText,
             leadingIcon = {
                 Icon(
-                    imageVector = Icons.Rounded.Pin, contentDescription = "", tint = Color.White
+                    imageVector = Icons.Rounded.Pin,contentDescription = "",tint = Color.White
                 )
             })
         VerticalSpacer()
@@ -392,10 +387,19 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
                 .wrapContentWidth()
         ) {
             CustomButton(
-                border = BorderStroke(1.dp, Color.White),
+                border = BorderStroke(1.dp,Color.White),
                 onClick = {
                     if (updateProfileViewModel.validateUpdateProfileFields()) {
+                        runBlocking {
 
+                            if (isProfileChange.value){
+                                updateProfileViewModel.uploadProfile(
+                                    userPreferencesViewModel.getAccountUniqueId(),
+                                    context,
+                                    profileImage.value.toUri(),
+                                )
+                            }
+                        }
                         updateProfileViewModel.updateProfile(context)
                     }
                 },
@@ -410,31 +414,37 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             )
         }
         Box(modifier = Modifier.height(400.dp))
-
-        // enable Loader when Api Hit
-        if (updateProfileViewModel.updateProfileStates.value.isLoading.value) ShowLoader()
-
-        // enabled success dialgue
-        if (updateProfileViewModel.updateProfileStates.value.isSucceed.value) {
-
-            var basicInfo: UserBasicInfo =
-                updateProfileViewModel.updateProfileStates.value.data.Data!!
-
+        if (updateProfileViewModel.uploadProfileStates.value.isSucceed.value) {
             runBlocking {
-                updateProfileViewModel.saveUserInfoToPreferencesOnUpdateProfile(
-                    userPreferencesViewModel,basicInfo
-                )
+                userPreferencesViewModel.setProfileImage(profileImage.value)
+                GV.getUserProfileImage.value = profileImage.value
             }
-
-            SuccessDialogAuth(title = Strings.updateSuccess,
-                message = updateProfileViewModel.updateProfileStates.value.message,
-                onClick = {
-                    updateProfileViewModel.updateProfileStates.value.apply {
-                        isSucceed.value = false
-                    }
-                    navigator.popBackStack(HomeScreenDestination, false)
-                })
         }
+        // enable Loader when update account Api Hit
+        if (updateProfileViewModel.updateProfileStates.value.isLoading.value) ShowLoader()
+        // enable Loader when upload profile Api Hit
+        if (updateProfileViewModel.uploadProfileStates.value.isLoading.value) ShowLoader()
+
+//        // enabled success dialgue
+//        if (updateProfileViewModel.updateProfileStates.value.isSucceed.value) {
+//            runBlocking {
+//                val basicInfo: UserBasicInfo =
+//                    updateProfileViewModel.updateProfileStates.value.data.Data!!
+//                Log.d(basicInfo.firstName,"oasaoksaoksaos")
+//                updateProfileViewModel.saveUserInfoToPreferencesOnUpdateProfile(
+//                    userPreferencesViewModel,basicInfo
+//                )
+//            }
+//
+//            SuccessDialogAuth(title = Strings.updateSuccess,
+//                message = updateProfileViewModel.updateProfileStates.value.message,
+//                onClick = {
+//                    updateProfileViewModel.updateProfileStates.value.apply {
+//                        isSucceed.value = false
+//                    }
+////                    navigator.popBackStack(HomeScreenDestination,false)
+//                })
+//        }
         // enable date of birth picker
         if (dateTimerPickerViewModel.getDateDialogueShowForUpdateProfile.value) CustomDateTimePicker(
             onDateChange = {
@@ -442,12 +452,11 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
                 updateProfileViewModel.setDOBControllerValue(it.toString())
                 updateProfileViewModel.setDOBErrorValue(false)
 
-                Log.d("date of birth ...", updateProfileViewModel.getDOBController.value)
+                Log.d("date of birth ...",updateProfileViewModel.getDOBController.value)
                 // convert it to local to show in text field
                 val date = LocalDate.parse(it.toString())
                 dateTimerPickerViewModel.setDateTextValueForUpdateProfile(date)
                 dateTimerPickerViewModel.setDateDialogueValueForUpdateProfile(false)
-//            updateProfileViewModel.setDOBControllerValue(dateTimerPickerViewModel.getDatePickerTextForUpdateProfile.value)
 
             },
             onDismissRequest = {
@@ -460,25 +469,17 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
 @RequiresApi(Build.VERSION_CODES.O)
 private fun fillUserInfo(
     updateProfileViewModel: UpdateProfileViewModel,
-    userPreferencesViewModel: UserPreferencesViewModel
+    userPreferencesViewModel: UserPreferencesViewModel,
 ) {
 
     runBlocking {
-
-        updateProfileViewModel.profileImage.value = userPreferencesViewModel.getProfileImage()
+        profileImage.value = userPreferencesViewModel.getProfileImage()
         updateProfileViewModel.setAboutControllerValue(userPreferencesViewModel.getAbout())
         updateProfileViewModel.setNameControllerValue(userPreferencesViewModel.getFirstName())
         updateProfileViewModel.setLastNameControllerValue(userPreferencesViewModel.getLastName())
         updateProfileViewModel.getEmailController = userPreferencesViewModel.getEmail()
         updateProfileViewModel.getPhoneController = userPreferencesViewModel.getPhone()
         updateProfileViewModel.setDOBControllerValue(userPreferencesViewModel.getDOB())
-//        updateProfileViewModel.setDOBControllerValue(convertDOBinLocal(userPreferencesViewModel))
-//        if(userPreferencesViewModel.getDOB().isNotEmpty()){
-//
-//            updateProfileViewModel.setDOBControllerValue(convertDOBinLocal(userPreferencesViewModel))
-//        }
-
-        updateProfileViewModel.setDOBControllerValue("")
         updateProfileViewModel.setPostalCodeControllerValue(userPreferencesViewModel.getPostalCode())
         updateProfileViewModel.setAddressControllerValue(userPreferencesViewModel.getAddress())
         updateProfileViewModel.language.value = userPreferencesViewModel.getLanguage()
@@ -486,19 +487,19 @@ private fun fillUserInfo(
 
     }
 }
-
-@RequiresApi(Build.VERSION_CODES.O)
-suspend fun convertDOBinLocal(userPreferencesViewModel: UserPreferencesViewModel): String {
-    val serverDateTimeString = userPreferencesViewModel.getDOB()
-    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
-    return if (serverDateTimeString.equals(formatter)) {
-        val dateTime = LocalDateTime.parse(serverDateTimeString,formatter)
-        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        val dateString = dateTime.format(dateFormatter)
-        Log.d("yes Coming ","")
-        dateString
-    } else {
-        userPreferencesViewModel.getDOB()
-    }
-
-}
+//
+//@RequiresApi(Build.VERSION_CODES.O)
+//suspend fun convertDOBinLocal(userPreferencesViewModel: UserPreferencesViewModel): String {
+//    val serverDateTimeString = userPreferencesViewModel.getDOB()
+//    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS")
+//    return if (serverDateTimeString.equals(formatter)) {
+//        val dateTime = LocalDateTime.parse(serverDateTimeString,formatter)
+//        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+//        val dateString = dateTime.format(dateFormatter)
+//        Log.d("yes Coming ","")
+//        dateString
+//    } else {
+//        userPreferencesViewModel.getDOB()
+//    }
+//
+//}

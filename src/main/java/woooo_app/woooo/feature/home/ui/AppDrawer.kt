@@ -2,7 +2,6 @@ package woooo_app.woooo.feature.home.ui
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -11,8 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
@@ -28,11 +25,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -40,18 +34,18 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import eu.siacs.conversations.R
 import kotlinx.coroutines.runBlocking
 import woooo_app.woooo.destinations.SettingsScreenDestination
 import woooo_app.woooo.destinations.UpdateProfileMainScreenDestination
+import woooo_app.woooo.feature.auth.GV
 import woooo_app.woooo.feature.home.viewmodel.HomeViewModel
 import woooo_app.woooo.feature.profile.viewmodels.UpdateProfileViewModel
 import woooo_app.woooo.goToWelcomeActivity
+import woooo_app.woooo.shared.components.UserProfileImage
 import woooo_app.woooo.shared.components.ViewDivider
 import woooo_app.woooo.shared.components.view_models.LocalDbViewModel
 import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel
 import woooo_app.woooo.utils.Dimension
-import woooo_app.woooo.utils.FIRST_NAME
 
 @Composable
 fun AppDrawer(
@@ -75,7 +69,7 @@ fun AppDrawer(
             shape = RoundedCornerShape(0.dp,15.dp,15.dp,0.dp)
         ),drawerContainerColor = Color.Transparent
     ) {
-        DrawerHeader(modifier,navigator,updateProfileViewModel,userPreferencesViewModel)
+        DrawerHeader(modifier,navigator)
 //        Spacer(modifier = Modifier.padding(dimensionResource(id = R.dimen.spacer_padding)))
         Column(modifier = Modifier.padding(Dimension.dimen_10)) {
 
@@ -157,8 +151,6 @@ fun AppDrawer(
 fun DrawerHeader(
     modifier: Modifier,
     navigator: DestinationsNavigator,
-    updateProfileViewModel: UpdateProfileViewModel,
-    userPreferencesViewModel: UserPreferencesViewModel
 ) {
     Row(
         horizontalArrangement = Arrangement.Start,
@@ -168,17 +160,8 @@ fun DrawerHeader(
             .fillMaxWidth()
     ) {
 
-        Image(
-            painterResource(id = R.drawable.woooo_logo),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = modifier
-                .size(Dimension.dimen_100)
-                .clip(CircleShape)
-        )
-
-
-
+        //profile Image
+        UserProfileImage(150.dp) {}
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -186,7 +169,7 @@ fun DrawerHeader(
         ) {
 
             Text(
-                text = FIRST_NAME,
+                text = GV.getFirstName.value,
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onPrimary,

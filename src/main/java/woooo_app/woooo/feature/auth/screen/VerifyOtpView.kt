@@ -33,7 +33,7 @@ import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
-import woooo_app.woooo.feature.auth.EmailForAuthModule
+import woooo_app.woooo.feature.auth.GV
 import woooo_app.woooo.feature.auth.viewmodel.VerifyOtpViewModel
 import woooo_app.woooo.goToWelcomeActivity
 import woooo_app.woooo.shared.base.AppBackGround
@@ -197,7 +197,7 @@ fun clickOnSuccessResetPass(
     verifyOtpViewModel.resetPasswordState.value.apply {
         isSucceed.value = false
     }
-    EmailForAuthModule.clearEmailField()
+    GV.clearEmailField()
 
     goToWelcomeActivity(context)
 }

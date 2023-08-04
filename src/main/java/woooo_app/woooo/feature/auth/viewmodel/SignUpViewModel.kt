@@ -11,7 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import woooo_app.woooo.data.models.auth.requestmodels.SignUpRequestModel
 import woooo_app.woooo.domain.usecase.SignUpUseCase
-import woooo_app.woooo.feature.auth.EmailForAuthModule
+import woooo_app.woooo.feature.auth.GV
 import woooo_app.woooo.shared.base.doOnFailure
 import woooo_app.woooo.shared.base.doOnLoading
 import woooo_app.woooo.shared.base.doOnSuccess
@@ -136,7 +136,7 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
         Log.d("Success Call response","${signUpResponseState.value.data}")
         signUpUseCase.invoke(
             SignUpRequestModel(
-                email = EmailForAuthModule.getEmail.value.trim(),
+                email = GV.getEmail.value.trim(),
                 phoneNumber = getPhoneWithCode.value.trim(),
                 password = getPasswordController.value.trim(),
                 userReferralCode = getReferralCodeController.value.trim(),
@@ -189,13 +189,13 @@ class SignUpViewModel @Inject constructor(private val signUpUseCase: SignUpUseCa
             // enabled value of error in text field
             setLastNameErrorValue(true)
             return false
-        } else if (EmailForAuthModule.getEmail.value.trim() == "") {
+        } else if (GV.getEmail.value.trim() == "") {
             // pass error text to show below in text field
             setErrorValueText(Strings.plzEnterEmail)
             // enabled value of error in text field
             setEmailErrorValue(true)
             return false
-        } else if (!Validators.isValidEmail(EmailForAuthModule.getEmail.value.trim())) {
+        } else if (!Validators.isValidEmail(GV.getEmail.value.trim())) {
             // pass error text to show below in text field
             setErrorValueText(Strings.entrValidEmailText)
             // enabled value of error in text field

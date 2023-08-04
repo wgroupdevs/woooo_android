@@ -19,7 +19,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.rounded.AccountBalanceWallet
-import androidx.compose.material.icons.rounded.ArrowBackIos
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Fingerprint
 import androidx.compose.material.icons.rounded.HelpOutline
 import androidx.compose.material3.AlertDialog
@@ -84,7 +84,7 @@ fun Wallet_Pin_Verify_Dialog(
             ) {
                 Icon(
                     modifier = Modifier.clickable(onClick = onBackClick),
-                    imageVector = Icons.Rounded.ArrowBackIos,
+                    imageVector = Icons.Rounded.ArrowBack,
                     contentDescription = "",
                     tint = WooColor.white
                 )
