@@ -128,8 +128,9 @@
                     </eu.siacs.conversations.ui.widget.EditMessage>
 
                     <ImageView
-                        android:id="@+id/AttachmentsIv"
+                        android:id="@+id/attachmentsIv"
                         android:layout_width="@dimen/_20sdp"
+                        android:clickable="true"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerInParent="true"

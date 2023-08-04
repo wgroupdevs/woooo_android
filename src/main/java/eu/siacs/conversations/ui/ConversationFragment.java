@@ -1247,6 +1247,26 @@ public class ConversationFragment extends XmppFragment
         messageListAdapter.setOnContactPictureLongClicked(this);
         binding.messagesView.setAdapter(messageListAdapter);
 
+        binding.attachmentsIv.setOnClickListener(v -> {
+
+
+            // Initializing the popup menu and giving the reference as current context
+            PopupMenu popupMenu = new PopupMenu(getActivity(), binding.attachmentsIv);
+
+            // Inflating popup menu from popup_menu.xml file
+            popupMenu.getMenuInflater().inflate(R.menu.fragment_conversation, popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                @Override
+                public boolean onMenuItemClick(MenuItem menuItem) {
+                    // Toast message on menu item clicked
+                    Toast.makeText(getActivity(), "You Clicked " + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+            });
+            // Showing the popup menu
+            popupMenu.show();
+
+        });
         registerForContextMenu(binding.messagesView);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -1490,7 +1510,6 @@ public class ConversationFragment extends XmppFragment
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-
 
 
         if (MenuDoubleTabUtil.shouldIgnoreTap()) {
