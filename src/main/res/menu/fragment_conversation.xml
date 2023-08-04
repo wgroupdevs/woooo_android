@@ -46,7 +46,7 @@
     </item>
     <item
         android:id="@+id/action_attach_file"
-        android:icon="?attr/icon_new_attachment"
+        android:icon="@drawable/translation_unselected_icon"
         android:orderInCategory="30"
         android:title="@string/attach_file"
         app:showAsAction="always">

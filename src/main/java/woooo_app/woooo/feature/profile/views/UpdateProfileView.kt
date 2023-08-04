@@ -424,6 +424,8 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
         // enable Loader when update account Api Hit
         if (updateProfileViewModel.updateProfileStates.value.isLoading.value) {
             ShowLoader()
+        }
+        if (updateProfileViewModel.updateProfileStates.value.isSucceed.value) {
             runBlocking {
                 val basicInfo: UserBasicInfo? =
                     updateProfileViewModel.updateProfileStates.value.data.Data
@@ -432,9 +434,10 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
                         userPreferencesViewModel, basicInfo
                     )
                 }
+                navigator.popBackStack()
             }
-            navigator.popBackStack()
         }
+
         // enable Loader when upload profile Api Hit
         if (updateProfileViewModel.uploadProfileStates.value.isLoading.value) ShowLoader()
 
