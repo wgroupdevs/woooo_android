@@ -1053,21 +1053,21 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         messageListAdapter.setOnContactPictureLongClicked(this);
         binding.messagesView.setAdapter(messageListAdapter);
 
-        binding.attachmentsIv.setOnClickListener(v -> {
-            // Initializing the popup menu and giving the reference as current context
-            PopupMenu popupMenu = new PopupMenu(getActivity(), binding.attachmentsIv);
-
-            // Inflating popup menu from popup_menu.xml file
-            popupMenu.getMenuInflater().inflate(R.menu.attachment_container, popupMenu.getMenu());
-            popupMenu.setOnMenuItemClickListener(menuItem -> {
-                handleAttachmentSelection(menuItem);
-                Toast.makeText(getActivity(), "You Clicked " + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
-                return true;
-            });
-            // Showing the popup menu
-            popupMenu.show();
-
-        });
+//        binding.attachmentsIv.setOnClickListener(v -> {
+//            // Initializing the popup menu and giving the reference as current context
+//            PopupMenu popupMenu = new PopupMenu(getActivity(), binding.attachmentsIv);
+//
+//            // Inflating popup menu from popup_menu.xml file
+//            popupMenu.getMenuInflater().inflate(R.menu.attachment_container, popupMenu.getMenu());
+//            popupMenu.setOnMenuItemClickListener(menuItem -> {
+//                handleAttachmentSelection(menuItem);
+//                Toast.makeText(getActivity(), "You Clicked " + menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+//                return true;
+//            });
+//            // Showing the popup menu
+//            popupMenu.show();
+//
+//        });
         registerForContextMenu(binding.messagesView);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
