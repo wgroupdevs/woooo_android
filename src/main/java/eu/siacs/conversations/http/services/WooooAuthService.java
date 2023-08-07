@@ -53,6 +53,7 @@ public class WooooAuthService {
 
     public void login(boolean isLoginWithEmail, String email, String phone, String password, OnLoginAPiResult listener) {
         Log.d("WooooAuthService", "LOGIN STARTED...");
+        Log.d(phone, "LOGIN STARTED... With Phone");
         final LoginRequestParams requestParams = new LoginRequestParams(email, phone, password, "", "", "");
         final Call<LoginAPIResponseJAVA> searchResultCall = wooooService.login(isLoginWithEmail, requestParams);
         searchResultCall.enqueue(new Callback<LoginAPIResponseJAVA>() {

@@ -34,13 +34,13 @@
             <group android:checkableBehavior="single">
                 <item
                     android:id="@+id/encryption_choice_none"
-                    android:title="@string/encryption_choice_unencrypted" />
+                    android:title="@string/unprotected" />
                 <item
                     android:id="@+id/encryption_choice_axolotl"
-                    android:title="@string/encryption_choice_omemo" />
+                    android:title="@string/stealth_mode" />
                 <item
                     android:id="@+id/encryption_choice_pgp"
-                    android:title="@string/encryption_choice_pgp" />
+                    android:title="@string/private_mode" />
             </group>
         </menu>
     </item>
@@ -55,12 +55,12 @@
             <item
                 android:id="@+id/attach_choose_file"
                 android:icon="?attr/ic_attach_document"
-                android:title="@string/choose_file" />
+                android:title="@string/attach_file" />
 
             <item
                 android:id="@+id/attach_choose_picture"
                 android:icon="?attr/ic_attach_photo"
-                android:title="@string/attach_choose_picture" />
+                android:title="@string/attach_image" />
 
             <item
                 android:id="@+id/attach_take_picture"
@@ -70,12 +70,12 @@
             <item
                 android:id="@+id/attach_record_video"
                 android:icon="?attr/ic_attach_videocam"
-                android:title="@string/attach_record_video" />
+                android:title="@string/capture_video" />
 
             <item
                 android:id="@+id/attach_record_voice"
                 android:icon="?attr/ic_attach_record"
-                android:title="@string/attach_record_voice" />
+                android:title="@string/record_audio" />
 
             <item
                 android:id="@+id/attach_location"
@@ -132,15 +132,15 @@
         android:title="@string/add_to_favorites"
         app:showAsAction="never" />
 
-<!--    <item-->
-<!--        android:orderInCategory="70"-->
-<!--        android:title="@string/more_options">-->
+    <!--    <item-->
+    <!--        android:orderInCategory="70"-->
+    <!--        android:title="@string/more_options">-->
 
-<!--        <menu>-->
+    <!--        <menu>-->
 
-<!--        </menu>-->
+    <!--        </menu>-->
 
-<!--    </item>-->
+    <!--    </item>-->
 
 
 </menu>
