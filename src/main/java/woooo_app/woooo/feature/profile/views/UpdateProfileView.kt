@@ -437,7 +437,7 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
         if (!withProfilePic.value && updateProfileViewModel.updateProfileStates.value.isLoading.value) {
             ShowLoader()
         }
-        if (!withProfilePic.value && updateProfileViewModel.updateProfileStates.value.isSucceed.value) {
+        if (updateProfileViewModel.updateProfileStates.value.isSucceed.value) {
             if (!withProfilePic.value) {
                 navigator.popBackStack()
             }
