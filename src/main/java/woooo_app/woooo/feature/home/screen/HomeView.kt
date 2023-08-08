@@ -58,7 +58,7 @@ import woooo_app.woooo.utils.Dimension
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomePage(navigator: DestinationsNavigator,homeViewModel: HomeViewModel = hiltViewModel()) {
+fun HomePage(navigator: DestinationsNavigator) {
     BoxWithConstraints {
         Dimension.boxWithConstraintsScope = this
         val scope = rememberCoroutineScope()
@@ -91,7 +91,7 @@ fun HomePage(navigator: DestinationsNavigator,homeViewModel: HomeViewModel = hil
                         })
 
                     },onActionClick = {
-//                        notificationTrayState = !notificationTrayState
+
                     })
                 },
 

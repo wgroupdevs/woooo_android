@@ -431,23 +431,15 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
             ShowLoader()
         }
         if (updateProfileViewModel.uploadProfileStates.value.isSucceed.value) {
+            runBlocking {
+                userPreferencesViewModel.setProfileImage(profileImage.value)
+                GV.getUserProfileImage.value = profileImage.value
+            }
             navigator.popBackStack()
         }
 
         if (!withProfilePic.value && updateProfileViewModel.updateProfileStates.value.isLoading.value) {
             ShowLoader()
-        }
-        if (updateProfileViewModel.updateProfileStates.value.isSucceed.value) {
-            if (!withProfilePic.value) {
-                navigator.popBackStack()
-            }
-        }
-
-        if (updateProfileViewModel.uploadProfileStates.value.isSucceed.value) {
-            runBlocking {
-                userPreferencesViewModel.setProfileImage(profileImage.value)
-                GV.getUserProfileImage.value = profileImage.value
-            }
         }
 
         if (updateProfileViewModel.updateProfileStates.value.isSucceed.value) {
@@ -459,7 +451,9 @@ fun UpdateProfileView(navigator: DestinationsNavigator) {
                         userPreferencesViewModel,basicInfo
                     )
                 }
-//                navigator.popBackStack()
+            }
+            if (!withProfilePic.value) {
+                navigator.popBackStack()
             }
         }
 
@@ -491,7 +485,7 @@ private fun fillUserInfo(
 ) {
 
     runBlocking {
-        profileImage.value = userPreferencesViewModel.getProfileImage()
+        profileImage.value = GV.getUserProfileImage.value
         updateProfileViewModel.setAboutControllerValue(userPreferencesViewModel.getAbout())
         updateProfileViewModel.setNameControllerValue(userPreferencesViewModel.getFirstName())
         updateProfileViewModel.setLastNameControllerValue(userPreferencesViewModel.getLastName())

@@ -143,6 +143,7 @@ public class WooooAuthService {
     }
 
     public void getWooContact(GetWooContactsRequestParams params, OnGetWooContactAPiResult listener) {
+        Log.d(String.valueOf(params.number.length), "getWooContact STARTED");
         Log.d("WooooAuthService", "getWooContact STARTED...");
 
         final Call<GetWooContactsModel> searchResultCall = wooooService.getWooContacts(params);
@@ -153,7 +154,7 @@ public class WooooAuthService {
 
 
                 Log.d("WooooAuthService", "API RESPONSE " + response.isSuccessful());
-                Log.d("WooooAuthService", "API RESPONSE " + response.code());
+                Log.d("API RESPONSE " + response.code(), "WooooAuthService Status Code");
                 Log.d("WooooAuthService", "API RESPONSE BODY " + response.body());
                 if (body == null) {
 

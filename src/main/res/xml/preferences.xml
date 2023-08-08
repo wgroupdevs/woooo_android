@@ -165,23 +165,23 @@
             android:title="@string/pref_accept_files" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_ui_options">
-        <CheckBoxPreference
-            android:defaultValue="@bool/use_green_background"
-            android:key="use_green_background"
-            android:summary="@string/pref_use_green_background_summary"
-            android:title="@string/pref_use_green_background" />
+<!--        <CheckBoxPreference-->
+<!--            android:defaultValue="@bool/use_green_background"-->
+<!--            android:key="use_green_background"-->
+<!--            android:summary="@string/pref_use_green_background_summary"-->
+<!--            android:title="@string/pref_use_green_background" />-->
         <CheckBoxPreference
             android:defaultValue="@bool/show_dynamic_tags"
             android:key="show_dynamic_tags"
             android:summary="@string/pref_show_dynamic_tags_summary"
             android:title="@string/pref_show_dynamic_tags" />
-        <ListPreference
-            android:defaultValue="@string/theme"
-            android:entries="@array/themes"
-            android:entryValues="@array/themes_values"
-            android:key="theme"
-            android:summary="@string/pref_theme_options_summary"
-            android:title="@string/pref_theme_options" />
+<!--        <ListPreference-->
+<!--            android:defaultValue="@string/theme"-->
+<!--            android:entries="@array/themes"-->
+<!--            android:entryValues="@array/themes_values"-->
+<!--            android:key="theme"-->
+<!--            android:summary="@string/pref_theme_options_summary"-->
+<!--            android:title="@string/pref_theme_options" />-->
         <ListPreference
             android:defaultValue="@string/quick_action"
             android:dialogTitle="@string/choose_quick_action"
@@ -206,21 +206,21 @@
             android:summary="@string/pref_create_backup_summary"
             android:title="@string/pref_create_backup" />
     </PreferenceCategory>
-    <PreferenceCategory
-        android:key="unified_push"
-        android:title="@string/unified_push_distributor">
-        <ListPreference
-            android:defaultValue="@string/default_push_account"
-            android:key="up_push_account"
-            android:summary="@string/pref_up_push_account_summary"
-            android:title="@string/pref_up_push_account_title" />
-        <EditTextPreference
-            android:defaultValue="@string/default_push_server"
-            android:key="up_push_server"
-            android:summary="@string/pref_up_push_server_summary"
-            android:title="@string/pref_up_push_server_title" />
+<!--    <PreferenceCategory-->
+<!--        android:key="unified_push"-->
+<!--        android:title="@string/unified_push_distributor">-->
+<!--        <ListPreference-->
+<!--            android:defaultValue="@string/default_push_account"-->
+<!--            android:key="up_push_account"-->
+<!--            android:summary="@string/pref_up_push_account_summary"-->
+<!--            android:title="@string/pref_up_push_account_title" />-->
+<!--        <EditTextPreference-->
+<!--            android:defaultValue="@string/default_push_server"-->
+<!--            android:key="up_push_server"-->
+<!--            android:summary="@string/pref_up_push_server_summary"-->
+<!--            android:title="@string/pref_up_push_server_title" />-->
 
-    </PreferenceCategory>
+<!--    </PreferenceCategory>-->
     <PreferenceCategory
         android:key="advanced"
         android:title="@string/pref_advanced_options">
@@ -248,16 +248,16 @@
                     android:key="btbv"
                     android:summary="@string/pref_blind_trust_before_verification_summary"
                     android:title="@string/pref_blind_trust_before_verification" />
-                <CheckBoxPreference
-                    android:defaultValue="@bool/dont_trust_system_cas"
-                    android:key="dont_trust_system_cas"
-                    android:summary="@string/pref_dont_trust_system_cas_summary"
-                    android:title="@string/pref_dont_trust_system_cas_title" />
-                <CheckBoxPreference
-                    android:defaultValue="@bool/validate_hostname"
-                    android:key="validate_hostname"
-                    android:summary="@string/pref_validate_hostname_summary"
-                    android:title="@string/pref_validate_hostname" />
+<!--                <CheckBoxPreference-->
+<!--                    android:defaultValue="@bool/dont_trust_system_cas"-->
+<!--                    android:key="dont_trust_system_cas"-->
+<!--                    android:summary="@string/pref_dont_trust_system_cas_summary"-->
+<!--                    android:title="@string/pref_dont_trust_system_cas_title" />-->
+<!--                <CheckBoxPreference-->
+<!--                    android:defaultValue="@bool/validate_hostname"-->
+<!--                    android:key="validate_hostname"-->
+<!--                    android:summary="@string/pref_validate_hostname_summary"-->
+<!--                    android:title="@string/pref_validate_hostname" />-->
                 <CheckBoxPreference
                     android:defaultValue="@bool/allow_message_correction"
                     android:key="allow_message_correction"
@@ -268,10 +268,10 @@
                     android:key="automatic_message_deletion"
                     android:summary="@string/pref_automatically_delete_messages_description"
                     android:title="@string/pref_automatically_delete_messages" />
-                <Preference
-                    android:key="remove_trusted_certificates"
-                    android:summary="@string/pref_remove_trusted_certificates_summary"
-                    android:title="@string/pref_remove_trusted_certificates_title" />
+<!--                <Preference-->
+<!--                    android:key="remove_trusted_certificates"-->
+<!--                    android:summary="@string/pref_remove_trusted_certificates_summary"-->
+<!--                    android:title="@string/pref_remove_trusted_certificates_title" />-->
                 <Preference
                     android:key="clean_cache"
                     android:summary="@string/pref_clean_cache_summary"
@@ -280,10 +280,10 @@
                     android:key="clean_private_storage"
                     android:summary="@string/pref_clean_private_storage_summary"
                     android:title="@string/pref_clean_private_storage" />
-                <Preference
-                    android:key="delete_omemo_identities"
-                    android:summary="@string/pref_delete_omemo_identities_summary"
-                    android:title="@string/pref_delete_omemo_identities" />
+<!--                <Preference-->
+<!--                    android:key="delete_omemo_identities"-->
+<!--                    android:summary="@string/pref_delete_omemo_identities_summary"-->
+<!--                    android:title="@string/pref_delete_omemo_identities" />-->
             </PreferenceCategory>
             <PreferenceCategory
                 android:key="connection_options"
@@ -293,28 +293,28 @@
                     android:key="use_tor"
                     android:summary="@string/pref_use_tor_summary"
                     android:title="@string/pref_use_tor" />
-                <CheckBoxPreference
-                    android:defaultValue="@bool/show_connection_options"
-                    android:key="show_connection_options"
-                    android:summary="@string/pref_show_connection_options_summary"
-                    android:title="@string/pref_show_connection_options" />
+<!--                <CheckBoxPreference-->
+<!--                    android:defaultValue="@bool/show_connection_options"-->
+<!--                    android:key="show_connection_options"-->
+<!--                    android:summary="@string/pref_show_connection_options_summary"-->
+<!--                    android:title="@string/pref_show_connection_options" />-->
             </PreferenceCategory>
             <PreferenceCategory android:title="@string/pref_input_options">
-                <CheckBoxPreference
-                    android:defaultValue="@bool/start_searching"
-                    android:key="start_searching"
-                    android:summary="@string/pref_start_search_summary"
-                    android:title="@string/pref_start_search" />
+<!--                <CheckBoxPreference-->
+<!--                    android:defaultValue="@bool/start_searching"-->
+<!--                    android:key="start_searching"-->
+<!--                    android:summary="@string/pref_start_search_summary"-->
+<!--                    android:title="@string/pref_start_search" />-->
                 <CheckBoxPreference
                     android:defaultValue="@bool/enter_is_send"
                     android:key="enter_is_send"
                     android:summary="@string/pref_enter_is_send_summary"
                     android:title="@string/pref_enter_is_send" />
-                <CheckBoxPreference
-                    android:defaultValue="@bool/display_enter_key"
-                    android:key="display_enter_key"
-                    android:summary="@string/pref_display_enter_key_summary"
-                    android:title="@string/pref_display_enter_key" />
+<!--                <CheckBoxPreference-->
+<!--                    android:defaultValue="@bool/display_enter_key"-->
+<!--                    android:key="display_enter_key"-->
+<!--                    android:summary="@string/pref_display_enter_key_summary"-->
+<!--                    android:title="@string/pref_display_enter_key" />-->
                 <CheckBoxPreference
                     android:defaultValue="@bool/scroll_to_bottom"
                     android:key="scroll_to_bottom"
@@ -347,22 +347,22 @@
                     android:summary="@string/pref_treat_vibrate_as_dnd_summary"
                     android:title="@string/pref_treat_vibrate_as_silent" />
             </PreferenceCategory>
-            <PreferenceCategory
-                android:key="group_chats"
-                android:title="@string/group_chats_and_channels">
-                <CheckBoxPreference
-                    android:defaultValue="@bool/autojoin"
-                    android:key="autojoin"
-                    android:summary="@string/pref_autojoin_summary"
-                    android:title="@string/pref_autojoin" />
-                <ListPreference
-                    android:defaultValue="@string/default_channel_discovery"
-                    android:entries="@array/channel_discovery_entries"
-                    android:entryValues="@array/channel_discover_values"
-                    android:key="channel_discovery_method"
-                    android:summary="@string/pref_channel_discovery_summary"
-                    android:title="@string/pref_channel_discovery" />
-            </PreferenceCategory>
+<!--            <PreferenceCategory-->
+<!--                android:key="group_chats"-->
+<!--                android:title="@string/group_chats_and_channels">-->
+<!--                <CheckBoxPreference-->
+<!--                    android:defaultValue="@bool/autojoin"-->
+<!--                    android:key="autojoin"-->
+<!--                    android:summary="@string/pref_autojoin_summary"-->
+<!--                    android:title="@string/pref_autojoin" />-->
+<!--                <ListPreference-->
+<!--                    android:defaultValue="@string/default_channel_discovery"-->
+<!--                    android:entries="@array/channel_discovery_entries"-->
+<!--                    android:entryValues="@array/channel_discover_values"-->
+<!--                    android:key="channel_discovery_method"-->
+<!--                    android:summary="@string/pref_channel_discovery_summary"-->
+<!--                    android:title="@string/pref_channel_discovery" />-->
+<!--            </PreferenceCategory>-->
             <intent
                 android:action="android.intent.action.VIEW"
                 android:targetClass="eu.siacs.conversations.ui.SettingsActivity"

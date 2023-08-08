@@ -5,11 +5,11 @@ import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -40,6 +40,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
+import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.google.android.material.textfield.TextInputLayout;
@@ -47,7 +48,6 @@ import com.hbb20.CountryCodePicker;
 
 import org.openintents.openpgp.util.OpenPgpUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -94,14 +94,20 @@ import eu.siacs.conversations.xmpp.forms.Data;
 import eu.siacs.conversations.xmpp.pep.Avatar;
 import okhttp3.HttpUrl;
 import woooo_app.MainActivity;
+import woooo_app.woooo.data.models.auth.requestmodels.GetWooContactsRequestParams;
 import woooo_app.woooo.feature.auth.GV;
 import woooo_app.woooo.utils.NavIntentConstantKt;
 
-public class EditAccountActivity extends OmemoActivity implements OnAccountUpdate, OnUpdateBlocklist, OnKeyStatusUpdated, OnCaptchaRequested, KeyChainAliasCallback, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnMamPreferencesFetched, WooooAuthService.OnLoginAPiResult,WooooAuthService.OnGetWooContactAPiResult{
+public class EditAccountActivity extends OmemoActivity implements OnAccountUpdate, OnUpdateBlocklist, OnKeyStatusUpdated, OnCaptchaRequested, KeyChainAliasCallback, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnMamPreferencesFetched, WooooAuthService.OnLoginAPiResult, WooooAuthService.OnGetWooContactAPiResult {
     Boolean isLoginWithEmail = false;
     CountryCodePicker codePicker;
     Context context;
-    ArrayList<String> contactsFromPhoneBook = new ArrayList<>();
+    //    ArrayList<String> contactsFromPhoneBook = new ArrayList<>();
+    Cursor cursor;
+    private String[] contactsFromPhoneBook;
+    private final Context mContext = this;
+
+    private static final int REQUEST = 112;
 
 
     public static final String EXTRA_OPENED_FROM_NOTIFICATION = "opened_from_notification";
@@ -180,16 +186,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
 
     private void goToMainActivity(String navIntentConst) {
-//        getContactList();
-//        GetWooContactsRequestParams getWooContactsRequestParams = new GetWooContactsRequestParams();
-//        getWooContactsRequestParams.number = contactsFromPhoneBook;
-//        getWooContactsRequestParams.accountId = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
-//
-//
-//
-//        Log.d(getWooContactsRequestParams.number.toString(),"adadsvsadsad");
-////        setSupportActionBar(binding.toolbar);
-//        xmppConnectionService.getWooContacts(getWooContactsRequestParams, EditAccountActivity.this);
+
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(NavIntentConstantKt.CONST_KEY_INTENT, navIntentConst);
         intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -808,6 +805,47 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
     }
 
+    @SuppressLint("Range")
+    void getContactList() {
+        cursor = getContactsCursor();
+        contactsFromPhoneBook = new String[cursor.getCount()];
+        int i = 0;
+        while (cursor.moveToNext()) {
+            String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            contactsFromPhoneBook[i] = number;
+            i++;
+        }
+        GetWooContactsRequestParams getWooContactsRequestParams = new GetWooContactsRequestParams();
+        getWooContactsRequestParams.number = contactsFromPhoneBook;
+        getWooContactsRequestParams.accountId = "0102600C-AB5F-4385-A7AC-8D6C6754FABD";
+        xmppConnectionService.getWooContacts(getWooContactsRequestParams, EditAccountActivity.this);
+    }
+
+
+    private Cursor getContactsCursor() {
+        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+        String[] projection = {ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER};
+        String selection = null;
+        String[] selectionArgs = null;
+        String sortOrder = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC";
+        Cursor cursor = getContentResolver().query(uri, projection, selection, selectionArgs, sortOrder);
+        return cursor;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // Close the cursor
+        if (cursor != null) {
+            cursor.close();
+        }
+    }
+
+    public String[] getNumbers() {
+        return contactsFromPhoneBook;
+    }
+
     private void countryPicker() {
         binding.countryCodePicker.setOnCountryChangeListener(() -> {
             // getting the country code
@@ -828,6 +866,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
     private void loginWithEmailState() {
         binding.lgnwithEmailBtn.setOnClickListener(view -> {
+
             isLoginWithEmail = !isLoginWithEmail;
             if (isLoginWithEmail) {
                 binding.loginWithEmailLayout.setVisibility(View.VISIBLE);
@@ -842,6 +881,18 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         });
     }
 
+    private boolean hasPermissions(String[] permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     private void keyboardVisibilityChecker() {
         KeyboardVisibility.setEventListener(this, keyboardVisible -> {
             if (keyboardVisible) {
@@ -850,35 +901,6 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                 binding.newAccount.setVisibility(View.VISIBLE);
             }
         });
-    }
-
-    @SuppressLint("Range")
-    private void getContactList() {
-        ContentResolver cr = getContentResolver();
-        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-
-        if ((cur != null ? cur.getCount() : 0) > 0) {
-            while (cur.moveToNext()) {
-//                @SuppressLint("Range") String id = cur.getString(cur.getColumnIndex(ContactsContract.Contacts._ID));
-//                @SuppressLint("Range") String name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-
-                if (cur.getInt(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)) > 0) {
-                    Cursor pCur = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", null, null);
-                    while (true) {
-                        assert pCur != null;
-                        if (!pCur.moveToNext()) break;
-                        String phoneNo = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//                        Log.i(TAG, "Name: " + name);
-                        Log.i(TAG, "Phone Number: " + phoneNo);
-                        contactsFromPhoneBook.add(phoneNo);
-                    }
-                    pCur.close();
-                }
-            }
-        }
-        if (cur != null) {
-            cur.close();
-        }
     }
 
     private void onEditYourNameClicked(View view) {
@@ -1640,6 +1662,8 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                 final String password = binding.accountPassword.getText().toString();
                 loginAPIResponseJAVA = (LoginAPIResponseJAVA) loginModel;
                 performXMPPLoginAttempt(jid, password, 5222, null);
+                // get Woaa Contacts Api
+                getWoaContactAPiParams();
 
             } else if (loginModel instanceof BaseModelAPIResponse) {
                 Toast.makeText(context, ((BaseModelAPIResponse) loginModel).Message, Toast.LENGTH_LONG).show();
@@ -1654,28 +1678,33 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         });
     }
 
+    private void getWoaContactAPiParams() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
+            if (!hasPermissions(PERMISSIONS)) {
+                ActivityCompat.requestPermissions((Activity) context, PERMISSIONS, REQUEST);
+            } else {
+                getContactList();
+            }
+        } else {
+            getContactList();
+        }
+    }
+
     @Override
-    public <T> void OnGetWooContactAPiResultFound(T loginModel) {
+    public <T> void OnGetWooContactAPiResultFound(T getWooModel) {
         runOnUiThread(() -> {
-            if (loginModel instanceof GetWooContactsModel) {
-                Log.d("onLoginApiResultFound", " LoginAPIResponseJAVA Called in EditActivity " + ((GetWooContactsModel) loginModel).Data.size());
-//                Log.d("onLoginApiResultFound", " LoginAPIResponseJAVA Called in EditActivity " + ((GetWooContactsModel) loginModel).Data.user.jid);
-//                Log.d("onLoginApiResultFound", " LoginAPIResponseJAVA Called in EditActivity " + ((GetWooContactsModel) loginModel).Data.user.email);
-//                String userJid = ((GetWooContactsModel) loginModel).Data.user.jid;
-//                Jid jid = Jid.ofEscaped(userJid);
-//                Resolver.checkDomain(jid);
-//                final String password = binding.accountPassword.getText().toString();
-//                loginAPIResponseJAVA = (GetWooContactsModel) loginModel;
-//                performXMPPLoginAttempt(jid, password, 5222, null);
+            if (getWooModel instanceof GetWooContactsModel) {
+                Log.d("WoContactResultFound", " OnGetWooContactAPiResultFoundResponseJAVA Called in EditActivity " + ((GetWooContactsModel) getWooModel).Data);
 
-            } else if (loginModel instanceof BaseModelAPIResponse) {
-                Toast.makeText(context, ((BaseModelAPIResponse) loginModel).Message, Toast.LENGTH_LONG).show();
-
+                Log.d("response Contact", String.valueOf(((GetWooContactsModel) getWooModel).Data.size()));
+            } else if (getWooModel instanceof BaseModelAPIResponse) {
+                Toast.makeText(context, ((BaseModelAPIResponse) getWooModel).Message, Toast.LENGTH_LONG).show();
                 hideProgressDialog();
-                Log.d("onLoginApiResultFound", " BaseModelAPIResponse Called in EditActivity " + ((BaseModelAPIResponse) loginModel).Message);
+                Log.d("WooContactAPiResult", " BaseModelAPIResponse Called in EditActivity " + ((BaseModelAPIResponse) getWooModel).Message);
             } else {
                 hideProgressDialog();
-                Log.d("onLoginApiResultFound", "ECEPTION FOUND... " + loginModel);
+                Log.d("WooContactAPiResult", "ECEPTION FOUND... " + getWooModel);
 
             }
         });
