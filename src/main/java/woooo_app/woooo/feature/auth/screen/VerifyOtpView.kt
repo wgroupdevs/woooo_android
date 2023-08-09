@@ -28,7 +28,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageVerifyOtp
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
-import com.wgroup.woooo_app.woooo.shared.components.TextLabel
+import woooo_app.woooo.shared.components.TextLabel
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.WooColor

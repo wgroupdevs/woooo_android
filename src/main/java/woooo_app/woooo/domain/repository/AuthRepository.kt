@@ -16,16 +16,24 @@ import woooo_app.woooo.data.models.auth.requestmodels.SignUpRequestModel
 import woooo_app.woooo.data.models.profile.UpdateProfileModel
 import woooo_app.woooo.data.models.profile.UpdateProfileRequestModel
 import woooo_app.woooo.data.models.profile.UploadProfileModel
+import woooo_app.woooo.data.models.settings.ChangeNumberModel
+import woooo_app.woooo.data.models.settings.ChangePasswordModel
+import woooo_app.woooo.data.models.settings.DeleteAccountModel
+import woooo_app.woooo.data.models.settings.requestModels.ChangeNumberReqModel
+import woooo_app.woooo.data.models.settings.requestModels.ChangePasswordReqModel
 import woooo_app.woooo.shared.base.APIResult
 
 interface AuthRepository {
     suspend fun login(user: LoginRequestParams): Flow<APIResult<LoginModel>>
     suspend fun signUp(user: SignUpRequestModel): Flow<APIResult<SignUpModel>>
-    suspend fun confirmAccount(params: Map<String, String>): Flow<APIResult<ConfirmAccountModel>>
+    suspend fun confirmAccount(params: Map<String,String>): Flow<APIResult<ConfirmAccountModel>>
     suspend fun reSendCode(params: BaseResendCodeReqParam): Flow<APIResult<ResentCodeModel>>
     suspend fun forgotPassword(email: ForgotPasswordRequestModel): Flow<APIResult<ForgotPasswordModel>>
     suspend fun resetPassword(params: ResetPasswordRequestModel): Flow<APIResult<ResetPasswordModel>>
     suspend fun updateProfile(params: UpdateProfileRequestModel): Flow<APIResult<UpdateProfileModel>>
     suspend fun uploadProfile(params: ProfilePicRequestParams): Flow<APIResult<UploadProfileModel>>
+    suspend fun changeNumber(params: ChangeNumberReqModel): Flow<APIResult<ChangeNumberModel>>
+    suspend fun changePassword(params: ChangePasswordReqModel): Flow<APIResult<ChangePasswordModel>>
+    suspend fun deleteAccount(accountId: String): Flow<APIResult<DeleteAccountModel>>
 
 }

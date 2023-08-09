@@ -51,6 +51,8 @@ import org.openintents.openpgp.util.OpenPgpUtils;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import eu.siacs.conversations.Config;
@@ -102,11 +104,9 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     Boolean isLoginWithEmail = false;
     CountryCodePicker codePicker;
     Context context;
-    //    ArrayList<String> contactsFromPhoneBook = new ArrayList<>();
     Cursor cursor;
-    private String[] contactsFromPhoneBook;
-    private final Context mContext = this;
-
+    private String[] contactsFromPhoneBook = {""};
+    String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
     private static final int REQUEST = 112;
 
 
@@ -806,14 +806,16 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     }
 
     @SuppressLint("Range")
-    void getContactList() {
-        cursor = getContactsCursor();
-        contactsFromPhoneBook = new String[cursor.getCount()];
-        int i = 0;
-        while (cursor.moveToNext()) {
-            String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-            contactsFromPhoneBook[i] = number;
-            i++;
+    void getContactListFromPhoneBook() {
+        if (hasPermissions(PERMISSIONS)) {
+            cursor = getContactsCursor();
+            contactsFromPhoneBook = new String[cursor.getCount()];
+            int i = 0;
+            while (cursor.moveToNext()) {
+                String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                contactsFromPhoneBook[i] = number;
+                i++;
+            }
         }
         GetWooContactsRequestParams getWooContactsRequestParams = new GetWooContactsRequestParams();
         getWooContactsRequestParams.number = contactsFromPhoneBook;
@@ -1663,7 +1665,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                 loginAPIResponseJAVA = (LoginAPIResponseJAVA) loginModel;
                 performXMPPLoginAttempt(jid, password, 5222, null);
                 // get Woaa Contacts Api
-                getWoaContactAPiParams();
+                getContactPermission();
 
             } else if (loginModel instanceof BaseModelAPIResponse) {
                 Toast.makeText(context, ((BaseModelAPIResponse) loginModel).Message, Toast.LENGTH_LONG).show();
@@ -1678,17 +1680,31 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         });
     }
 
-    private void getWoaContactAPiParams() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
-            if (!hasPermissions(PERMISSIONS)) {
-                ActivityCompat.requestPermissions((Activity) context, PERMISSIONS, REQUEST);
-            } else {
-                getContactList();
-            }
+    private void getContactPermission() {
+//        if (Build.VERSION.SDK_INT >= 23) {
+        if (!hasPermissions(PERMISSIONS)) {
+            ActivityCompat.requestPermissions((Activity) context, PERMISSIONS, REQUEST);
         } else {
-            getContactList();
+            getContactListFromPhoneBook();
         }
+//        timer is set on getContactList() fun because when user allow permission of contacts after 3 sec all contacts is uploaded
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                if (hasPermissions(PERMISSIONS)) {
+                    getContactListFromPhoneBook();
+                }
+                if (!hasPermissions(PERMISSIONS)) {
+                    getContactListFromPhoneBook();
+                }
+                System.out.println("Delayed code execution after 3 second");
+            }
+        };
+        timer.schedule(task, 3000);
+//        } else {
+//            getContactList();
+//        }
     }
 
     @Override

@@ -10,11 +10,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wgroup.woooo_app.woooo.feature.wallet.viewmodel.SendCurrencyViewModel
+import woooo_app.woooo.feature.settings.viewmodels.account.AccountViewModel
 import woooo_app.woooo.feature.auth.viewmodel.ConfirmAccountViewModel
 import woooo_app.woooo.feature.auth.viewmodel.ForgotPasswordViewModel
 import woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import woooo_app.woooo.feature.auth.viewmodel.VerifyOtpViewModel
 import woooo_app.woooo.feature.profile.viewmodels.UpdateProfileViewModel
+import woooo_app.woooo.feature.settings.viewmodels.security.SecurityViewModel
 import woooo_app.woooo.utils.Dimension
 
 @Composable
@@ -31,7 +33,8 @@ fun HorizontalSpacer(width: Dp = Dimension.dimen_10) {
 fun ErrorMessageForgetPasswordView() {
     val forgotPasswordViewModel: ForgotPasswordViewModel = hiltViewModel()
     Text(
-        text = forgotPasswordViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
+        text = forgotPasswordViewModel.getErrorText.value,
+        style = MaterialTheme.typography.labelSmall
     )
 }
 
@@ -40,6 +43,22 @@ fun ErrorMessageSignUpView() {
     val signUpViewModel: SignUpViewModel = hiltViewModel()
     Text(
         text = signUpViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
+    )
+}
+
+@Composable
+fun ErrorMessageSecurityView() {
+    val securityViewModel: SecurityViewModel = hiltViewModel()
+    Text(
+        text = securityViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
+    )
+}
+
+@Composable
+fun ErrorMessageAccountMainView() {
+    val accountViewModel: AccountViewModel = hiltViewModel()
+    Text(
+        text = accountViewModel.getErrorText.value,style = MaterialTheme.typography.labelSmall
     )
 }
 

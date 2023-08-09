@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.min
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import com.wgroup.woooo_app.woooo.theme.WooColor
+import woooo_app.woooo.feature.settings.viewmodels.account.AccountViewModel
 import woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import woooo_app.woooo.shared.components.ViewDivider
 import woooo_app.woooo.shared.components.view_models.CountryPickerViewModel
@@ -95,9 +96,8 @@ fun SearchResults(query: String,viewModel: ViewModel) {
                                 filteredCountryList[pair].dial_code
                             )
                             when (viewModel) {
-                                is SignUpViewModel -> viewModel.setShowCountryPickerValue(
-                                    false
-                                )
+                                is SignUpViewModel -> viewModel.setShowCountryPickerValue(false)
+                                is AccountViewModel -> viewModel.setShowCountryPickerValue(false)
                             }
 
                         },

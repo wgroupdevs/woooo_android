@@ -347,6 +347,7 @@ object Strings {
 //    "onlyWhenScreenOffText"= "Only when Screen ${"off"}"
     var remoteLogOutText = "Remote Log-out"
     var changePasswordText = "Change Password"
+    var changePhoneText = "Change Phone Number"
     var fingerPrintText = "Finger Print"
     var permissionsText = "Permission"
 

@@ -50,7 +50,6 @@ import com.wgroup.woooo_app.woooo.shared.components.CountryPicker
 import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageSignUpView
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
-import com.wgroup.woooo_app.woooo.shared.components.TextLabel
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.WooColor
@@ -63,6 +62,7 @@ import woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import woooo_app.woooo.shared.base.AppBackGround
 import woooo_app.woooo.shared.components.CustomIcon
 import woooo_app.woooo.shared.components.PasswordValidator
+import woooo_app.woooo.shared.components.TextLabel
 import woooo_app.woooo.shared.components.view_models.CountryPickerViewModel
 import woooo_app.woooo.shared.components.view_models.PasswordValidatorViewModel
 import woooo_app.woooo.utils.Dimension

@@ -143,7 +143,6 @@ public class WooooAuthService {
     }
 
     public void getWooContact(GetWooContactsRequestParams params, OnGetWooContactAPiResult listener) {
-        Log.d(String.valueOf(params.number.length), "getWooContact STARTED");
         Log.d("WooooAuthService", "getWooContact STARTED...");
 
         final Call<GetWooContactsModel> searchResultCall = wooooService.getWooContacts(params);

@@ -34,12 +34,12 @@ class PasswordValidatorViewModel @Inject constructor() : ViewModel() {
     fun setPasswordValidatorStateForSecurity(value: Boolean) {
         _setPasswordValidatorStateForSecurity.value = value
     }
-
-    private val _changePasswordDialoge = mutableStateOf(false)
-    val getChangePasswordDialoge: State<Boolean> = _changePasswordDialoge
-    fun setValueOfDialoge(value: Boolean) {
-        _changePasswordDialoge.value = value
-    }
+//
+//    private val _changePasswordDialoge = mutableStateOf(false)
+//    val getChangePasswordDialoge: State<Boolean> = _changePasswordDialoge
+//    fun setValueOfDialoge(value: Boolean) {
+//        _changePasswordDialoge.value = value
+//    }
 
     fun passwordValidator(it: String,fromSignUp: Boolean): Boolean {
         _eightChar.value = it.length >= 8
