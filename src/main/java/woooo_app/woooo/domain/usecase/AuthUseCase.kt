@@ -21,14 +21,14 @@ import woooo_app.woooo.shared.base.APIResult
 import woooo_app.woooo.shared.base.BaseUseCase
 import javax.inject.Inject
 
-typealias LoginBaseUseCase = BaseUseCase<LoginRequestParams, Flow<APIResult<LoginModel>>>
-typealias SignUpBaseUseCase = BaseUseCase<SignUpRequestModel, Flow<APIResult<SignUpModel>>>
-typealias ConfirmAccountBaseUseCase = BaseUseCase<Map<String, String>, Flow<APIResult<ConfirmAccountModel>>>
-typealias ReSendCodeBaseUseCase = BaseUseCase<BaseResendCodeReqParam, Flow<APIResult<ResentCodeModel>>>
-typealias ForgotPasswordBaseUseCase = BaseUseCase<ForgotPasswordRequestModel, Flow<APIResult<ForgotPasswordModel>>>
-typealias ResetPasswordBaseUseCase = BaseUseCase<ResetPasswordRequestModel, Flow<APIResult<ResetPasswordModel>>>
-typealias UpdateProfileBaseUseCase = BaseUseCase<UpdateProfileRequestModel, Flow<APIResult<UpdateProfileModel>>>
-typealias UploadProfileBaseUseCase = BaseUseCase<ProfilePicRequestParams, Flow<APIResult<UploadProfileModel>>>
+typealias LoginBaseUseCase = BaseUseCase<LoginRequestParams,Flow<APIResult<LoginModel>>>
+typealias SignUpBaseUseCase = BaseUseCase<SignUpRequestModel,Flow<APIResult<SignUpModel>>>
+typealias ConfirmAccountBaseUseCase = BaseUseCase<Map<String,String>,Flow<APIResult<ConfirmAccountModel>>>
+typealias ReSendCodeBaseUseCase = BaseUseCase<BaseResendCodeReqParam,Flow<APIResult<ResentCodeModel>>>
+typealias ForgotPasswordBaseUseCase = BaseUseCase<ForgotPasswordRequestModel,Flow<APIResult<ForgotPasswordModel>>>
+typealias ResetPasswordBaseUseCase = BaseUseCase<ResetPasswordRequestModel,Flow<APIResult<ResetPasswordModel>>>
+typealias UpdateProfileBaseUseCase = BaseUseCase<UpdateProfileRequestModel,Flow<APIResult<UpdateProfileModel>>>
+typealias UploadProfileBaseUseCase = BaseUseCase<ProfilePicRequestParams,Flow<APIResult<UploadProfileModel>>>
 
 /**
  * use case to login user
@@ -57,7 +57,7 @@ class SignUpUseCase @Inject constructor(private val authRepository: AuthReposito
 
 class ConfirmAccountUseCase @Inject constructor(private val authRepository: AuthRepository) :
     ConfirmAccountBaseUseCase {
-    override suspend fun invoke(params: Map<String, String>): Flow<APIResult<ConfirmAccountModel>> =
+    override suspend fun invoke(params: Map<String,String>): Flow<APIResult<ConfirmAccountModel>> =
         authRepository.confirmAccount(params)
 }
 
@@ -91,3 +91,4 @@ class UploadProfileUseCase @Inject constructor(private val profileRepository: Au
     override suspend fun invoke(params: ProfilePicRequestParams): Flow<APIResult<UploadProfileModel>> =
         profileRepository.uploadProfile(params)
 }
+

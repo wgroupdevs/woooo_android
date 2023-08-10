@@ -16,6 +16,7 @@ import android.provider.ContactsContract.Intents;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -134,9 +135,7 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
 
     private void showAddToPhoneBookDialog() {
         final Jid jid = contact.getJid();
-        final boolean quicksyContact = AbstractQuickConversationsService.isQuicksy()
-                && Config.QUICKSY_DOMAIN.equals(jid.getDomain())
-                && jid.getLocal() != null;
+        final boolean quicksyContact = AbstractQuickConversationsService.isQuicksy() && Config.QUICKSY_DOMAIN.equals(jid.getDomain()) && jid.getLocal() != null;
         final String value;
         if (quicksyContact) {
             value = PhoneNumberUtilWrapper.toFormattedPhoneNumber(this, jid);
@@ -201,6 +200,7 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("Contact Details screen", "aSCBSDJCBS");
         showInactiveOmemo = savedInstanceState != null && savedInstanceState.getBoolean("show_inactive_omemo", false);
         if (getIntent().getAction().equals(ACTION_VIEW_CONTACT)) {
             try {
@@ -215,7 +215,7 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
         this.messageFingerprint = getIntent().getStringExtra("fingerprint");
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_contact_details);
 
-        setSupportActionBar(binding.toolbar);
+        setSupportActionBar(binding.contactDetailsToolBar);
         configureActionBar(getSupportActionBar());
         binding.showInactiveDevices.setOnClickListener(v -> {
             showInactiveOmemo = !showInactiveOmemo;
@@ -252,14 +252,13 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (grantResults.length > 0)
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (requestCode == REQUEST_SYNC_CONTACTS && xmppConnectionServiceBound) {
-                    showAddToPhoneBookDialog();
-                    xmppConnectionService.loadPhoneContacts();
-                    xmppConnectionService.startContactObserver();
-                }
+        if (grantResults.length > 0) if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (requestCode == REQUEST_SYNC_CONTACTS && xmppConnectionServiceBound) {
+                showAddToPhoneBookDialog();
+                xmppConnectionService.loadPhoneContacts();
+                xmppConnectionService.startContactObserver();
             }
+        }
     }
 
     @Override
@@ -280,10 +279,7 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
                 shareLink(false);
                 break;
             case R.id.action_delete_contact:
-                builder.setTitle(getString(R.string.action_delete_contact))
-                        .setMessage(JidDialog.style(this, R.string.remove_contact_text, contact.getJid().toEscapedString()))
-                        .setPositiveButton(getString(R.string.delete),
-                                removeFromRoster).create().show();
+                builder.setTitle(getString(R.string.action_delete_contact)).setMessage(JidDialog.style(this, R.string.remove_contact_text, contact.getJid().toEscapedString())).setPositiveButton(getString(R.string.delete), removeFromRoster).create().show();
                 break;
             case R.id.action_edit_contact:
                 Uri systemAccount = contact.getSystemAccount();
@@ -419,9 +415,7 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
             binding.detailsLastseen.setVisibility(View.VISIBLE);
             binding.detailsLastseen.setText(R.string.contact_blocked);
         } else {
-            if (showLastSeen
-                    && contact.getLastseen() > 0
-                    && contact.getPresences().allOrNonSupport(Namespace.IDLE)) {
+            if (showLastSeen && contact.getLastseen() > 0 && contact.getPresences().allOrNonSupport(Namespace.IDLE)) {
                 binding.detailsLastseen.setVisibility(View.VISIBLE);
                 binding.detailsLastseen.setText(UIHelper.lastseen(getApplicationContext(), contact.isActive(), contact.getLastseen()));
             } else {

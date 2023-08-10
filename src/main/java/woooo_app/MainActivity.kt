@@ -154,14 +154,14 @@ class MainActivity : ComponentActivity() {
 
     }
 
-    fun getDataPreferences(userPreferences: UserPreferencesViewModel): String = runBlocking {
-        GV.getUserProfileImage.value = userPreferences.getProfileImage()
-        GV.getFirstName.value = userPreferences.getFirstName()
+    private fun getDataPreferences(userPreferences: UserPreferencesViewModel): String =
+        runBlocking {
+            GV.getUserProfileImage.value = userPreferences.getProfileImage()
+            GV.getFirstName.value = userPreferences.getFirstName()
+            USER_JID = userPreferences.getJID()
+            userPreferences.getAuthToke()
 
-        USER_JID = userPreferences.getJID()
-        userPreferences.getAuthToke()
-
-    }
+        }
 
     private suspend fun saveUserInfoToPreferences(
         userPreferences: UserPreferencesViewModel,token: String,user: UserBasicInfo

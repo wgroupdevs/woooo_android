@@ -1,5 +1,8 @@
 package eu.siacs.conversations.ui;
 
+import static eu.siacs.conversations.utils.PermissionUtils.allGranted;
+import static eu.siacs.conversations.utils.PermissionUtils.writeGranted;
+
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,14 +16,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AlertDialog;
 
 import org.openintents.openpgp.util.OpenPgpApi;
 
@@ -37,9 +37,6 @@ import eu.siacs.conversations.ui.adapter.AccountAdapter;
 import eu.siacs.conversations.ui.util.MenuDoubleTabUtil;
 import eu.siacs.conversations.xmpp.Jid;
 import eu.siacs.conversations.xmpp.XmppConnection;
-
-import static eu.siacs.conversations.utils.PermissionUtils.allGranted;
-import static eu.siacs.conversations.utils.PermissionUtils.writeGranted;
 
 public class ManageAccountActivity extends XmppActivity implements OnAccountUpdate, KeyChainAliasCallback, XmppConnectionService.OnAccountCreated, AccountAdapter.OnTglAccountState {
 
@@ -84,7 +81,7 @@ public class ManageAccountActivity extends XmppActivity implements OnAccountUpda
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_manage_accounts);
-        setSupportActionBar(findViewById(R.id.toolbar));
+        setSupportActionBar(findViewById(R.id.contact_details_tool_Bar));
         configureActionBar(getSupportActionBar());
         if (savedInstanceState != null) {
             String jid = savedInstanceState.getString(STATE_SELECTED_ACCOUNT);

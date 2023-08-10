@@ -25,6 +25,11 @@ import woooo_app.woooo.data.models.auth.requestmodels.SignUpRequestModel
 import woooo_app.woooo.data.models.profile.UpdateProfileModel
 import woooo_app.woooo.data.models.profile.UpdateProfileRequestModel
 import woooo_app.woooo.data.models.profile.UploadProfileModel
+import woooo_app.woooo.data.models.settings.ChangeNumberModel
+import woooo_app.woooo.data.models.settings.ChangePasswordModel
+import woooo_app.woooo.data.models.settings.DeleteAccountModel
+import woooo_app.woooo.data.models.settings.requestModels.ChangeNumberReqModel
+import woooo_app.woooo.data.models.settings.requestModels.ChangePasswordReqModel
 
 interface AuthApiService {
     companion object {
@@ -35,7 +40,7 @@ interface AuthApiService {
 
     @POST("/api/Auth/login")
     suspend fun login(
-        @Query("isLoginWithEmail") isLoginWithEmail: Boolean, @Body user: LoginRequestParams
+        @Query("isLoginWithEmail") isLoginWithEmail: Boolean,@Body user: LoginRequestParams
     ): Response<LoginModel>
 
     @POST("/api/Auth/SignUp")
@@ -43,12 +48,12 @@ interface AuthApiService {
 
     @GET("/api/Auth/ConfirmAccount")
     suspend fun confirmAccount(
-        @QueryMap params: Map<String, String>
+        @QueryMap params: Map<String,String>
     ): Response<ConfirmAccountModel>
 
     @POST("/api/Auth/resend-code")
     suspend fun reSendCode(
-        @Query("IsOtpForAccount") IsOtpForAccount: Boolean, @Body email: ReSentOTPRequestModel
+        @Query("IsOtpForAccount") IsOtpForAccount: Boolean,@Body email: ReSentOTPRequestModel
     ): Response<ResentCodeModel>
 
     @POST("/api/Auth/forgot-password")
@@ -59,14 +64,23 @@ interface AuthApiService {
 
     @PUT("/api/v1/Account/UpdateAccount")
     suspend fun updateProfile(
-        @Query("id") id: String, @Body params: UpdateProfileRequestModel
+        @Query("id") id: String,@Body params: UpdateProfileRequestModel
     ): Response<UpdateProfileModel>
-
 
     @Multipart
     @POST("/api/v1/Account/ProfilePic") // Replace with your API endpoint
     suspend fun uploadFile(
-        @Part("AccountUniqueId") id: RequestBody,
-        @Part image: MultipartBody.Part
+        @Part("AccountUniqueId") id: RequestBody,@Part image: MultipartBody.Part
     ): Response<UploadProfileModel>
+
+    @PUT("/api/v1/Settings/ChangePhoneNumber")
+    suspend fun changeNumber(
+        @Body params: ChangeNumberReqModel
+    ): Response<ChangeNumberModel>
+
+    @PUT("/api/v1/Settings/ChangePassword")
+    suspend fun changePassword(@Body params: ChangePasswordReqModel): Response<ChangePasswordModel>
+
+    @POST("/api/v1/Settings/DeleteAccount")
+    suspend fun deleteAccount(@Query("accountId") accountID: String): Response<DeleteAccountModel>
 }

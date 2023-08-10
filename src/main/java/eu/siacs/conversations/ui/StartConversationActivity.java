@@ -32,7 +32,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -338,8 +337,8 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
         });
 
 
-        ImageView backButton = binding.toolbar.findViewById(R.id.toolbar_back_button);
-        backButton.setOnClickListener(v -> finish());
+//        ImageView backButton = binding.toolbar.findViewById(R.id.toolbar_back_button);
+//        backButton.setOnClickListener(v -> finish());
     }
 
     private void inflateFab(final SpeedDialView speedDialView, final @MenuRes int menuRes) {

@@ -1,4 +1,4 @@
-package com.wgroup.woooo_app.woooo.shared.components
+package woooo_app.woooo.shared.components
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text

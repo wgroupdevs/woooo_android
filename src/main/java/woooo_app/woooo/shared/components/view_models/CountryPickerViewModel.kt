@@ -28,11 +28,11 @@ class CountryPickerViewModel @Inject constructor() : ViewModel() {
         _setSelectedCountryDialCode.value = value
     }
 
-    private val _setSelectedCountry = mutableStateOf("Japan")
-    val getSelectedCountry: State<String> = _setSelectedCountry
-    fun setSelectedCountryValue(value: String) {
-        _setSelectedCountry.value = value
-    }
+//    private val _setSelectedCountry = mutableStateOf("Japan")
+//    val getSelectedCountry: State<String> = _setSelectedCountry
+//    fun setSelectedCountryValue(value: String) {
+//        _setSelectedCountry.value = value
+//    }
 
 
     fun readJsonFileFromAssets(context: Context): String? {

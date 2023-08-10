@@ -8,7 +8,7 @@
 
         <include
             android:id="@+id/toolbar"
-            layout="@layout/toolbar" />
+            layout="@layout/contact_details_toolbar" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
