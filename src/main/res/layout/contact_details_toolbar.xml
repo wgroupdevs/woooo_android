@@ -19,7 +19,18 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingEnd="@dimen/_20sdp">
+        <EditText
+            android:id="@+id/toolbar_search"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@drawable/rounded_edit_text"
+            android:drawableStart="@drawable/outline_search_24"
+            android:hint="@string/search"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
     </LinearLayout>
 
 </androidx.appcompat.widget.Toolbar>

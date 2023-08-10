@@ -124,7 +124,7 @@
     <string name="pref_notification_sound_summary">Notification sound for new messages</string>
     <string name="pref_call_ringtone_summary">Customize Your Notification Ringtone Settings.</string>
     <string name="pref_notification_grace_period">Notification Silence Duration:</string>
-    <string name="pref_notification_grace_period_summary">Silence Your Notifications for Undisturbed Moments.</string>
+    <string name="pref_notification_grace_period_summary">The Period After Detecting Activity on Another Device.</string>
     <string name="pref_advanced_options">Advanced</string>
     <string name="pref_never_send_crash">Disable Sending Crash Reports</string>
     <string name="pref_never_send_crash_summary">Contribute to Development: Help by Sending in Stack Traces. You can also take control of data sharing if you click here. This will stop sending application errors and crash reports to us.</string>
@@ -291,7 +291,7 @@
     <string name="title_pref_quiet_hours_start_time">Start time</string>
     <string name="title_pref_quiet_hours_end_time">End time</string>
     <string name="title_pref_enable_quiet_hours">Enable quiet hours</string>
-    <string name="pref_quiet_hours_summary">Notifications will be silenced during quiet hours</string>
+    <string name="pref_quiet_hours_summary">Silence Your Notifications for Undisturbed Moments.</string>
     <string name="pref_expert_options_other">Other</string>
     <string name="pref_autojoin">Synchronize bookmarks</string>
     <string name="pref_autojoin_summary">Set “autojoin” flag when entering or leaving a MUC and react to modifications made by other clients.</string>
@@ -711,7 +711,7 @@
     <string name="disable_encryption_message">Are you sure you want to disable OMEMO encryption for this conversation?\nThis will allow your server administrator to read your messages, but it might be the only way to communicate with people using outdated clients.</string>
     <string name="disable_now">Disable now</string>
     <string name="draft">Draft:</string>
-    <string name="pref_omemo_setting">Stealth Mode</string>
+    <string name="pref_omemo_setting">Armored Chat</string>
     <string name="pref_omemo_setting_summary_always">OMEMO will always be used for one-on-one and private group chats.</string>
     <string name="pref_omemo_setting_summary_default_on">Enhanced secure protocol used by default in Woooo app.Bulletproof Your Communication: Embrace End-to-End Encryption for Impenetrable Security. Your Messages Stay Private and Unreadable to Everyone, Even Google and Third Parties, During Transmission.</string>
     <string name="pref_omemo_setting_summary_default_off">OMEMO will have to be turned on explicitly for new conversations.</string>
@@ -746,7 +746,7 @@
     <string name="copy_link">Copy web address</string>
     <string name="copy_jabber_id">Copy XMPP address</string>
     <string name="p1_s3_filetransfer">HTTP File Sharing for S3</string>
-<!--    <string name="pref_start_search">Direct Search</string>-->
+    <!--    <string name="pref_start_search">Direct Search</string>-->
     <string name="pref_start_search_summary">At ‘Start Conversation’ screen open keyboard and place cursor in search field</string>
     <string name="group_chat_avatar">Group chat avatar</string>
     <string name="host_does_not_support_group_chat_avatars">Host does not support group chat avatars</string>

@@ -50,7 +50,7 @@
     </PreferenceCategory>
     <PreferenceCategory
         android:key="notification_category"
-        android:title="Remainder">
+        android:title="Reminder">
         <CheckBoxPreference
             android:defaultValue="@bool/notifications_from_strangers"
             android:key="notifications_from_strangers"
