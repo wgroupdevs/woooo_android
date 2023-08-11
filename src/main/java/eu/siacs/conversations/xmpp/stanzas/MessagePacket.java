@@ -29,13 +29,15 @@ public class MessagePacket extends AbstractAcknowledgeableStanza {
         Element body = new Element("body");
         body.setContent(text);
         this.children.add(0, body);
+        setForwardedElement(text);
     }
 
 
     public void setForwardedElement(String text) {
         Element forwarded = new Element("forwarded");
         forwarded.setContent(text);
-        this.children.add(0, forwarded);
+        Log.d(TAG, "Forwarded Element Added");
+        this.children.add(1, forwarded);
     }
 
     public void setAxolotlMessage(Element axolotlMessage) {
@@ -91,7 +93,12 @@ public class MessagePacket extends AbstractAcknowledgeableStanza {
             return null;
         }
         Element forwarded = wrapper.findChild("forwarded", "urn:xmpp:forward:0");
+
+
+        Log.d(TAG, "FORWARDED  ELEMENT.." + forwarded);
+
         if (forwarded == null) {
+            Log.d(TAG, "FORWARDED NOT FOUND..");
             return null;
         }
         MessagePacket packet = create(forwarded.findChild("message"));
