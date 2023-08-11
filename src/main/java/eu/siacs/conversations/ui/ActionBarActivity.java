@@ -7,6 +7,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import eu.siacs.conversations.R;
+
 
 public abstract class ActionBarActivity extends AppCompatActivity {
     public static void configureActionBar(ActionBar actionBar) {
@@ -14,9 +16,11 @@ public abstract class ActionBarActivity extends AppCompatActivity {
     }
 
     public static void configureActionBar(ActionBar actionBar, boolean upNavigation) {
+
         if (actionBar != null) {
             actionBar.setHomeButtonEnabled(upNavigation);
             actionBar.setDisplayHomeAsUpEnabled(upNavigation);
+            actionBar.setHomeAsUpIndicator(R.drawable.back_icon);
         }
     }
 
@@ -26,10 +30,8 @@ public abstract class ActionBarActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
+        if (item.getItemId() == android.R.id.home) {
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
