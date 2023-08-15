@@ -51,7 +51,7 @@ import eu.siacs.conversations.xmpp.stanzas.MessagePacket;
 public class MessageParser extends AbstractParser implements OnMessagePacketReceived {
 
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
-
+    private String TAG = "MessageParser_TAG";
     private static final List<String> JINGLE_MESSAGE_ELEMENT_NAMES = Arrays.asList("accept", "propose", "proceed", "reject", "retract");
 
     public MessageParser(XmppConnectionService service) {
@@ -280,7 +280,7 @@ public class MessageParser extends AbstractParser implements OnMessagePacketRece
             account.setBookmarks(Collections.emptyMap());
             Log.d(Config.LOGTAG, account.getJid().asBareJid() + ": deleted bookmarks node");
         } else if (Namespace.AVATAR_METADATA.equals(node) && account.getJid().asBareJid().equals(from)) {
-            Log.d(Config.LOGTAG,account.getJid().asBareJid()+": deleted avatar metadata node");
+            Log.d(Config.LOGTAG, account.getJid().asBareJid() + ": deleted avatar metadata node");
         }
     }
 
@@ -381,6 +381,8 @@ public class MessageParser extends AbstractParser implements OnMessagePacketRece
             packet = f.first;
             serverMsgId = result.getAttribute("id");
             query.incrementMessageCount();
+
+
             if (handleErrorMessage(account, packet)) {
                 return;
             }
@@ -409,6 +411,7 @@ public class MessageParser extends AbstractParser implements OnMessagePacketRece
         final String pgpEncrypted = packet.findChildContent("x", "jabber:x:encrypted");
         final Element replaceElement = packet.findChild("replace", "urn:xmpp:message-correct:0");
         final Element oob = packet.findChild("x", Namespace.OOB);
+        final Element forwarded = packet.findChild("forwarded", Namespace.FORWARD);
         final String oobUrl = oob != null ? oob.findChildContent("url") : null;
         final String replacementId = replaceElement == null ? null : replaceElement.getAttribute("id");
         final Element axolotlEncrypted = packet.findChildEnsureSingle(XmppAxolotlMessage.CONTAINERTAG, AxolotlService.PEP_PREFIX);
@@ -424,6 +427,7 @@ public class MessageParser extends AbstractParser implements OnMessagePacketRece
             remoteMsgId = packet.getId();
         }
         boolean notify = false;
+
 
         if (from == null || !InvalidJid.isValid(from) || !InvalidJid.isValid(to)) {
             Log.e(Config.LOGTAG, "encountered invalid message from='" + from + "' to='" + to + "'");
@@ -737,6 +741,12 @@ public class MessageParser extends AbstractParser implements OnMessagePacketRece
                     && !selfAddressed
                     && !isTypeGroupChat) {
                 processMessageReceipts(account, packet, remoteMsgId, query);
+            }
+
+            if (forwarded != null) {
+                Log.d(TAG, "FORWARD MESSAGE FOUND ....." + forwarded);
+                // DO working for forwarded message here....
+                message.setForwarded(true);
             }
 
             mXmppConnectionService.databaseBackend.createMessage(message);

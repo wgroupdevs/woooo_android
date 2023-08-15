@@ -145,6 +145,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 
     public static final int REQUEST_SEND_MESSAGE = 0x0201;
     public static final int REQUEST_DECRYPT_PGP = 0x0202;
+    public static final int REQUEST_FORWARD_MESSAGE = 0x0401;
     public static final int REQUEST_ENCRYPT_MESSAGE = 0x0207;
     public static final int REQUEST_TRUST_KEYS_TEXT = 0x0208;
     public static final int REQUEST_TRUST_KEYS_ATTACHMENTS = 0x0209;
@@ -752,6 +753,13 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         }
     }
 
+
+    private void forwardMessage() {
+
+        Log.d(TAG, "forwardMessage Called....");
+
+    }
+
     private boolean trustKeysIfNeeded(final Conversation conversation, final int requestCode) {
         return conversation.getNextEncryption() == Message.ENCRYPTION_AXOLOTL && trustKeysIfNeeded(requestCode);
     }
@@ -817,6 +825,9 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         switch (requestCode) {
             case REQUEST_TRUST_KEYS_TEXT:
                 sendMessage();
+                break;
+            case REQUEST_FORWARD_MESSAGE:
+                forwardMessage();
                 break;
             case REQUEST_TRUST_KEYS_ATTACHMENTS:
                 commitAttachments();
@@ -1145,6 +1156,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 //            menu.setHeaderTitle(R.string.message_options);
             MenuItem openWith = menu.findItem(R.id.open_with);
             MenuItem copyMessage = menu.findItem(R.id.copy_message);
+            MenuItem forwardMessage = menu.findItem(R.id.forward_message);
             MenuItem copyLink = menu.findItem(R.id.copy_link);
             MenuItem replyMessage = menu.findItem(R.id.reply_message);
             MenuItem retryDecryption = menu.findItem(R.id.retry_decryption);
@@ -1225,6 +1237,22 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             return true;
         } else if (itemId == R.id.correct_message) {
             correctMessage(selectedMessage);
+            return true;
+        } else if (itemId == R.id.forward_message) {
+
+            //Go to Select contacts and Groups Activity
+
+
+            Intent intent = new Intent(getActivity(), ChooseContactActivity.class);
+            intent.putExtra(ChooseContactActivity.EXTRA_SHOW_ENTER_JID, false);
+            intent.putExtra(ChooseContactActivity.EXTRA_SELECT_MULTIPLE, true);
+//            intent.putExtra(ChooseContactActivity.EXTRA_GROUP_CHAT_NAME, name.trim());
+//            intent.putExtra(ChooseContactActivity.EXTRA_ACCOUNT, account.getJid().asBareJid().toEscapedString());
+            intent.putExtra(ChooseContactActivity.EXTRA_TITLE_RES_ID, R.string.choose_participants);
+            startActivityForResult(intent, REQUEST_FORWARD_MESSAGE);
+
+
+            // correctMessage(selectedMessage);
             return true;
         } else if (itemId == R.id.copy_message) {
             ShareUtil.copyToClipboard(activity, selectedMessage);
@@ -2626,6 +2654,8 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 
     protected void sendMessage(Message message) {
         Log.d(TAG, "activity.xmppConnectionService.sendMessage(message) Called");
+
+
         activity.xmppConnectionService.sendMessage(message);
         messageSent();
     }

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingBottom="3dp"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingTop="3dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="8dp"
+    android:paddingTop="3dp"
+    android:paddingRight="8dp"
+    android:paddingBottom="3dp">
 
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/toolbar_profile_photo"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentBottom="true"
         android:scaleType="fitXY"
         app:riv_corner_radius="6dp" />
@@ -24,13 +24,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/toolbar_profile_photo"
-        android:background="@drawable/receive_message_shape"
-        android:minHeight="53dp"
         android:layout_marginTop="-2dp"
         android:layout_marginRight="-4dp"
-        android:padding="@dimen/_5sdp"
-        android:longClickable="true">
+        android:layout_toRightOf="@+id/toolbar_profile_photo"
+        android:background="@drawable/receive_message_shape"
+        android:longClickable="true"
+        android:minHeight="53dp"
+        android:orientation="vertical"
+        android:padding="@dimen/_5sdp">
+
+        <TextView
+            android:id="@+id/message_forwarded"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="4sp"
+            android:hint="Forwarded"
+            android:textSize="@dimen/_8sdp"
+            android:visibility="gone" />
+
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -41,7 +52,7 @@
 
             <include
                 android:id="@+id/message_content"
-                layout="@layout/message_content"/>
+                layout="@layout/message_content" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -55,9 +66,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical"
                     android:layout_marginRight="4sp"
-                    android:textAppearance="@style/TextAppearance.Conversations.Caption.OnDark.Bold"/>
+                    android:gravity="center_vertical"
+                    android:textAppearance="@style/TextAppearance.Conversations.Caption.OnDark.Bold" />
 
                 <ImageView
                     android:id="@+id/security_indicator"
@@ -84,13 +95,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:gravity="center_vertical"
-                    android:text="@string/sending"
                     android:accessibilityTraversalAfter="@id/toolbar_profile_photo"
                     android:accessibilityTraversalBefore="@id/message_content"
-                    android:textAppearance="@style/TextAppearance.Conversations.Caption"/>
+                    android:gravity="center_vertical"
+                    android:text="@string/sending"
+                    android:textAppearance="@style/TextAppearance.Conversations.Caption" />
             </LinearLayout>
         </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

@@ -1,8 +1,11 @@
 package eu.siacs.conversations.entities;
 
+import static eu.siacs.conversations.entities.Bookmark.printableValue;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,8 +36,6 @@ import eu.siacs.conversations.utils.UIHelper;
 import eu.siacs.conversations.xmpp.Jid;
 import eu.siacs.conversations.xmpp.chatstate.ChatState;
 import eu.siacs.conversations.xmpp.mam.MamReference;
-
-import static eu.siacs.conversations.entities.Bookmark.printableValue;
 
 
 public class Conversation extends AbstractEntity implements Blockable, Comparable<Conversation>, Conversational, AvatarService.Avatarable {
@@ -191,7 +192,7 @@ public class Conversation extends AbstractEntity implements Blockable, Comparabl
     public int countFailedDeliveries() {
         int count = 0;
         synchronized (this.messages) {
-            for(final Message message : this.messages) {
+            for (final Message message : this.messages) {
                 if (message.getStatus() == Message.STATUS_SEND_FAILED) {
                     ++count;
                 }
@@ -460,9 +461,13 @@ public class Conversation extends AbstractEntity implements Blockable, Comparabl
     }
 
     public void populateWithMessages(final List<Message> messages) {
+
+
+        Log.d("Conversation_TAG", "populateWithMessages  Called...");
         synchronized (this.messages) {
             messages.clear();
             messages.addAll(this.messages);
+
         }
         for (Iterator<Message> iterator = messages.iterator(); iterator.hasNext(); ) {
             if (iterator.next().wasMergedIntoPrevious()) {
@@ -566,7 +571,7 @@ public class Conversation extends AbstractEntity implements Blockable, Comparabl
 
     public boolean isRead() {
         synchronized (this.messages) {
-            for(final Message message : Lists.reverse(this.messages)) {
+            for (final Message message : Lists.reverse(this.messages)) {
                 if (message.isRead() && message.getType() == Message.TYPE_RTP_SESSION) {
                     continue;
                 }
@@ -992,7 +997,15 @@ public class Conversation extends AbstractEntity implements Blockable, Comparabl
     }
 
     public void addAll(int index, List<Message> messages) {
+
+//        for (Message m : messages) {
+//            Log.d("CONVERSATION_TAG", "FORWARDED STATUS : " + m.getBody());
+//            Log.d("CONVERSATION_TAG", "FORWARDED STATUS : " + m.getForwarded());
+//        }
+
+
         synchronized (this.messages) {
+
             this.messages.addAll(index, messages);
         }
         account.getPgpDecryptionService().decrypt(messages);
@@ -1033,7 +1046,7 @@ public class Conversation extends AbstractEntity implements Blockable, Comparabl
     public int unreadCount() {
         synchronized (this.messages) {
             int count = 0;
-            for(final Message message : Lists.reverse(this.messages)) {
+            for (final Message message : Lists.reverse(this.messages)) {
                 if (message.isRead()) {
                     if (message.getType() == Message.TYPE_RTP_SESSION) {
                         continue;

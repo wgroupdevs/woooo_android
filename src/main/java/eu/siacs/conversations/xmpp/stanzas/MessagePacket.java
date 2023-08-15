@@ -29,12 +29,11 @@ public class MessagePacket extends AbstractAcknowledgeableStanza {
         Element body = new Element("body");
         body.setContent(text);
         this.children.add(0, body);
-        setForwardedElement(text);
     }
 
 
     public void setForwardedElement(String text) {
-        Element forwarded = new Element("forwarded");
+        Element forwarded = new Element("forwarded", "urn:xmpp:forward:0");
         forwarded.setContent(text);
         Log.d(TAG, "Forwarded Element Added");
         this.children.add(1, forwarded);
@@ -84,28 +83,25 @@ public class MessagePacket extends AbstractAcknowledgeableStanza {
     }
 
     public Pair<MessagePacket, Long> getForwardedMessagePacket(String name, String namespace) {
-
-        Log.d(TAG, "getForwardedMessagePacket Called : " + name + "  namespace : " + namespace);
-
+//
+//        Log.d(TAG, "getForwardedMessagePacket Called : " + name + "  namespace : " + namespace);
+//
 
         Element wrapper = findChild(name, namespace);
         if (wrapper == null) {
             return null;
         }
-        Element forwarded = wrapper.findChild("forwarded", "urn:xmpp:forward:0");
+        Element forwarded_1 = findChild("forwarded", "urn:xmpp:forward:0");
 
-
-        Log.d(TAG, "FORWARDED  ELEMENT.." + forwarded);
-
-        if (forwarded == null) {
+        if (forwarded_1 == null) {
             Log.d(TAG, "FORWARDED NOT FOUND..");
             return null;
         }
-        MessagePacket packet = create(forwarded.findChild("message"));
+        MessagePacket packet = create(forwarded_1.findChild("message"));
         if (packet == null) {
             return null;
         }
-        Long timestamp = AbstractParser.parseTimestamp(forwarded, null);
+        Long timestamp = AbstractParser.parseTimestamp(forwarded_1, null);
         return new Pair(packet, timestamp);
     }
 

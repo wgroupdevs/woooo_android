@@ -180,6 +180,7 @@ import woooo_app.woooo.data.models.auth.requestmodels.GetWooContactsRequestParam
 public class XmppConnectionService extends Service {
 
     public static final String ACTION_REPLY_TO_CONVERSATION = "reply_to_conversations";
+    public static final String TAG = "XmppContionService_TAG";
     public static final String ACTION_MARK_AS_READ = "mark_as_read";
     public static final String ACTION_SNOOZE = "snooze";
     public static final String ACTION_CLEAR_MESSAGE_NOTIFICATION = "clear_message_notification";
@@ -2217,6 +2218,11 @@ public class XmppConnectionService extends Service {
     }
 
     public Conversation findOrCreateConversation(final Account account, final Jid jid, final boolean muc, final boolean joinAfterCreate, final MessageArchiveService.Query query, final boolean async) {
+
+
+        Log.d(TAG,"findOrCreateConversation Called...");
+
+
         synchronized (this.conversations) {
             Conversation conversation = find(account, jid);
             if (conversation != null) {
@@ -2237,6 +2243,10 @@ public class XmppConnectionService extends Service {
                 databaseBackend.updateConversation(conversation);
                 loadMessagesFromDb = conversation.messagesLoaded.compareAndSet(true, false);
             } else {
+
+
+                Log.d(TAG,"createConversation Called...");
+
                 String conversationName;
                 Contact contact = account.getRoster().getContact(jid);
                 if (contact != null) {
@@ -2255,6 +2265,10 @@ public class XmppConnectionService extends Service {
             final Conversation c = conversation;
             final Runnable runnable = () -> {
                 if (loadMessagesFromDb) {
+
+
+                    Log.d(TAG,"loadMessagesFromDb Called...");
+
                     c.addAll(0, databaseBackend.getMessages(c, Config.PAGE_SIZE));
                     updateConversationUi();
                     c.messagesLoaded.set(true);

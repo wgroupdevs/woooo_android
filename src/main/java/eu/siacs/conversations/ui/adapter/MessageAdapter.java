@@ -16,6 +16,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -76,6 +77,7 @@ import eu.siacs.conversations.xmpp.mam.MamReference;
 public class MessageAdapter extends ArrayAdapter<Message> {
 
     public static final String DATE_SEPARATOR_BODY = "DATE_SEPARATOR";
+    public static final String TAG = "MessageAdapter_TAG";
     private static final int SENT = 0;
     private static final int RECEIVED = 1;
     private static final int STATUS = 2;
@@ -618,6 +620,8 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         final Conversational conversation = message.getConversation();
         final Account account = conversation.getAccount();
         final int type = getItemViewType(position);
+
+
         ViewHolder viewHolder;
         if (view == null) {
             viewHolder = new ViewHolder();
@@ -637,6 +641,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                 case SENT:
                     view = activity.getLayoutInflater().inflate(R.layout.message_sent, parent, false);
                     viewHolder.message_box = view.findViewById(R.id.message_box);
+                    viewHolder.messageForwarded = view.findViewById(R.id.message_forwarded);
                     viewHolder.contact_picture = view.findViewById(R.id.toolbar_profile_photo);
                     viewHolder.download_button = view.findViewById(R.id.download_button);
                     viewHolder.indicator = view.findViewById(R.id.security_indicator);
@@ -656,6 +661,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                     viewHolder.edit_indicator = view.findViewById(R.id.edit_indicator);
                     viewHolder.image = view.findViewById(R.id.message_image);
                     viewHolder.messageBody = view.findViewById(R.id.message_body);
+                    viewHolder.messageForwarded = view.findViewById(R.id.message_forwarded);
                     viewHolder.time = view.findViewById(R.id.message_time);
                     viewHolder.indicatorReceived = view.findViewById(R.id.indicator_received);
                     viewHolder.encryption = view.findViewById(R.id.message_encryption);
@@ -850,6 +856,16 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
         displayStatus(viewHolder, message, type, darkBackground);
 
+        if (message.getForwarded()) {
+            Log.d(TAG, "BODY : " + message.getBody());
+            viewHolder.messageForwarded.setVisibility(View.VISIBLE);
+        } else {
+
+            if (viewHolder.messageForwarded != null) {
+                viewHolder.messageForwarded.setVisibility(View.GONE);
+            }
+        }
+
         return view;
     }
 
@@ -923,6 +939,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         protected ImageView indicatorReceived;
         protected TextView time;
         protected TextView messageBody;
+        protected TextView messageForwarded;
         protected ImageView contact_picture;
         protected TextView status_message;
         protected TextView encryption;

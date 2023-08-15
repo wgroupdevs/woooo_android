@@ -261,6 +261,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 + Message.READ_BY_MARKERS + " TEXT,"
                 + Message.MARKABLE + " NUMBER DEFAULT 0,"
                 + Message.DELETED + " NUMBER DEFAULT 0,"
+                + Message.FORWARDED + " NUMBER DEFAULT 0,"
                 + Message.BODY_LANGUAGE + " TEXT,"
                 + Message.REMOTE_MSG_ID + " TEXT, FOREIGN KEY("
                 + Message.CONVERSATION + ") REFERENCES "

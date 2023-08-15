@@ -85,6 +85,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
     public static final String READ_BY_MARKERS = "readByMarkers";
     public static final String MARKABLE = "markable";
     public static final String DELETED = "deleted";
+    public static final String FORWARDED = "forwarded";
     public static final String ME_COMMAND = "/me ";
 
     public static final String ERROR_MESSAGE_CANCELLED = "eu.siacs.conversations.cancelled";
@@ -101,6 +102,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
     protected int status;
     protected int type;
     protected boolean deleted = false;
+    protected boolean forwarded = false;
     protected boolean carbon = false;
     protected boolean oob = false;
     protected List<Edit> edits = new ArrayList<>();
@@ -154,6 +156,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
                 null,
                 false,
                 false,
+                false,
                 null);
     }
 
@@ -179,6 +182,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
                 null,
                 false,
                 false,
+                false,
                 null);
     }
 
@@ -188,7 +192,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
                       final String remoteMsgId, final String relativeFilePath,
                       final String serverMsgId, final String fingerprint, final boolean read,
                       final String edited, final boolean oob, final String errorMessage, final Set<ReadByMarker> readByMarkers,
-                      final boolean markable, final boolean deleted, final String bodyLanguage) {
+                      final boolean markable, final boolean deleted, final boolean forwarded, final String bodyLanguage) {
         this.conversation = conversation;
         this.uuid = uuid;
         this.conversationUuid = conversationUUid;
@@ -211,11 +215,14 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
         this.readByMarkers = readByMarkers == null ? new CopyOnWriteArraySet<>() : readByMarkers;
         this.markable = markable;
         this.deleted = deleted;
+        this.forwarded = forwarded;
         this.bodyLanguage = bodyLanguage;
     }
 
     public static Message fromCursor(Cursor cursor, Conversation conversation) {
-        return new Message(conversation,
+
+
+        Message m =new Message(conversation,
                 cursor.getString(cursor.getColumnIndex(UUID)),
                 cursor.getString(cursor.getColumnIndex(CONVERSATION)),
                 fromString(cursor.getString(cursor.getColumnIndex(COUNTERPART))),
@@ -237,8 +244,13 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
                 ReadByMarker.fromJsonString(cursor.getString(cursor.getColumnIndex(READ_BY_MARKERS))),
                 cursor.getInt(cursor.getColumnIndex(MARKABLE)) > 0,
                 cursor.getInt(cursor.getColumnIndex(DELETED)) > 0,
+                cursor.getInt(cursor.getColumnIndex(FORWARDED)) > 0,
                 cursor.getString(cursor.getColumnIndex(BODY_LANGUAGE))
         );
+
+
+
+        return m;
     }
 
     private static Jid fromString(String value) {
@@ -303,6 +315,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
         values.put(READ_BY_MARKERS, ReadByMarker.toJson(readByMarkers).toString());
         values.put(MARKABLE, markable ? 1 : 0);
         values.put(DELETED, deleted ? 1 : 0);
+        values.put(FORWARDED, forwarded ? 1 : 0);
         values.put(BODY_LANGUAGE, bodyLanguage);
         return values;
     }
@@ -349,6 +362,14 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
         this.isEmojisOnly = null;
         this.treatAsDownloadable = null;
         this.fileParams = null;
+    }
+
+    public synchronized void setForwarded(boolean forwarded) {
+        this.forwarded = forwarded;
+    }
+
+    public boolean getForwarded() {
+        return this.forwarded;
     }
 
     public void setMucUser(MucOptions.User user) {
@@ -635,7 +656,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
                         message.getEncryption() != Message.ENCRYPTION_DECRYPTION_FAILED &&
                         this.getType() == message.getType() &&
                         isStatusMergeable(this.getStatus(), message.getStatus()) &&
-                        isEncryptionMergeable(this.getEncryption(),message.getEncryption()) &&
+                        isEncryptionMergeable(this.getEncryption(), message.getEncryption()) &&
                         this.getCounterpart() != null &&
                         this.getCounterpart().equals(message.getCounterpart()) &&
                         this.edited() == message.edited() &&
@@ -671,7 +692,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
     private static boolean isEncryptionMergeable(final int a, final int b) {
         return a == b
                 && Arrays.asList(ENCRYPTION_NONE, ENCRYPTION_DECRYPTED, ENCRYPTION_AXOLOTL)
-                        .contains(a);
+                .contains(a);
     }
 
     public void setCounterparts(List<MucOptions.User> counterparts) {
