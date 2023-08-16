@@ -297,7 +297,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
                         )
                     ) {
                         signUpViewModel.setPhoneWithCode(countryPickerViewModel.getSelectedCountryDialCode.value + signUpViewModel.getPhoneNumberController.value)
-//                        signUpViewModel.signUp()
+                        signUpViewModel.signUp()
 
                     }
 
