@@ -52,6 +52,15 @@
             android:orientation="vertical"
             android:padding="2dp">
 
+            <TextView
+                android:id="@+id/message_forwarded"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4sp"
+                android:hint="Forwarded"
+                android:textSize="@dimen/_8sdp"
+                android:visibility="gone" />
+
             <include
                 android:id="@+id/message_content"
                 layout="@layout/message_content" />

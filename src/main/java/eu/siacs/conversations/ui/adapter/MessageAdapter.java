@@ -858,7 +858,10 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
         if (message.getForwarded()) {
             Log.d(TAG, "BODY : " + message.getBody());
-            viewHolder.messageForwarded.setVisibility(View.VISIBLE);
+            if (viewHolder.messageForwarded != null) {
+                viewHolder.messageForwarded.setVisibility(View.VISIBLE);
+
+            }
         } else {
 
             if (viewHolder.messageForwarded != null) {

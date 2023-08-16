@@ -52,7 +52,7 @@ public class ConversationMenuConfigurator {
 	}
 
 	public static void configureAttachmentMenu(@NonNull Conversation conversation, Menu menu) {
-		final MenuItem menuAttach = menu.findItem(R.id.action_attach_file);
+		final MenuItem menuAttach = menu.findItem(R.id.action_a_i_button);
 
 		final boolean visible;
 		if (conversation.getMode() == Conversation.MODE_MULTI) {
