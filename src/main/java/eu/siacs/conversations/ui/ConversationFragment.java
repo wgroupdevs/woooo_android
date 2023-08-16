@@ -1263,6 +1263,9 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             //Go to Select contacts and Groups Activity
 
 
+
+
+
             Intent intent = new Intent(getActivity(), ChooseContactActivity.class);
             intent.putExtra(ChooseContactActivity.EXTRA_SHOW_ENTER_JID, false);
             intent.putExtra(ChooseContactActivity.EXTRA_SELECT_MULTIPLE, true);
