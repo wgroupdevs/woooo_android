@@ -386,12 +386,8 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
 
         assert binding.navigation != null;
         binding.navigation.setOnItemSelectedListener(item -> {
-
-//            int itemId = item.getItemId();
             super.onBackPressed();
-
             return true;
-
         });
 
         configureActionBar(getSupportActionBar());

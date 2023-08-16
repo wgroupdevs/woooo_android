@@ -320,6 +320,7 @@ public class XmppConnectionService extends Service {
 
     public final Set<String> FILENAMES_TO_IGNORE_DELETION = new HashSet<>();
 
+    public boolean forwardMessage = false;
 
     private final OnBindListener mOnBindListener = new OnBindListener() {
 
@@ -1527,10 +1528,14 @@ public class XmppConnectionService extends Service {
     }
 
     public void sendMessage(final Message message) {
+        Log.d(TAG, "sendMessage Simple Called.....");
+        this.forwardMessage = false;
         sendMessage(message, false, false);
     }
 
     private void sendMessage(final Message message, final boolean resend, final boolean delay) {
+
+
         final Account account = message.getConversation().getAccount();
         if (account.setShowErrorNotification(true)) {
             databaseBackend.updateAccount(account);
@@ -1607,6 +1612,8 @@ public class XmppConnectionService extends Service {
 
             }
             if (packet != null) {
+
+
                 if (account.getXmppConnection().getFeatures().sm() || (conversation.getMode() == Conversation.MODE_MULTI && message.getCounterpart().isBareJid())) {
                     message.setStatus(Message.STATUS_UNSEND);
                 } else {
@@ -1671,6 +1678,11 @@ public class XmppConnectionService extends Service {
             updateConversationUi();
         }
         if (packet != null) {
+
+            if (forwardMessage) {
+                Log.d(TAG, "FORWARDED ELEMENT ADDED....." + forwardMessage);
+                packet.setForwardedElement(message.getBody());
+            }
             if (delay) {
                 mMessageGenerator.addDelay(packet, message.getTimeSent());
             }
@@ -1705,7 +1717,18 @@ public class XmppConnectionService extends Service {
     }
 
     public void resendMessage(final Message message, final boolean delay) {
+        Log.d(TAG, "resendMessage Simple Called.....");
+
         sendMessage(message, true, delay);
+    }
+
+    public void forwardMessage(final Message message) {
+
+        this.forwardMessage = true;
+
+        Log.d(TAG, "forwardMessage Called in Connection Service");
+
+        sendMessage(message, false, false);
     }
 
     public void requestEasyOnboardingInvite(final Account account, final EasyOnboardingInvite.OnInviteRequested callback) {
@@ -2220,7 +2243,7 @@ public class XmppConnectionService extends Service {
     public Conversation findOrCreateConversation(final Account account, final Jid jid, final boolean muc, final boolean joinAfterCreate, final MessageArchiveService.Query query, final boolean async) {
 
 
-        Log.d(TAG,"findOrCreateConversation Called...");
+        Log.d(TAG, "findOrCreateConversation Called...");
 
 
         synchronized (this.conversations) {
@@ -2245,7 +2268,7 @@ public class XmppConnectionService extends Service {
             } else {
 
 
-                Log.d(TAG,"createConversation Called...");
+                Log.d(TAG, "createConversation Called...");
 
                 String conversationName;
                 Contact contact = account.getRoster().getContact(jid);
@@ -2267,7 +2290,7 @@ public class XmppConnectionService extends Service {
                 if (loadMessagesFromDb) {
 
 
-                    Log.d(TAG,"loadMessagesFromDb Called...");
+                    Log.d(TAG, "loadMessagesFromDb Called...");
 
                     c.addAll(0, databaseBackend.getMessages(c, Config.PAGE_SIZE));
                     updateConversationUi();
@@ -4323,10 +4346,21 @@ public class XmppConnectionService extends Service {
         return null;
     }
 
+
     public Conversation findUniqueConversationByJid(XmppUri xmppUri) {
         List<Conversation> findings = new ArrayList<>();
         for (Conversation c : getConversations()) {
             if (c.getAccount().isEnabled() && c.getJid().asBareJid().equals(xmppUri.getJid()) && ((c.getMode() == Conversational.MODE_MULTI) == xmppUri.isAction(XmppUri.ACTION_JOIN))) {
+                findings.add(c);
+            }
+        }
+        return findings.size() == 1 ? findings.get(0) : null;
+    }
+
+    public Conversation findConversationByJid(Jid jid) {
+        List<Conversation> findings = new ArrayList<>();
+        for (Conversation c : getConversations()) {
+            if (c.getAccount().isEnabled() && c.getJid().asBareJid().equals(jid.asBareJid())) {
                 findings.add(c);
             }
         }
@@ -4457,6 +4491,7 @@ public class XmppConnectionService extends Service {
     public void sendMessagePacket(Account account, MessagePacket packet) {
         final XmppConnection connection = account.getXmppConnection();
         if (connection != null) {
+            Log.d(TAG, "sendMessagePacket CALLED.....");
             connection.sendMessagePacket(packet);
         }
     }

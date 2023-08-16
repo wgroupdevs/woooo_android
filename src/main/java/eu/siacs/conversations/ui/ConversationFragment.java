@@ -754,9 +754,29 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     }
 
 
-    private void forwardMessage() {
+    private void forwardMessage(Intent data) {
+        final List<Jid> jids = ChooseContactActivity.extractJabberIds(data);
 
-        Log.d(TAG, "forwardMessage Called....");
+        for (Jid id : jids) {
+            Log.d(TAG, "forwardMessage Called...." + id.asBareJid());
+            Conversation newConversation = activity.xmppConnectionService.findConversationByJid(id);
+
+            if (newConversation != null) {
+                Message message;
+                message = new Message(newConversation, selectedMessage.getBody(), newConversation.getNextEncryption());
+
+//                message.setType(selectedMessage.getType());
+                Message.configurePrivateMessage(message);
+                message.setForwarded(true);
+
+                ///Send Message on XMPP
+//                sendMessage(message);
+
+                activity.xmppConnectionService.forwardMessage(message);
+            }
+
+        }
+
 
     }
 
@@ -827,7 +847,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
                 sendMessage();
                 break;
             case REQUEST_FORWARD_MESSAGE:
-                forwardMessage();
+                forwardMessage(data);
                 break;
             case REQUEST_TRUST_KEYS_ATTACHMENTS:
                 commitAttachments();
@@ -1031,7 +1051,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             } else {
                 menuUnmute.setVisible(false);
             }
-            ConversationMenuConfigurator.configureAttachmentMenu(conversation, menu);
+//            ConversationMenuConfigurator.configureAttachmentMenu(conversation, menu);
             ConversationMenuConfigurator.configureEncryptionMenu(conversation, menu);
             if (conversation.getBooleanAttribute(Conversation.ATTRIBUTE_PINNED_ON_TOP, false)) {
                 menuTogglePinned.setTitle(R.string.remove_from_favorites);
@@ -1243,12 +1263,15 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             //Go to Select contacts and Groups Activity
 
 
+
+
+
             Intent intent = new Intent(getActivity(), ChooseContactActivity.class);
             intent.putExtra(ChooseContactActivity.EXTRA_SHOW_ENTER_JID, false);
             intent.putExtra(ChooseContactActivity.EXTRA_SELECT_MULTIPLE, true);
 //            intent.putExtra(ChooseContactActivity.EXTRA_GROUP_CHAT_NAME, name.trim());
 //            intent.putExtra(ChooseContactActivity.EXTRA_ACCOUNT, account.getJid().asBareJid().toEscapedString());
-            intent.putExtra(ChooseContactActivity.EXTRA_TITLE_RES_ID, R.string.choose_participants);
+            intent.putExtra(ChooseContactActivity.EXTRA_TITLE_RES_ID, "Select Contacts");
             startActivityForResult(intent, REQUEST_FORWARD_MESSAGE);
 
 
@@ -1303,7 +1326,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         int itemId = item.getItemId();
         if (itemId == R.id.encryption_choice_axolotl || itemId == R.id.encryption_choice_none) {
             handleEncryptionSelection(item);
-        } else if (itemId == R.id.action_attach_file) {
+        } else if (itemId == R.id.action_a_i_button) {
 
 
         } else if (itemId == R.id.attach_choose_picture || itemId == R.id.attach_take_picture || itemId == R.id.attach_record_video || itemId == R.id.attach_choose_file || itemId == R.id.attach_record_voice || itemId == R.id.attach_location) {
@@ -2033,6 +2056,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     @Override
     public void onStart() {
         super.onStart();
+
         if (this.reInitRequiredOnStart && this.conversation != null) {
             final Bundle extras = pendingExtras.pop();
             reInit(this.conversation, extras != null);
@@ -2043,6 +2067,10 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             final String uuid = pendingConversationsUuid.pop();
             Log.d(Config.LOGTAG, "ConversationFragment.onStart() - activity was bound but no conversation loaded. uuid=" + uuid);
             if (uuid != null) {
+
+                Log.d(TAG, "findAndReInitByUuidOrArchive UUID " + uuid);
+
+
                 findAndReInitByUuidOrArchive(uuid);
             }
         }
@@ -2662,6 +2690,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         messageSent();
     }
 
+
     protected void sendPgpMessage(final Message message) {
         final XmppConnectionService xmppService = activity.xmppConnectionService;
         final Contact contact = message.getConversation().getContact();
@@ -2907,8 +2936,9 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 
     @Override
     public void onBackendConnected() {
-        Log.d(Config.LOGTAG, "ConversationFragment.onBackendConnected()");
         String uuid = pendingConversationsUuid.pop();
+        Log.d(TAG, "ConversationFragment.onBackendConnected()" + uuid);
+
         if (uuid != null) {
             if (!findAndReInitByUuidOrArchive(uuid)) {
                 return;
@@ -2928,10 +2958,14 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     }
 
     private boolean findAndReInitByUuidOrArchive(@NonNull final String uuid) {
+
+        Log.d(TAG, "findAndReInitByUuidOrArchive uuid " + uuid);
+
         Conversation conversation = activity.xmppConnectionService.findConversationByUuid(uuid);
         if (conversation == null) {
             clearPending();
             activity.onConversationArchived(null);
+            Log.d(TAG, "Conversation Not Found  " + uuid);
             return false;
         }
         reInit(conversation);
