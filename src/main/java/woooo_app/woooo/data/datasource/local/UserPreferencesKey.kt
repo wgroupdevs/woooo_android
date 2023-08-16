@@ -17,5 +17,6 @@ object UserPreferencesKey {
     val LANGUAGE = stringPreferencesKey("LANGUAGE")
     val LANGUAGE_CODE = stringPreferencesKey("LANGUAGE_CODE")
     val ACCOUNT_UNIQUE_ID = stringPreferencesKey("ACCOUNT_UNIQUE_ID")
+    val SOCKET_ID = stringPreferencesKey("SOCKET_ID")
 
 }

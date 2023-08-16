@@ -78,7 +78,7 @@ public class ConversationMenuConfigurator {
 		}
 
 		final MenuItem none = menu.findItem(R.id.encryption_choice_none);
-		final MenuItem pgp = menu.findItem(R.id.encryption_choice_pgp);
+//		final MenuItem pgp = menu.findItem(R.id.encryption_choice_pgp);
 		final MenuItem axolotl = menu.findItem(R.id.encryption_choice_axolotl);
 
 		final int next = conversation.getNextEncryption();
@@ -106,13 +106,13 @@ public class ConversationMenuConfigurator {
 			menuSecure.setIcon(R.drawable.ic_lock_white_24dp);
 		}
 
-		pgp.setVisible(Config.supportOpenPgp());
+//		pgp.setVisible(Config.supportOpenPgp());
 		none.setVisible(Config.supportUnencrypted() || conversation.getMode() == Conversation.MODE_MULTI);
 		axolotl.setVisible(Config.supportOmemo());
 		switch (conversation.getNextEncryption()) {
 			case Message.ENCRYPTION_PGP:
 				menuSecure.setTitle(R.string.encrypted_with_openpgp);
-				pgp.setChecked(true);
+//				pgp.setChecked(true);
 				break;
 			case Message.ENCRYPTION_AXOLOTL:
 				menuSecure.setTitle(R.string.encrypted_with_omemo);

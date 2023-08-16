@@ -1321,7 +1321,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             return super.onOptionsItemSelected(item);
         }
         int itemId = item.getItemId();
-        if (itemId == R.id.encryption_choice_axolotl || itemId == R.id.encryption_choice_pgp || itemId == R.id.encryption_choice_none) {
+        if (itemId == R.id.encryption_choice_axolotl || itemId == R.id.encryption_choice_none) {
             handleEncryptionSelection(item);
         } else if (itemId == R.id.action_a_i_button) {
 
@@ -1485,20 +1485,22 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         if (itemId == R.id.encryption_choice_none) {
             updated = conversation.setNextEncryption(Message.ENCRYPTION_NONE);
             item.setChecked(true);
-        } else if (itemId == R.id.encryption_choice_pgp) {
-            if (activity.hasPgp()) {
-                if (conversation.getAccount().getPgpSignature() != null) {
-                    updated = conversation.setNextEncryption(Message.ENCRYPTION_PGP);
-                    item.setChecked(true);
-                } else {
-                    updated = false;
-                    activity.announcePgp(conversation.getAccount(), conversation, null, activity.onOpenPGPKeyPublished);
-                }
-            } else {
-                activity.showInstallPgpDialog();
-                updated = false;
-            }
-        } else if (itemId == R.id.encryption_choice_axolotl) {
+        }
+//        else if (itemId == R.id.encryption_choice_pgp) {
+//            if (activity.hasPgp()) {
+//                if (conversation.getAccount().getPgpSignature() != null) {
+//                    updated = conversation.setNextEncryption(Message.ENCRYPTION_PGP);
+//                    item.setChecked(true);
+//                } else {
+//                    updated = false;
+//                    activity.announcePgp(conversation.getAccount(), conversation, null, activity.onOpenPGPKeyPublished);
+//                }
+//            } else {
+//                activity.showInstallPgpDialog();
+//                updated = false;
+//            }
+//        }
+        else if (itemId == R.id.encryption_choice_axolotl) {
             Log.d(Config.LOGTAG, AxolotlService.getLogprefix(conversation.getAccount()) + "Enabled axolotl for Contact " + conversation.getContact().getJid());
             updated = conversation.setNextEncryption(Message.ENCRYPTION_AXOLOTL);
             item.setChecked(true);

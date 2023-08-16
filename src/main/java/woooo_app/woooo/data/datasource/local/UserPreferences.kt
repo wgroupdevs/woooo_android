@@ -19,6 +19,7 @@ interface UserPreferences {
     suspend fun getLanguage(): String
     suspend fun getLanguageCode(): String
     suspend fun getAccountUniqueId(): String
+    suspend fun getSocketId(): String
 
     //    set
     suspend fun setFirstName(firstName: String)
@@ -36,5 +37,6 @@ interface UserPreferences {
     suspend fun setLanguage(language: String)
     suspend fun setLanguageCode(languageCode: String)
     suspend fun setAccountUniqueId(uniqueId: String)
+    suspend fun setSocketId(socketId: String)
     suspend fun clear()
 }
