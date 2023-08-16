@@ -15,6 +15,14 @@ class UserPreferencesViewModel @Inject constructor(
         userPreferences.setFirstName(firstName)
     }
 
+    suspend fun setSocketId(socket: String) {
+        userPreferences.setSocketId(socket)
+    }
+
+    suspend fun getSocketId(): String {
+        return userPreferences.getSocketId()
+    }
+
     suspend fun setAbout(about: String) {
         userPreferences.setAbout(about)
     }

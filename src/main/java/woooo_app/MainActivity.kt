@@ -24,6 +24,7 @@ import woooo_app.woooo.NavGraphs
 import woooo_app.woooo.destinations.ForgotPasswordScreenDestination
 import woooo_app.woooo.destinations.HomeScreenDestination
 import woooo_app.woooo.destinations.SignUpScreenDestination
+import woooo_app.woooo.feature.meeting.SocketHandler
 import woooo_app.woooo.feature.auth.GV
 import woooo_app.woooo.goToWelcomeActivity
 import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel
@@ -39,6 +40,22 @@ import woooo_app.woooo.utils.USER_TOKEN_KEY_INTENT
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     val TAG = "MainActivityLOGS"
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG,"onStop Main Activity")
+//        SocketHandler.disConnectToSocket()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG,"onResume Main Activity")
+//        SocketHandler.registerSocketEvents()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG,"onPause Main Activity")
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +63,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             MainScreen()
         }
-
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -89,6 +105,9 @@ class MainActivity : ComponentActivity() {
                         runBlocking {
                             GV.getUserProfileImage.value = userPreferences.getProfileImage()
                             GV.getFirstName.value = userPreferences.getFirstName()
+
+                            // connect to Socket
+                            SocketHandler.connectToSocket()
                         }
                         startRoute = HomeScreenDestination
                         navigateTo(navController = navController,startRoute = startRoute)

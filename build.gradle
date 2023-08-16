@@ -162,6 +162,13 @@ dependencies {
     implementation("com.marosseleng.android:compose-material3-datetime-pickers:0.7.2")
     //DataStore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
+    // socket
+    implementation ('io.socket:socket.io-client:2.1.0') {
+        exclude group: 'org.json', module: 'json'
+    }
+    // media Soup
+//    implementation 'io.github.haiyangwu:mediasoup-client:3.4.0'
+
 }
 
 ext {

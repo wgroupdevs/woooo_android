@@ -120,6 +120,10 @@ class UserPreferencesImpl(private val dataStore: DataStore<Preferences>) : UserP
         return dataStore.data.first()[UserPreferencesKey.ACCOUNT_UNIQUE_ID] ?: ""
     }
 
+    override suspend fun getSocketId(): String {
+        return dataStore.data.first()[UserPreferencesKey.SOCKET_ID] ?: ""
+    }
+
     override suspend fun clear() {
         dataStore.edit {
             Log.d(TAG,"Clearing UserPreference")
@@ -153,5 +157,7 @@ class UserPreferencesImpl(private val dataStore: DataStore<Preferences>) : UserP
 
     }
 
-
+    override suspend fun setSocketId(socketId: String) {
+        dataStore.edit { it[UserPreferencesKey.SOCKET_ID] = socketId }
+    }
 }

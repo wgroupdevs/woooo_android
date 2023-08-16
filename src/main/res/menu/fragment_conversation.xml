@@ -38,9 +38,9 @@
                 <item
                     android:id="@+id/encryption_choice_axolotl"
                     android:title="@string/stealth_mode" />
-                <item
-                    android:id="@+id/encryption_choice_pgp"
-                    android:title="@string/private_mode" />
+<!--                <item-->
+<!--                    android:id="@+id/encryption_choice_pgp"-->
+<!--                    android:title="@string/private_mode" />-->
             </group>
         </menu>
     </item>
