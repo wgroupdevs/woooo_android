@@ -8,13 +8,14 @@ import eu.siacs.conversations.services.AvatarService;
 import eu.siacs.conversations.xmpp.Jid;
 
 
-public interface ListItem extends Comparable<ListItem>, AvatarService.Avatarable {
+public interface ListItem extends Comparable<ListItem>, AvatarService.Avatarable{
 	String getDisplayName();
 
 	Jid getJid();
 
 	List<Tag> getTags(Context context);
 
+	int getItemType();
 	final class Tag {
 		private final String name;
 		private final int color;

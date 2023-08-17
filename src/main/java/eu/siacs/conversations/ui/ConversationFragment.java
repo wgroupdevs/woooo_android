@@ -85,10 +85,12 @@ import eu.siacs.conversations.crypto.axolotl.FingerprintStatus;
 import eu.siacs.conversations.databinding.FragmentConversationBinding;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.entities.Blockable;
+import eu.siacs.conversations.entities.Bookmark;
 import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.Conversational;
 import eu.siacs.conversations.entities.DownloadableFile;
+import eu.siacs.conversations.entities.ListItem;
 import eu.siacs.conversations.entities.Message;
 import eu.siacs.conversations.entities.MucOptions;
 import eu.siacs.conversations.entities.MucOptions.User;
@@ -141,7 +143,7 @@ import eu.siacs.conversations.xmpp.jingle.Media;
 import eu.siacs.conversations.xmpp.jingle.OngoingRtpSession;
 import eu.siacs.conversations.xmpp.jingle.RtpCapability;
 
-public class ConversationFragment extends XmppFragment implements EditMessage.KeyboardListener, MessageAdapter.OnContactPictureLongClicked, MessageAdapter.OnContactPictureClicked {
+public class ConversationFragment extends XmppFragment implements EditMessage.KeyboardListener, MessageAdapter.OnContactPictureLongClicked, MessageAdapter.OnContactPictureClicked, ChooseContactActivity.OnForwardItemsSelected {
 
     public static final int REQUEST_SEND_MESSAGE = 0x0201;
     public static final int REQUEST_DECRYPT_PGP = 0x0202;
@@ -187,6 +189,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     private Toast messageLoaderToast;
     private ConversationsActivity activity;
     private boolean reInitRequiredOnStart = true;
+
     private final OnClickListener clickToMuc = new OnClickListener() {
 
         @Override
@@ -762,23 +765,25 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             Conversation newConversation = activity.xmppConnectionService.findConversationByJid(id);
 
             if (newConversation != null) {
-                Message message;
-                message = new Message(newConversation, selectedMessage.getBody(), newConversation.getNextEncryption());
 
-//                message.setType(selectedMessage.getType());
-                Message.configurePrivateMessage(message);
-                message.setForwarded(true);
-
-                ///Send Message on XMPP
-//                sendMessage(message);
-
-                activity.xmppConnectionService.forwardMessage(message);
+                Log.d(TAG, "Conversation FOUND...." + id.asBareJid());
+//
+//                Message message;
+//                message = new Message(newConversation, selectedMessage.getBody(), newConversation.getNextEncryption());
+//
+////                message.setType(selectedMessage.getType());
+//                Message.configurePrivateMessage(message);
+//                message.setForwarded(true);
+//
+//
+//                activity.xmppConnectionService.forwardMessage(message);
             }
 
         }
 
 
     }
+
 
     private boolean trustKeysIfNeeded(final Conversation conversation, final int requestCode) {
         return conversation.getNextEncryption() == Message.ENCRYPTION_AXOLOTL && trustKeysIfNeeded(requestCode);
@@ -1082,6 +1087,9 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         messageListAdapter = new MessageAdapter((XmppActivity) getActivity(), this.messageList);
         messageListAdapter.setOnContactPictureClicked(this);
         messageListAdapter.setOnContactPictureLongClicked(this);
+
+        ChooseContactActivity.setOnForwardItemsSelected(this);
+
         binding.messagesView.setAdapter(messageListAdapter);
 
         binding.attachmentsIv.setOnClickListener(v -> {
@@ -1123,6 +1131,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         Log.d(Config.LOGTAG, "ConversationFragment.onDestroyView()");
         messageListAdapter.setOnContactPictureClicked(null);
         messageListAdapter.setOnContactPictureLongClicked(null);
+        ChooseContactActivity.setOnForwardItemsSelected(null);
     }
 
     private void replyText(String text) {
@@ -1263,11 +1272,9 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             //Go to Select contacts and Groups Activity
 
 
-
-
-
             Intent intent = new Intent(getActivity(), ChooseContactActivity.class);
             intent.putExtra(ChooseContactActivity.EXTRA_SHOW_ENTER_JID, false);
+            intent.putExtra(ChooseContactActivity.EXTRA_FROWARD_MESSAGE, true);
             intent.putExtra(ChooseContactActivity.EXTRA_SELECT_MULTIPLE, true);
 //            intent.putExtra(ChooseContactActivity.EXTRA_GROUP_CHAT_NAME, name.trim());
 //            intent.putExtra(ChooseContactActivity.EXTRA_ACCOUNT, account.getJid().asBareJid().toEscapedString());
@@ -3105,5 +3112,47 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             throw new IllegalStateException("Activity not attached");
         }
         return activity;
+    }
+
+    @Override
+    public void onForwardGroupContactSelected(Set<ListItem> listItems) {
+
+        Log.d(TAG, "onForwardGroupContactSelected Count :" + listItems.size());
+
+        if (!listItems.isEmpty()) {
+
+            for (ListItem item : listItems) {
+                Conversation newConversation = null;
+
+                if (item.getItemType() == 0) {
+                    Contact contact = (Contact) item;
+                    newConversation = activity.xmppConnectionService.findOrCreateConversation(contact.getAccount(), contact.getJid(), false, true);
+                } else if (item.getItemType() == 1) {
+                    Bookmark bookmark = (Bookmark) item;
+                    final Jid jid = bookmark.getFullJid();
+                    newConversation = activity.xmppConnectionService.findOrCreateConversation(bookmark.getAccount(), jid, true, true, true);
+
+                }
+
+                if (newConversation != null) {
+
+                    Log.d(TAG, "Conversation FOUND....");
+                    Message message;
+                    message = new Message(newConversation, selectedMessage.getBody(), newConversation.getNextEncryption());
+
+//                message.setType(selectedMessage.getType());
+                    Message.configurePrivateMessage(message);
+                    message.setForwarded(true);
+
+                    activity.xmppConnectionService.forwardMessage(message);
+                }
+
+
+            }
+
+
+        }
+
+
     }
 }

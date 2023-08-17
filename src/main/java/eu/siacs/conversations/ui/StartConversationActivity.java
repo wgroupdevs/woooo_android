@@ -989,11 +989,13 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
     }
 
     protected void filterConferences(String needle) {
+
         this.conferences.clear();
         for (final Account account : xmppConnectionService.getAccounts()) {
             if (account.getStatus() != Account.State.DISABLED) {
                 for (final Bookmark bookmark : account.getBookmarks()) {
                     if (bookmark.match(this, needle)) {
+                        Log.d(TAG, "filterConferences Called..." + bookmark.getBookmarkName());
                         this.conferences.add(bookmark);
                     }
                 }

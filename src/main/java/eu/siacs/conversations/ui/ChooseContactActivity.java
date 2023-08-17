@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -35,6 +36,7 @@ import java.util.Set;
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.entities.Account;
+import eu.siacs.conversations.entities.Bookmark;
 import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.ListItem;
@@ -50,13 +52,16 @@ public class ChooseContactActivity extends AbstractSearchableListItemActivity im
     public static final String EXTRA_GROUP_CHAT_NAME = "extra_group_chat_name";
     public static final String EXTRA_SELECT_MULTIPLE = "extra_select_multiple";
     public static final String EXTRA_SHOW_ENTER_JID = "extra_show_enter_jid";
+    public static final String EXTRA_FROWARD_MESSAGE = "extra_forward_message";
     public static final String EXTRA_CONVERSATION = "extra_conversation";
     private static final String EXTRA_FILTERED_CONTACTS = "extra_filtered_contacts";
     private final List<String> mActivatedAccounts = new ArrayList<>();
     private final Set<String> selected = new HashSet<>();
+    private final Set<ListItem> selectedGroupAndContactItems = new HashSet<>();
     private Set<String> filterContacts;
 
     private boolean showEnterJid = false;
+    private boolean isForwardMessage = false;
     private boolean startSearching = false;
     private boolean multiple = false;
 
@@ -100,6 +105,12 @@ public class ChooseContactActivity extends AbstractSearchableListItemActivity im
         }
     }
 
+    private static OnForwardItemsSelected onForwardItemsSelected;
+
+    public static void setOnForwardItemsSelected(OnForwardItemsSelected listener) {
+        onForwardItemsSelected = listener;
+    }
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,6 +138,7 @@ public class ChooseContactActivity extends AbstractSearchableListItemActivity im
 
         getListView().setOnItemClickListener(this);
         this.showEnterJid = intent.getBooleanExtra(EXTRA_SHOW_ENTER_JID, false);
+        this.isForwardMessage = intent.getBooleanExtra(EXTRA_FROWARD_MESSAGE, false);
         this.binding.fab.setOnClickListener(this::onFabClicked);
 
         //Back Button on TollBar
@@ -147,7 +159,14 @@ public class ChooseContactActivity extends AbstractSearchableListItemActivity im
         if (selected.size() == 0) {
             showEnterJidDialog(null);
         } else {
-            submitSelection();
+
+            if (isForwardMessage) {
+                submitForwardItemSelection();
+            } else {
+
+                submitSelection();
+            }
+
         }
     }
 
@@ -196,6 +215,20 @@ public class ChooseContactActivity extends AbstractSearchableListItemActivity im
         finish();
     }
 
+    private void submitForwardItemSelection() {
+
+        onForwardItemsSelected.onForwardGroupContactSelected(selectedGroupAndContactItems);
+
+        final Intent request = getIntent();
+        final Intent data = new Intent();
+        data.putExtra("contacts", getSelectedContactJids());
+        data.putExtra(EXTRA_SELECT_MULTIPLE, true);
+        data.putExtra(EXTRA_ACCOUNT, request.getStringExtra(EXTRA_ACCOUNT));
+        copy(request, data);
+        setResult(RESULT_OK, data);
+        finish();
+    }
+
     private static void copy(Intent from, Intent to) {
         to.putExtra(EXTRA_CONVERSATION, from.getStringExtra(EXTRA_CONVERSATION));
         to.putExtra(EXTRA_GROUP_CHAT_NAME, from.getStringExtra(EXTRA_GROUP_CHAT_NAME));
@@ -206,18 +239,40 @@ public class ChooseContactActivity extends AbstractSearchableListItemActivity im
         if (selected.size() != 0) {
             getListView().playSoundEffect(0);
         }
-        Contact item = (Contact) getListItems().get(position);
-        if (checked) {
-            selected.add(item.getJid().toString());
-        } else {
-            selected.remove(item.getJid().toString());
+
+        ListItem item = getListItems().get(position);
+
+        if (item.getItemType() == 0) {
+            Contact contact = (Contact) item;
+            if (checked) {
+                selected.add(contact.getJid().toString());
+                selectedGroupAndContactItems.add(item);
+            } else {
+                selected.remove(contact.getJid().toString());
+                selectedGroupAndContactItems.remove(item);
+            }
+        } else if (item.getItemType() == 1) {
+            Bookmark bookmark = (Bookmark) item;
+            if (checked) {
+                selectedGroupAndContactItems.add(item);
+
+                selected.add(bookmark.getJid().toString());
+            } else {
+                selected.remove(bookmark.getJid().toString());
+                selectedGroupAndContactItems.remove(item);
+
+            }
         }
+
+
     }
+
 
     @Override
     public void onStart() {
         super.onStart();
         ActionBar bar = getSupportActionBar();
+
         if (bar != null) {
             try {
                 bar.setDisplayHomeAsUpEnabled(false);
@@ -275,6 +330,8 @@ public class ChooseContactActivity extends AbstractSearchableListItemActivity im
             getListItemAdapter().notifyDataSetChanged();
             return;
         }
+
+        ///ADD CONTACTS
         for (final Account account : xmppConnectionService.getAccounts()) {
             if (account.getStatus() != Account.State.DISABLED) {
                 for (final Contact contact : account.getRoster().getContacts()) {
@@ -286,6 +343,22 @@ public class ChooseContactActivity extends AbstractSearchableListItemActivity im
                 }
             }
         }
+
+        if (this.isForwardMessage) {
+            ///ADD GROUPS
+            for (final Account account : xmppConnectionService.getAccounts()) {
+                if (account.getStatus() != Account.State.DISABLED) {
+                    for (final Bookmark bookmark : account.getBookmarks()) {
+                        if (bookmark.match(this, needle)) {
+                            Log.d(TAG, "filterConferences Called..." + bookmark.getBookmarkName());
+                            getListItems().add(bookmark);
+                        }
+                    }
+                }
+            }
+        }
+
+
         Collections.sort(getListItems());
         getListItemAdapter().notifyDataSetChanged();
     }
@@ -418,5 +491,9 @@ public class ChooseContactActivity extends AbstractSearchableListItemActivity im
         copy(request, data);
         setResult(RESULT_OK, data);
         finish();
+    }
+
+    public interface OnForwardItemsSelected {
+      public void onForwardGroupContactSelected(Set<ListItem> listItems);
     }
 }

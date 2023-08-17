@@ -29,6 +29,9 @@
 
 package eu.siacs.conversations.ui;
 
+import static androidx.recyclerview.widget.ItemTouchHelper.LEFT;
+import static androidx.recyclerview.widget.ItemTouchHelper.RIGHT;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -74,9 +77,6 @@ import eu.siacs.conversations.ui.util.StyledAttributes;
 import eu.siacs.conversations.utils.AccountUtils;
 import eu.siacs.conversations.utils.EasyOnboardingInvite;
 import eu.siacs.conversations.utils.ThemeHelper;
-
-import static androidx.recyclerview.widget.ItemTouchHelper.LEFT;
-import static androidx.recyclerview.widget.ItemTouchHelper.RIGHT;
 
 public class ConversationsOverviewFragment extends XmppFragment {
 
@@ -293,6 +293,7 @@ public class ConversationsOverviewFragment extends XmppFragment {
         this.mSwipeEscapeVelocity = getResources().getDimension(R.dimen.swipe_escape_velocity);
         this.binding = DataBindingUtil.inflate(inflater, R.layout.fragment_conversations_overview, container, false);
         this.binding.fab.setOnClickListener((view) -> StartConversationActivity.launch(getActivity()));
+        Log.d(TAG, "TOTAL CONVERSATIONS : " + this.conversations.size());
 
         this.conversationsAdapter = new ConversationAdapter(this.activity, this.conversations);
         this.conversationsAdapter.setConversationClickListener((view, conversation) -> {

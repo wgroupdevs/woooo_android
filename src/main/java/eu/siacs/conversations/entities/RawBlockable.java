@@ -55,6 +55,11 @@ public class RawBlockable implements ListItem, Blockable {
     }
 
     @Override
+    public int getItemType() {
+        return 2;
+    }
+
+    @Override
     public boolean match(Context context, String needle) {
         if (TextUtils.isEmpty(needle)) {
             return true;
@@ -76,7 +81,7 @@ public class RawBlockable implements ListItem, Blockable {
 
     @Override
     public int getAvatarBackgroundColor() {
-        return  UIHelper.getColorForName(jid.toEscapedString());
+        return UIHelper.getColorForName(jid.toEscapedString());
     }
 
     @Override
@@ -87,6 +92,6 @@ public class RawBlockable implements ListItem, Blockable {
     @Override
     public int compareTo(ListItem o) {
         return this.getDisplayName().compareToIgnoreCase(
-				o.getDisplayName());
+                o.getDisplayName());
     }
 }

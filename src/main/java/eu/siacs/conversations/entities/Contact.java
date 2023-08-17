@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -193,6 +194,11 @@ public class Contact implements ListItem, Blockable {
             tags.add(new Tag(context.getString(R.string.blocked), 0xff2e2f3b));
         }
         return tags;
+    }
+
+    @Override
+    public int getItemType() {
+        return 0;
     }
 
     public boolean match(Context context, String needle) {

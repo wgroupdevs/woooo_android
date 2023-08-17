@@ -39,9 +39,9 @@ public class WooooAuthService {
 
             wooooAuthService = new WooooAuthService();
             final OkHttpClient.Builder builder = HttpConnectionManager.OK_HTTP_CLIENT.newBuilder();
-            builder.connectTimeout(40, TimeUnit.SECONDS);
-            builder.readTimeout(40, TimeUnit.SECONDS);
-            builder.writeTimeout(40, TimeUnit.SECONDS);
+            builder.connectTimeout(50, TimeUnit.SECONDS);
+            builder.readTimeout(50, TimeUnit.SECONDS);
+            builder.writeTimeout(50, TimeUnit.SECONDS);
             final Retrofit retrofit = new Retrofit.Builder().client(builder.build()).baseUrl(Config.WOOOO_BASE_URL).addConverterFactory(GsonConverterFactory.create()).callbackExecutor(Executors.newSingleThreadExecutor()).build();
             wooooService = retrofit.create(WooooService.class);
         }
