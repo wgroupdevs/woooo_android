@@ -852,7 +852,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
                 sendMessage();
                 break;
             case REQUEST_FORWARD_MESSAGE:
-                forwardMessage(data);
+//                forwardMessage(data);
                 break;
             case REQUEST_TRUST_KEYS_ATTACHMENTS:
                 commitAttachments();

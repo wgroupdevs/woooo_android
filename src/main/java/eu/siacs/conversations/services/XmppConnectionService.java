@@ -1,6 +1,5 @@
 package eu.siacs.conversations.services;
 
-import static eu.siacs.conversations.ui.EditAccountActivity.TAG;
 import static eu.siacs.conversations.utils.Compatibility.s;
 import static eu.siacs.conversations.utils.Random.SECURE_RANDOM;
 
@@ -320,7 +319,6 @@ public class XmppConnectionService extends Service {
 
     public final Set<String> FILENAMES_TO_IGNORE_DELETION = new HashSet<>();
 
-    public boolean forwardMessage = false;
 
     private final OnBindListener mOnBindListener = new OnBindListener() {
 
@@ -1529,7 +1527,6 @@ public class XmppConnectionService extends Service {
 
     public void sendMessage(final Message message) {
         Log.d(TAG, "sendMessage Simple Called.....");
-        this.forwardMessage = false;
         sendMessage(message, false, false);
     }
 
@@ -1679,8 +1676,7 @@ public class XmppConnectionService extends Service {
         }
         if (packet != null) {
 
-            if (forwardMessage) {
-                Log.d(TAG, "FORWARDED ELEMENT ADDED....." + forwardMessage);
+            if (message.getForwarded()) {
                 packet.setForwardedElement(message.getBody());
             }
             if (delay) {
@@ -1723,8 +1719,6 @@ public class XmppConnectionService extends Service {
     }
 
     public void forwardMessage(final Message message) {
-
-        this.forwardMessage = true;
 
         Log.d(TAG, "forwardMessage Called in Connection Service");
 
