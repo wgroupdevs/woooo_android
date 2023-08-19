@@ -109,6 +109,7 @@ import eu.siacs.conversations.ui.util.ActivityResult;
 import eu.siacs.conversations.ui.util.Attachment;
 import eu.siacs.conversations.ui.util.AvatarWorkerTask;
 import eu.siacs.conversations.ui.util.ConversationMenuConfigurator;
+import eu.siacs.conversations.ui.util.CustomDialogUtil;
 import eu.siacs.conversations.ui.util.DateSeparator;
 import eu.siacs.conversations.ui.util.EditMessageActionModeCallback;
 import eu.siacs.conversations.ui.util.ListViewUtils;
@@ -189,6 +190,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     private Toast messageLoaderToast;
     private ConversationsActivity activity;
     private boolean reInitRequiredOnStart = true;
+    List langaugeList = Arrays.asList("Urdu", "English", "Japanies");
 
     private final OnClickListener clickToMuc = new OnClickListener() {
 
@@ -1026,6 +1028,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         final MenuItem menuOngoingCall = menu.findItem(R.id.action_ongoing_call);
         final MenuItem menuVideoCall = menu.findItem(R.id.action_video_call);
         final MenuItem menuTogglePinned = menu.findItem(R.id.action_toggle_pinned);
+        final MenuItem changeLanguage = menu.findItem(R.id.changeLanguage);
         Log.d("onCreateOptionsMenu", "onCreateOptionsMenu.....");
         if (conversation != null) {
             if (conversation.getMode() == Conversation.MODE_MULTI) {
@@ -1368,6 +1371,8 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             returnToOngoingCall();
         } else if (itemId == R.id.action_toggle_pinned) {
             togglePinned();
+        } else if (itemId == R.id.changeLanguage) {
+            CustomDialogUtil.showCustomDialog(this.getContext());
         }
         return super.onOptionsItemSelected(item);
     }
