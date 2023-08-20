@@ -16,4 +16,5 @@ object GV {
 
     val getUserProfileImage = mutableStateOf("")
     val getFirstName = mutableStateOf("")
+    public var uniqueId = ""
 }

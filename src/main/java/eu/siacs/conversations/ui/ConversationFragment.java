@@ -13,6 +13,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.PendingIntent;
+import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -20,6 +21,7 @@ import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -47,6 +49,7 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -66,7 +69,13 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -99,6 +108,10 @@ import eu.siacs.conversations.entities.ReadByMarker;
 import eu.siacs.conversations.entities.Transferable;
 import eu.siacs.conversations.entities.TransferablePlaceholder;
 import eu.siacs.conversations.http.HttpDownloadConnection;
+import eu.siacs.conversations.http.model.Language;
+import eu.siacs.conversations.http.model.UpdateUserLanguageModel;
+import eu.siacs.conversations.http.services.BaseModelAPIResponse;
+import eu.siacs.conversations.http.services.WooooAuthService;
 import eu.siacs.conversations.persistance.FileBackend;
 import eu.siacs.conversations.services.MessageArchiveService;
 import eu.siacs.conversations.services.QuickConversationsService;
@@ -142,8 +155,9 @@ import eu.siacs.conversations.xmpp.jingle.JingleFileTransferConnection;
 import eu.siacs.conversations.xmpp.jingle.Media;
 import eu.siacs.conversations.xmpp.jingle.OngoingRtpSession;
 import eu.siacs.conversations.xmpp.jingle.RtpCapability;
+import woooo_app.woooo.feature.auth.GV;
 
-public class ConversationFragment extends XmppFragment implements EditMessage.KeyboardListener, MessageAdapter.OnContactPictureLongClicked, MessageAdapter.OnContactPictureClicked, ChooseContactActivity.OnForwardItemsSelected {
+public class ConversationFragment extends XmppFragment implements EditMessage.KeyboardListener, MessageAdapter.OnContactPictureLongClicked, MessageAdapter.OnContactPictureClicked, ChooseContactActivity.OnForwardItemsSelected, WooooAuthService.OnUpdateUserLanguageApiResult {
 
     public static final int REQUEST_SEND_MESSAGE = 0x0201;
     public static final int REQUEST_DECRYPT_PGP = 0x0202;
@@ -189,6 +203,9 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     private Toast messageLoaderToast;
     private ConversationsActivity activity;
     private boolean reInitRequiredOnStart = true;
+    private ProgressDialog progressDialog;
+
+    List langaugeList = Arrays.asList("Urdu", "English", "Japanies");
 
     private final OnClickListener clickToMuc = new OnClickListener() {
 
@@ -369,6 +386,22 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             }
         }
     };
+
+    public void updateUserLanguage(String language, String languageCode) {
+        showProgressDialog(getContext());
+        Log.e("woedpocpmcspoc", "" + language + languageCode);
+//        UpdateUserLanguageReqModel reqModel = new UpdateUserLanguageReqModel();
+//        reqModel.setLanguage(language);
+//        reqModel.getLanguageCode(languageCode);
+//        reqModel.setAccountId("0102600c-ab5f-4385-a7ac-8d6c6754fabd");
+
+
+        String reqModel = GV.INSTANCE.getUniqueId();
+        Log.e("woedpocpmcspoc", "" + reqModel);
+
+        activity.xmppConnectionService.updateUserLanguage(reqModel, language, languageCode, ConversationFragment.this);
+    }
+
     private final View.OnLongClickListener mLongPressBlockListener = this::showBlockSubmenu;
     private final OnClickListener mAllowPresenceSubscription = new OnClickListener() {
         @Override
@@ -1026,6 +1059,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         final MenuItem menuOngoingCall = menu.findItem(R.id.action_ongoing_call);
         final MenuItem menuVideoCall = menu.findItem(R.id.action_video_call);
         final MenuItem menuTogglePinned = menu.findItem(R.id.action_toggle_pinned);
+        final MenuItem changeLanguage = menu.findItem(R.id.changeLanguage);
         Log.d("onCreateOptionsMenu", "onCreateOptionsMenu.....");
         if (conversation != null) {
             if (conversation.getMode() == Conversation.MODE_MULTI) {
@@ -1368,8 +1402,82 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             returnToOngoingCall();
         } else if (itemId == R.id.action_toggle_pinned) {
             togglePinned();
+        } else if (itemId == R.id.changeLanguage) {
+            showLanguageChangeDialog(this.getContext());
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void showLanguageChangeDialog(Context context) {
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context);
+        // Inflate the custom layout
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View customView = inflater.inflate(R.layout.language_dialog, null);
+        ListView languagesListView;
+        languagesListView = customView.findViewById(R.id.languagesListView);
+        ArrayList<Language> languageList = parseJSON(context);
+        ArrayAdapter<Language> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, languageList);
+        languagesListView.setAdapter(adapter);
+        // Set the custom layout to the dialog
+        alertDialogBuilder.setView(customView);
+
+        // Create and show the AlertDialog
+        android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+        languagesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                try {
+                    updateUserLanguage(languageList.get(position).name, languageList.get(position).code);
+                    alertDialog.hide();
+                } catch (Exception e) {
+                    Log.d("" + e, "dcsdcsdcs" + languageList.get(position).name + languageList.get(position).code);
+                }
+            }
+        });
+    }
+
+    private static ArrayList<Language> parseJSON(Context context) {
+        ArrayList<Language> languageList = new ArrayList<>();
+        try {
+            AssetManager assetManager = context.getAssets();
+            InputStream inputStream = assetManager.open("languages.json");
+            int size = inputStream.available();
+            byte[] buffer = new byte[size];
+            inputStream.read(buffer);
+            inputStream.close();
+            String json = new String(buffer, StandardCharsets.UTF_8);
+
+            JSONObject jsonObject = new JSONObject(json);
+            JSONArray languagesArray = jsonObject.getJSONArray("languages");
+
+            for (int i = 0; i < languagesArray.length(); i++) {
+                JSONObject languageObject = languagesArray.getJSONObject(i);
+                String code = languageObject.getString("code");
+                String name = languageObject.getString("name");
+                Language language = new Language(code, name);
+                languageList.add(language);
+                Log.d(String.valueOf(+languageList.size()), "qwdqwdqwdqw");
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+        return languageList;
+    }
+
+    public void showProgressDialog(Context context) {
+        progressDialog = new ProgressDialog(context);
+//        progressDialog.setTitle("Loading...");
+        progressDialog.setMessage("Please wait");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
+    public void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
     }
 
     private void startSearch() {
@@ -3154,5 +3262,24 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         }
 
 
+    }
+
+    @Override
+    public <T> void OnUpdateUserLanguageAPiResultFound(T updatelanguage) {
+        runOnUiThread(() -> {
+            if (updatelanguage instanceof UpdateUserLanguageModel) {
+                Log.d("WoContactResultFound", " OnGetWooContactAPiResultFoundResponseJAVA Called in EditActivity " + ((UpdateUserLanguageModel) updatelanguage).Data);
+                hideProgressDialog();
+                Log.d("response Contact", String.valueOf(((UpdateUserLanguageModel) updatelanguage).Data));
+            } else if (updatelanguage instanceof BaseModelAPIResponse) {
+                Toast.makeText(getContext(), ((BaseModelAPIResponse) updatelanguage).Message, Toast.LENGTH_LONG).show();
+                hideProgressDialog();
+                Log.d("WooContactAPiResult", " BaseModelAPIResponse Called in EditActivity " + ((BaseModelAPIResponse) updatelanguage).Message);
+            } else {
+                hideProgressDialog();
+                Log.d("WooContactAPiResult", "ECEPTION FOUND... " + updatelanguage);
+
+            }
+        });
     }
 }

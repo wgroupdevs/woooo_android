@@ -24,8 +24,8 @@ import woooo_app.woooo.NavGraphs
 import woooo_app.woooo.destinations.ForgotPasswordScreenDestination
 import woooo_app.woooo.destinations.HomeScreenDestination
 import woooo_app.woooo.destinations.SignUpScreenDestination
-import woooo_app.woooo.feature.meeting.SocketHandler
 import woooo_app.woooo.feature.auth.GV
+import woooo_app.woooo.feature.meeting.SocketHandler
 import woooo_app.woooo.goToWelcomeActivity
 import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel
 import woooo_app.woooo.theme.Woooo_androidTheme
@@ -105,6 +105,9 @@ class MainActivity : ComponentActivity() {
                         runBlocking {
                             GV.getUserProfileImage.value = userPreferences.getProfileImage()
                             GV.getFirstName.value = userPreferences.getFirstName()
+                            GV.uniqueId = userPreferences.getAccountUniqueId()
+
+                            Log.d("accountUniqueId","" + userPreferences.getAccountUniqueId())
 
                             // connect to Socket
                             SocketHandler.connectToSocket()
@@ -177,6 +180,7 @@ class MainActivity : ComponentActivity() {
         runBlocking {
             GV.getUserProfileImage.value = userPreferences.getProfileImage()
             GV.getFirstName.value = userPreferences.getFirstName()
+            GV.uniqueId = userPreferences.getAccountUniqueId()
             USER_JID = userPreferences.getJID()
             userPreferences.getAuthToke()
 

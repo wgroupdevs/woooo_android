@@ -979,6 +979,14 @@ public class XmppConnectionService extends Service {
 
     }
 
+    public void updateUserLanguage(String accountId, String language, String languageCode, WooooAuthService.OnUpdateUserLanguageApiResult onUpdateUserLanguageApiResult) {
+        Log.d(TAG, "getWooContacts" + wooooAuthService);
+        if (wooooAuthService == null) {
+            wooooAuthService = WooooAuthService.getInstance();
+        }
+        wooooAuthService.updateUserLanguage(accountId, language, languageCode, onUpdateUserLanguageApiResult);
+    }
+
 
     public boolean isDataSaverDisabled() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

@@ -15,6 +15,7 @@ import eu.siacs.conversations.http.HttpConnectionManager;
 import eu.siacs.conversations.http.model.GetWooContactsModel;
 import eu.siacs.conversations.http.model.LoginAPIResponseJAVA;
 import eu.siacs.conversations.http.model.SearchAccountAPIResponse;
+import eu.siacs.conversations.http.model.UpdateUserLanguageModel;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -187,6 +188,51 @@ public class WooooAuthService {
         });
     }
 
+    public void updateUserLanguage(String accountId, String language, String languageCode, OnUpdateUserLanguageApiResult listener) {
+        Log.d("WooooAuthService", "updateUserLanguage STARTED...");
+
+        final Call<UpdateUserLanguageModel> searchResultCall = wooooService.updateUserLanguage(accountId, language, languageCode);
+        searchResultCall.enqueue(new Callback<UpdateUserLanguageModel>() {
+            @Override
+            public void onResponse(@NonNull Call<UpdateUserLanguageModel> call, @NonNull Response<UpdateUserLanguageModel> response) {
+                final UpdateUserLanguageModel body = response.body();
+
+
+                Log.d("WooooAuthService", "API RESPONSE " + response.isSuccessful());
+                Log.d("API RESPONSE " + response.code(), "WooooAuthService Status Code");
+                Log.d("WooooAuthService", "API RESPONSE BODY " + response.body());
+                if (body == null) {
+
+                    Log.d("WooooAuthService", "API RESPONSE ");
+                    assert response.errorBody() != null;
+                    try {
+                        String errorBodyFound = response.errorBody().byteString().utf8();
+
+                        Log.d("WooooAuthService", "API RESPONSE " + errorBodyFound);
+
+                        listener.OnUpdateUserLanguageAPiResultFound(parseErrorBody(errorBodyFound));
+                    } catch (IOException e) {
+
+                        Log.d("WooooAuthService", "API Exception " + e.getStackTrace().toString());
+
+                        throw new RuntimeException(e);
+                    }
+
+                } else {
+
+                    listener.OnUpdateUserLanguageAPiResultFound(body);
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UpdateUserLanguageModel> call, @NonNull Throwable throwable) {
+                Log.d(Config.LOGTAG, "Unable to query WoooService on " + Config.WOOOO_BASE_URL, throwable);
+//                        listener.);
+            }
+        });
+    }
+
 
     public interface OnLoginAPiResult {
         <T> void onLoginApiResultFound(T loginModel);
@@ -198,6 +244,10 @@ public class WooooAuthService {
 
     public interface OnGetWooContactAPiResult {
         <T> void OnGetWooContactAPiResultFound(T loginModel);
+    }
+
+    public interface OnUpdateUserLanguageApiResult {
+        <T> void OnUpdateUserLanguageAPiResultFound(T loginModel);
     }
 
 
