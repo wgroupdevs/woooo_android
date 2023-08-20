@@ -248,7 +248,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 + " TEXT PRIMARY KEY, " + Message.CONVERSATION + " TEXT, "
                 + Message.TIME_SENT + " NUMBER, " + Message.COUNTERPART
                 + " TEXT, " + Message.TRUE_COUNTERPART + " TEXT,"
-                + Message.BODY + " TEXT, " + Message.ENCRYPTION + " NUMBER, "
+                + Message.BODY + " TEXT, " + Message.TRANSLATED_BODY + " TEXT, " + Message.ENCRYPTION + " NUMBER, "
                 + Message.STATUS + " NUMBER," + Message.TYPE + " NUMBER, "
                 + Message.RELATIVE_FILE_PATH + " TEXT, "
                 + Message.SERVER_MSG_ID + " TEXT, "

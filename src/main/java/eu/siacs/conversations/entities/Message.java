@@ -68,6 +68,8 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
     public static final String COUNTERPART = "counterpart";
     public static final String TRUE_COUNTERPART = "trueCounterpart";
     public static final String BODY = "body";
+    public static final String TRANSLATION_ON = "on";
+    public static final String TRANSLATION_OFF = "off";
     public static final String BODY_LANGUAGE = "bodyLanguage";
     public static final String TIME_SENT = "timeSent";
     public static final String ENCRYPTION = "encryption";
@@ -86,6 +88,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
     public static final String MARKABLE = "markable";
     public static final String DELETED = "deleted";
     public static final String FORWARDED = "forwarded";
+    public static final String TRANSLATED_BODY = "translatedBody";
     public static final String ME_COMMAND = "/me ";
 
     public static final String ERROR_MESSAGE_CANCELLED = "eu.siacs.conversations.cancelled";
@@ -96,6 +99,9 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
     protected Jid counterpart;
     protected Jid trueCounterpart;
     protected String body;
+
+
+    protected String translatedBody;
     protected String encryptedBody;
     protected long timeSent;
     protected int encryption;
@@ -103,6 +109,16 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
     protected int type;
     protected boolean deleted = false;
     protected boolean forwarded = false;
+
+    public boolean isTranslationStatus() {
+        return translationStatus;
+    }
+
+    public void setTranslationStatus(boolean translationStatus) {
+        this.translationStatus = translationStatus;
+    }
+
+    protected boolean translationStatus = false;
     protected boolean carbon = false;
     protected boolean oob = false;
     protected List<Edit> edits = new ArrayList<>();
@@ -140,6 +156,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
                 conversation.getJid() == null ? null : conversation.getJid().asBareJid(),
                 null,
                 body,
+                null,
                 System.currentTimeMillis(),
                 encryption,
                 status,
@@ -166,6 +183,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
                 conversation.getJid() == null ? null : conversation.getJid().asBareJid(),
                 null,
                 null,
+                null,
                 System.currentTimeMillis(),
                 Message.ENCRYPTION_NONE,
                 status,
@@ -187,7 +205,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
     }
 
     protected Message(final Conversational conversation, final String uuid, final String conversationUUid, final Jid counterpart,
-                      final Jid trueCounterpart, final String body, final long timeSent,
+                      final Jid trueCounterpart, final String body, String translatedBody, final long timeSent,
                       final int encryption, final int status, final int type, final boolean carbon,
                       final String remoteMsgId, final String relativeFilePath,
                       final String serverMsgId, final String fingerprint, final boolean read,
@@ -199,6 +217,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
         this.counterpart = counterpart;
         this.trueCounterpart = trueCounterpart;
         this.body = body == null ? "" : body;
+        this.translatedBody = translatedBody == null ? "" : translatedBody;
         this.timeSent = timeSent;
         this.encryption = encryption;
         this.status = status;
@@ -222,12 +241,13 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
     public static Message fromCursor(Cursor cursor, Conversation conversation) {
 
 
-        Message m =new Message(conversation,
+        Message m = new Message(conversation,
                 cursor.getString(cursor.getColumnIndex(UUID)),
                 cursor.getString(cursor.getColumnIndex(CONVERSATION)),
                 fromString(cursor.getString(cursor.getColumnIndex(COUNTERPART))),
                 fromString(cursor.getString(cursor.getColumnIndex(TRUE_COUNTERPART))),
                 cursor.getString(cursor.getColumnIndex(BODY)),
+                cursor.getString(cursor.getColumnIndex(TRANSLATED_BODY)),
                 cursor.getLong(cursor.getColumnIndex(TIME_SENT)),
                 cursor.getInt(cursor.getColumnIndex(ENCRYPTION)),
                 cursor.getInt(cursor.getColumnIndex(STATUS)),
@@ -247,7 +267,6 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
                 cursor.getInt(cursor.getColumnIndex(FORWARDED)) > 0,
                 cursor.getString(cursor.getColumnIndex(BODY_LANGUAGE))
         );
-
 
 
         return m;
@@ -295,6 +314,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
             values.put(TRUE_COUNTERPART, trueCounterpart.toString());
         }
         values.put(BODY, body.length() > Config.MAX_STORAGE_MESSAGE_CHARS ? body.substring(0, Config.MAX_STORAGE_MESSAGE_CHARS) : body);
+        values.put(TRANSLATED_BODY, translatedBody.length() > Config.MAX_STORAGE_MESSAGE_CHARS ? translatedBody.substring(0, Config.MAX_STORAGE_MESSAGE_CHARS) : translatedBody);
         values.put(TIME_SENT, timeSent);
         values.put(ENCRYPTION, encryption);
         values.put(STATUS, status);
@@ -352,6 +372,15 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
     public String getBody() {
         return body;
     }
+
+    public String getTranslatedBody() {
+        return translatedBody;
+    }
+
+    public void setTranslatedBody(String translatedBody) {
+        this.translatedBody = translatedBody;
+    }
+
 
     public synchronized void setBody(String body) {
         if (body == null) {

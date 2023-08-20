@@ -1687,6 +1687,11 @@ public class XmppConnectionService extends Service {
             if (message.getForwarded()) {
                 packet.setForwardedElement(message.getBody());
             }
+            if (message.isTranslationStatus()) {
+                packet.setTranslationStatus(Message.TRANSLATION_ON);
+            }
+
+
             if (delay) {
                 mMessageGenerator.addDelay(packet, message.getTimeSent());
             }
