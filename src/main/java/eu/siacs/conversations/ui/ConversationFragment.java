@@ -159,6 +159,7 @@ import woooo_app.woooo.feature.auth.GV;
 
 public class ConversationFragment extends XmppFragment implements EditMessage.KeyboardListener, MessageAdapter.OnContactPictureLongClicked, MessageAdapter.OnContactPictureClicked, ChooseContactActivity.OnForwardItemsSelected, WooooAuthService.OnUpdateUserLanguageApiResult {
     boolean isAIActive = true;
+    int menuRebuild = 0;
     public static final int REQUEST_SEND_MESSAGE = 0x0201;
     public static final int REQUEST_DECRYPT_PGP = 0x0202;
     public static final int REQUEST_FORWARD_MESSAGE = 0x0401;
@@ -1042,8 +1043,14 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d("" + menuRebuild, "iomcdscmklsdmcldkscm");
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
+        if (menuRebuild == 0) {
+            Log.d("" + menuRebuild, "iomcdscmklsdmcldkscm");
+
+            setHasOptionsMenu(true);
+        }
+        menuRebuild++;
     }
 
     @Override
@@ -1058,9 +1065,14 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         final MenuItem menuOngoingCall = menu.findItem(R.id.action_ongoing_call);
         final MenuItem menuVideoCall = menu.findItem(R.id.action_video_call);
         final MenuItem menuTogglePinned = menu.findItem(R.id.action_toggle_pinned);
-        final MenuItem changeLanguage = menu.findItem(R.id.changeLanguage);
+        final MenuItem changeAiState = menu.findItem(R.id.action_a_i_button);
         Log.d("onCreateOptionsMenu", "onCreateOptionsMenu.....");
         if (conversation != null) {
+            Log.d(""+isAIActive, "onCreateOptionsMenu.....OP");
+
+            if (!isAIActive) {
+                changeAiState.setIcon(R.drawable.translation_selected_icon);
+            }
             if (conversation.getMode() == Conversation.MODE_MULTI) {
                 menuContactDetails.setVisible(false);
                 menuInviteContact.setVisible(conversation.getMucOptions().canInvite());
@@ -1103,6 +1115,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.binding = DataBindingUtil.inflate(inflater, R.layout.fragment_conversation, container, false);
+        Log.d(""+isAIActive,"sdcsddscdscdscdscsdcsdcsdc");
         binding.getRoot().setOnClickListener(null); // TODO why the fuck did we do this?
 
         binding.textinput.addTextChangedListener(new StylingHelper.MessageEditorStyler(binding.textinput));
