@@ -158,7 +158,7 @@ import eu.siacs.conversations.xmpp.jingle.RtpCapability;
 import woooo_app.woooo.feature.auth.GV;
 
 public class ConversationFragment extends XmppFragment implements EditMessage.KeyboardListener, MessageAdapter.OnContactPictureLongClicked, MessageAdapter.OnContactPictureClicked, ChooseContactActivity.OnForwardItemsSelected, WooooAuthService.OnUpdateUserLanguageApiResult {
-
+    boolean isAIActive = true;
     public static final int REQUEST_SEND_MESSAGE = 0x0201;
     public static final int REQUEST_DECRYPT_PGP = 0x0202;
     public static final int REQUEST_FORWARD_MESSAGE = 0x0401;
@@ -394,7 +394,6 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 //        reqModel.setLanguage(language);
 //        reqModel.getLanguageCode(languageCode);
 //        reqModel.setAccountId("0102600c-ab5f-4385-a7ac-8d6c6754fabd");
-
 
         String reqModel = GV.INSTANCE.getUniqueId();
         Log.e("woedpocpmcspoc", "" + reqModel);
@@ -1368,10 +1367,13 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         if (itemId == R.id.encryption_choice_axolotl || itemId == R.id.encryption_choice_none) {
             handleEncryptionSelection(item);
         } else if (itemId == R.id.action_a_i_button) {
-
-
+            if (isAIActive) {
+                item.setIcon(R.drawable.translation_selected_icon);
+            } else {
+                item.setIcon(R.drawable.translation_unselected_icon);
+            }
+            isAIActive = !isAIActive;
         } else if (itemId == R.id.attach_choose_picture || itemId == R.id.attach_take_picture || itemId == R.id.attach_record_video || itemId == R.id.attach_choose_file || itemId == R.id.attach_record_voice || itemId == R.id.attach_location) {
-
             handleAttachmentSelection(item);
         } else if (itemId == R.id.action_search) {
             startSearch();

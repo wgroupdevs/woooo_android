@@ -49,7 +49,11 @@
         android:icon="@drawable/translation_unselected_icon"
         android:orderInCategory="30"
         android:title="A.I"
-        app:showAsAction="always"></item>
+        app:showAsAction="always"
+        class=""
+        >
+
+    </item>
     <item
         android:id="@+id/action_contact_details"
         android:orderInCategory="40"

@@ -203,8 +203,7 @@ class MainActivity : ComponentActivity() {
         userPreferences.setLanguageCode(user.languageCode)
         userPreferences.setDOB(user.dob)
         userPreferences.setAccountUniqueId(user.accountId ?: "")
-
-
+        GV.uniqueId = userPreferences.getAccountUniqueId()
     }
 
     @Composable

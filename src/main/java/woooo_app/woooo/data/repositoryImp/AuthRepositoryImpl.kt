@@ -24,6 +24,7 @@ import woooo_app.woooo.data.models.settings.DeleteAccountModel
 import woooo_app.woooo.data.models.settings.requestModels.ChangeNumberReqModel
 import woooo_app.woooo.data.models.settings.requestModels.ChangePasswordReqModel
 import woooo_app.woooo.domain.repository.AuthRepository
+import woooo_app.woooo.feature.auth.GV
 import woooo_app.woooo.shared.base.APIResult
 import woooo_app.woooo.shared.base.BaseRepository
 import javax.inject.Inject
@@ -73,7 +74,7 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun updateProfile(params: UpdateProfileRequestModel): Flow<APIResult<UpdateProfileModel>> =
         safeApiCall {
             Log.d("update Profile params ","${params.toMap()}")
-            apiService.updateProfile("0102600C-AB5F-4385-A7AC-8D6C6754FABD",params)
+            apiService.updateProfile(GV.uniqueId,params)
         }
 
     override suspend fun uploadProfile(params: ProfilePicRequestParams): Flow<APIResult<UploadProfileModel>> =
