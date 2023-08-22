@@ -115,7 +115,8 @@ import eu.siacs.conversations.generator.IqGenerator;
 import eu.siacs.conversations.generator.MessageGenerator;
 import eu.siacs.conversations.generator.PresenceGenerator;
 import eu.siacs.conversations.http.HttpConnectionManager;
-import eu.siacs.conversations.http.services.WooooAuthService;
+import eu.siacs.conversations.http.model.TextTranslateModel;
+import eu.siacs.conversations.http.services.WooooAPIService;
 import eu.siacs.conversations.parser.AbstractParser;
 import eu.siacs.conversations.parser.IqParser;
 import eu.siacs.conversations.parser.MessageParser;
@@ -228,7 +229,7 @@ public class XmppConnectionService extends Service {
     private final NotificationService mNotificationService = new NotificationService(this);
     private final UnifiedPushBroker unifiedPushBroker = new UnifiedPushBroker(this);
     private final ChannelDiscoveryService mChannelDiscoveryService = new ChannelDiscoveryService(this);
-    private WooooAuthService wooooAuthService;
+    private WooooAPIService wooooAuthService;
     private final ShortcutService mShortcutService = new ShortcutService(this);
     private final AtomicBoolean mInitialAddressbookSyncCompleted = new AtomicBoolean(false);
     private final AtomicBoolean mForceForegroundService = new AtomicBoolean(false);
@@ -956,35 +957,43 @@ public class XmppConnectionService extends Service {
     }
 
 
-    public void loginUserOnWoooo(boolean isLoginWithEmail, String email, String phone, String password, WooooAuthService.OnLoginAPiResult onLoginAPiResult) {
+    public void loginUserOnWoooo(boolean isLoginWithEmail, String email, String phone, String password, WooooAPIService.OnLoginAPiResult onLoginAPiResult) {
 
         Log.d(TAG, "loginUserOnWoooo" + wooooAuthService);
         if (wooooAuthService == null) {
-            wooooAuthService = WooooAuthService.getInstance();
+            wooooAuthService = WooooAPIService.getInstance();
         }
 
         wooooAuthService.login(isLoginWithEmail, email, phone, password, onLoginAPiResult);
     }
 
-    public void searchAccount(String value, boolean isEmail, WooooAuthService.OnSearchAccountAPiResult onSearchAccountAPiResult) {
+    public void searchAccount(String value, boolean isEmail, WooooAPIService.OnSearchAccountAPiResult onSearchAccountAPiResult) {
         wooooAuthService.searchAccount(value, isEmail, onSearchAccountAPiResult);
     }
 
-    public void getWooContacts(GetWooContactsRequestParams params, WooooAuthService.OnGetWooContactAPiResult onGetWooContactAPiResult) {
+    public void getWooContacts(GetWooContactsRequestParams params, WooooAPIService.OnGetWooContactAPiResult onGetWooContactAPiResult) {
         Log.d(TAG, "getWooContacts" + wooooAuthService);
         if (wooooAuthService == null) {
-            wooooAuthService = WooooAuthService.getInstance();
+            wooooAuthService = WooooAPIService.getInstance();
         }
         wooooAuthService.getWooContact(params, onGetWooContactAPiResult);
 
     }
 
-    public void updateUserLanguage(String accountId, String language, String languageCode, WooooAuthService.OnUpdateUserLanguageApiResult onUpdateUserLanguageApiResult) {
+    public void updateUserLanguage(String accountId, String language, String languageCode, WooooAPIService.OnUpdateUserLanguageApiResult onUpdateUserLanguageApiResult) {
         Log.d(TAG, "getWooContacts" + wooooAuthService);
         if (wooooAuthService == null) {
-            wooooAuthService = WooooAuthService.getInstance();
+            wooooAuthService = WooooAPIService.getInstance();
         }
         wooooAuthService.updateUserLanguage(accountId, language, languageCode, onUpdateUserLanguageApiResult);
+    }
+
+    public void translateText(TextTranslateModel translateModel, WooooAPIService.OnTextTranslateAPiResult listener) {
+
+        if (wooooAuthService == null) {
+            wooooAuthService = WooooAPIService.getInstance();
+        }
+        wooooAuthService.translateText(translateModel, listener);
     }
 
 
@@ -1175,7 +1184,7 @@ public class XmppConnectionService extends Service {
             mNotificationService.initializeChannels();
         }
         mChannelDiscoveryService.initializeMuclumbusService();
-        wooooAuthService = WooooAuthService.getInstance();
+        wooooAuthService = WooooAPIService.getInstance();
         mForceDuringOnCreate.set(Compatibility.runsAndTargetsTwentySix(this));
         toggleForegroundService();
         this.destroyed = false;
@@ -1687,7 +1696,7 @@ public class XmppConnectionService extends Service {
             if (message.getForwarded()) {
                 packet.setForwardedElement(message.getBody());
             }
-            if (message.isTranslationStatus()) {
+            if (message.getTranslationStatus()) {
                 packet.setTranslationStatus(Message.TRANSLATION_ON);
             }
 

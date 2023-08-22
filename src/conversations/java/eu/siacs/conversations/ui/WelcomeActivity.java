@@ -1,5 +1,8 @@
 package eu.siacs.conversations.ui;
 
+import static eu.siacs.conversations.utils.PermissionUtils.allGranted;
+import static eu.siacs.conversations.utils.PermissionUtils.writeGranted;
+
 import android.Manifest;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -15,24 +18,20 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 
 import java.util.Arrays;
-import java.util.List;
 
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
-import eu.siacs.conversations.databinding.ActivityWelcomeBinding;
 import eu.siacs.conversations.entities.Account;
+import eu.siacs.conversations.http.model.UserBasicInfo;
 import eu.siacs.conversations.services.XmppConnectionService;
 import eu.siacs.conversations.utils.Compatibility;
-import eu.siacs.conversations.utils.InstallReferrerUtils;
 import eu.siacs.conversations.utils.SignupUtils;
 import eu.siacs.conversations.utils.XmppUri;
 import eu.siacs.conversations.xmpp.Jid;
-
-import static eu.siacs.conversations.utils.PermissionUtils.allGranted;
-import static eu.siacs.conversations.utils.PermissionUtils.writeGranted;
+import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel;
 
 public class WelcomeActivity extends XmppActivity implements XmppConnectionService.OnAccountCreated, KeyChainAliasCallback {
 
@@ -98,6 +97,7 @@ public class WelcomeActivity extends XmppActivity implements XmppConnectionServi
         if (this.mTheme != theme) {
             recreate();
         }
+
 //        new InstallReferrerUtils(this);
     }
 
@@ -120,6 +120,8 @@ public class WelcomeActivity extends XmppActivity implements XmppConnectionServi
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         super.onCreate(savedInstanceState);
+
+
         Intent intent = new Intent(WelcomeActivity.this, EditAccountActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra(EditAccountActivity.EXTRA_FORCE_REGISTER, false);
@@ -149,7 +151,7 @@ public class WelcomeActivity extends XmppActivity implements XmppConnectionServi
 //            startActivity(intent);
 //        });
 
-        Log.d(TAG,"onCreate Called");
+        Log.d(TAG, "onCreate Called");
 
     }
 
@@ -160,7 +162,6 @@ public class WelcomeActivity extends XmppActivity implements XmppConnectionServi
         scan.setVisible(Compatibility.hasFeatureCamera(this));
         return super.onCreateOptionsMenu(menu);
     }
-
 
 
     @Override

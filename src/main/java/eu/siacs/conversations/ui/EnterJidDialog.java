@@ -24,7 +24,7 @@ import eu.siacs.conversations.R;
 import eu.siacs.conversations.databinding.EnterJidDialogBinding;
 import eu.siacs.conversations.http.model.SearchAccountAPIResponse;
 import eu.siacs.conversations.http.services.BaseModelAPIResponse;
-import eu.siacs.conversations.http.services.WooooAuthService;
+import eu.siacs.conversations.http.services.WooooAPIService;
 import eu.siacs.conversations.services.XmppConnectionService;
 import eu.siacs.conversations.ui.adapter.KnownHostsAdapter;
 import eu.siacs.conversations.ui.interfaces.OnBackendConnected;
@@ -33,7 +33,7 @@ import eu.siacs.conversations.xmpp.Jid;
 import woooo_app.woooo.utils.UserInfoKt;
 
 
-public class EnterJidDialog extends DialogFragment implements OnBackendConnected, TextWatcher, WooooAuthService.OnSearchAccountAPiResult {
+public class EnterJidDialog extends DialogFragment implements OnBackendConnected, TextWatcher, WooooAPIService.OnSearchAccountAPiResult {
 
     private static final List<String> SUSPICIOUS_DOMAINS =
             Arrays.asList("conference", "muc", "room", "rooms", "chat");
@@ -196,7 +196,7 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
             }
         }
 
-        final WooooAuthService wooooAuthService = WooooAuthService.getInstance();
+        final WooooAPIService wooooAuthService = WooooAPIService.getInstance();
 
         wooooAuthService.searchAccount(value, true, this);
 

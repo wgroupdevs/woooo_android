@@ -109,9 +109,11 @@ import eu.siacs.conversations.entities.Transferable;
 import eu.siacs.conversations.entities.TransferablePlaceholder;
 import eu.siacs.conversations.http.HttpDownloadConnection;
 import eu.siacs.conversations.http.model.Language;
+import eu.siacs.conversations.http.model.TextTranslateApiResponse;
+import eu.siacs.conversations.http.model.TextTranslateModel;
 import eu.siacs.conversations.http.model.UpdateUserLanguageModel;
 import eu.siacs.conversations.http.services.BaseModelAPIResponse;
-import eu.siacs.conversations.http.services.WooooAuthService;
+import eu.siacs.conversations.http.services.WooooAPIService;
 import eu.siacs.conversations.persistance.FileBackend;
 import eu.siacs.conversations.services.MessageArchiveService;
 import eu.siacs.conversations.services.QuickConversationsService;
@@ -157,9 +159,8 @@ import eu.siacs.conversations.xmpp.jingle.OngoingRtpSession;
 import eu.siacs.conversations.xmpp.jingle.RtpCapability;
 import woooo_app.woooo.feature.auth.GV;
 
-public class ConversationFragment extends XmppFragment implements EditMessage.KeyboardListener, MessageAdapter.OnContactPictureLongClicked, MessageAdapter.OnContactPictureClicked, ChooseContactActivity.OnForwardItemsSelected, WooooAuthService.OnUpdateUserLanguageApiResult {
-    boolean isAIActive = true;
-    int menuRebuild = 0;
+public class ConversationFragment extends XmppFragment implements EditMessage.KeyboardListener, MessageAdapter.OnContactPictureLongClicked, MessageAdapter.OnContactPictureClicked, ChooseContactActivity.OnForwardItemsSelected, WooooAPIService.OnUpdateUserLanguageApiResult, WooooAPIService.OnTextTranslateAPiResult {
+    boolean translation = false;
     public static final int REQUEST_SEND_MESSAGE = 0x0201;
     public static final int REQUEST_DECRYPT_PGP = 0x0202;
     public static final int REQUEST_FORWARD_MESSAGE = 0x0401;
@@ -205,6 +206,9 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     private ConversationsActivity activity;
     private boolean reInitRequiredOnStart = true;
     private ProgressDialog progressDialog;
+
+
+    Language currentChatLanguage;
 
     List langaugeList = Arrays.asList("Urdu", "English", "Japanies");
 
@@ -389,7 +393,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     };
 
     public void updateUserLanguage(String language, String languageCode) {
-        showProgressDialog(getContext());
+        showProgressDialog(activity);
         Log.e("woedpocpmcspoc", "" + language + languageCode);
 //        UpdateUserLanguageReqModel reqModel = new UpdateUserLanguageReqModel();
 //        reqModel.setLanguage(language);
@@ -401,6 +405,23 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 
         activity.xmppConnectionService.updateUserLanguage(reqModel, language, languageCode, ConversationFragment.this);
     }
+
+
+    public void translateText() {
+        final Account account = conversation == null ? null : conversation.getAccount();
+        if (account == null) {
+            return;
+        }
+
+        Log.d(TAG, "CHAT_LANGUAGE_CODE : " + account.getLanguageCode());
+
+        TextTranslateModel translateModel = new TextTranslateModel(
+                selectedMessage.getBody(), account.getLanguageCode(), selectedMessage.getServerMsgId()
+        );
+        activity.xmppConnectionService.translateText(translateModel, ConversationFragment.this);
+
+    }
+
 
     private final View.OnLongClickListener mLongPressBlockListener = this::showBlockSubmenu;
     private final OnClickListener mAllowPresenceSubscription = new OnClickListener() {
@@ -752,6 +773,10 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     }
 
     private void sendMessage() {
+
+        Log.d(TAG, "TRANSLATION STATUS .... : " + translation);
+
+
         if (mediaPreviewAdapter.hasAttachments()) {
             commitAttachments();
             return;
@@ -768,6 +793,9 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         final Message message;
         if (conversation.getCorrectingMessage() == null) {
             message = new Message(conversation, body, conversation.getNextEncryption());
+            if (translation) {
+                message.setTranslationStatus(true);
+            }
             Message.configurePrivateMessage(message);
 
             Log.d(TAG, "configurePrivateMessage Called");
@@ -1043,14 +1071,8 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d("" + menuRebuild, "iomcdscmklsdmcldkscm");
         super.onCreate(savedInstanceState);
-        if (menuRebuild == 0) {
-            Log.d("" + menuRebuild, "iomcdscmklsdmcldkscm");
-
-            setHasOptionsMenu(true);
-        }
-        menuRebuild++;
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -1068,9 +1090,8 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         final MenuItem changeAiState = menu.findItem(R.id.action_a_i_button);
         Log.d("onCreateOptionsMenu", "onCreateOptionsMenu.....");
         if (conversation != null) {
-            Log.d(""+isAIActive, "onCreateOptionsMenu.....OP");
 
-            if (!isAIActive) {
+            if (translation) {
                 changeAiState.setIcon(R.drawable.translation_selected_icon);
             }
             if (conversation.getMode() == Conversation.MODE_MULTI) {
@@ -1115,7 +1136,6 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         this.binding = DataBindingUtil.inflate(inflater, R.layout.fragment_conversation, container, false);
-        Log.d(""+isAIActive,"sdcsddscdscdscdscsdcsdcsdc");
         binding.getRoot().setOnClickListener(null); // TODO why the fuck did we do this?
 
         binding.textinput.addTextChangedListener(new StylingHelper.MessageEditorStyler(binding.textinput));
@@ -1163,11 +1183,52 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         final Contact contact = conversation == null ? null : conversation.getContact();
 
         if (contact != null) {
+
+
             AvatarWorkerTask.loadAvatar(contact, this.activity.binding.toolbar.findViewById(R.id.toolbar_profile_photo), R.dimen.avatar);
             TextView toolbar_contact_name = this.activity.binding.toolbar.findViewById(R.id.toolbar_contact_name);
             toolbar_contact_name.setVisibility(View.VISIBLE);
             toolbar_contact_name.setText(contact.getDisplayName());
         }
+
+
+        // Create a Continuation object
+//        Continuation<Unit> continuation = new Continuation() {
+//            @Override
+//            public void resumeWith(@NonNull Object o) {
+//                Log.d(TAG, "resumeWith DATA : " + o);
+//
+//            }
+//
+//            @NonNull
+//            @Override
+//            public CoroutineContext getContext() {
+//                return null;
+//            }
+//
+//        };
+//
+////         Inject the ViewModel
+//        ViewModelProvider viewModelProvider = new ViewModelProvider(activity);
+//
+//        // Inject the ViewModel
+//        UserPreferencesViewModel userPreferencesViewModel = viewModelProvider.get(UserPreferencesViewModel.class);
+////        userPreferencesViewModel = new ViewModelProvider(this).get(UserPreferencesViewModel.class);
+//
+//
+//        UserBasicInfo user = userPreferencesViewModel.getUserInfo();
+//
+//
+//        Log.d(TAG, "USER_DATA NAME : " + user.getFirstName());
+//        Log.d(TAG, "USER_DATA NAME : " + user.getJid());
+//        Log.d(TAG, "USER_DATA NAME : " + user.getLanguage());
+//        Log.d(TAG, "USER_DATA NAME : " + user.getEmail());
+//        Log.d(TAG, "USER_DATA NAME : " + user.getPhoneNumber());
+//
+//        userPreferencesViewModel.setLanguage("ENGLISG LANGUAGE", continuation);
+//
+
+
         return binding.getRoot();
     }
 
@@ -1313,6 +1374,10 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         } else if (itemId == R.id.correct_message) {
             correctMessage(selectedMessage);
             return true;
+        } else if (itemId == R.id.translate_message) {
+
+            translateText();
+
         } else if (itemId == R.id.forward_message) {
 
             //Go to Select contacts and Groups Activity
@@ -1380,12 +1445,13 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         if (itemId == R.id.encryption_choice_axolotl || itemId == R.id.encryption_choice_none) {
             handleEncryptionSelection(item);
         } else if (itemId == R.id.action_a_i_button) {
-            if (isAIActive) {
+            translation = !translation;
+            if (translation) {
                 item.setIcon(R.drawable.translation_selected_icon);
             } else {
                 item.setIcon(R.drawable.translation_unselected_icon);
             }
-            isAIActive = !isAIActive;
+
         } else if (itemId == R.id.attach_choose_picture || itemId == R.id.attach_take_picture || itemId == R.id.attach_record_video || itemId == R.id.attach_choose_file || itemId == R.id.attach_record_voice || itemId == R.id.attach_location) {
             handleAttachmentSelection(item);
         } else if (itemId == R.id.action_search) {
@@ -1418,7 +1484,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         } else if (itemId == R.id.action_toggle_pinned) {
             togglePinned();
         } else if (itemId == R.id.changeLanguage) {
-            showLanguageChangeDialog(this.getContext());
+            showLanguageChangeDialog(activity);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -1439,16 +1505,14 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         // Create and show the AlertDialog
         android.app.AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
-        languagesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        languagesListView.setOnItemClickListener((parent, view, position, id) -> {
+            try {
 
-                try {
-                    updateUserLanguage(languageList.get(position).name, languageList.get(position).code);
-                    alertDialog.hide();
-                } catch (Exception e) {
-                    Log.d("" + e, "dcsdcsdcs" + languageList.get(position).name + languageList.get(position).code);
-                }
+                currentChatLanguage = new Language(languageList.get(position).code, languageList.get(position).name);
+                updateUserLanguage(languageList.get(position).name, languageList.get(position).code);
+                alertDialog.hide();
+            } catch (Exception e) {
+                Log.d("" + e, "dcsdcsdcs" + languageList.get(position).name + languageList.get(position).code);
             }
         });
     }
@@ -3286,8 +3350,15 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
                 Log.d("WoContactResultFound", " OnGetWooContactAPiResultFoundResponseJAVA Called in EditActivity " + ((UpdateUserLanguageModel) updatelanguage).Data);
                 hideProgressDialog();
                 Log.d("response Contact", String.valueOf(((UpdateUserLanguageModel) updatelanguage).Data));
+
+                final Account account = conversation == null ? null : conversation.getAccount();
+                if (account != null) {
+                    account.setLanguageCode(currentChatLanguage.code);
+                    activity.xmppConnectionService.updateAccount(account);
+                }
+
             } else if (updatelanguage instanceof BaseModelAPIResponse) {
-                Toast.makeText(getContext(), ((BaseModelAPIResponse) updatelanguage).Message, Toast.LENGTH_LONG).show();
+                Toast.makeText(activity, ((BaseModelAPIResponse) updatelanguage).Message, Toast.LENGTH_LONG).show();
                 hideProgressDialog();
                 Log.d("WooContactAPiResult", " BaseModelAPIResponse Called in EditActivity " + ((BaseModelAPIResponse) updatelanguage).Message);
             } else {
@@ -3297,4 +3368,28 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             }
         });
     }
+
+    @Override
+    public <T> void OnTextTranslateResultFound(T result) {
+
+        runOnUiThread(() -> {
+            if (result instanceof TextTranslateApiResponse) {
+
+                TextTranslateApiResponse response = (TextTranslateApiResponse) result;
+                Log.d(TAG, " OnTextTranslateResultFound Called " + response.Success);
+                Log.d(TAG, " OnTextTranslateResultFound Called " + response.Error);
+                String translatedText = response.Data.text;
+
+                selectedMessage.setTranslatedBody(translatedText);
+
+                activity.xmppConnectionService.updateMessage(selectedMessage);
+
+            } else if (result instanceof BaseModelAPIResponse) {
+                Toast.makeText(activity, ((BaseModelAPIResponse) result).Message, Toast.LENGTH_LONG).show();
+                Log.d(TAG, " BaseModelAPIResponse Called " + ((BaseModelAPIResponse) result).Message);
+            }
+        });
+
+    }
 }
+

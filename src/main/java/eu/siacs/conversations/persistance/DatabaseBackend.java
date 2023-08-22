@@ -222,6 +222,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 + Account.SERVER + " TEXT,"
                 + Account.PASSWORD + " TEXT,"
                 + Account.DISPLAY_NAME + " TEXT, "
+                + Account.LANGUAGE_CODE + " TEXT, "
                 + Account.STATUS + " TEXT,"
                 + Account.STATUS_MESSAGE + " TEXT,"
                 + Account.ROSTERVERSION + " TEXT,"

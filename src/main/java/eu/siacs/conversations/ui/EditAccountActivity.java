@@ -67,7 +67,7 @@ import eu.siacs.conversations.entities.PresenceTemplate;
 import eu.siacs.conversations.http.model.GetWooContactsModel;
 import eu.siacs.conversations.http.model.LoginAPIResponseJAVA;
 import eu.siacs.conversations.http.services.BaseModelAPIResponse;
-import eu.siacs.conversations.http.services.WooooAuthService;
+import eu.siacs.conversations.http.services.WooooAPIService;
 import eu.siacs.conversations.services.BarcodeProvider;
 import eu.siacs.conversations.services.QuickConversationsService;
 import eu.siacs.conversations.services.XmppConnectionService;
@@ -100,7 +100,7 @@ import woooo_app.woooo.data.models.auth.requestmodels.GetWooContactsRequestParam
 import woooo_app.woooo.feature.auth.GV;
 import woooo_app.woooo.utils.NavIntentConstantKt;
 
-public class EditAccountActivity extends OmemoActivity implements OnAccountUpdate, OnUpdateBlocklist, OnKeyStatusUpdated, OnCaptchaRequested, KeyChainAliasCallback, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnMamPreferencesFetched, WooooAuthService.OnLoginAPiResult, WooooAuthService.OnGetWooContactAPiResult {
+public class EditAccountActivity extends OmemoActivity implements OnAccountUpdate, OnUpdateBlocklist, OnKeyStatusUpdated, OnCaptchaRequested, KeyChainAliasCallback, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnMamPreferencesFetched, WooooAPIService.OnLoginAPiResult, WooooAPIService.OnGetWooContactAPiResult {
     Boolean isLoginWithEmail = false;
     CountryCodePicker codePicker;
     Context context;
@@ -552,11 +552,12 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     }
 
 
-    private void performXMPPLoginAttempt(Jid jid, String password, int numericPort, String hostname) {
+    private void performXMPPLoginAttempt(Jid jid, String password, int numericPort, String hostname, String languageCode) {
         //Perform Login Attempt here
         mAccount = new Account(jid.asBareJid(), password);
         mAccount.setPort(numericPort);
         mAccount.setHostname(hostname);
+        mAccount.setLanguageCode(languageCode);
         mAccount.setOption(Account.OPTION_REGISTER, false);
         xmppConnectionService.createAccount(mAccount);
 
@@ -1650,31 +1651,38 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     }
 
     @Override
-    public <T> void onLoginApiResultFound(T loginModel) {
+    public <T> void onLoginApiResultFound(T result) {
 
 
         runOnUiThread(() -> {
-            if (loginModel instanceof LoginAPIResponseJAVA) {
-                Log.d("onLoginApiResultFound", " LoginAPIResponseJAVA Called in EditActivity " + ((LoginAPIResponseJAVA) loginModel).Message);
-                Log.d("onLoginApiResultFound", " LoginAPIResponseJAVA Called in EditActivity " + ((LoginAPIResponseJAVA) loginModel).Data.user.jid);
-                Log.d("onLoginApiResultFound", " LoginAPIResponseJAVA Called in EditActivity " + ((LoginAPIResponseJAVA) loginModel).Data.user.email);
-                String userJid = ((LoginAPIResponseJAVA) loginModel).Data.user.jid;
+            if (result instanceof LoginAPIResponseJAVA) {
+                Log.d("onLoginApiResultFound", " LoginAPIResponseJAVA Called in EditActivity " + ((LoginAPIResponseJAVA) result).Message);
+                Log.d("onLoginApiResultFound", " LoginAPIResponseJAVA Called in EditActivity " + ((LoginAPIResponseJAVA) result).Data.user.jid);
+                Log.d("onLoginApiResultFound", " LoginAPIResponseJAVA Called in EditActivity " + ((LoginAPIResponseJAVA) result).Data.user.email);
+                String userJid = ((LoginAPIResponseJAVA) result).Data.user.jid;
                 Jid jid = Jid.ofEscaped(userJid);
                 Resolver.checkDomain(jid);
                 final String password = binding.accountPassword.getText().toString();
-                loginAPIResponseJAVA = (LoginAPIResponseJAVA) loginModel;
-                performXMPPLoginAttempt(jid, password, 5222, null);
+                loginAPIResponseJAVA = (LoginAPIResponseJAVA) result;
+
+                String languageCode = loginAPIResponseJAVA.getData().getUser().languageCode;
+                Log.d("onLoginApiResultFound", " LoginAPIResponseJAVA Called in EditActivity LANGUAGE CODE " + languageCode);
+
+                if (languageCode == null || languageCode.isEmpty()) {
+                    languageCode = "en";
+                }
+                performXMPPLoginAttempt(jid, password, 5222, null, languageCode);
                 // get Woaa Contacts Api
                 getContactPermission();
 
-            } else if (loginModel instanceof BaseModelAPIResponse) {
-                Toast.makeText(context, ((BaseModelAPIResponse) loginModel).Message, Toast.LENGTH_LONG).show();
+            } else if (result instanceof BaseModelAPIResponse) {
+                Toast.makeText(context, ((BaseModelAPIResponse) result).Message, Toast.LENGTH_LONG).show();
 
                 hideProgressDialog();
-                Log.d("onLoginApiResultFound", " BaseModelAPIResponse Called in EditActivity " + ((BaseModelAPIResponse) loginModel).Message);
+                Log.d("onLoginApiResultFound", " BaseModelAPIResponse Called in EditActivity " + ((BaseModelAPIResponse) result).Message);
             } else {
                 hideProgressDialog();
-                Log.d("onLoginApiResultFound", "ECEPTION FOUND... " + loginModel);
+                Log.d("onLoginApiResultFound", "ECEPTION FOUND... " + result);
 
             }
         });
@@ -1708,19 +1716,19 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     }
 
     @Override
-    public <T> void OnGetWooContactAPiResultFound(T getWooModel) {
+    public <T> void OnGetWooContactAPiResultFound(T result) {
         runOnUiThread(() -> {
-            if (getWooModel instanceof GetWooContactsModel) {
-                Log.d("WoContactResultFound", " OnGetWooContactAPiResultFoundResponseJAVA Called in EditActivity " + ((GetWooContactsModel) getWooModel).Data);
+            if (result instanceof GetWooContactsModel) {
+                Log.d("WoContactResultFound", " OnGetWooContactAPiResultFoundResponseJAVA Called in EditActivity " + ((GetWooContactsModel) result).Data);
 
-                Log.d("response Contact", String.valueOf(((GetWooContactsModel) getWooModel).Data.size()));
-            } else if (getWooModel instanceof BaseModelAPIResponse) {
-                Toast.makeText(context, ((BaseModelAPIResponse) getWooModel).Message, Toast.LENGTH_LONG).show();
+                Log.d("response Contact", String.valueOf(((GetWooContactsModel) result).Data.size()));
+            } else if (result instanceof BaseModelAPIResponse) {
+                Toast.makeText(context, ((BaseModelAPIResponse) result).Message, Toast.LENGTH_LONG).show();
                 hideProgressDialog();
-                Log.d("WooContactAPiResult", " BaseModelAPIResponse Called in EditActivity " + ((BaseModelAPIResponse) getWooModel).Message);
+                Log.d("WooContactAPiResult", " BaseModelAPIResponse Called in EditActivity " + ((BaseModelAPIResponse) result).Message);
             } else {
                 hideProgressDialog();
-                Log.d("WooContactAPiResult", "ECEPTION FOUND... " + getWooModel);
+                Log.d("WooContactAPiResult", "ECEPTION FOUND... " + result);
 
             }
         });

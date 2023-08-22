@@ -110,7 +110,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
     protected boolean deleted = false;
     protected boolean forwarded = false;
 
-    public boolean isTranslationStatus() {
+    public boolean getTranslationStatus() {
         return translationStatus;
     }
 

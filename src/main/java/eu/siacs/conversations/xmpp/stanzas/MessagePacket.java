@@ -40,7 +40,10 @@ public class MessagePacket extends AbstractAcknowledgeableStanza {
     }
 
     public void setTranslationStatus(String status) {
-        this.setAttribute("translationStatus", status);
+        Log.d(TAG, "setTranslationStatus : " + status);
+        Element translation = new Element("translation");
+        translation.setContent(status);
+        this.children.add(2, translation);
     }
 
     public void setAxolotlMessage(Element axolotlMessage) {

@@ -65,6 +65,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import dagger.hilt.android.AndroidEntryPoint;
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.crypto.OmemoSetting;
@@ -88,7 +89,8 @@ import eu.siacs.conversations.utils.SignupUtils;
 import eu.siacs.conversations.utils.XmppUri;
 import eu.siacs.conversations.xmpp.Jid;
 import eu.siacs.conversations.xmpp.OnUpdateBlocklist;
-
+import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel;
+@AndroidEntryPoint
 public class ConversationsActivity extends XmppActivity implements OnConversationSelected, OnConversationArchived, OnConversationsListItemUpdated, OnConversationRead, XmppConnectionService.OnAccountUpdate, XmppConnectionService.OnConversationUpdate, XmppConnectionService.OnRosterUpdate, OnUpdateBlocklist, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnAffiliationChanged {
 
     public static final String ACTION_VIEW_CONVERSATION = "eu.siacs.conversations.action.VIEW";
@@ -102,6 +104,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
     public static final String POST_ACTION_RECORD_VOICE = "record_voice";
     public static final String EXTRA_TYPE = "type";
     public static final String TAG = "ConversationsActivity";
+    private UserPreferencesViewModel userPreferencesViewModel;
 
     private static final List<String> VIEW_AND_SHARE_ACTIONS = Arrays.asList(
             ACTION_VIEW_CONVERSATION,
@@ -405,6 +408,12 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
             pendingViewIntent.push(intent);
             setIntent(createLauncherIntent(this));
         }
+
+
+
+//
+
+
 
         Log.d(TAG, "OnCreate Called");
     }

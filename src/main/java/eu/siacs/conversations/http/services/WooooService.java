@@ -3,6 +3,8 @@ package eu.siacs.conversations.http.services;
 import eu.siacs.conversations.http.model.GetWooContactsModel;
 import eu.siacs.conversations.http.model.LoginAPIResponseJAVA;
 import eu.siacs.conversations.http.model.SearchAccountAPIResponse;
+import eu.siacs.conversations.http.model.TextTranslateApiResponse;
+import eu.siacs.conversations.http.model.TextTranslateModel;
 import eu.siacs.conversations.http.model.UpdateUserLanguageModel;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -23,6 +25,8 @@ public interface WooooService {
 
     @POST("/api/v1/Contact/ContactsFromPhone")
     Call<GetWooContactsModel> getWooContacts(@Body GetWooContactsRequestParams params);
+  @POST("/api/v1/Chat/TranslateText")
+    Call<TextTranslateApiResponse> translateText(@Body TextTranslateModel params);
 
     @PUT("/api/v1/Account/UpdateUserLanguage")
     Call<UpdateUserLanguageModel> updateUserLanguage(@Query("accountId") String accountId, @Query("language") String language, @Query("languageCode") String languageCode);

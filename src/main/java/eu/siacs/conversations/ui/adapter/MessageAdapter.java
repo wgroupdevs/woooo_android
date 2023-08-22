@@ -420,7 +420,8 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         viewHolder.image.setVisibility(View.GONE);
         viewHolder.audioPlayer.setVisibility(View.GONE);
         viewHolder.messageBody.setVisibility(View.VISIBLE);
-
+        viewHolder.messageTranslatedBody.setVisibility(View.GONE);
+        viewHolder.translationBodyDivider.setVisibility(View.GONE);
         if (darkBackground) {
             viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_OnDark);
         } else {
@@ -429,6 +430,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         viewHolder.messageBody.setHighlightColor(ContextCompat.getColor(activity, darkBackground
                 ? (type == SENT || !mUseGreenBackground ? R.color.black26 : R.color.grey800) : R.color.grey500));
         viewHolder.messageBody.setTypeface(null, Typeface.NORMAL);
+
 
         if (message.getBody() != null) {
             final String nick = UIHelper.getMessageDisplayName(message);
@@ -506,6 +508,19 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             viewHolder.messageBody.setText("");
             viewHolder.messageBody.setTextIsSelectable(false);
         }
+
+
+        if (message.getTranslatedBody() != null && !(message.getTranslatedBody().trim().isEmpty())) {
+
+            if (viewHolder.messageTranslatedBody != null) {
+                viewHolder.messageTranslatedBody.setVisibility(View.VISIBLE);
+                viewHolder.translationBodyDivider.setVisibility(View.VISIBLE);
+                viewHolder.messageTranslatedBody.setText(message.getTranslatedBody());
+            }
+
+
+        }
+
     }
 
     private void displayDownloadableMessage(ViewHolder viewHolder, final Message message, String text, final boolean darkBackground) {
@@ -648,6 +663,9 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                     viewHolder.edit_indicator = view.findViewById(R.id.edit_indicator);
                     viewHolder.image = view.findViewById(R.id.message_image);
                     viewHolder.messageBody = view.findViewById(R.id.message_body);
+                    viewHolder.messageTranslatedBody = view.findViewById(R.id.message_translated_body);
+                    viewHolder.translationBodyDivider = view.findViewById(R.id.translation_body_divider);
+
                     viewHolder.time = view.findViewById(R.id.message_time);
                     viewHolder.indicatorReceived = view.findViewById(R.id.indicator_received);
                     viewHolder.audioPlayer = view.findViewById(R.id.audio_player);
@@ -661,6 +679,9 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                     viewHolder.edit_indicator = view.findViewById(R.id.edit_indicator);
                     viewHolder.image = view.findViewById(R.id.message_image);
                     viewHolder.messageBody = view.findViewById(R.id.message_body);
+                    viewHolder.messageTranslatedBody = view.findViewById(R.id.message_translated_body);
+                    viewHolder.translationBodyDivider = view.findViewById(R.id.translation_body_divider);
+
                     viewHolder.messageForwarded = view.findViewById(R.id.message_forwarded);
                     viewHolder.time = view.findViewById(R.id.message_time);
                     viewHolder.indicatorReceived = view.findViewById(R.id.indicator_received);
@@ -943,6 +964,8 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         protected TextView time;
         protected TextView messageBody;
         protected TextView messageForwarded;
+        protected TextView messageTranslatedBody;
+        protected View translationBodyDivider;
         protected ImageView contact_picture;
         protected TextView status_message;
         protected TextView encryption;

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -32,6 +33,10 @@ import eu.siacs.conversations.entities.ReadByMarker;
 import eu.siacs.conversations.entities.ReceiptRequest;
 import eu.siacs.conversations.entities.RtpSessionStatus;
 import eu.siacs.conversations.http.HttpConnectionManager;
+import eu.siacs.conversations.http.model.TextTranslateApiResponse;
+import eu.siacs.conversations.http.model.TextTranslateModel;
+import eu.siacs.conversations.http.services.BaseModelAPIResponse;
+import eu.siacs.conversations.http.services.WooooAPIService;
 import eu.siacs.conversations.services.MessageArchiveService;
 import eu.siacs.conversations.services.QuickConversationsService;
 import eu.siacs.conversations.services.XmppConnectionService;
@@ -48,7 +53,7 @@ import eu.siacs.conversations.xmpp.jingle.JingleRtpConnection;
 import eu.siacs.conversations.xmpp.pep.Avatar;
 import eu.siacs.conversations.xmpp.stanzas.MessagePacket;
 
-public class MessageParser extends AbstractParser implements OnMessagePacketReceived {
+public class MessageParser extends AbstractParser implements OnMessagePacketReceived, WooooAPIService.OnTextTranslateAPiResult {
 
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
     private String TAG = "MessageParser_TAG";
@@ -57,6 +62,9 @@ public class MessageParser extends AbstractParser implements OnMessagePacketRece
     public MessageParser(XmppConnectionService service) {
         super(service);
     }
+
+
+    private Set<Message> messageQueue = new HashSet<Message>();
 
     private static String extractStanzaId(Element packet, boolean isTypeGroupChat, Conversation conversation) {
         final Jid by;
@@ -412,6 +420,7 @@ public class MessageParser extends AbstractParser implements OnMessagePacketRece
         final Element replaceElement = packet.findChild("replace", "urn:xmpp:message-correct:0");
         final Element oob = packet.findChild("x", Namespace.OOB);
         final Element forwarded = packet.findChild("forwarded", Namespace.FORWARD);
+        final Element translation = packet.findChild("translation");
         final String oobUrl = oob != null ? oob.findChildContent("url") : null;
         final String replacementId = replaceElement == null ? null : replaceElement.getAttribute("id");
         final Element axolotlEncrypted = packet.findChildEnsureSingle(XmppAxolotlMessage.CONTAINERTAG, AxolotlService.PEP_PREFIX);
@@ -578,6 +587,7 @@ public class MessageParser extends AbstractParser implements OnMessagePacketRece
                 }
             }
 
+            message.setTranslatedBody("");
             message.setCounterpart(counterpart);
             message.setRemoteMsgId(remoteMsgId);
             message.setServerMsgId(serverMsgId);
@@ -742,6 +752,28 @@ public class MessageParser extends AbstractParser implements OnMessagePacketRece
                     && !isTypeGroupChat) {
                 processMessageReceipts(account, packet, remoteMsgId, query);
             }
+
+
+            if (translation != null) {
+                String translationStatus = translation.getContent();
+                if (translationStatus.equals(Message.TRANSLATION_ON)) {
+                    message.setTranslationStatus(true);
+                    message.setTranslatedBody("");
+                    if (!mXmppConnectionService.getAccounts().isEmpty()) {
+                        Account mAccount = mXmppConnectionService.getAccounts().get(0);
+                        Log.d(TAG, "TRANSLATE MESSAGE FOUND ....." + mAccount.getLanguageCode());
+                        TextTranslateModel translateModel = new TextTranslateModel(
+                                message.getBody(),
+                                mAccount.getLanguageCode(),
+                                message.getServerMsgId()
+                        );
+                        messageQueue.add(message);
+                        mXmppConnectionService.translateText(translateModel, this);
+                    }
+
+                }
+            }
+
 
             if (forwarded != null) {
                 Log.d(TAG, "FORWARD MESSAGE FOUND ....." + forwarded);
@@ -1078,6 +1110,35 @@ public class MessageParser extends AbstractParser implements OnMessagePacketRece
         long duration = mXmppConnectionService.getLongPreference("grace_period_length", R.integer.grace_period) * 1000;
         Log.d(Config.LOGTAG, account.getJid().asBareJid() + ": activating grace period till " + TIME_FORMAT.format(new Date(System.currentTimeMillis() + duration)));
         account.activateGracePeriod(duration);
+    }
+
+    @Override
+    public <T> void OnTextTranslateResultFound(T result) {
+
+        if (result instanceof TextTranslateApiResponse) {
+
+            TextTranslateApiResponse response = (TextTranslateApiResponse) result;
+            Log.d(TAG, " OnTextTranslateResultFound Called " + response.Success);
+            Log.d(TAG, " OnTextTranslateResultFound Called " + response.Error);
+            String translatedText = response.Data.text;
+
+            for (Message m : messageQueue) {
+                if (m.getServerMsgId().equals(response.Data.serverMsgId)) {
+                    m.setTranslatedBody(translatedText);
+                    mXmppConnectionService.updateMessage(m);
+                    messageQueue.remove(m);
+
+                }
+            }
+            Log.d(TAG, " OnTextTranslateResultFound messageQueue Sized " + messageQueue.size());
+
+
+        } else if (result instanceof BaseModelAPIResponse) {
+//            Toast.makeText(activity, ((BaseModelAPIResponse) result).Message, Toast.LENGTH_LONG).show();
+            Log.d(TAG, " BaseModelAPIResponse Called " + ((BaseModelAPIResponse) result).Message);
+        }
+
+
     }
 
     private class Invite {

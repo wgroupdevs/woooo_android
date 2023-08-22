@@ -31,7 +31,6 @@ import eu.siacs.conversations.crypto.sasl.HashedToken;
 import eu.siacs.conversations.crypto.sasl.HashedTokenSha256;
 import eu.siacs.conversations.crypto.sasl.HashedTokenSha512;
 import eu.siacs.conversations.crypto.sasl.SaslMechanism;
-import eu.siacs.conversations.crypto.sasl.ScramPlusMechanism;
 import eu.siacs.conversations.services.AvatarService;
 import eu.siacs.conversations.services.XmppConnectionService;
 import eu.siacs.conversations.utils.UIHelper;
@@ -52,6 +51,8 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
     public static final String KEYS = "keys";
     public static final String AVATAR = "avatar";
     public static final String DISPLAY_NAME = "display_name";
+    public static final String LANGUAGE_CODE = "language_code";
+
     public static final String HOSTNAME = "hostname";
     public static final String PORT = "port";
     public static final String STATUS = "status";
@@ -96,6 +97,9 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
     protected boolean online = false;
     private String rosterVersion;
     private String displayName = null;
+
+
+    private String languageCode = null;
     private AxolotlService axolotlService = null;
     private PgpDecryptionService pgpDecryptionService = null;
     private XmppConnection xmppConnection = null;
@@ -119,6 +123,7 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
                 null,
                 null,
                 null,
+                null,
                 5222,
                 Presence.Status.ONLINE,
                 null,
@@ -137,6 +142,7 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
             final String keys,
             final String avatar,
             String displayName,
+            String languageCode,
             String hostname,
             int port,
             final Presence.Status status,
@@ -159,6 +165,7 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
         this.keys = tmp;
         this.avatar = avatar;
         this.displayName = displayName;
+        this.languageCode = languageCode;
         this.hostname = hostname;
         this.port = port;
         this.presenceStatus = status;
@@ -195,6 +202,7 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
                 cursor.getString(cursor.getColumnIndexOrThrow(KEYS)),
                 cursor.getString(cursor.getColumnIndexOrThrow(AVATAR)),
                 cursor.getString(cursor.getColumnIndexOrThrow(DISPLAY_NAME)),
+                cursor.getString(cursor.getColumnIndexOrThrow(LANGUAGE_CODE)),
                 cursor.getString(cursor.getColumnIndexOrThrow(HOSTNAME)),
                 cursor.getInt(cursor.getColumnIndexOrThrow(PORT)),
                 Presence.Status.fromShowString(
@@ -220,6 +228,14 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public String getLanguageCode() {
+        return languageCode;
+    }
+
+    public void setLanguageCode(String languageCode) {
+        this.languageCode = languageCode;
     }
 
     public Contact getSelfContact() {
@@ -505,6 +521,7 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
         values.put(ROSTERVERSION, rosterVersion);
         values.put(AVATAR, avatar);
         values.put(DISPLAY_NAME, displayName);
+        values.put(LANGUAGE_CODE, languageCode);
         values.put(HOSTNAME, hostname);
         values.put(PORT, port);
         values.put(STATUS, presenceStatus.toShowString());

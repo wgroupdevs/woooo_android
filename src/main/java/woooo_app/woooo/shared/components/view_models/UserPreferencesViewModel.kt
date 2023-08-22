@@ -1,8 +1,12 @@
 package woooo_app.woooo.shared.components.view_models
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import eu.siacs.conversations.http.model.UserBasicInfo
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import woooo_app.woooo.data.datasource.local.UserPreferences
 import javax.inject.Inject
 
@@ -10,6 +14,26 @@ import javax.inject.Inject
 class UserPreferencesViewModel @Inject constructor(
     private val userPreferences: UserPreferences
 ) : ViewModel() {
+
+    var user: UserBasicInfo = UserBasicInfo()
+
+    val TAG="UserPrefViewModel"
+    init {
+
+        Log.d(TAG,"UserPreferencesViewModel_init called")
+        viewModelScope.launch {
+            user.setFirstName(getFirstName())
+            user.setLanguage(getLanguage())
+            user.setPhoneNumber(getPhone())
+            user.setLastName(getLastName())
+            user.setAccountId(getAccountUniqueId())
+            user.setEmail(getEmail())
+            user.setJid(getJID())
+        }
+    }
+
+    fun getUserInfo() = user
+
 
     suspend fun setFirstName(firstName: String) {
         userPreferences.setFirstName(firstName)

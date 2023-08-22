@@ -15,6 +15,8 @@ import eu.siacs.conversations.http.HttpConnectionManager;
 import eu.siacs.conversations.http.model.GetWooContactsModel;
 import eu.siacs.conversations.http.model.LoginAPIResponseJAVA;
 import eu.siacs.conversations.http.model.SearchAccountAPIResponse;
+import eu.siacs.conversations.http.model.TextTranslateApiResponse;
+import eu.siacs.conversations.http.model.TextTranslateModel;
 import eu.siacs.conversations.http.model.UpdateUserLanguageModel;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -25,20 +27,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import woooo_app.woooo.data.models.auth.requestmodels.GetWooContactsRequestParams;
 import woooo_app.woooo.data.models.auth.requestmodels.LoginRequestParams;
 
-public class WooooAuthService {
+public class WooooAPIService {
 
     private static WooooService wooooService;
     // private field that refers to the object
-    private static WooooAuthService wooooAuthService;
+    private static WooooAPIService wooooAuthService;
 
 
-    public static WooooAuthService getInstance() {
+    public static WooooAPIService getInstance() {
 
         // create object if it's not already created
 
         if (wooooAuthService == null) {
 
-            wooooAuthService = new WooooAuthService();
+            wooooAuthService = new WooooAPIService();
             final OkHttpClient.Builder builder = HttpConnectionManager.OK_HTTP_CLIENT.newBuilder();
             builder.connectTimeout(50, TimeUnit.SECONDS);
             builder.readTimeout(50, TimeUnit.SECONDS);
@@ -233,21 +235,71 @@ public class WooooAuthService {
         });
     }
 
+    public void translateText(TextTranslateModel translateModel, OnTextTranslateAPiResult listener) {
+        Log.d("WooooAuthService", "translateText STARTED..." + translateModel.text);
+        Log.d("WooooAuthService", "translateText STARTED..." + translateModel.languageCode);
+
+        final Call<TextTranslateApiResponse> translateTextResultCall = wooooService.translateText(translateModel);
+        translateTextResultCall.enqueue(new Callback<TextTranslateApiResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<TextTranslateApiResponse> call, @NonNull Response<TextTranslateApiResponse> response) {
+                final TextTranslateApiResponse body = response.body();
+
+
+                Log.d("WooooAuthService", "API RESPONSE " + response.isSuccessful());
+                Log.d("API RESPONSE " + response.code(), "WooooAuthService Status Code");
+                Log.d("WooooAuthService", "API RESPONSE BODY " + response.body());
+                if (body == null) {
+
+                    Log.d("WooooAuthService", "API RESPONSE ");
+                    assert response.errorBody() != null;
+                    try {
+                        String errorBodyFound = response.errorBody().byteString().utf8();
+
+                        Log.d("WooooAuthService", "API RESPONSE " + errorBodyFound);
+
+                        listener.OnTextTranslateResultFound(parseErrorBody(errorBodyFound));
+                    } catch (IOException e) {
+
+                        Log.d("WooooAuthService", "API Exception " + e.getStackTrace().toString());
+
+                        throw new RuntimeException(e);
+                    }
+
+                } else {
+
+                    listener.OnTextTranslateResultFound(body);
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<TextTranslateApiResponse> call, @NonNull Throwable throwable) {
+                Log.d(Config.LOGTAG, "Unable to query WoooService on " + Config.WOOOO_BASE_URL, throwable);
+//                        listener.);
+            }
+        });
+    }
+
 
     public interface OnLoginAPiResult {
-        <T> void onLoginApiResultFound(T loginModel);
+        <T> void onLoginApiResultFound(T result);
     }
 
     public interface OnSearchAccountAPiResult {
-        <T> void onSearchAccountApiResultFound(T loginModel);
+        <T> void onSearchAccountApiResultFound(T result);
     }
 
     public interface OnGetWooContactAPiResult {
-        <T> void OnGetWooContactAPiResultFound(T loginModel);
+        <T> void OnGetWooContactAPiResultFound(T result);
+    }
+
+    public interface OnTextTranslateAPiResult {
+        <T> void OnTextTranslateResultFound(T result);
     }
 
     public interface OnUpdateUserLanguageApiResult {
-        <T> void OnUpdateUserLanguageAPiResultFound(T loginModel);
+        <T> void OnUpdateUserLanguageAPiResultFound(T result);
     }
 
 
