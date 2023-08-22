@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,7 +46,7 @@ public class ShowLocationActivity extends LocationActivity implements LocationLi
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Log.d("Location Activity ","advadsasdvadvadvasdvsdav");
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_show_location);
         setSupportActionBar(binding.toolbar);
 

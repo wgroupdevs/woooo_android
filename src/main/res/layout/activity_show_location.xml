@@ -10,7 +10,7 @@
 
         <include
             android:id="@+id/toolbar"
-            layout="@layout/toolbar" />
+            layout="@layout/contact_details_toolbar" />
 
         <org.osmdroid.views.MapView
             android:id="@+id/map"
