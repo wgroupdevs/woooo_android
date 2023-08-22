@@ -41,7 +41,6 @@ import androidx.annotation.MenuRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.ContextCompat;
@@ -821,16 +820,17 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
             }
     }
 
-    private void configureHomeButton() {
-        final ActionBar actionBar = getSupportActionBar();
-        if (actionBar == null) {
-            return;
-        }
-        boolean openConversations = !createdByViewIntent && !xmppConnectionService.isConversationsListEmpty(null);
-        actionBar.setDisplayHomeAsUpEnabled(openConversations);
-        actionBar.setDisplayHomeAsUpEnabled(openConversations);
-
-    }
+//    private void configureHomeButton() {
+//
+//        final ActionBar actionBar = getSupportActionBar();
+//        if (actionBar == null) {
+//            return;
+//        }
+//        boolean openConversations = !createdByViewIntent && !xmppConnectionService.isConversationsListEmpty(null);
+//        actionBar.setDisplayHomeAsUpEnabled(openConversations);
+//        actionBar.setDisplayHomeAsUpEnabled(openConversations);
+//
+//    }
 
     @Override
     protected void onBackendConnected() {
@@ -844,7 +844,7 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
         }
         this.mActivatedAccounts.clear();
         this.mActivatedAccounts.addAll(AccountUtils.getEnabledAccounts(xmppConnectionService));
-        configureHomeButton();
+//        configureHomeButton();
         Intent intent = pendingViewIntent.pop();
         if (intent != null && processViewIntent(intent)) {
             filter(null);
@@ -1015,7 +1015,7 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
         if (mSearchEditText != null) {
             filter(mSearchEditText.getText().toString());
         }
-        configureHomeButton();
+//        configureHomeButton();
         if (QuickConversationsService.isQuicksy()) {
             setRefreshing(xmppConnectionService.getQuickConversationsService().isSynchronizing());
         }

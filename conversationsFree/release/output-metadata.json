@@ -11,22 +11,9 @@
       "type": "UNIVERSAL",
       "filters": [],
       "attributes": [],
-      "versionCode": 3000,
+      "versionCode": 30,
       "versionName": "1.3.0+free",
       "outputFile": "Woooo-1.3.0-conversations-free-universal-release.apk"
-    },
-    {
-      "type": "ONE_OF_MANY",
-      "filters": [
-        {
-          "filterType": "ABI",
-          "value": "arm64-v8a"
-        }
-      ],
-      "attributes": [],
-      "versionCode": 3004,
-      "versionName": "1.3.0+free",
-      "outputFile": "Woooo-1.3.0-conversations-free-arm64-v8a-release.apk"
     },
     {
       "type": "ONE_OF_MANY",
@@ -37,9 +24,22 @@
         }
       ],
       "attributes": [],
-      "versionCode": 3003,
+      "versionCode": 30,
       "versionName": "1.3.0+free",
       "outputFile": "Woooo-1.3.0-conversations-free-x86_64-release.apk"
+    },
+    {
+      "type": "ONE_OF_MANY",
+      "filters": [
+        {
+          "filterType": "ABI",
+          "value": "arm64-v8a"
+        }
+      ],
+      "attributes": [],
+      "versionCode": 30,
+      "versionName": "1.3.0+free",
+      "outputFile": "Woooo-1.3.0-conversations-free-arm64-v8a-release.apk"
     },
     {
       "type": "ONE_OF_MANY",
@@ -50,7 +50,7 @@
         }
       ],
       "attributes": [],
-      "versionCode": 3002,
+      "versionCode": 30,
       "versionName": "1.3.0+free",
       "outputFile": "Woooo-1.3.0-conversations-free-x86-release.apk"
     },
@@ -63,7 +63,7 @@
         }
       ],
       "attributes": [],
-      "versionCode": 3001,
+      "versionCode": 30,
       "versionName": "1.3.0+free",
       "outputFile": "Woooo-1.3.0-conversations-free-armeabi-v7a-release.apk"
     }
