@@ -37,6 +37,7 @@ import eu.siacs.conversations.xmpp.Jid;
 public class Message extends AbstractEntity implements AvatarService.Avatarable {
 
     public static final String TABLENAME = "messages";
+    private static final String TAG = "Message_TAG";
 
     public static final int STATUS_RECEIVED = 0;
     public static final int STATUS_UNSEND = 1;
@@ -677,6 +678,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
     }
 
     public boolean mergeable(final Message message) {
+
         return message != null &&
                 (message.getType() == Message.TYPE_TEXT &&
                         this.getTransferable() == null &&
@@ -689,7 +691,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
                         this.getCounterpart() != null &&
                         this.getCounterpart().equals(message.getCounterpart()) &&
                         this.edited() == message.edited() &&
-                        (message.getTimeSent() - this.getTimeSent()) <= (Config.MESSAGE_MERGE_WINDOW * 1000) &&
+                        (message.getTimeSent() - this.getTimeSent()) <= (Config.MESSAGE_MERGE_WINDOW * 1) &&
                         this.getBody().length() + message.getBody().length() <= Config.MAX_DISPLAY_MESSAGE_CHARS &&
                         !message.isGeoUri() &&
                         !this.isGeoUri() &&
