@@ -28,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageForgetPasswordView
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
@@ -41,6 +40,7 @@ import woooo_app.woooo.destinations.VerifyOTPScreenDestination
 import woooo_app.woooo.feature.auth.GV
 import woooo_app.woooo.feature.auth.viewmodel.ForgotPasswordViewModel
 import woooo_app.woooo.shared.base.AppBackGround
+import woooo_app.woooo.shared.components.CustomButton
 import woooo_app.woooo.shared.components.CustomIcon
 import woooo_app.woooo.utils.Dimension
 
@@ -71,9 +71,6 @@ fun ForgotPasswordView(navigator: DestinationsNavigator) {
                          .size(26.dp)
                  )
              }
-
-
-
              HorizontalSpacer(Dimension.dimen_5)
              Text(text = Strings.forgotTextNewPassView, style = MaterialTheme.typography.bodyLarge)
          }
@@ -130,6 +127,8 @@ fun ForgotPasswordView(navigator: DestinationsNavigator) {
              style = MaterialTheme.typography.bodySmall,
              textAlign = TextAlign.Center
          )
+         VerticalSpacer(200.dp)
+
          // enable Loader when Api Hit
          if (forgotPassViewModel.forgotPasswordState.value.isLoading.value) ShowLoader()
          // enabled success dialogue when api hit successfully

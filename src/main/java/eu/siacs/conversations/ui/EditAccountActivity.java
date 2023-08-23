@@ -216,7 +216,8 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         public void onFocusChange(View view, boolean b) {
             EditText et = (EditText) view;
             if (b) {
-                int resId = mUsernameMode ? R.string.username : R.string.account_settings_example_jabber_id;
+                int resId = mUsernameMode ? R.string.username : R.string.enter_email;
+//                        R.string.account_settings_example_jabber_id;
 //                if (view.getId() == R.id.hostname) {
 //                    resId = mUseTor ? R.string.hostname_or_onion : R.string.hostname_example;
 //                }
@@ -873,6 +874,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             if (isLoginWithEmail) {
                 binding.loginWithEmailLayout.setVisibility(View.VISIBLE);
                 binding.loginWithPhoneLayout.setVisibility(View.GONE);
+                binding.accountJid.setHint(R.string.enter_email);
                 binding.lgnwithEmailBtn.setText("Login With Phone Number");
             } else {
                 binding.loginWithEmailLayout.setVisibility(View.GONE);

@@ -58,7 +58,7 @@ import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.wgroup.woooo_app.woooo.shared.components.CustomButton
+import woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageUpdateProfileView
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import woooo_app.woooo.shared.components.TextLabel

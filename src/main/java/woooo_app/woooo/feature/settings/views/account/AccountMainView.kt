@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.CountryPicker
-import com.wgroup.woooo_app.woooo.shared.components.CustomButton
+import woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageAccountMainView
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
