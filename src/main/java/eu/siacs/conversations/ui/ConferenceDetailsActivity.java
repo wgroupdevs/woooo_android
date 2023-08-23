@@ -1,5 +1,8 @@
 package eu.siacs.conversations.ui;
 
+import static eu.siacs.conversations.entities.Bookmark.printableValue;
+import static eu.siacs.conversations.utils.StringUtils.changed;
+
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -51,9 +54,6 @@ import eu.siacs.conversations.utils.StylingHelper;
 import eu.siacs.conversations.utils.XmppUri;
 import eu.siacs.conversations.xmpp.Jid;
 import me.drakeet.support.toast.ToastCompat;
-
-import static eu.siacs.conversations.entities.Bookmark.printableValue;
-import static eu.siacs.conversations.utils.StringUtils.changed;
 
 public class ConferenceDetailsActivity extends XmppActivity implements OnConversationUpdate, OnMucRosterUpdate, XmppConnectionService.OnAffiliationChanged, XmppConnectionService.OnConfigurationPushed, XmppConnectionService.OnRoomDestroy, TextWatcher, OnMediaLoaded {
     public static final String ACTION_VIEW_MUC = "view_muc";
