@@ -40,22 +40,6 @@ import woooo_app.woooo.utils.USER_TOKEN_KEY_INTENT
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     val TAG = "MainActivityLOGS"
-    override fun onStop() {
-        super.onStop()
-        Log.d(TAG,"onStop Main Activity")
-//        SocketHandler.disConnectToSocket()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG,"onResume Main Activity")
-//        SocketHandler.registerSocketEvents()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d(TAG,"onPause Main Activity")
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -14,9 +14,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.utils.Strings
+import woooo_app.woooo.shared.components.CustomButton
 import woooo_app.woooo.shared.components.ShowAlertDialog
 import woooo_app.woooo.shared.components.ViewDivider
 import woooo_app.woooo.utils.Dimension

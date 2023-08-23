@@ -47,7 +47,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.CountryPicker
-import com.wgroup.woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageSignUpView
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
@@ -60,6 +59,7 @@ import woooo_app.woooo.destinations.ConfirmAccountMainScreenDestination
 import woooo_app.woooo.feature.auth.GV
 import woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
 import woooo_app.woooo.shared.base.AppBackGround
+import woooo_app.woooo.shared.components.CustomButton
 import woooo_app.woooo.shared.components.CustomIcon
 import woooo_app.woooo.shared.components.PasswordValidator
 import woooo_app.woooo.shared.components.TextLabel
@@ -217,7 +217,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
 
                 // Password Validator
 
-                if (customPasswordValidator.getPasswordValidatorStateForSignUp.value) Box(
+                if (customPasswordValidator.getPasswordValidatorStateForSignUp.value && !customPasswordValidator.specialChar.value) Box(
                     modifier = Modifier.align(
                         Alignment.CenterHorizontally
                     )

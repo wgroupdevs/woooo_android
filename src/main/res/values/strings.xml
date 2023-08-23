@@ -188,6 +188,7 @@
     <string name="account_settings_jabber_id">XMPP address</string>
     <string name="block_jabber_id">Block XMPP address</string>
     <string name="account_settings_example_jabber_id">username@example.com</string>
+    <string name="enter_email">"Enter Email"</string>
     <string name="password">Password</string>
     <string name="invalid_jid">This is not a valid Email address</string>
     <string name="error_out_of_memory">Out of memory. Image too big</string>

@@ -23,6 +23,7 @@ class PasswordValidatorViewModel @Inject constructor() : ViewModel() {
     private val _specialChar = mutableStateOf(false)
     val specialChar: State<Boolean> = _specialChar
 
+
     private val _setPasswordValidatorStateForSignUp = mutableStateOf(false)
     val getPasswordValidatorStateForSignUp: State<Boolean> = _setPasswordValidatorStateForSignUp
     fun setPasswordValidatorStateForSignUp(value: Boolean) {
