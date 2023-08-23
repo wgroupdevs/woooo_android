@@ -85,7 +85,7 @@ public class RtpSessionActivity extends XmppActivity
     public static final String ACTION_MAKE_VIDEO_CALL = "action_make_video_call";
 
     private static final int CALL_DURATION_UPDATE_INTERVAL = 333;
-    private static final String TAG ="RtpSessionActivity_TAG" ;
+    private static final String TAG = "RtpSessionActivity_TAG";
 
     private static final List<RtpEndUserState> END_CARD =
             Arrays.asList(
@@ -513,9 +513,10 @@ public class RtpSessionActivity extends XmppActivity
         final Account account = extractAccount(intent);
         final Jid with = Jid.ofEscaped(intent.getStringExtra(EXTRA_WITH));
         final String sessionId = intent.getStringExtra(EXTRA_SESSION_ID);
-        Log.d(TAG,"onBackendConnected account :" +account);
-        Log.d(TAG,"onBackendConnected with :" +with);
-        Log.d(TAG,"onBackendConnected sessionId :" +sessionId);
+
+        Log.d(TAG, "onBackendConnected account :" + account);
+        Log.d(TAG, "onBackendConnected with :" + with);
+        Log.d(TAG, "onBackendConnected sessionId :" + sessionId);
 
         if (sessionId != null) {
             if (initializeActivityWithRunningRtpSession(account, with, sessionId)) {
@@ -527,6 +528,9 @@ public class RtpSessionActivity extends XmppActivity
                 resetIntent(intent.getExtras());
             }
         } else if (asList(ACTION_MAKE_VIDEO_CALL, ACTION_MAKE_VOICE_CALL).contains(action)) {
+
+            Log.d(TAG, "ACTION_MAKE_VIDEO_CALL :");
+
             proposeJingleRtpSession(account, with, actionToMedia(action));
             setWith(account.getRoster().getContact(with), null);
         } else if (Intent.ACTION_VIEW.equals(action)) {
@@ -577,16 +581,24 @@ public class RtpSessionActivity extends XmppActivity
             final Account account, final Jid with, final Set<Media> media) {
         checkMicrophoneAvailabilityAsync();
         if (with.isBareJid()) {
+            Log.d(TAG, "proposeJingleRtpSession IF :" + with.isBareJid());
+
             xmppConnectionService
                     .getJingleConnectionManager()
                     .proposeJingleRtpSession(account, with, media);
         } else {
+            Log.d(TAG, "proposeJingleRtpSession Else :" + with.isBareJid());
+
             final String sessionId =
                     xmppConnectionService
                             .getJingleConnectionManager()
                             .initializeRtpSession(account, with, media);
+
+            Log.d(TAG, "proposeJingleRtpSession  sessionId :" + sessionId);
+
             initializeActivityWithRunningRtpSession(account, with, sessionId);
             resetIntent(account, with, sessionId);
+
         }
         putScreenInCallMode(media);
     }
@@ -923,48 +935,31 @@ public class RtpSessionActivity extends XmppActivity
     }
 
     private void updateIncomingCallScreen(final RtpEndUserState state, final Contact contact) {
-
-        binding.contactPhoto.setVisibility(View.VISIBLE);
-        if (contact == null) {
-            AvatarWorkerTask.loadAvatar(
-                    getWith(), binding.contactPhoto, R.dimen.publish_avatar_size);
+        if (state == RtpEndUserState.INCOMING_CALL || state == RtpEndUserState.ACCEPTING_CALL) {
+            final boolean show = getResources().getBoolean(R.bool.show_avatar_incoming_call);
+            if (show) {
+                binding.contactPhoto.setVisibility(View.VISIBLE);
+                if (contact == null) {
+                    AvatarWorkerTask.loadAvatar(
+                            getWith(), binding.contactPhoto, R.dimen.publish_avatar_size);
+                } else {
+                    AvatarWorkerTask.loadAvatar(
+                            contact, binding.contactPhoto, R.dimen.publish_avatar_size);
+                }
+            } else {
+                binding.contactPhoto.setVisibility(View.GONE);
+            }
+            final Account account = contact == null ? getWith().getAccount() : contact.getAccount();
+            binding.usingAccount.setVisibility(View.VISIBLE);
+            binding.usingAccount.setText(
+                    getString(
+                            R.string.using_account,
+                            account.getJid().asBareJid().toEscapedString()));
         } else {
-            AvatarWorkerTask.loadAvatar(
-                    contact, binding.contactPhoto, R.dimen.publish_avatar_size);
+            binding.usingAccount.setVisibility(View.GONE);
+            binding.contactPhoto.setVisibility(View.GONE);
         }
-
-
-//        if (state == RtpEndUserState.INCOMING_CALL || state == RtpEndUserState.ACCEPTING_CALL) {
-//            final boolean show = getResources().getBoolean(R.bool.show_avatar_incoming_call);
-//            if (show) {
-//                binding.contactPhoto.setVisibility(View.VISIBLE);
-//                if (contact == null) {
-//                    AvatarWorkerTask.loadAvatar(
-//                            getWith(), binding.contactPhoto, R.dimen.publish_avatar_size);
-//                } else {
-//                    AvatarWorkerTask.loadAvatar(
-//                            contact, binding.contactPhoto, R.dimen.publish_avatar_size);
-//                }
-//            } else {
-//
-////                binding.contactPhoto.setVisibility(View.GONE);
-//            }
-//            final Account account = contact == null ? getWith().getAccount() : contact.getAccount();
-//            binding.usingAccount.setVisibility(View.VISIBLE);
-//            binding.usingAccount.setText(
-//                    getString(
-//                            R.string.using_account,
-//                            account.getJid().asBareJid().toEscapedString()));
-//
-//
-//    } else
-//
-//    {
-//        binding.usingAccount.setVisibility(View.GONE);
-//        binding.contactPhoto.setVisibility(View.VISIBLE);
-//    }
-
-}
+    }
 
     private Set<Media> getMedia() {
         return requireRtpConnection().getMedia();
@@ -1380,6 +1375,9 @@ public class RtpSessionActivity extends XmppActivity
     private JingleRtpConnection requireRtpConnection() {
         final JingleRtpConnection connection =
                 this.rtpConnectionReference != null ? this.rtpConnectionReference.get() : null;
+
+        Log.d(TAG, "requireRtpConnection connection :" + connection);
+
         if (connection == null) {
             throw new IllegalStateException("No RTP connection found");
         }
