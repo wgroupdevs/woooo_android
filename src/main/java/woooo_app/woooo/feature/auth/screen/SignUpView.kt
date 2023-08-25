@@ -217,7 +217,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
 
                 // Password Validator
 
-                if (customPasswordValidator.getPasswordValidatorStateForSignUp.value && !customPasswordValidator.specialChar.value) Box(
+                if (customPasswordValidator.getPasswordValidatorStateForSignUp.value) Box(
                     modifier = Modifier.align(
                         Alignment.CenterHorizontally
                     )
@@ -237,7 +237,9 @@ fun SignUpView(navigator: DestinationsNavigator) {
                     }
                 },
                     onValueChange = {
-                        customPasswordValidator.passwordValidator(it,true)
+                        customPasswordValidator.passwordValidator(
+                            it,customPasswordValidator.fromSignUpKey
+                        )
                         signUpViewModel.setPasswordControllerValue(it)
                         signUpViewModel.setPasswordErrorValue(false)
 
@@ -293,7 +295,8 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 onClick = {
 
                     if (signUpViewModel.validateSignUpFields() && customPasswordValidator.passwordValidator(
-                            signUpViewModel.getPasswordController.value,true
+                            signUpViewModel.getPasswordController.value,
+                            customPasswordValidator.fromSignUpKey
                         )
                     ) {
                         signUpViewModel.setPhoneWithCode(countryPickerViewModel.getSelectedCountryDialCode.value + signUpViewModel.getPhoneNumberController.value)

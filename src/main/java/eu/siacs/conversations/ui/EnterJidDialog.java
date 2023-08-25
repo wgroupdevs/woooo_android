@@ -35,8 +35,7 @@ import woooo_app.woooo.utils.UserInfoKt;
 
 public class EnterJidDialog extends DialogFragment implements OnBackendConnected, TextWatcher, WooooAPIService.OnSearchAccountAPiResult {
 
-    private static final List<String> SUSPICIOUS_DOMAINS =
-            Arrays.asList("conference", "muc", "room", "rooms", "chat");
+    private static final List<String> SUSPICIOUS_DOMAINS = Arrays.asList("conference", "muc", "room", "rooms", "chat");
 
     private OnEnterJidDialogPositiveListener mListener = null;
 
@@ -60,14 +59,7 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
     private boolean searchWithEmail = true;
 
 
-    public static EnterJidDialog newInstance(
-            final List<String> activatedAccounts,
-            final String title,
-            final String positiveButton,
-            final String prefilledJid,
-            final String account,
-            boolean allowEditJid,
-            final boolean sanity_check_jid) {
+    public static EnterJidDialog newInstance(final List<String> activatedAccounts, final String title, final String positiveButton, final String prefilledJid, final String account, boolean allowEditJid, final boolean sanity_check_jid) {
         EnterJidDialog dialog = new EnterJidDialog();
         Bundle bundle = new Bundle();
         bundle.putString(TITLE_KEY, title);
@@ -91,8 +83,7 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
     public void onStart() {
         super.onStart();
         final Activity activity = getActivity();
-        if (activity instanceof XmppActivity
-                && ((XmppActivity) activity).xmppConnectionService != null) {
+        if (activity instanceof XmppActivity && ((XmppActivity) activity).xmppConnectionService != null) {
             refreshKnownHosts();
         }
     }
@@ -102,9 +93,7 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getArguments().getString(TITLE_KEY));
-        binding =
-                DataBindingUtil.inflate(
-                        getActivity().getLayoutInflater(), R.layout.enter_jid_dialog, null, false);
+        binding = DataBindingUtil.inflate(getActivity().getLayoutInflater(), R.layout.enter_jid_dialog, null, false);
         this.knownHostsAdapter = new KnownHostsAdapter(getActivity(), R.layout.simple_list_item);
         binding.jid.setAdapter(this.knownHostsAdapter);
         binding.jid.addTextChangedListener(this);
@@ -124,14 +113,9 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
 
         String account = getArguments().getString(ACCOUNT_KEY);
         if (account == null) {
-            StartConversationActivity.populateAccountSpinner(
-                    getActivity(),
-                    getArguments().getStringArrayList(ACCOUNTS_LIST_KEY),
-                    binding.account);
+            StartConversationActivity.populateAccountSpinner(getActivity(), getArguments().getStringArrayList(ACCOUNTS_LIST_KEY), binding.account);
         } else {
-            ArrayAdapter<String> adapter =
-                    new ArrayAdapter<>(
-                            getActivity(), R.layout.simple_list_item, new String[]{account});
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.simple_list_item, new String[]{account});
             binding.account.setEnabled(false);
             adapter.setDropDownViewResource(R.layout.simple_list_item);
             binding.account.setAdapter(adapter);
@@ -142,25 +126,23 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
         builder.setPositiveButton(getArguments().getString(POSITIVE_BUTTON_KEY), null);
         this.dialog = builder.create();
 
-        View.OnClickListener dialogOnClick =
-                v -> {
+        View.OnClickListener dialogOnClick = v -> {
 
-                    Log.d("Enter_Jid_dialog", "dialogOnClick");
-                    Log.d("Enter_Jid_dialog", "Account " + account);
-                    Log.d("Enter_Jid_dialog", "Account " + UserInfoKt.getUSER_JID());
-                    searchAccount(binding);
+            Log.d("Enter_Jid_dialog", "dialogOnClick");
+            Log.d("Enter_Jid_dialog", "Account " + account);
+            Log.d("Enter_Jid_dialog", "Account " + UserInfoKt.getUSER_JID());
+            searchAccount(binding);
 //                    handleEnter(binding, account);
 
-                };
+        };
 
-        binding.jid.setOnEditorActionListener(
-                (v, actionId, event) -> {
+        binding.jid.setOnEditorActionListener((v, actionId, event) -> {
 
-                    Log.d("Enter_Jid_dialog", "setOnEditorActionListener");
+            Log.d("Enter_Jid_dialog", "setOnEditorActionListener");
 
 //                    handleEnter(binding, account);
-                    return true;
-                });
+            return true;
+        });
         binding.jid.setHint("Enter email");
         binding.radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             binding.jid.setHint("");
@@ -183,6 +165,7 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
     private void searchAccount(EnterJidDialogBinding binding) {
 
         String value = binding.jid.getText().toString();
+        final WooooAPIService wooooAuthService = WooooAPIService.getInstance();
 
 
         if (searchWithEmail) {
@@ -190,15 +173,17 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
                 binding.jidLayout.setError(getActivity().getString(R.string.invalid_jid));
                 return;
             }
+            wooooAuthService.searchAccount(value, true, this);
+
         } else {
             if (value.length() < 9) {
+
                 return;
             }
+            wooooAuthService.searchAccount(value, false, this);
+
         }
 
-        final WooooAPIService wooooAuthService = WooooAPIService.getInstance();
-
-        wooooAuthService.searchAccount(value, true, this);
 
     }
 

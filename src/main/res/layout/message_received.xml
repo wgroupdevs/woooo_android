@@ -10,6 +10,7 @@
     android:paddingBottom="3dp">
 
     <com.makeramen.roundedimageview.RoundedImageView
+        android:layout_marginEnd="@dimen/_5sdp"
         android:id="@+id/toolbar_profile_photo"
         android:layout_width="48dp"
         android:layout_height="48dp"

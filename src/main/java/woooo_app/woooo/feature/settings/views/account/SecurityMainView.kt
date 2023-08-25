@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageSecurityView
 import com.wgroup.woooo_app.woooo.shared.components.TopBarForSetting
@@ -37,6 +36,7 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 import kotlinx.coroutines.runBlocking
 import woooo_app.woooo.feature.settings.viewmodels.security.SecurityViewModel
 import woooo_app.woooo.shared.base.AppBackGround
+import woooo_app.woooo.shared.components.CustomButton
 import woooo_app.woooo.shared.components.PasswordValidator
 import woooo_app.woooo.shared.components.ShowAlertDialog
 import woooo_app.woooo.shared.components.TextLabel
@@ -72,7 +72,7 @@ fun SecurityMainView(
                 CustomListTile(leadingIcon = {},title = Strings.remoteLogOutText,onClick = {})
                 CustomListTile(leadingIcon = {},title = Strings.changePasswordText,onClick = {
                     openChangePasswordDialog.value = true
-                                    })
+                })
                 CustomListTile(leadingIcon = {},title = Strings.fingerPrintText,onClick = {})
                 CustomListTile(leadingIcon = {},title = Strings.encryptionText,onClick = {})
 
@@ -101,7 +101,10 @@ fun SecurityMainView(
                                 }
                             },
                                 onValueChange = {
-                                    passwordValidatorViewModel.passwordValidator(it,false)
+                                    passwordValidatorViewModel.passwordValidator(
+                                        it,
+                                        passwordValidatorViewModel.fromSecurity
+                                    )
                                     securityViewModel.setNewPasswordControllerValue(it)
                                     securityViewModel.setNewPasswordErrorValue(false)
 
@@ -178,7 +181,8 @@ fun SecurityMainView(
                                     border = BorderStroke(1.dp,Color.White),
                                     onClick = {
                                         if (securityViewModel.validateFields() && passwordValidatorViewModel.passwordValidator(
-                                                securityViewModel.getNewPassword.value,false
+                                                securityViewModel.getNewPassword.value,
+                                                passwordValidatorViewModel.fromSecurity
                                             )
                                         ) {
                                             runBlocking {
@@ -201,8 +205,9 @@ fun SecurityMainView(
                                 )
                             }
 
-                            if (securityViewModel.changePasswordState.value.isLoading.value)ShowLoader()
-                            if(securityViewModel.changePasswordState.value.isSucceed.value)openChangePasswordDialog.value=false
+                            if (securityViewModel.changePasswordState.value.isLoading.value) ShowLoader()
+                            if (securityViewModel.changePasswordState.value.isSucceed.value) openChangePasswordDialog.value =
+                                false
                         }
                     },onDismissRequest = { openChangePasswordDialog.value = false })
 

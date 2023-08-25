@@ -11,21 +11,20 @@
         android:paddingRight="?attr/dialog_horizontal_padding"
         android:paddingBottom="?attr/dialog_vertical_padding">
 
-                <TextView
-                    style="@style/InputLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/your_account"
-                    android:visibility="gone"
-                    />
+        <TextView
+            style="@style/InputLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/your_account"
+            android:visibility="gone" />
 
-                <Spinner
-                    android:id="@+id/account"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+        <Spinner
+            android:id="@+id/account"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
 
-                    android:visibility="gone"
-                    />
+            android:visibility="gone" />
+
         <RadioGroup
             android:id="@+id/radioGroup"
             android:layout_width="wrap_content"
@@ -39,13 +38,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
-                android:text="Email" />
+                android:text="Email"
+                android:textColor="@color/white" />
 
             <RadioButton
                 android:id="@+id/phn_radio_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Phone" />
+                android:text="Phone"
+                android:textColor="@color/white" />
         </RadioGroup>
 
         <com.google.android.material.textfield.TextInputLayout

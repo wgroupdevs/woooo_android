@@ -5,17 +5,25 @@ import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,10 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.ErrorMessageVerifyOtp
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
-import woooo_app.woooo.shared.components.TextLabel
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.WooColor
@@ -37,20 +43,25 @@ import woooo_app.woooo.feature.auth.GV
 import woooo_app.woooo.feature.auth.viewmodel.VerifyOtpViewModel
 import woooo_app.woooo.goToWelcomeActivity
 import woooo_app.woooo.shared.base.AppBackGround
+import woooo_app.woooo.shared.components.CustomButton
 import woooo_app.woooo.shared.components.CustomIcon
+import woooo_app.woooo.shared.components.PasswordValidator
+import woooo_app.woooo.shared.components.TextLabel
+import woooo_app.woooo.shared.components.view_models.PasswordValidatorViewModel
 import woooo_app.woooo.utils.Dimension
 
 @Composable
 fun VerifyOtpView(navigator: DestinationsNavigator) {
     val context = LocalContext.current
-
+    val customPasswordValidator: PasswordValidatorViewModel = hiltViewModel()
     val verifyOtpViewModel: VerifyOtpViewModel = hiltViewModel()
     AppBackGround {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(color = WooColor.backgroundColor)
-                .padding(Dimension.dimen_10),
+                .padding(Dimension.dimen_10)
+                .verticalScroll(rememberScrollState()),
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,modifier = Modifier.fillMaxWidth()
@@ -88,8 +99,21 @@ fun VerifyOtpView(navigator: DestinationsNavigator) {
                 //New Pass
                 TextLabel(label = Strings.newPswdText)
                 VerticalSpacer(Dimension.dimen_15)
-                WooTextField(
+                WooTextField(interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->
+                    LaunchedEffect(interactionSource) {
+                        interactionSource.interactions.collect {
+                            if (it is PressInteraction.Release) {
+                                customPasswordValidator.setPasswordValidatorStateVerifyOTP(
+                                    true
+                                )
+                            }
+                        }
+                    }
+                },
                     onValueChange = {
+                        customPasswordValidator.passwordValidator(
+                            it,customPasswordValidator.fromVerifyOTP
+                        )
                         verifyOtpViewModel.setNewPassText(it)
                         verifyOtpViewModel.setNewPassError(false)
                     },
@@ -102,6 +126,15 @@ fun VerifyOtpView(navigator: DestinationsNavigator) {
                     },
                     hint = Strings.newPswdText
                 )
+                // password validator
+                if (customPasswordValidator.getPasswordValidatorStateVerifyOTP.value) Box(
+                    modifier = Modifier.align(
+                        Alignment.CenterHorizontally
+                    )
+                ) {
+                    PasswordValidator(0.6f)
+                }
+
                 VerticalSpacer(Dimension.dimen_15)
                 //Confirm Pass
                 TextLabel(label = Strings.confirmpasswordText)
@@ -175,12 +208,12 @@ fun VerifyOtpView(navigator: DestinationsNavigator) {
                         message = verifyOtpViewModel.resetPasswordState.value.message,
                         onClick = {
                             clickOnSuccessResetPass(
-                                context,
-                                verifyOtpViewModel = verifyOtpViewModel
+                                context,verifyOtpViewModel = verifyOtpViewModel
                             )
                         })
                 }
             }
+            Box(modifier = Modifier.height(300.dp))
         }
     }
 }

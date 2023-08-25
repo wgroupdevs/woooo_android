@@ -11,6 +11,7 @@
 
 
     <LinearLayout
+        android:layout_marginStart="@dimen/_5sdp"
         android:id="@+id/message_photo_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
