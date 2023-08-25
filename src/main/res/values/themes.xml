@@ -7,7 +7,6 @@
         <item name="colorAccent">@color/white</item>
         <item name="android:windowBackground">@color/blue_primary100</item>
         <item name="android:textColorAlertDialogListItem">@color/white</item>
-
         <item name="android:windowDisablePreview">true</item>
         <item name="popupOverlayStyle">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="android:fontFamily">@font/nasalization</item>
@@ -18,13 +17,9 @@
         <item name="colorBackgroundFloating">
             @color/blue_primary100
         </item>
-        <item name="android:colorBackgroundFloating" tools:targetApi="23">
-            @color/blue_primary100
+        <item name="android:colorBackgroundFloating" tools:targetApi="23">@color/blue_primary100
         </item>
-
-                <item name="android:windowIsTranslucent">true</item>
-
-
+        <item name="android:windowIsTranslucent">true</item>
         <item name="android:textColorHint">@color/white70</item>
         <item name="color_background_overlay">@color/black12</item>
         <item name="color_warning">@color/red_a700</item>
@@ -121,7 +116,7 @@
         <item name="icon_discard" type="reference">@drawable/ic_delete_white_24dp</item>
         <item name="icon_download" type="reference">@drawable/ic_file_download_white_24dp</item>
         <item name="icon_edit" type="reference">@drawable/ic_edit_white_24dp</item>
-        <item name="icon_edit_body" type="reference">@drawable/ic_edit_black_24dp</item>
+        <item name="icon_edit_body" type="reference">@drawable/ic_edit_white_24dp</item>
         <item name="icon_save" type="reference">@drawable/ic_save_black_24dp</item>
         <item name="icon_group" type="reference">@drawable/ic_group_white_24dp</item>
         <item name="icon_new" type="reference">@drawable/ic_add_white_24dp</item>
@@ -138,7 +133,7 @@
         <item name="icon_help" type="reference">@drawable/ic_help_white_24dp</item>
         <item name="icon_goto_chat" type="reference">@drawable/ic_question_answer_white_24dp</item>
         <item name="icon_secure" type="reference">@drawable/ic_lock_open_white_24dp</item>
-        <item name="icon_settings" type="reference">@drawable/ic_settings_black_24dp</item>
+        <item name="icon_settings" type="reference">@drawable/ic_settings_white_24dp</item>
         <item name="icon_share" type="reference">@drawable/ic_share_white_24dp</item>
         <item name="ic_cloud_download" type="reference">@drawable/ic_cloud_download_white_24dp
         </item>
@@ -151,16 +146,16 @@
         <item name="icon_directions" type="reference">@drawable/ic_directions_black_24dp</item>
         <item name="icon_copy_bar" type="reference">@drawable/ic_content_copy_white_24dp</item>
 
-        <item name="icon_notifications" type="reference">@drawable/ic_notifications_black_24dp
+        <item name="icon_notifications" type="reference">@drawable/ic_notifications_white_24dp
         </item>
         <item name="icon_notifications_off" type="reference">
-            @drawable/ic_notifications_off_black_24dp
+            @drawable/ic_notifications_off_white_24dp
         </item>
         <item name="icon_notifications_paused" type="reference">
-            @drawable/ic_notifications_paused_black_24dp
+            @drawable/ic_notifications_paused_white_24dp
         </item>
         <item name="icon_notifications_none" type="reference">
-            @drawable/ic_notifications_none_black_24dp
+            @drawable/ic_notifications_none_white_24dp
         </item>
         <item name="icon_pinned_on_top" type="reference">@drawable/ic_star_black_24dp</item>
         <item name="icon_enable_undecided_device" type="reference">
