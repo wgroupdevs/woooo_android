@@ -681,7 +681,6 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                     viewHolder.messageBody = view.findViewById(R.id.message_body);
                     viewHolder.messageTranslatedBody = view.findViewById(R.id.message_translated_body);
                     viewHolder.translationBodyDivider = view.findViewById(R.id.translation_body_divider);
-
                     viewHolder.messageForwarded = view.findViewById(R.id.message_forwarded);
                     viewHolder.time = view.findViewById(R.id.message_time);
                     viewHolder.indicatorReceived = view.findViewById(R.id.indicator_received);
@@ -705,7 +704,15 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             }
         }
 
+
         boolean darkBackground = type == RECEIVED && (!isInValidSession || mUseGreenBackground) || activity.isDarkTheme();
+
+        //hide translation
+        if (viewHolder.messageTranslatedBody != null && viewHolder.translationBodyDivider != null) {
+            viewHolder.messageTranslatedBody.setVisibility(View.GONE);
+            viewHolder.translationBodyDivider.setVisibility(View.GONE);
+        }
+
 
         if (type == DATE_SEPARATOR) {
             if (UIHelper.today(message.getTimeSent())) {

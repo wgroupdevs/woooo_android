@@ -7,6 +7,7 @@
         <item name="colorAccent">@color/white</item>
         <item name="android:windowBackground">@color/blue_primary100</item>
         <item name="android:textColorAlertDialogListItem">@color/white</item>
+        <item name="textColorAlertDialogListItem">@android:color/white</item>
         <item name="android:windowDisablePreview">true</item>
         <item name="popupOverlayStyle">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="android:fontFamily">@font/nasalization</item>

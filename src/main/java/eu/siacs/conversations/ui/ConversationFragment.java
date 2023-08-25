@@ -3266,6 +3266,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         } else {
             fingerprint = message.getFingerprint();
         }
+
         final boolean received = message.getStatus() <= Message.STATUS_RECEIVED;
         if (received) {
             if (message.getConversation() instanceof Conversation && message.getConversation().getMode() == Conversation.MODE_MULTI) {
@@ -3307,10 +3308,8 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         Log.d(TAG, "onForwardGroupContactSelected Count :" + listItems.size());
 
         if (!listItems.isEmpty()) {
-
             for (ListItem item : listItems) {
                 Conversation newConversation = null;
-
                 if (item.getItemType() == 0) {
                     Contact contact = (Contact) item;
                     newConversation = activity.xmppConnectionService.findOrCreateConversation(contact.getAccount(), contact.getJid(), false, true);
@@ -3318,29 +3317,18 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
                     Bookmark bookmark = (Bookmark) item;
                     final Jid jid = bookmark.getFullJid();
                     newConversation = activity.xmppConnectionService.findOrCreateConversation(bookmark.getAccount(), jid, true, true, true);
-
                 }
-
                 if (newConversation != null) {
-
                     Log.d(TAG, "Conversation FOUND....");
                     Message message;
                     message = new Message(newConversation, selectedMessage.getBody(), newConversation.getNextEncryption());
-
-//                message.setType(selectedMessage.getType());
                     Message.configurePrivateMessage(message);
                     message.setForwarded(true);
-
+                    message.setType(selectedMessage.getType());
                     activity.xmppConnectionService.forwardMessage(message);
                 }
-
-
             }
-
-
         }
-
-
     }
 
     @Override
