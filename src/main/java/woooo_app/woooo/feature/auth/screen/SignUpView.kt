@@ -276,7 +276,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
                     })
                 VerticalSpacer(Dimension.dimen_5)
                 //Referral Code
-                TextLabel(label = Strings.referralCodeText)
+                TextLabel(label = Strings.referralCodeText + " (Optional)")
                 VerticalSpacer()
                 WooTextField(hint = Strings.referralCodeText,leadingIcon = {
 
