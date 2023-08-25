@@ -872,7 +872,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 //                viewHolder.message_box.setBackgroundResource(bubble);
                 viewHolder.encryption.setVisibility(View.GONE);
             } else {
-                viewHolder.message_box.setBackgroundResource(R.drawable.message_bubble_received_warning);
+                viewHolder.message_box.setBackgroundResource(R.color.blue_primary300);
                 viewHolder.encryption.setVisibility(View.VISIBLE);
                 if (omemoEncryption && !message.isTrusted()) {
                     viewHolder.encryption.setText(R.string.not_trusted);
@@ -921,6 +921,10 @@ public class MessageAdapter extends ArrayAdapter<Message> {
     }
 
     public void openDownloadable(Message message) {
+
+        Log.d(TAG,"FILE LINK : " +message.getBody());
+
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ConversationFragment.registerPendingMessage(activity, message);
             ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, ConversationsActivity.REQUEST_OPEN_MESSAGE);

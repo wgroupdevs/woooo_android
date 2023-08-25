@@ -43,8 +43,8 @@ public class IndividualMessage extends Message {
         super(conversation);
     }
 
-    private IndividualMessage(Conversational conversation, String uuid, String conversationUUid, Jid counterpart, Jid trueCounterpart, String body, String translatedBody, long timeSent, int encryption, int status, int type, boolean carbon, String remoteMsgId, String relativeFilePath, String serverMsgId, String fingerprint, boolean read, String edited, boolean oob, String errorMessage, Set<ReadByMarker> readByMarkers, boolean markable, boolean deleted, boolean forwarded, String bodyLanguage) {
-        super(conversation, uuid, conversationUUid, counterpart, trueCounterpart, body, translatedBody, timeSent, encryption, status, type, carbon, remoteMsgId, relativeFilePath, serverMsgId, fingerprint, read, edited, oob, errorMessage, readByMarkers, markable, deleted, forwarded, bodyLanguage);
+    private IndividualMessage(Conversational conversation, String uuid, String conversationUUid, Jid counterpart, Jid trueCounterpart, String body, String translatedBody, long timeSent, int encryption, int status, int type, boolean carbon, String remoteMsgId, String relativeFilePath, String serverMsgId, String parentMsgId, String fingerprint, boolean read, String edited, boolean oob, String errorMessage, Set<ReadByMarker> readByMarkers, boolean markable, boolean deleted, boolean forwarded, String bodyLanguage) {
+        super(conversation, uuid, conversationUUid, counterpart, trueCounterpart, body, translatedBody, timeSent, encryption, status, type, carbon, remoteMsgId, relativeFilePath, serverMsgId, parentMsgId, fingerprint, read, edited, oob, errorMessage, readByMarkers, markable, deleted, forwarded, bodyLanguage);
     }
 
     @Override
@@ -110,6 +110,7 @@ public class IndividualMessage extends Message {
                 cursor.getString(cursor.getColumnIndex(REMOTE_MSG_ID)),
                 cursor.getString(cursor.getColumnIndex(RELATIVE_FILE_PATH)),
                 cursor.getString(cursor.getColumnIndex(SERVER_MSG_ID)),
+                cursor.getString(cursor.getColumnIndex(PARENT_MSG_ID)),
                 cursor.getString(cursor.getColumnIndex(FINGERPRINT)),
                 cursor.getInt(cursor.getColumnIndex(READ)) > 0,
                 cursor.getString(cursor.getColumnIndex(EDITED)),

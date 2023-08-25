@@ -17,6 +17,7 @@ public final class Namespace {
     public static final String DATA = "jabber:x:data";
     public static final String OOB = "jabber:x:oob";
     public static final String FORWARD = "urn:xmpp:forward:0";
+    public static final String REPLY = "urn:xmpp:reply:0";
     public static final String SASL = "urn:ietf:params:xml:ns:xmpp-sasl";
     public static final String SASL_2 = "urn:xmpp:sasl:2";
     public static final String CHANNEL_BINDING = "urn:xmpp:sasl-cb:0";
@@ -37,7 +38,7 @@ public final class Namespace {
     public static final String BOOKMARKS = "storage:bookmarks";
     public static final String SYNCHRONIZATION = "im.quicksy.synchronization:0";
     public static final String AVATAR_DATA = "urn:xmpp:avatar:data";
-    public static final String AVATAR_METADATA =  "urn:xmpp:avatar:metadata";
+    public static final String AVATAR_METADATA = "urn:xmpp:avatar:metadata";
     public static final String AVATAR_CONVERSION = "urn:xmpp:pep-vcard-conversion:0";
     public static final String JINGLE = "urn:xmpp:jingle:1";
     public static final String JINGLE_ERRORS = "urn:xmpp:jingle:errors:1";

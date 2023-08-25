@@ -1,9 +1,8 @@
-package woooo_app
+package eu.siacs.conversations.ui
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,6 +18,9 @@ import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.spec.Route
 import dagger.hilt.android.AndroidEntryPoint
 import eu.siacs.conversations.http.model.UserBasicInfo
+import eu.siacs.conversations.services.XmppConnectionService.OnAccountUpdate
+import eu.siacs.conversations.services.XmppConnectionService.OnConversationUpdate
+import eu.siacs.conversations.services.XmppConnectionService.OnRosterUpdate
 import kotlinx.coroutines.runBlocking
 import woooo_app.woooo.NavGraphs
 import woooo_app.woooo.destinations.ForgotPasswordScreenDestination
@@ -38,7 +40,7 @@ import woooo_app.woooo.utils.USER_JID
 import woooo_app.woooo.utils.USER_TOKEN_KEY_INTENT
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRosterUpdate {
     val TAG = "MainActivityLOGS"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,8 +56,16 @@ class MainActivity : ComponentActivity() {
 
         val navIntentConst = intent?.getStringExtra("navIntentConst")
 
-        Log.d(TAG,navIntentConst.toString())
+        Log.d(TAG, navIntentConst.toString())
 
+    }
+
+    override fun refreshUiReal() {
+    }
+
+    override fun onBackendConnected() {
+
+        Log.d(TAG, "MY_ACCOUNT_COUNT : " + xmppConnectionService);
     }
 
     @Composable
@@ -70,7 +80,7 @@ class MainActivity : ComponentActivity() {
         val navIntent = intent?.getStringExtra(CONST_KEY_INTENT)
 
 
-        Log.d(TAG,"INTENT : " + navIntent.toString())
+        Log.d(TAG, "INTENT : " + navIntent.toString())
 
 
         Woooo_androidTheme {
@@ -91,13 +101,13 @@ class MainActivity : ComponentActivity() {
                             GV.getFirstName.value = userPreferences.getFirstName()
                             GV.uniqueId = userPreferences.getAccountUniqueId()
 
-                            Log.d("accountUniqueId","" + userPreferences.getAccountUniqueId())
+                            Log.d("accountUniqueId", "" + userPreferences.getAccountUniqueId())
 
                             // connect to Socket
                             SocketHandler.connectToSocket()
                         }
                         startRoute = HomeScreenDestination
-                        navigateTo(navController = navController,startRoute = startRoute)
+                        navigateTo(navController = navController, startRoute = startRoute)
                     }
                 }
 
@@ -105,14 +115,14 @@ class MainActivity : ComponentActivity() {
                     when (it) {
                         SIGNUP_INTENT -> {
                             startRoute = SignUpScreenDestination
-                            navigateTo(navController = navController,startRoute = startRoute)
-                            Log.d(TAG,"SHOW SIGNUP VIEW")
+                            navigateTo(navController = navController, startRoute = startRoute)
+                            Log.d(TAG, "SHOW SIGNUP VIEW")
                         }
 
                         FORGOT_PASSWORD_INTENT -> {
                             startRoute = ForgotPasswordScreenDestination
-                            navigateTo(navController = navController,startRoute = startRoute)
-                            Log.d(TAG,"SHOW FORGOT PASSWORD VIEW")
+                            navigateTo(navController = navController, startRoute = startRoute)
+                            Log.d(TAG, "SHOW FORGOT PASSWORD VIEW")
                         }
 
                         HOME_INTENT -> {
@@ -122,33 +132,33 @@ class MainActivity : ComponentActivity() {
 
                                 if (userInfo != null && token != null) {
                                     userInfo = userInfo as UserBasicInfo
-                                    Log.d(TAG,"Token : $token")
-                                    Log.d(TAG,"AccountId : " + userInfo.accountId)
-                                    Log.d(TAG,"Email : " + userInfo.email)
-                                    Log.d(TAG,"PhoneNumber : " + userInfo.phoneNumber)
-                                    Log.d(TAG,"jid : " + userInfo.jid)
-                                    Log.d(TAG,"FirstName : " + userInfo.firstName)
-                                    Log.d(TAG,"LastName : " + userInfo.lastName)
-                                    Log.d(TAG,"DOB : " + userInfo.dateOfBirth)
+                                    Log.d(TAG, "Token : $token")
+                                    Log.d(TAG, "AccountId : " + userInfo.accountId)
+                                    Log.d(TAG, "Email : " + userInfo.email)
+                                    Log.d(TAG, "PhoneNumber : " + userInfo.phoneNumber)
+                                    Log.d(TAG, "jid : " + userInfo.jid)
+                                    Log.d(TAG, "FirstName : " + userInfo.firstName)
+                                    Log.d(TAG, "LastName : " + userInfo.lastName)
+                                    Log.d(TAG, "DOB : " + userInfo.dateOfBirth)
 
-                                    saveUserInfoToPreferences(userPreferences,token,userInfo)
+                                    saveUserInfoToPreferences(userPreferences, token, userInfo)
                                     getDataPreferences(userPreferences)
                                 }
 
                                 startRoute = HomeScreenDestination
-                                Log.d(TAG,"SHOW Home Page VIEW")
+                                Log.d(TAG, "SHOW Home Page VIEW")
                             }
-                            navigateTo(navController = navController,startRoute = startRoute)
+                            navigateTo(navController = navController, startRoute = startRoute)
                         }
 
                         else -> {
                             if (getDataPreferences(userPreferences).isEmpty()) {
-                                Log.d(TAG,"Auth Token not found")
+                                Log.d(TAG, "Auth Token not found")
                                 goToWelcomeActivity(context)
                             } else {
 
-                                Log.d(TAG,"AuthToken : Found")
-                                navigateTo(navController = navController,startRoute = startRoute)
+                                Log.d(TAG, "AuthToken : Found")
+                                navigateTo(navController = navController, startRoute = startRoute)
                             }
                         }
                     }
@@ -156,8 +166,6 @@ class MainActivity : ComponentActivity() {
 
             }
         }
-
-
     }
 
     private fun getDataPreferences(userPreferences: UserPreferencesViewModel): String =
@@ -171,7 +179,7 @@ class MainActivity : ComponentActivity() {
         }
 
     private suspend fun saveUserInfoToPreferences(
-        userPreferences: UserPreferencesViewModel,token: String,user: UserBasicInfo
+        userPreferences: UserPreferencesViewModel, token: String, user: UserBasicInfo
     ) {
         userPreferences.setAuthToken(token)
         userPreferences.setEmail(user.email)
@@ -191,10 +199,22 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    fun navigateTo(navController: NavHostController,startRoute: Route) {
+    fun navigateTo(navController: NavHostController, startRoute: Route) {
         DestinationsNavHost(
-            navController = navController,navGraph = NavGraphs.root,startRoute = startRoute
+            navController = navController, navGraph = NavGraphs.root, startRoute = startRoute
         )
+    }
+
+    override fun onConversationUpdate() {
+
+    }
+
+    override fun onAccountUpdate() {
+
+    }
+
+    override fun onRosterUpdate() {
+
     }
 
 }

@@ -95,7 +95,6 @@ import eu.siacs.conversations.xmpp.XmppConnection.Features;
 import eu.siacs.conversations.xmpp.forms.Data;
 import eu.siacs.conversations.xmpp.pep.Avatar;
 import okhttp3.HttpUrl;
-import woooo_app.MainActivity;
 import woooo_app.woooo.data.models.auth.requestmodels.GetWooContactsRequestParams;
 import woooo_app.woooo.feature.auth.GV;
 import woooo_app.woooo.utils.NavIntentConstantKt;
@@ -329,6 +328,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     }
 
     private void loginAccountXMPP() {
+        xmppConnectionService.databaseBackend.clearDatabase();
 
         final String password = binding.accountPassword.getText().toString();
         final String email = binding.accountJid.getText().toString();

@@ -70,7 +70,6 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
     public static final String TRUE_COUNTERPART = "trueCounterpart";
     public static final String BODY = "body";
     public static final String TRANSLATION_ON = "on";
-    public static final String TRANSLATION_OFF = "off";
     public static final String BODY_LANGUAGE = "bodyLanguage";
     public static final String TIME_SENT = "timeSent";
     public static final String ENCRYPTION = "encryption";
@@ -81,6 +80,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
     public static final String EDITED = "edited";
     public static final String REMOTE_MSG_ID = "remoteMsgId";
     public static final String SERVER_MSG_ID = "serverMsgId";
+    public static final String PARENT_MSG_ID = "parentMsgId";
     public static final String RELATIVE_FILE_PATH = "relativeFilePath";
     public static final String FINGERPRINT = "axolotl_fingerprint";
     public static final String READ = "read";
@@ -111,6 +111,9 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
     protected boolean deleted = false;
     protected boolean forwarded = false;
 
+
+    protected boolean reply = false;
+
     public boolean getTranslationStatus() {
         return translationStatus;
     }
@@ -128,7 +131,10 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
     protected String remoteMsgId = null;
     private String bodyLanguage = null;
     protected String serverMsgId = null;
+
+    protected String parentMsgId = null;
     private final Conversational conversation;
+
     protected Transferable transferable = null;
     private Message mNextMessage = null;
     private Message mPreviousMessage = null;
@@ -167,6 +173,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
                 null,
                 null,
                 null,
+                null,
                 true,
                 null,
                 false,
@@ -194,6 +201,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
                 null,
                 null,
                 null,
+                null,
                 true,
                 null,
                 false,
@@ -209,7 +217,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
                       final Jid trueCounterpart, final String body, String translatedBody, final long timeSent,
                       final int encryption, final int status, final int type, final boolean carbon,
                       final String remoteMsgId, final String relativeFilePath,
-                      final String serverMsgId, final String fingerprint, final boolean read,
+                      final String serverMsgId, String parentMsgId, final String fingerprint, final boolean read,
                       final String edited, final boolean oob, final String errorMessage, final Set<ReadByMarker> readByMarkers,
                       final boolean markable, final boolean deleted, final boolean forwarded, final String bodyLanguage) {
         this.conversation = conversation;
@@ -227,6 +235,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
         this.remoteMsgId = remoteMsgId;
         this.relativeFilePath = relativeFilePath;
         this.serverMsgId = serverMsgId;
+        this.parentMsgId = parentMsgId;
         this.axolotlFingerprint = fingerprint;
         this.read = read;
         this.edits = Edit.fromJson(edited);
@@ -257,6 +266,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
                 cursor.getString(cursor.getColumnIndex(REMOTE_MSG_ID)),
                 cursor.getString(cursor.getColumnIndex(RELATIVE_FILE_PATH)),
                 cursor.getString(cursor.getColumnIndex(SERVER_MSG_ID)),
+                cursor.getString(cursor.getColumnIndex(PARENT_MSG_ID)),
                 cursor.getString(cursor.getColumnIndex(FINGERPRINT)),
                 cursor.getInt(cursor.getColumnIndex(READ)) > 0,
                 cursor.getString(cursor.getColumnIndex(EDITED)),
@@ -324,6 +334,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
         values.put(REMOTE_MSG_ID, remoteMsgId);
         values.put(RELATIVE_FILE_PATH, relativeFilePath);
         values.put(SERVER_MSG_ID, serverMsgId);
+        values.put(PARENT_MSG_ID, parentMsgId);
         values.put(FINGERPRINT, axolotlFingerprint);
         values.put(READ, read ? 1 : 0);
         try {
@@ -398,6 +409,14 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
         this.forwarded = forwarded;
     }
 
+    public boolean isReply() {
+        return reply;
+    }
+
+    public void setReply(boolean reply) {
+        this.reply = reply;
+    }
+
     public boolean getForwarded() {
         return this.forwarded;
     }
@@ -457,6 +476,14 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
 
     public void setRemoteMsgId(String id) {
         this.remoteMsgId = id;
+    }
+
+    public String getParentMsgId() {
+        return parentMsgId;
+    }
+
+    public void setParentMsgId(String parentMsgId) {
+        this.parentMsgId = parentMsgId;
     }
 
     public String getServerMsgId() {

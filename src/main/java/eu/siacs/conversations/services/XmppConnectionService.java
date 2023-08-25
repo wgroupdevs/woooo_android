@@ -1693,6 +1693,9 @@ public class XmppConnectionService extends Service {
         }
         if (packet != null) {
 
+            if (message.isReply()) {
+                packet.setReplyElement(message);
+            }
             if (message.getForwarded()) {
                 packet.setForwardedElement(message.getBody());
             }
@@ -1738,13 +1741,6 @@ public class XmppConnectionService extends Service {
         Log.d(TAG, "resendMessage Simple Called.....");
 
         sendMessage(message, true, delay);
-    }
-
-    public void forwardMessage(final Message message) {
-
-        Log.d(TAG, "forwardMessage Called in Connection Service");
-
-        sendMessage(message, false, false);
     }
 
     public void requestEasyOnboardingInvite(final Account account, final EasyOnboardingInvite.OnInviteRequested callback) {

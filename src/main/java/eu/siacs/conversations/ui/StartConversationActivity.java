@@ -979,11 +979,18 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
                             && (!this.mHideOfflineContacts
                             || (needle != null && !needle.trim().isEmpty())
                             || s.compareTo(Presence.Status.OFFLINE) < 0)) {
-                        this.contacts.add(contact);
+
+                        if (!this.contacts.contains(contact)) {
+                            this.contacts.add(contact);
+                        }
                     }
                 }
             }
         }
+
+        Log.d(TAG, "CONTACTS COUNTS : " + contacts.size());
+
+
         Collections.sort(this.contacts);
         mContactsAdapter.notifyDataSetChanged();
     }

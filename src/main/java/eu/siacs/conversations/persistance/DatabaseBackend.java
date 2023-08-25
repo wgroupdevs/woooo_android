@@ -253,6 +253,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 + Message.STATUS + " NUMBER," + Message.TYPE + " NUMBER, "
                 + Message.RELATIVE_FILE_PATH + " TEXT, "
                 + Message.SERVER_MSG_ID + " TEXT, "
+                + Message.PARENT_MSG_ID + " TEXT, "
                 + Message.FINGERPRINT + " TEXT, "
                 + Message.CARBON + " INTEGER, "
                 + Message.EDITED + " TEXT, "
@@ -338,6 +339,10 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         if (oldVersion < 12 && newVersion >= 12) {
             db.execSQL("ALTER TABLE " + Message.TABLENAME + " ADD COLUMN "
                     + Message.SERVER_MSG_ID + " TEXT");
+        }
+        if (oldVersion < 12 && newVersion >= 12) {
+            db.execSQL("ALTER TABLE " + Message.TABLENAME + " ADD COLUMN "
+                    + Message.PARENT_MSG_ID + " TEXT");
         }
         if (oldVersion < 13 && newVersion >= 13) {
             db.execSQL("delete from " + Contact.TABLENAME);
@@ -1263,9 +1268,14 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 
         Log.d("DATABASE_BACKEND", "clearDatabase Called");
         SQLiteDatabase db = this.getWritableDatabase();
-        String[] args = {};
-        db.delete(Account.TABLENAME, null, args);
-        db.delete(SQLiteAxolotlStore.SESSION_TABLENAME, null, args);
+        db.execSQL("DELETE FROM " + Account.TABLENAME);
+        db.execSQL("DELETE FROM " + SQLiteAxolotlStore.SESSION_TABLENAME);
+        db.execSQL("DELETE FROM " + Contact.TABLENAME);
+        db.execSQL("DELETE FROM " + Conversation.TABLENAME);
+        db.execSQL("DELETE FROM " + Message.TABLENAME);
+        db.execSQL("DELETE FROM " + SQLiteAxolotlStore.IDENTITIES_TABLENAME);
+        db.close();
+
 
     }
 

@@ -160,7 +160,8 @@ import eu.siacs.conversations.xmpp.jingle.RtpCapability;
 import woooo_app.woooo.feature.auth.GV;
 
 public class ConversationFragment extends XmppFragment implements EditMessage.KeyboardListener, MessageAdapter.OnContactPictureLongClicked, MessageAdapter.OnContactPictureClicked, ChooseContactActivity.OnForwardItemsSelected, WooooAPIService.OnUpdateUserLanguageApiResult, WooooAPIService.OnTextTranslateAPiResult {
-    boolean translation = false;
+    private boolean translation = false;
+    private boolean reply = false;
     public static final int REQUEST_SEND_MESSAGE = 0x0201;
     public static final int REQUEST_DECRYPT_PGP = 0x0202;
     public static final int REQUEST_FORWARD_MESSAGE = 0x0401;
@@ -773,10 +774,8 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     }
 
     private void sendMessage() {
-
         Log.d(TAG, "TRANSLATION STATUS .... : " + translation);
-
-
+        Log.d(TAG, "REPLY STATUS .... : " + reply);
         if (mediaPreviewAdapter.hasAttachments()) {
             commitAttachments();
             return;
@@ -795,6 +794,11 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             message = new Message(conversation, body, conversation.getNextEncryption());
             if (translation) {
                 message.setTranslationStatus(true);
+            }
+            if (reply) {
+                message.setReply(true);
+                message.setParentMsgId(selectedMessage.getServerMsgId());
+                reply = false;
             }
             Message.configurePrivateMessage(message);
 
@@ -816,35 +820,6 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             sendMessage(message);
         }
     }
-
-
-    private void forwardMessage(Intent data) {
-        final List<Jid> jids = ChooseContactActivity.extractJabberIds(data);
-
-        for (Jid id : jids) {
-            Log.d(TAG, "forwardMessage Called...." + id.asBareJid());
-            Conversation newConversation = activity.xmppConnectionService.findConversationByJid(id);
-
-            if (newConversation != null) {
-
-                Log.d(TAG, "Conversation FOUND...." + id.asBareJid());
-//
-//                Message message;
-//                message = new Message(newConversation, selectedMessage.getBody(), newConversation.getNextEncryption());
-//
-////                message.setType(selectedMessage.getType());
-//                Message.configurePrivateMessage(message);
-//                message.setForwarded(true);
-//
-//
-//                activity.xmppConnectionService.forwardMessage(message);
-            }
-
-        }
-
-
-    }
-
 
     private boolean trustKeysIfNeeded(final Conversation conversation, final int requestCode) {
         return conversation.getNextEncryption() == Message.ENCRYPTION_AXOLOTL && trustKeysIfNeeded(requestCode);
@@ -1192,43 +1167,6 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         }
 
 
-        // Create a Continuation object
-//        Continuation<Unit> continuation = new Continuation() {
-//            @Override
-//            public void resumeWith(@NonNull Object o) {
-//                Log.d(TAG, "resumeWith DATA : " + o);
-//
-//            }
-//
-//            @NonNull
-//            @Override
-//            public CoroutineContext getContext() {
-//                return null;
-//            }
-//
-//        };
-//
-////         Inject the ViewModel
-//        ViewModelProvider viewModelProvider = new ViewModelProvider(activity);
-//
-//        // Inject the ViewModel
-//        UserPreferencesViewModel userPreferencesViewModel = viewModelProvider.get(UserPreferencesViewModel.class);
-////        userPreferencesViewModel = new ViewModelProvider(this).get(UserPreferencesViewModel.class);
-//
-//
-//        UserBasicInfo user = userPreferencesViewModel.getUserInfo();
-//
-//
-//        Log.d(TAG, "USER_DATA NAME : " + user.getFirstName());
-//        Log.d(TAG, "USER_DATA NAME : " + user.getJid());
-//        Log.d(TAG, "USER_DATA NAME : " + user.getLanguage());
-//        Log.d(TAG, "USER_DATA NAME : " + user.getEmail());
-//        Log.d(TAG, "USER_DATA NAME : " + user.getPhoneNumber());
-//
-//        userPreferencesViewModel.setLanguage("ENGLISG LANGUAGE", continuation);
-//
-
-
         return binding.getRoot();
     }
 
@@ -1253,7 +1191,8 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     }
 
     private void replyMessage(Message message) {
-        replyText(MessageUtils.prepareQuote(message));
+
+//        replyText(MessageUtils.prepareQuote(message));
     }
 
     @Override
@@ -1402,7 +1341,12 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             ShareUtil.copyLinkToClipboard(activity, selectedMessage);
             return true;
         } else if (itemId == R.id.reply_message) {
-            replyMessage(selectedMessage);
+
+
+            Log.d(TAG,"SERVER_MESSAGE_ID : " +selectedMessage.getServerMsgId());
+            Log.d(TAG,"SERVER_MESSAGE_ID : " +selectedMessage.getRemoteMsgId());
+            reply = true;
+            sendMessage();
             return true;
         } else if (itemId == R.id.send_again) {
             resendMessage(selectedMessage);
@@ -3321,11 +3265,16 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
                 if (newConversation != null) {
                     Log.d(TAG, "Conversation FOUND....");
                     Message message;
-                    message = new Message(newConversation, selectedMessage.getBody(), newConversation.getNextEncryption());
-                    Message.configurePrivateMessage(message);
+                    message = new Message(newConversation, selectedMessage.getBody(), selectedMessage.getEncryption());
                     message.setForwarded(true);
                     message.setType(selectedMessage.getType());
-                    activity.xmppConnectionService.forwardMessage(message);
+                    if (selectedMessage.isFileOrImage()) {
+                        message.setRelativeFilePath(selectedMessage.getRelativeFilePath());
+                        Message.configurePrivateFileMessage(message);
+                    } else {
+                        Message.configurePrivateMessage(message);
+                    }
+                    activity.xmppConnectionService.sendMessage(message);
                 }
             }
         }

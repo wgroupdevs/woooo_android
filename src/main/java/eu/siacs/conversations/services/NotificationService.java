@@ -1148,7 +1148,7 @@ public class NotificationService {
         mBuilder.setGroupSummary(true);
         mBuilder.setGroup(MESSAGES_GROUP);
         mBuilder.setDeleteIntent(createDeleteIntent(null));
-        mBuilder.setSmallIcon(R.drawable.ic_notification);
+        mBuilder.setSmallIcon(R.drawable.woooo_logo);
         return mBuilder;
     }
 
@@ -1290,7 +1290,7 @@ public class NotificationService {
                 }
             }
             mBuilder.setWhen(conversation.getLatestMessage().getTimeSent());
-            mBuilder.setSmallIcon(R.drawable.ic_notification);
+            mBuilder.setSmallIcon(R.drawable.woooo_logo);
             mBuilder.setDeleteIntent(createDeleteIntent(conversation));
             mBuilder.setContentIntent(createContentIntent(conversation));
         }

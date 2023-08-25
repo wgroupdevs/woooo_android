@@ -18,20 +18,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 
 import java.util.Arrays;
 
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.entities.Account;
-import eu.siacs.conversations.http.model.UserBasicInfo;
 import eu.siacs.conversations.services.XmppConnectionService;
 import eu.siacs.conversations.utils.Compatibility;
 import eu.siacs.conversations.utils.SignupUtils;
 import eu.siacs.conversations.utils.XmppUri;
 import eu.siacs.conversations.xmpp.Jid;
-import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel;
 
 public class WelcomeActivity extends XmppActivity implements XmppConnectionService.OnAccountCreated, KeyChainAliasCallback {
 
@@ -120,8 +117,6 @@ public class WelcomeActivity extends XmppActivity implements XmppConnectionServi
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
         super.onCreate(savedInstanceState);
-
-
         Intent intent = new Intent(WelcomeActivity.this, EditAccountActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra(EditAccountActivity.EXTRA_FORCE_REGISTER, false);

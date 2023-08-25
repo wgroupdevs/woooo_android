@@ -54,7 +54,7 @@ import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import com.wgroup.woooo_app.woooo.utils.Strings
 import eu.siacs.conversations.R
-import woooo_app.MainActivity
+import eu.siacs.conversations.ui.MainActivity
 import woooo_app.woooo.destinations.ConfirmAccountMainScreenDestination
 import woooo_app.woooo.feature.auth.GV
 import woooo_app.woooo.feature.auth.viewmodel.SignUpViewModel
