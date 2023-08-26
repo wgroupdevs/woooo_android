@@ -797,7 +797,11 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             }
             if (reply) {
                 message.setReply(true);
-                message.setParentMsgId(selectedMessage.getServerMsgId());
+                if (selectedMessage.getStatus() <= Message.STATUS_RECEIVED) {
+                    message.setParentMsgId(selectedMessage.getRemoteMsgId());
+                } else {
+                    message.setParentMsgId(selectedMessage.getUuid());
+                }
                 reply = false;
             }
             Message.configurePrivateMessage(message);
@@ -1342,11 +1346,10 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             return true;
         } else if (itemId == R.id.reply_message) {
 
-
-            Log.d(TAG,"SERVER_MESSAGE_ID : " +selectedMessage.getServerMsgId());
-            Log.d(TAG,"SERVER_MESSAGE_ID : " +selectedMessage.getRemoteMsgId());
+            Log.d(TAG, "SERVER_MESSAGE_ID : " + selectedMessage.getServerMsgId());
+            Log.d(TAG, "SERVER_MESSAGE_ID : " + selectedMessage.getRemoteMsgId());
+            Log.d(TAG, "SERVER_MESSAGE_ID : " + selectedMessage.getUuid());
             reply = true;
-            sendMessage();
             return true;
         } else if (itemId == R.id.send_again) {
             resendMessage(selectedMessage);

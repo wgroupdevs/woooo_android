@@ -420,6 +420,7 @@ public class MessageParser extends AbstractParser implements OnMessagePacketRece
         final Element replaceElement = packet.findChild("replace", "urn:xmpp:message-correct:0");
         final Element oob = packet.findChild("x", Namespace.OOB);
         final Element forwarded = packet.findChild("forwarded", Namespace.FORWARD);
+        final Element reply = packet.findChild("reply", Namespace.REPLY);
         final Element translation = packet.findChild("translation");
         final String oobUrl = oob != null ? oob.findChildContent("url") : null;
         final String replacementId = replaceElement == null ? null : replaceElement.getAttribute("id");
@@ -774,11 +775,16 @@ public class MessageParser extends AbstractParser implements OnMessagePacketRece
                 }
             }
 
-
             if (forwarded != null) {
                 Log.d(TAG, "FORWARD MESSAGE FOUND ....." + forwarded);
                 // DO working for forwarded message here....
                 message.setForwarded(true);
+            }
+
+            if (reply != null) {
+                String uuid = reply.getAttribute("id");
+                message.setParentMsgId(uuid);
+                Log.d(TAG, "REPLY MESSAGE FOUND ....." + uuid);
             }
 
             mXmppConnectionService.databaseBackend.createMessage(message);

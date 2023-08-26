@@ -91,6 +91,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
     private OnContactPictureLongClicked mOnContactPictureLongClickedListener;
     private boolean mUseGreenBackground = false;
     private final boolean mForceNames;
+    private List<Message> messages;
 
     public MessageAdapter(final XmppActivity activity, final List<Message> messages, final boolean forceNames) {
         super(activity, 0, messages);
@@ -99,6 +100,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         metrics = getContext().getResources().getDisplayMetrics();
         updatePreferences();
         this.mForceNames = forceNames;
+        this.messages = messages;
     }
 
     public MessageAdapter(final XmppActivity activity, final List<Message> messages) {
@@ -521,6 +523,44 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
         }
 
+        if (message.getParentMsgId() != null && !message.getParentMsgId().isEmpty()) {
+
+            viewHolder.reply_box.setVisibility(View.VISIBLE);
+            viewHolder.parentName.setVisibility(View.VISIBLE);
+            viewHolder.parentBody.setVisibility(View.VISIBLE);
+
+
+            String uuID = message.getParentMsgId().trim();
+            String remoteMsgId;
+            String uUid;
+
+
+            Log.d(TAG, "CURRENT_PARENT_MESSAGE_ID : " + uuID);
+
+
+            for (Message messageObj : messages) {
+                remoteMsgId = messageObj.getRemoteMsgId() == null ? "" : messageObj.getRemoteMsgId().trim();
+                uUid = messageObj.getUuid() == null ? "" : messageObj.getUuid().trim();
+                if (remoteMsgId.equals(uuID) || uUid.equals(uuID)) {
+                    Log.d(TAG, "PARENT_MESSAGE_FOUND .....");
+                    if (messageObj.getStatus() <= Message.STATUS_RECEIVED) {
+                        viewHolder.parentName.setText(message.getContact().getDisplayName());
+                        viewHolder.parentBody.setText(messageObj.getBody());
+                    } else {
+                        viewHolder.parentName.setText("You");
+                        viewHolder.parentBody.setText(messageObj.getBody());
+
+                    }
+                    return;
+                }
+
+                Log.d(TAG, "PARENT_MESSAGE_ID getUuid : " + messageObj.getUuid());
+                Log.d(TAG, "PARENT_MESSAGE_ID getRemoteMsgId: " + messageObj.getRemoteMsgId());
+
+            }
+
+
+        }
     }
 
     private void displayDownloadableMessage(ViewHolder viewHolder, final Message message, String text, final boolean darkBackground) {
@@ -669,16 +709,23 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                     viewHolder.time = view.findViewById(R.id.message_time);
                     viewHolder.indicatorReceived = view.findViewById(R.id.indicator_received);
                     viewHolder.audioPlayer = view.findViewById(R.id.audio_player);
+                    viewHolder.reply_box = view.findViewById(R.id.reply_message_box);
+                    viewHolder.parentName = view.findViewById(R.id.parent_name);
+                    viewHolder.parentBody = view.findViewById(R.id.parent_body);
+
                     break;
                 case RECEIVED:
                     view = activity.getLayoutInflater().inflate(R.layout.message_received, parent, false);
                     viewHolder.message_box = view.findViewById(R.id.message_box);
+                    viewHolder.reply_box = view.findViewById(R.id.reply_message_box);
                     viewHolder.contact_picture = view.findViewById(R.id.toolbar_profile_photo);
                     viewHolder.download_button = view.findViewById(R.id.download_button);
                     viewHolder.indicator = view.findViewById(R.id.security_indicator);
                     viewHolder.edit_indicator = view.findViewById(R.id.edit_indicator);
                     viewHolder.image = view.findViewById(R.id.message_image);
                     viewHolder.messageBody = view.findViewById(R.id.message_body);
+                    viewHolder.parentName = view.findViewById(R.id.parent_name);
+                    viewHolder.parentBody = view.findViewById(R.id.parent_body);
                     viewHolder.messageTranslatedBody = view.findViewById(R.id.message_translated_body);
                     viewHolder.translationBodyDivider = view.findViewById(R.id.translation_body_divider);
                     viewHolder.messageForwarded = view.findViewById(R.id.message_forwarded);
@@ -711,6 +758,12 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         if (viewHolder.messageTranslatedBody != null && viewHolder.translationBodyDivider != null) {
             viewHolder.messageTranslatedBody.setVisibility(View.GONE);
             viewHolder.translationBodyDivider.setVisibility(View.GONE);
+        }
+
+        if (viewHolder.reply_box != null && viewHolder.parentName != null && viewHolder.parentBody != null) {
+            viewHolder.reply_box.setVisibility(View.GONE);
+            viewHolder.parentName.setVisibility(View.GONE);
+            viewHolder.parentBody.setVisibility(View.GONE);
         }
 
 
@@ -922,7 +975,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
     public void openDownloadable(Message message) {
 
-        Log.d(TAG,"FILE LINK : " +message.getBody());
+        Log.d(TAG, "FILE LINK : " + message.getBody());
 
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -968,6 +1021,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         public ImageView edit_indicator;
         public RelativeLayout audioPlayer;
         protected LinearLayout message_box;
+        protected LinearLayout reply_box;
         protected Button download_button;
         protected ImageView image;
         protected ImageView indicator;
@@ -976,6 +1030,8 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         protected TextView messageBody;
         protected TextView messageForwarded;
         protected TextView messageTranslatedBody;
+        protected TextView parentName;
+        protected TextView parentBody;
         protected View translationBodyDivider;
         protected ImageView contact_picture;
         protected TextView status_message;
