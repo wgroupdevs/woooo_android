@@ -66,6 +66,7 @@ import androidx.core.view.inputmethod.InputContentInfoCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 
 import org.jetbrains.annotations.NotNull;
@@ -141,6 +142,7 @@ import eu.siacs.conversations.utils.AccountUtils;
 import eu.siacs.conversations.utils.Compatibility;
 import eu.siacs.conversations.utils.GeoHelper;
 import eu.siacs.conversations.utils.MessageUtils;
+import eu.siacs.conversations.utils.MimeUtils;
 import eu.siacs.conversations.utils.NickValidityChecker;
 import eu.siacs.conversations.utils.PermissionUtils;
 import eu.siacs.conversations.utils.QuickLoader;
@@ -1171,6 +1173,12 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         }
 
 
+        binding.cancelReplyBtn.setOnClickListener(v -> {
+            reply = false;
+            binding.replyMessageBox.setVisibility(View.GONE);
+        });
+
+
         return binding.getRoot();
     }
 
@@ -1308,6 +1316,76 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         }
     }
 
+    void showMessageIcon(Message message) {
+        final boolean fileAvailable = !message.isDeleted();
+        final boolean showPreviewText;
+        if (fileAvailable
+                && (message.isFileOrImage()
+                || message.treatAsDownloadable()
+                || message.isGeoUri())) {
+            final int imageResource;
+            if (message.isGeoUri()) {
+                imageResource =
+                        activity.getThemeResource(
+                                R.attr.ic_attach_location, R.drawable.ic_attach_location);
+            } else {
+                // TODO move this into static MediaPreview method and use same icons as in
+                // MediaAdapter
+                final String mime = message.getMimeType();
+                if (MimeUtils.AMBIGUOUS_CONTAINER_FORMATS.contains(mime)) {
+                    final Message.FileParams fileParams = message.getFileParams();
+                    if (fileParams.width > 0 && fileParams.height > 0) {
+                        imageResource =
+                                activity.getThemeResource(
+                                        R.attr.ic_attach_videocam,
+                                        R.drawable.ic_attach_videocam);
+                    } else if (fileParams.runtime > 0) {
+                        imageResource =
+                                activity.getThemeResource(
+                                        R.attr.ic_attach_record, R.drawable.ic_attach_record);
+                    } else {
+                        imageResource =
+                                activity.getThemeResource(
+                                        R.attr.ic_attach_document,
+                                        R.drawable.ic_attach_document);
+                    }
+                } else {
+                    switch (Strings.nullToEmpty(mime).split("/")[0]) {
+                        case "image":
+                            imageResource =
+                                    activity.getThemeResource(
+                                            R.attr.ic_attach_photo, R.drawable.ic_attach_photo);
+                            break;
+                        case "video":
+                            imageResource =
+                                    activity.getThemeResource(
+                                            R.attr.ic_attach_videocam,
+                                            R.drawable.ic_attach_videocam);
+                            break;
+                        case "audio":
+                            imageResource =
+                                    activity.getThemeResource(
+                                            R.attr.ic_attach_record,
+                                            R.drawable.ic_attach_record);
+                            break;
+                        default:
+                            imageResource =
+                                    activity.getThemeResource(
+                                            R.attr.ic_attach_document,
+                                            R.drawable.ic_attach_document);
+                            break;
+                    }
+                }
+            }
+            this.binding.parentMsgIcon.setImageResource(imageResource);
+            this.binding.parentMsgIcon.setVisibility(View.VISIBLE);
+            this.binding.parentBody.setVisibility(View.GONE);
+        } else {
+            this.binding.parentMsgIcon.setVisibility(View.GONE);
+        }
+    }
+
+
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         int itemId = item.getItemId();
@@ -1349,6 +1427,14 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             Log.d(TAG, "SERVER_MESSAGE_ID : " + selectedMessage.getServerMsgId());
             Log.d(TAG, "SERVER_MESSAGE_ID : " + selectedMessage.getRemoteMsgId());
             Log.d(TAG, "SERVER_MESSAGE_ID : " + selectedMessage.getUuid());
+
+
+            this.binding.replyMessageBox.setVisibility(View.VISIBLE);
+            this.binding.parentName.setVisibility(View.VISIBLE);
+            this.binding.parentBody.setVisibility(View.VISIBLE);
+            this.binding.parentName.setText(selectedMessage.getContact().getDisplayName());
+            this.binding.parentBody.setText(selectedMessage.getBody());
+            showMessageIcon(selectedMessage);
             reply = true;
             return true;
         } else if (itemId == R.id.send_again) {
@@ -2604,6 +2690,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     protected void messageSent() {
         mSendingPgpMessage.set(false);
         this.binding.textinput.setText("");
+        this.binding.replyMessageBox.setVisibility(View.GONE);
         if (conversation.setCorrectingMessage(null)) {
             this.binding.textinput.append(conversation.getDraftMessage());
             conversation.setDraftMessage(null);

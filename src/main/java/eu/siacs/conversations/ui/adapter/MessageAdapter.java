@@ -68,6 +68,7 @@ import eu.siacs.conversations.utils.CryptoHelper;
 import eu.siacs.conversations.utils.Emoticons;
 import eu.siacs.conversations.utils.GeoHelper;
 import eu.siacs.conversations.utils.MessageUtils;
+import eu.siacs.conversations.utils.MimeUtils;
 import eu.siacs.conversations.utils.StylingHelper;
 import eu.siacs.conversations.utils.TimeFrameUtils;
 import eu.siacs.conversations.utils.UIHelper;
@@ -529,37 +530,95 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             viewHolder.parentName.setVisibility(View.VISIBLE);
             viewHolder.parentBody.setVisibility(View.VISIBLE);
 
-
             String uuID = message.getParentMsgId().trim();
             String remoteMsgId;
             String uUid;
-
-
-            Log.d(TAG, "CURRENT_PARENT_MESSAGE_ID : " + uuID);
-
-
             for (Message messageObj : messages) {
                 remoteMsgId = messageObj.getRemoteMsgId() == null ? "" : messageObj.getRemoteMsgId().trim();
                 uUid = messageObj.getUuid() == null ? "" : messageObj.getUuid().trim();
                 if (remoteMsgId.equals(uuID) || uUid.equals(uuID)) {
                     Log.d(TAG, "PARENT_MESSAGE_FOUND .....");
+                    showMessageIcon(viewHolder,messageObj);
                     if (messageObj.getStatus() <= Message.STATUS_RECEIVED) {
                         viewHolder.parentName.setText(message.getContact().getDisplayName());
                         viewHolder.parentBody.setText(messageObj.getBody());
                     } else {
                         viewHolder.parentName.setText("You");
                         viewHolder.parentBody.setText(messageObj.getBody());
-
                     }
                     return;
                 }
-
-                Log.d(TAG, "PARENT_MESSAGE_ID getUuid : " + messageObj.getUuid());
-                Log.d(TAG, "PARENT_MESSAGE_ID getRemoteMsgId: " + messageObj.getRemoteMsgId());
-
             }
+        }
+    }
 
 
+    void showMessageIcon(final ViewHolder viewHolder,Message message){
+        final boolean fileAvailable = !message.isDeleted();
+        final boolean showPreviewText;
+        if (fileAvailable
+                && (message.isFileOrImage()
+                || message.treatAsDownloadable()
+                || message.isGeoUri())) {
+            final int imageResource;
+            if (message.isGeoUri()) {
+                imageResource =
+                        activity.getThemeResource(
+                                R.attr.ic_attach_location, R.drawable.ic_attach_location);
+            } else {
+                // TODO move this into static MediaPreview method and use same icons as in
+                // MediaAdapter
+                final String mime = message.getMimeType();
+                if (MimeUtils.AMBIGUOUS_CONTAINER_FORMATS.contains(mime)) {
+                    final Message.FileParams fileParams = message.getFileParams();
+                    if (fileParams.width > 0 && fileParams.height > 0) {
+                        imageResource =
+                                activity.getThemeResource(
+                                        R.attr.ic_attach_videocam,
+                                        R.drawable.ic_attach_videocam);
+                    } else if (fileParams.runtime > 0) {
+                        imageResource =
+                                activity.getThemeResource(
+                                        R.attr.ic_attach_record, R.drawable.ic_attach_record);
+                    } else {
+                        imageResource =
+                                activity.getThemeResource(
+                                        R.attr.ic_attach_document,
+                                        R.drawable.ic_attach_document);
+                    }
+                } else {
+                    switch (Strings.nullToEmpty(mime).split("/")[0]) {
+                        case "image":
+                            imageResource =
+                                    activity.getThemeResource(
+                                            R.attr.ic_attach_photo, R.drawable.ic_attach_photo);
+                            break;
+                        case "video":
+                            imageResource =
+                                    activity.getThemeResource(
+                                            R.attr.ic_attach_videocam,
+                                            R.drawable.ic_attach_videocam);
+                            break;
+                        case "audio":
+                            imageResource =
+                                    activity.getThemeResource(
+                                            R.attr.ic_attach_record,
+                                            R.drawable.ic_attach_record);
+                            break;
+                        default:
+                            imageResource =
+                                    activity.getThemeResource(
+                                            R.attr.ic_attach_document,
+                                            R.drawable.ic_attach_document);
+                            break;
+                    }
+                }
+            }
+            viewHolder.parent_msg_icon.setImageResource(imageResource);
+            viewHolder.parent_msg_icon.setVisibility(View.VISIBLE);
+            viewHolder.parentBody.setVisibility(View.GONE);
+        } else {
+            viewHolder.parent_msg_icon.setVisibility(View.GONE);
         }
     }
 
@@ -697,6 +756,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                     view = activity.getLayoutInflater().inflate(R.layout.message_sent, parent, false);
                     viewHolder.message_box = view.findViewById(R.id.message_box);
                     viewHolder.messageForwarded = view.findViewById(R.id.message_forwarded);
+                    viewHolder.parent_msg_icon = view.findViewById(R.id.parent_msg_icon);
                     viewHolder.contact_picture = view.findViewById(R.id.toolbar_profile_photo);
                     viewHolder.download_button = view.findViewById(R.id.download_button);
                     viewHolder.indicator = view.findViewById(R.id.security_indicator);
@@ -726,6 +786,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                     viewHolder.messageBody = view.findViewById(R.id.message_body);
                     viewHolder.parentName = view.findViewById(R.id.parent_name);
                     viewHolder.parentBody = view.findViewById(R.id.parent_body);
+                    viewHolder.parent_msg_icon = view.findViewById(R.id.parent_msg_icon);
                     viewHolder.messageTranslatedBody = view.findViewById(R.id.message_translated_body);
                     viewHolder.translationBodyDivider = view.findViewById(R.id.translation_body_divider);
                     viewHolder.messageForwarded = view.findViewById(R.id.message_forwarded);
@@ -762,10 +823,11 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
         if (viewHolder.reply_box != null && viewHolder.parentName != null && viewHolder.parentBody != null) {
             viewHolder.reply_box.setVisibility(View.GONE);
-            viewHolder.parentName.setVisibility(View.GONE);
-            viewHolder.parentBody.setVisibility(View.GONE);
         }
 
+        if (viewHolder.parent_msg_icon != null) {
+            viewHolder.parent_msg_icon.setVisibility(View.GONE);
+        }
 
         if (type == DATE_SEPARATOR) {
             if (UIHelper.today(message.getTimeSent())) {
@@ -950,6 +1012,8 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             }
         }
 
+
+
         return view;
     }
 
@@ -1025,6 +1089,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         protected Button download_button;
         protected ImageView image;
         protected ImageView indicator;
+        protected ImageView parent_msg_icon;
         protected ImageView indicatorReceived;
         protected TextView time;
         protected TextView messageBody;
