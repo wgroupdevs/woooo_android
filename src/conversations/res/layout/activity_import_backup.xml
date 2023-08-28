@@ -11,7 +11,7 @@
 
         <include
             android:id="@+id/toolbar"
-            layout="@layout/toolbar" />
+            layout="@layout/empty_toolbar" />
         <LinearLayout
             android:visibility="gone"
             android:id="@+id/in_progress"

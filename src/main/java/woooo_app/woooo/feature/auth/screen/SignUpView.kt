@@ -217,7 +217,7 @@ fun SignUpView(navigator: DestinationsNavigator) {
 
                 // Password Validator
 
-                if (customPasswordValidator.getPasswordValidatorStateForSignUp.value) Box(
+                if (customPasswordValidator.getPasswordValidatorStateForSignUp.value && !customPasswordValidator.dialogueShowHelper()) Box(
                     modifier = Modifier.align(
                         Alignment.CenterHorizontally
                     )

@@ -147,9 +147,11 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
         binding.radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
             binding.jid.setHint("");
             if (checkedId == R.id.email_radio_btn) {
+                binding.jid.setText("");
                 searchWithEmail = true;
                 binding.jid.setHint("Enter email");
             } else if (checkedId == R.id.phn_radio_btn) {
+                binding.jid.setText("");
                 searchWithEmail = false;
                 binding.jid.setHint("Enter phone number");
             }

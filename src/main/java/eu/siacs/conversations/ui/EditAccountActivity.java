@@ -869,7 +869,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
     private void loginWithEmailState() {
         binding.lgnwithEmailBtn.setOnClickListener(view -> {
-
+            binding.accountPassword.setText("");
             isLoginWithEmail = !isLoginWithEmail;
             if (isLoginWithEmail) {
                 binding.loginWithEmailLayout.setVisibility(View.VISIBLE);

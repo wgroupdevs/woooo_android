@@ -46,12 +46,15 @@ class PasswordValidatorViewModel @Inject constructor() : ViewModel() {
     fun setPasswordValidatorStateVerifyOTP(value: Boolean) {
         _setPasswordValidatorStateVerifyOTP.value = value
     }
-//
-//    private val _changePasswordDialoge = mutableStateOf(false)
-//    val getChangePasswordDialoge: State<Boolean> = _changePasswordDialoge
-//    fun setValueOfDialoge(value: Boolean) {
-//        _changePasswordDialoge.value = value
-//    }
+
+
+    // check if All conditions is already matched then validator is not appears
+    fun dialogueShowHelper(): Boolean {
+        if (eightChar.value && upperCase.value && lowerCase.value && oneNumber.value && specialChar.value) {
+            return true
+        }
+        return false
+    }
 
     fun passwordValidator(it: String,from: String): Boolean {
         _eightChar.value = it.length >= 8
@@ -62,10 +65,6 @@ class PasswordValidatorViewModel @Inject constructor() : ViewModel() {
         _lowerCase.value = Regex("[a-z]").containsMatchIn(it)
         _oneNumber.value = Regex("[0-9]").containsMatchIn(it)
         _specialChar.value = Regex("^(.*?[$&+,:;/=?@#|'<>.^*()_%!-])").containsMatchIn(it)
-        Log.d(
-            ("" + (eightChar.value && upperCase.value && lowerCase.value && oneNumber.value && specialChar.value).toString()),
-            "asoaspcmck"
-        )
         if (eightChar.value && upperCase.value && lowerCase.value && oneNumber.value && specialChar.value) {
 
             when (from) {

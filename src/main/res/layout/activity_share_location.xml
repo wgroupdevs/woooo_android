@@ -10,7 +10,7 @@
 
         <include
             android:id="@+id/toolbar"
-            layout="@layout/contact_details_toolbar"
+            layout="@layout/empty_toolbar"
             />
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
