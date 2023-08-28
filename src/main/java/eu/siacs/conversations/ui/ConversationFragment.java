@@ -66,7 +66,6 @@ import androidx.core.view.inputmethod.InputContentInfoCompat;
 import androidx.databinding.DataBindingUtil;
 
 import com.google.common.base.Optional;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 
 import org.jetbrains.annotations.NotNull;
@@ -142,7 +141,6 @@ import eu.siacs.conversations.utils.AccountUtils;
 import eu.siacs.conversations.utils.Compatibility;
 import eu.siacs.conversations.utils.GeoHelper;
 import eu.siacs.conversations.utils.MessageUtils;
-import eu.siacs.conversations.utils.MimeUtils;
 import eu.siacs.conversations.utils.NickValidityChecker;
 import eu.siacs.conversations.utils.PermissionUtils;
 import eu.siacs.conversations.utils.QuickLoader;
@@ -161,7 +159,7 @@ import eu.siacs.conversations.xmpp.jingle.OngoingRtpSession;
 import eu.siacs.conversations.xmpp.jingle.RtpCapability;
 import woooo_app.woooo.feature.auth.GV;
 
-public class ConversationFragment extends XmppFragment implements EditMessage.KeyboardListener, MessageAdapter.OnContactPictureLongClicked, MessageAdapter.OnContactPictureClicked, ChooseContactActivity.OnForwardItemsSelected, WooooAPIService.OnUpdateUserLanguageApiResult, WooooAPIService.OnTextTranslateAPiResult {
+public class ConversationFragment extends XmppFragment implements EditMessage.KeyboardListener, MessageAdapter.OnContactPictureLongClicked, MessageAdapter.OnContactPictureClicked, MessageAdapter.OnParentMessageClicked, ChooseContactActivity.OnForwardItemsSelected, WooooAPIService.OnUpdateUserLanguageApiResult, WooooAPIService.OnTextTranslateAPiResult {
     private boolean translation = false;
     private boolean reply = false;
     public static final int REQUEST_SEND_MESSAGE = 0x0201;
@@ -1134,7 +1132,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         messageListAdapter = new MessageAdapter((XmppActivity) getActivity(), this.messageList);
         messageListAdapter.setOnContactPictureClicked(this);
         messageListAdapter.setOnContactPictureLongClicked(this);
-
+        messageListAdapter.setOnParentMessageClicked(this);
         ChooseContactActivity.setOnForwardItemsSelected(this);
 
         binding.messagesView.setAdapter(messageListAdapter);
@@ -1202,10 +1200,6 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         }
     }
 
-    private void replyMessage(Message message) {
-
-//        replyText(MessageUtils.prepareQuote(message));
-    }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
@@ -1261,8 +1255,6 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 
             if (!m.isFileOrImage() && !encrypted && !m.isGeoUri() && !m.treatAsDownloadable() && !unInitiatedButKnownSize && t == null) {
                 copyMessage.setVisible(true);
-//                replyMessage.setVisible(!showError && MessageUtils.prepareQuote(m).length() > 0);
-
                 final String scheme = ShareUtil.getLinkScheme(m.getMergedBody());
                 if ("xmpp".equals(scheme)) {
                     copyLink.setTitle(R.string.copy_jabber_id);
@@ -1316,73 +1308,39 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         }
     }
 
-    void showMessageIcon(Message message) {
-        final boolean fileAvailable = !message.isDeleted();
-        final boolean showPreviewText;
-        if (fileAvailable
-                && (message.isFileOrImage()
-                || message.treatAsDownloadable()
-                || message.isGeoUri())) {
-            final int imageResource;
-            if (message.isGeoUri()) {
-                imageResource =
-                        activity.getThemeResource(
-                                R.attr.ic_attach_location, R.drawable.ic_attach_location);
-            } else {
-                // TODO move this into static MediaPreview method and use same icons as in
-                // MediaAdapter
-                final String mime = message.getMimeType();
-                if (MimeUtils.AMBIGUOUS_CONTAINER_FORMATS.contains(mime)) {
-                    final Message.FileParams fileParams = message.getFileParams();
-                    if (fileParams.width > 0 && fileParams.height > 0) {
-                        imageResource =
-                                activity.getThemeResource(
-                                        R.attr.ic_attach_videocam,
-                                        R.drawable.ic_attach_videocam);
-                    } else if (fileParams.runtime > 0) {
-                        imageResource =
-                                activity.getThemeResource(
-                                        R.attr.ic_attach_record, R.drawable.ic_attach_record);
-                    } else {
-                        imageResource =
-                                activity.getThemeResource(
-                                        R.attr.ic_attach_document,
-                                        R.drawable.ic_attach_document);
-                    }
-                } else {
-                    switch (Strings.nullToEmpty(mime).split("/")[0]) {
-                        case "image":
-                            imageResource =
-                                    activity.getThemeResource(
-                                            R.attr.ic_attach_photo, R.drawable.ic_attach_photo);
-                            break;
-                        case "video":
-                            imageResource =
-                                    activity.getThemeResource(
-                                            R.attr.ic_attach_videocam,
-                                            R.drawable.ic_attach_videocam);
-                            break;
-                        case "audio":
-                            imageResource =
-                                    activity.getThemeResource(
-                                            R.attr.ic_attach_record,
-                                            R.drawable.ic_attach_record);
-                            break;
-                        default:
-                            imageResource =
-                                    activity.getThemeResource(
-                                            R.attr.ic_attach_document,
-                                            R.drawable.ic_attach_document);
-                            break;
-                    }
-                }
-            }
-            this.binding.parentMsgIcon.setImageResource(imageResource);
-            this.binding.parentMsgIcon.setVisibility(View.VISIBLE);
-            this.binding.parentBody.setVisibility(View.GONE);
+
+    void replyMessage() {
+        this.binding.replyMessageBox.setVisibility(View.VISIBLE);
+        this.binding.parentName.setVisibility(View.VISIBLE);
+        this.binding.parentBody.setVisibility(View.VISIBLE);
+
+        if (selectedMessage.getStatus() <= Message.STATUS_RECEIVED) {
+            this.binding.parentName.setText(selectedMessage.getContact().getDisplayName());
         } else {
-            this.binding.parentMsgIcon.setVisibility(View.GONE);
+            this.binding.parentName.setText("You");
         }
+        if (selectedMessage.isFileOrImage() || selectedMessage.isGeoUri()) {
+            String filesize = "";
+            Message.FileParams params = selectedMessage.getFileParams();
+            filesize = params.size != null ? UIHelper.filesizeToString(params.size) : "";
+            this.binding.parentBody.setText("File size (" + filesize + ")");
+            this.binding.messagePreviewImage.setVisibility(View.VISIBLE);
+            ///check audio file
+            if (selectedMessage.getFileParams().runtime > 0) {
+                this.binding.messagePreviewImage.setImageResource(R.drawable.baseline_headset_24);
+            } else if (selectedMessage.isGeoUri()) {
+                this.binding.parentBody.setText("Location");
+                this.binding.messagePreviewImage.setImageResource(R.drawable.ic_attach_location_white);
+            } else {
+                activity.loadBitmap(selectedMessage, this.binding.messagePreviewImage);
+            }
+        } else {
+            this.binding.parentBody.setText(selectedMessage.getBody());
+            this.binding.messagePreviewImage.setVisibility(View.GONE);
+        }
+
+        reply = true;
+
     }
 
 
@@ -1423,19 +1381,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             ShareUtil.copyLinkToClipboard(activity, selectedMessage);
             return true;
         } else if (itemId == R.id.reply_message) {
-
-            Log.d(TAG, "SERVER_MESSAGE_ID : " + selectedMessage.getServerMsgId());
-            Log.d(TAG, "SERVER_MESSAGE_ID : " + selectedMessage.getRemoteMsgId());
-            Log.d(TAG, "SERVER_MESSAGE_ID : " + selectedMessage.getUuid());
-
-
-            this.binding.replyMessageBox.setVisibility(View.VISIBLE);
-            this.binding.parentName.setVisibility(View.VISIBLE);
-            this.binding.parentBody.setVisibility(View.VISIBLE);
-            this.binding.parentName.setText(selectedMessage.getContact().getDisplayName());
-            this.binding.parentBody.setText(selectedMessage.getBody());
-            showMessageIcon(selectedMessage);
-            reply = true;
+            replyMessage();
             return true;
         } else if (itemId == R.id.send_again) {
             resendMessage(selectedMessage);
@@ -3417,6 +3363,12 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             }
         });
 
+    }
+
+    @Override
+    public void onParentMessageClicked(Message message) {
+        int pos = messageList.indexOf(message);
+        setSelection(pos, false);
     }
 }
 

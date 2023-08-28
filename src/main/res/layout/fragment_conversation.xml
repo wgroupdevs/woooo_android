@@ -58,16 +58,30 @@
             android:layout_height="wrap_content"
             android:layout_above="@id/textsend"
             android:layout_marginHorizontal="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_5sdp"
             android:layout_marginTop="2dp"
+            android:layout_marginEnd="@dimen/_46sdp"
             android:background="@drawable/bg_border"
             android:longClickable="true"
             android:orientation="vertical"
             android:padding="@dimen/_5sdp"
             android:visibility="gone">
 
+            <ImageView
+                android:id="@+id/message_preview_image"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="2dp"
+                android:layout_marginBottom="2dp"
+                android:layout_marginEnd="@dimen/_4sdp"
+                android:adjustViewBounds="true"
+                android:background="@color/blue_primary300"
+                android:longClickable="true"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
 
             <ImageButton
-                android:clickable="true"
                 android:id="@+id/cancel_reply_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -75,10 +89,11 @@
                 android:layout_alignParentEnd="true"
                 android:layout_margin="@dimen/_2sdp"
                 android:background="@drawable/ic_cancel_white_24dp"
+                android:clickable="true"
                 android:focusable="true" />
 
-
             <TextView
+                android:layout_toEndOf="@id/message_preview_image"
                 android:id="@+id/parent_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -93,14 +108,10 @@
                 android:maxLines="3"
                 android:textAppearance="@style/TextAppearance.Conversations.Caption"
                 android:textColor="@color/grey300"
+                android:layout_toEndOf="@id/message_preview_image"
                 android:visibility="gone" />
-            <ImageView
-                android:id="@+id/parent_msg_icon"
-                android:layout_width="?attr/IconSize"
-                android:layout_height="?attr/IconSize"
-                android:layout_below="@id/parent_name"
-                android:visibility="gone"
-                android:layout_marginRight="?attr/TextSeparation" />
+
+
 
         </RelativeLayout>
 
@@ -199,6 +210,8 @@
                 android:background="@drawable/bg_border"
                 android:contentDescription="@string/send_message"
                 android:src="@drawable/outline_send_34" />
+
+
         </RelativeLayout>
 
 

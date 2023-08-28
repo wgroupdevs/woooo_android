@@ -89,6 +89,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
     private List<String> highlightedTerm = null;
     private final DisplayMetrics metrics;
     private OnContactPictureClicked mOnContactPictureClickedListener;
+    private OnParentMessageClicked mOnParentMessageClickedListener;
     private OnContactPictureLongClicked mOnContactPictureLongClickedListener;
     private boolean mUseGreenBackground = false;
     private final boolean mForceNames;
@@ -128,6 +129,10 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
     public void setOnContactPictureClicked(OnContactPictureClicked listener) {
         this.mOnContactPictureClickedListener = listener;
+    }
+
+    public void setOnParentMessageClicked(OnParentMessageClicked listener) {
+        this.mOnParentMessageClickedListener = listener;
     }
 
     public Activity getActivity() {
@@ -524,36 +529,10 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
         }
 
-        if (message.getParentMsgId() != null && !message.getParentMsgId().isEmpty()) {
-
-            viewHolder.reply_box.setVisibility(View.VISIBLE);
-            viewHolder.parentName.setVisibility(View.VISIBLE);
-            viewHolder.parentBody.setVisibility(View.VISIBLE);
-
-            String uuID = message.getParentMsgId().trim();
-            String remoteMsgId;
-            String uUid;
-            for (Message messageObj : messages) {
-                remoteMsgId = messageObj.getRemoteMsgId() == null ? "" : messageObj.getRemoteMsgId().trim();
-                uUid = messageObj.getUuid() == null ? "" : messageObj.getUuid().trim();
-                if (remoteMsgId.equals(uuID) || uUid.equals(uuID)) {
-                    Log.d(TAG, "PARENT_MESSAGE_FOUND .....");
-                    showMessageIcon(viewHolder,messageObj);
-                    if (messageObj.getStatus() <= Message.STATUS_RECEIVED) {
-                        viewHolder.parentName.setText(message.getContact().getDisplayName());
-                        viewHolder.parentBody.setText(messageObj.getBody());
-                    } else {
-                        viewHolder.parentName.setText("You");
-                        viewHolder.parentBody.setText(messageObj.getBody());
-                    }
-                    return;
-                }
-            }
-        }
     }
 
 
-    void showMessageIcon(final ViewHolder viewHolder,Message message){
+    void showMessageIcon(final ViewHolder viewHolder, Message message) {
         final boolean fileAvailable = !message.isDeleted();
         final boolean showPreviewText;
         if (fileAvailable
@@ -614,11 +593,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                     }
                 }
             }
-            viewHolder.parent_msg_icon.setImageResource(imageResource);
-            viewHolder.parent_msg_icon.setVisibility(View.VISIBLE);
             viewHolder.parentBody.setVisibility(View.GONE);
-        } else {
-            viewHolder.parent_msg_icon.setVisibility(View.GONE);
         }
     }
 
@@ -756,16 +731,15 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                     view = activity.getLayoutInflater().inflate(R.layout.message_sent, parent, false);
                     viewHolder.message_box = view.findViewById(R.id.message_box);
                     viewHolder.messageForwarded = view.findViewById(R.id.message_forwarded);
-                    viewHolder.parent_msg_icon = view.findViewById(R.id.parent_msg_icon);
                     viewHolder.contact_picture = view.findViewById(R.id.toolbar_profile_photo);
                     viewHolder.download_button = view.findViewById(R.id.download_button);
                     viewHolder.indicator = view.findViewById(R.id.security_indicator);
                     viewHolder.edit_indicator = view.findViewById(R.id.edit_indicator);
                     viewHolder.image = view.findViewById(R.id.message_image);
                     viewHolder.messageBody = view.findViewById(R.id.message_body);
+                    viewHolder.parent_msg_preview = view.findViewById(R.id.message_preview_image);
                     viewHolder.messageTranslatedBody = view.findViewById(R.id.message_translated_body);
                     viewHolder.translationBodyDivider = view.findViewById(R.id.translation_body_divider);
-
                     viewHolder.time = view.findViewById(R.id.message_time);
                     viewHolder.indicatorReceived = view.findViewById(R.id.indicator_received);
                     viewHolder.audioPlayer = view.findViewById(R.id.audio_player);
@@ -783,10 +757,10 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                     viewHolder.indicator = view.findViewById(R.id.security_indicator);
                     viewHolder.edit_indicator = view.findViewById(R.id.edit_indicator);
                     viewHolder.image = view.findViewById(R.id.message_image);
+                    viewHolder.parent_msg_preview = view.findViewById(R.id.message_preview_image);
                     viewHolder.messageBody = view.findViewById(R.id.message_body);
                     viewHolder.parentName = view.findViewById(R.id.parent_name);
                     viewHolder.parentBody = view.findViewById(R.id.parent_body);
-                    viewHolder.parent_msg_icon = view.findViewById(R.id.parent_msg_icon);
                     viewHolder.messageTranslatedBody = view.findViewById(R.id.message_translated_body);
                     viewHolder.translationBodyDivider = view.findViewById(R.id.translation_body_divider);
                     viewHolder.messageForwarded = view.findViewById(R.id.message_forwarded);
@@ -821,13 +795,6 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             viewHolder.translationBodyDivider.setVisibility(View.GONE);
         }
 
-        if (viewHolder.reply_box != null && viewHolder.parentName != null && viewHolder.parentBody != null) {
-            viewHolder.reply_box.setVisibility(View.GONE);
-        }
-
-        if (viewHolder.parent_msg_icon != null) {
-            viewHolder.parent_msg_icon.setVisibility(View.GONE);
-        }
 
         if (type == DATE_SEPARATOR) {
             if (UIHelper.today(message.getTimeSent())) {
@@ -896,6 +863,20 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         }
 
         resetClickListener(viewHolder.message_box, viewHolder.messageBody);
+
+
+        viewHolder.reply_box.setOnClickListener(v -> {
+            if (MessageAdapter.this.mOnParentMessageClickedListener != null) {
+                Message parentMessage = getParentMessage(message);
+                if (parentMessage != null) {
+
+                    MessageAdapter.this.mOnParentMessageClickedListener
+                            .onParentMessageClicked(parentMessage);
+                }
+            }
+
+        });
+
 
         viewHolder.contact_picture.setOnClickListener(v -> {
             if (MessageAdapter.this.mOnContactPictureClickedListener != null) {
@@ -975,7 +956,6 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                 displayTextMessage(viewHolder, message, darkBackground, type);
             }
         }
-
         if (type == RECEIVED) {
             if (isInValidSession) {
 //                int bubble;
@@ -996,9 +976,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                 }
             }
         }
-
         displayStatus(viewHolder, message, type, darkBackground);
-
         if (message.getForwarded()) {
             Log.d(TAG, "BODY : " + message.getBody());
             if (viewHolder.messageForwarded != null) {
@@ -1013,8 +991,82 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         }
 
 
+        ///Show Parent Message
+        displayParentMessage(viewHolder, message);
 
         return view;
+    }
+
+
+    private Message getParentMessage(Message childMessage) {
+        Message parentMessage = null;
+        String parentID = childMessage.getParentMsgId().trim();
+        String remoteMsgId;
+        String uUid;
+
+        for (Message currentMessage : messages) {
+            remoteMsgId = currentMessage.getRemoteMsgId() == null ? "" : currentMessage.getRemoteMsgId().trim();
+            uUid = currentMessage.getUuid() == null ? "" : currentMessage.getUuid().trim();
+            if (remoteMsgId.equals(parentID) || uUid.equals(parentID)) {
+                parentMessage = currentMessage;
+
+                Log.d(TAG, "PARENT_MESSAGE BODY : " + parentMessage.getBody());
+                return parentMessage;
+            }
+        }
+
+        return null;
+
+    }
+
+
+    private void displayParentMessage(ViewHolder viewHolder, Message message) {
+
+
+        if (message.getParentMsgId() != null && !message.getParentMsgId().isEmpty()) {
+
+            viewHolder.reply_box.setVisibility(View.VISIBLE);
+            viewHolder.parentName.setVisibility(View.VISIBLE);
+            viewHolder.parentBody.setVisibility(View.VISIBLE);
+
+            Message parentMessage = getParentMessage(message);
+
+            if (parentMessage != null) {
+                Log.d(TAG, "PARENT_MESSAGE_FOUND .....");
+                if (parentMessage.getStatus() <= Message.STATUS_RECEIVED) {
+                    viewHolder.parentName.setText(message.getContact().getDisplayName());
+                } else {
+                    viewHolder.parentName.setText("You");
+                }
+
+                if (parentMessage.isFileOrImage() || parentMessage.isGeoUri()) {
+                    String filesize = "";
+                    Message.FileParams params = parentMessage.getFileParams();
+                    filesize = params.size != null ? UIHelper.filesizeToString(params.size) : "";
+                    viewHolder.parentBody.setText("File size (" + filesize + ")");
+                    viewHolder.parent_msg_preview.setVisibility(View.VISIBLE);
+                    ///check audio file
+                    if (parentMessage.getFileParams().runtime > 0) {
+                        viewHolder.parent_msg_preview.setImageResource(R.drawable.baseline_headset_24);
+                    } else if (parentMessage.isGeoUri()) {
+                        viewHolder.parentBody.setText("Location");
+                        viewHolder.parent_msg_preview.setImageResource(R.drawable.ic_attach_location_white);
+                    } else {
+                        activity.loadBitmap(parentMessage, viewHolder.parent_msg_preview);
+                    }
+                } else {
+                    viewHolder.parentBody.setText(parentMessage.getBody());
+                    viewHolder.parent_msg_preview.setVisibility(View.GONE);
+                }
+
+                return;
+            }
+        } else {
+            viewHolder.reply_box.setVisibility(View.GONE);
+            viewHolder.parent_msg_preview.setVisibility(View.GONE);
+            viewHolder.parentBody.setVisibility(View.GONE);
+            viewHolder.parentName.setVisibility(View.GONE);
+        }
     }
 
     private void promptOpenKeychainInstall(View view) {
@@ -1075,6 +1127,10 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         void onContactPictureClicked(Message message);
     }
 
+    public interface OnParentMessageClicked {
+        void onParentMessageClicked(Message message);
+    }
+
     public interface OnContactPictureLongClicked {
         void onContactPictureLongClicked(View v, Message message);
     }
@@ -1085,11 +1141,11 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         public ImageView edit_indicator;
         public RelativeLayout audioPlayer;
         protected LinearLayout message_box;
-        protected LinearLayout reply_box;
+        protected RelativeLayout reply_box;
         protected Button download_button;
         protected ImageView image;
         protected ImageView indicator;
-        protected ImageView parent_msg_icon;
+        protected ImageView parent_msg_preview;
         protected ImageView indicatorReceived;
         protected TextView time;
         protected TextView messageBody;
