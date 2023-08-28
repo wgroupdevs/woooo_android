@@ -20,7 +20,7 @@ import woooo_app.woooo.feature.auth.GV
 
 @Composable
 fun UserProfileImage(size: Dp,onClick: () -> Unit) {
-    var url = GV.getUserProfileImage.value
+    val url = GV.getUserProfileImage.value
     val painter = rememberAsyncImagePainter(url)
     Box(
         Modifier

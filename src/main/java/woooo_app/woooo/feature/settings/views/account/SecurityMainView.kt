@@ -102,8 +102,7 @@ fun SecurityMainView(
                             },
                                 onValueChange = {
                                     passwordValidatorViewModel.passwordValidator(
-                                        it,
-                                        passwordValidatorViewModel.fromSecurity
+                                        it,passwordValidatorViewModel.fromSecurity
                                     )
                                     securityViewModel.setNewPasswordControllerValue(it)
                                     securityViewModel.setNewPasswordErrorValue(false)
@@ -124,7 +123,7 @@ fun SecurityMainView(
                                         tint = Color.White
                                     )
                                 })
-                            if (passwordValidatorViewModel.getPasswordValidatorStateForSecurity.value) {
+                            if (passwordValidatorViewModel.getPasswordValidatorStateForSecurity.value && !passwordValidatorViewModel.dialogueShowHelper()) {
                                 PasswordValidator(height = 0.5f)
                             }
 

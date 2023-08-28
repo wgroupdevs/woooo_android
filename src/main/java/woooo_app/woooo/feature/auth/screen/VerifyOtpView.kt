@@ -127,14 +127,14 @@ fun VerifyOtpView(navigator: DestinationsNavigator) {
                     hint = Strings.newPswdText
                 )
                 // password validator
-                if (customPasswordValidator.getPasswordValidatorStateVerifyOTP.value) Box(
+
+                if (customPasswordValidator.getPasswordValidatorStateVerifyOTP.value && !customPasswordValidator.dialogueShowHelper()) Box(
                     modifier = Modifier.align(
                         Alignment.CenterHorizontally
                     )
                 ) {
                     PasswordValidator(0.6f)
                 }
-
                 VerticalSpacer(Dimension.dimen_15)
                 //Confirm Pass
                 TextLabel(label = Strings.confirmpasswordText)
