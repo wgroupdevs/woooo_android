@@ -10,7 +10,7 @@
 
         <include
             android:id="@+id/contact_details_tool_bar"
-            layout="@layout/contact_details_toolbar" />
+            layout="@layout/empty_toolbar" />
 
         <ScrollView
             android:layout_width="fill_parent"

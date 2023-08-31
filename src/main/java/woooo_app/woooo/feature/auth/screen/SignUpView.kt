@@ -278,14 +278,20 @@ fun SignUpView(navigator: DestinationsNavigator) {
                 //Referral Code
                 TextLabel(label = Strings.referralCodeText + " (Optional)")
                 VerticalSpacer()
-                WooTextField(hint = Strings.referralCodeText,leadingIcon = {
+                WooTextField(
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    hint = Strings.referralCodeText,
+                    leadingIcon = {
 
-                    CustomIcon(icon = Icons.Rounded.JoinInner)
-                },onValueChange = {
-                    if (it.length <= 10) {
-                        signUpViewModel.setReferralCodeControllerValue(it)
-                    }
-                })
+                        CustomIcon(icon = Icons.Rounded.JoinInner)
+                    },
+                    onValueChange = {
+                        if (it.length <= 8) {
+                            signUpViewModel.setReferralCodeControllerValue(it)
+                        }
+                    },
+                    value = signUpViewModel.getReferralCodeController.value
+                )
 
             }
             // sign up button

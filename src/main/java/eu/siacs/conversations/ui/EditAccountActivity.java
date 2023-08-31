@@ -820,8 +820,15 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         }
         GetWooContactsRequestParams getWooContactsRequestParams = new GetWooContactsRequestParams();
         getWooContactsRequestParams.number = contactsFromPhoneBook;
-        getWooContactsRequestParams.accountId = "0102600C-AB5F-4385-A7AC-8D6C6754FABD";
+        String uId = "";
+        if (GV.INSTANCE.getUniqueId().isEmpty()) {
+            uId = "";
+        } else {
+            uId = GV.INSTANCE.getUniqueId();
+        }
+        getWooContactsRequestParams.accountId = uId;
         xmppConnectionService.getWooContacts(getWooContactsRequestParams, EditAccountActivity.this);
+        Log.d(TAG ,"iwejfpiscpsaomcpSC"+uId);
     }
 
 
@@ -881,7 +888,6 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                 binding.loginWithPhoneLayout.setVisibility(View.VISIBLE);
                 binding.lgnwithEmailBtn.setText("Login With Email");
             }
-
         });
     }
 
@@ -1672,12 +1678,16 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                 if (languageCode == null || languageCode.isEmpty()) {
                     languageCode = "en";
                 }
-                performXMPPLoginAttempt(jid, password, 5222, null, languageCode);
+
                 // get Woaa Contacts Api
                 getContactPermission();
+                performXMPPLoginAttempt(jid, password, 5222, null, languageCode);
 
             } else if (result instanceof BaseModelAPIResponse) {
                 Toast.makeText(context, ((BaseModelAPIResponse) result).Message, Toast.LENGTH_LONG).show();
+                // get Woaa Contacts Api
+                getContactPermission();
+
 
                 hideProgressDialog();
                 Log.d("onLoginApiResultFound", " BaseModelAPIResponse Called in EditActivity " + ((BaseModelAPIResponse) result).Message);
@@ -1690,10 +1700,13 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     }
 
     private void getContactPermission() {
+        Log.d(TAG, "iojoasicoaksncasicn: " );
+
 //        if (Build.VERSION.SDK_INT >= 23) {
         if (!hasPermissions(PERMISSIONS)) {
             ActivityCompat.requestPermissions((Activity) context, PERMISSIONS, REQUEST);
         } else {
+
             getContactListFromPhoneBook();
         }
 //        timer is set on getContactList() fun because when user allow permission of contacts after 3 sec all contacts is uploaded
@@ -1724,7 +1737,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
                 Log.d("response Contact", String.valueOf(((GetWooContactsModel) result).Data.size()));
             } else if (result instanceof BaseModelAPIResponse) {
-                Toast.makeText(context, ((BaseModelAPIResponse) result).Message, Toast.LENGTH_LONG).show();
+//                Toast.makeText(context, ((BaseModelAPIResponse) result).Message, Toast.LENGTH_LONG).show();
                 hideProgressDialog();
                 Log.d("WooContactAPiResult", " BaseModelAPIResponse Called in EditActivity " + ((BaseModelAPIResponse) result).Message);
             } else {
