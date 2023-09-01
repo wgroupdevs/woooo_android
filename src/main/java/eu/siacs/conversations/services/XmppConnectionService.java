@@ -540,27 +540,33 @@ public class XmppConnectionService extends Service {
         return this.mAvatarService;
     }
 
-    public void attachLocationToConversation(final Conversation conversation, final Uri uri, final UiCallback<Message> callback) {
+    public void attachLocationToConversation(final Message parentMessage, final Conversation conversation, final Uri uri, final UiCallback<Message> callback) {
         int encryption = conversation.getNextEncryption();
-        if (encryption == Message.ENCRYPTION_PGP) {
-            encryption = Message.ENCRYPTION_DECRYPTED;
-        }
+
         Message message = new Message(conversation, uri.toString(), encryption);
-        Message.configurePrivateMessage(message);
-        if (encryption == Message.ENCRYPTION_DECRYPTED) {
-            getPgpEngine().encrypt(message, callback);
-        } else {
-            sendMessage(message);
-            callback.success(message);
+        if (parentMessage != null && parentMessage.isReply()) {
+            message.setReply(true);
+            if (parentMessage.getStatus() <= Message.STATUS_RECEIVED) {
+                message.setParentMsgId(parentMessage.getRemoteMsgId());
+            } else {
+                message.setParentMsgId(parentMessage.getUuid());
+            }
         }
+        Message.configurePrivateMessage(message);
+        sendMessage(message);
+        callback.success(message);
     }
 
-    public void attachFileToConversation(final Conversation conversation, final Uri uri, final String type, final UiCallback<Message> callback) {
+    public void attachFileToConversation(final Message parentMessage, final Conversation conversation, final Uri uri, final String type, final UiCallback<Message> callback) {
         final Message message;
-        if (conversation.getNextEncryption() == Message.ENCRYPTION_PGP) {
-            message = new Message(conversation, "", Message.ENCRYPTION_DECRYPTED);
-        } else {
-            message = new Message(conversation, "", conversation.getNextEncryption());
+        message = new Message(conversation, "", conversation.getNextEncryption());
+        if (parentMessage != null && parentMessage.isReply()) {
+            message.setReply(true);
+            if (parentMessage.getStatus() <= Message.STATUS_RECEIVED) {
+                message.setParentMsgId(parentMessage.getRemoteMsgId());
+            } else {
+                message.setParentMsgId(parentMessage.getUuid());
+            }
         }
         if (!Message.configurePrivateFileMessage(message)) {
             message.setCounterpart(conversation.getNextCounterpart());
@@ -576,21 +582,28 @@ public class XmppConnectionService extends Service {
         }
     }
 
-    public void attachImageToConversation(final Conversation conversation, final Uri uri, final String type, final UiCallback<Message> callback) {
+    public void attachImageToConversation(final Message parentMessage, final Conversation conversation, final Uri uri, final String type, final UiCallback<Message> callback) {
         final String mimeType = MimeUtils.guessMimeTypeFromUriAndMime(this, uri, type);
         final String compressPictures = getCompressPicturesPreference();
 
         if ("never".equals(compressPictures) || ("auto".equals(compressPictures) && getFileBackend().useImageAsIs(uri)) || (mimeType != null && mimeType.endsWith("/gif")) || getFileBackend().unusualBounds(uri)) {
             Log.d(Config.LOGTAG, conversation.getAccount().getJid().asBareJid() + ": not compressing picture. sending as file");
-            attachFileToConversation(conversation, uri, mimeType, callback);
+            attachFileToConversation(parentMessage, conversation, uri, mimeType, callback);
             return;
         }
         final Message message;
-        if (conversation.getNextEncryption() == Message.ENCRYPTION_PGP) {
-            message = new Message(conversation, "", Message.ENCRYPTION_DECRYPTED);
-        } else {
-            message = new Message(conversation, "", conversation.getNextEncryption());
+        message = new Message(conversation, "", conversation.getNextEncryption());
+
+        if (parentMessage != null && parentMessage.isReply()) {
+            message.setReply(true);
+            if (parentMessage.getStatus() <= Message.STATUS_RECEIVED) {
+                message.setParentMsgId(parentMessage.getRemoteMsgId());
+            } else {
+                message.setParentMsgId(parentMessage.getUuid());
+            }
         }
+
+
         if (!Message.configurePrivateFileMessage(message)) {
             message.setCounterpart(conversation.getNextCounterpart());
             message.setType(Message.TYPE_IMAGE);
@@ -601,7 +614,7 @@ public class XmppConnectionService extends Service {
                 getFileBackend().copyImageToPrivateStorage(message, uri);
             } catch (FileBackend.ImageCompressionException e) {
                 Log.d(Config.LOGTAG, "unable to compress image. fall back to file transfer", e);
-                attachFileToConversation(conversation, uri, mimeType, callback);
+                attachFileToConversation(parentMessage, conversation, uri, mimeType, callback);
                 return;
             } catch (final FileBackend.FileCopyException e) {
                 callback.error(e.getResId(), message);
@@ -1579,8 +1592,6 @@ public class XmppConnectionService extends Service {
         }
 
         final boolean inProgressJoin = isJoinInProgress(conversation);
-
-
         if (account.isOnlineAndConnected() && !inProgressJoin) {
             switch (message.getEncryption()) {
                 case Message.ENCRYPTION_NONE:
@@ -1702,7 +1713,10 @@ public class XmppConnectionService extends Service {
             if (message.getTranslationStatus()) {
                 packet.setTranslationStatus(Message.TRANSLATION_ON);
             }
-
+//            if (message.isDeletedForMe()) {
+//                packet.setRemoveElement(message);
+//                Log.d(TAG, "setRemoveElement Called...");
+//            }
 
             if (delay) {
                 mMessageGenerator.addDelay(packet, message.getTimeSent());
@@ -1961,12 +1975,13 @@ public class XmppConnectionService extends Service {
         });
     }
 
-    private void restoreFromDatabase() {
+    public void restoreFromDatabase() {
         synchronized (this.conversations) {
             final Map<String, Account> accountLookupTable = new Hashtable<>();
             for (Account account : this.accounts) {
                 accountLookupTable.put(account.getUuid(), account);
             }
+            this.conversations.clear();
             Log.d(Config.LOGTAG, "restoring conversations...");
             final long startTimeConversationsRestore = SystemClock.elapsedRealtime();
             this.conversations.addAll(databaseBackend.getConversations(Conversation.STATUS_AVAILABLE));
@@ -2023,7 +2038,7 @@ public class XmppConnectionService extends Service {
         }
     }
 
-    private void restoreMessages(Conversation conversation) {
+    public void restoreMessages(Conversation conversation) {
         conversation.addAll(0, databaseBackend.getMessages(conversation, Config.PAGE_SIZE));
         conversation.findUnsentTextMessages(message -> markMessage(message, Message.STATUS_WAITING));
         conversation.findUnreadMessagesAndCalls(mNotificationService::pushFromBacklog);

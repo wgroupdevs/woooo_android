@@ -328,6 +328,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     }
 
     private void loginAccountXMPP() {
+
         xmppConnectionService.databaseBackend.clearDatabase();
 
         final String password = binding.accountPassword.getText().toString();
@@ -600,7 +601,10 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             }
             StartConversationActivity.addInviteUri(intent, getIntent());
 
+
             hideProgressDialog();
+
+
             startActivity(intent);
             finish();
         });

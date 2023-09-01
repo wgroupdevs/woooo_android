@@ -1,2 +1,0 @@
-* Shtim butoni për të ndërruar kamerën gjatë thirrjeje video
-* U ndreqën thirrje me zë në tablete

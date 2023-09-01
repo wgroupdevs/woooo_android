@@ -298,6 +298,7 @@ public class ConversationsOverviewFragment extends XmppFragment {
         this.conversationsAdapter = new ConversationAdapter(this.activity, this.conversations);
         this.conversationsAdapter.setConversationClickListener((view, conversation) -> {
             if (activity instanceof OnConversationSelected) {
+
                 Log.d(TAG, "Item Clicked..." + conversation.countMessages());
 
                 ((OnConversationSelected) activity).onConversationSelected(conversation);

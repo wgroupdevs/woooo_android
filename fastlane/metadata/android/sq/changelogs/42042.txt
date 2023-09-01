@@ -1,2 +1,0 @@
-* Ndreqje qerthulli ridërgimi në shërbyes që mbulojnë vetëm sm:2
-* “Kalo në video” shfaqe vetëm nëse pala tjetër mbulon video

@@ -460,14 +460,13 @@ public class Conversation extends AbstractEntity implements Blockable, Comparabl
         return false;
     }
 
-    public void populateWithMessages(final List<Message> messages) {
+    public void populateWithMessages(List<Message> messages) {
 
 
         Log.d("Conversation_TAG", "populateWithMessages  Called...");
         synchronized (this.messages) {
             messages.clear();
             messages.addAll(this.messages);
-
         }
         for (Iterator<Message> iterator = messages.iterator(); iterator.hasNext(); ) {
             if (iterator.next().wasMergedIntoPrevious()) {
@@ -987,6 +986,11 @@ public class Conversation extends AbstractEntity implements Blockable, Comparabl
     public void add(Message message) {
         synchronized (this.messages) {
             this.messages.add(message);
+        }
+    }
+    public void removeMessage(Message message) {
+        synchronized (this.messages) {
+            this.messages.remove(message);
         }
     }
 

@@ -88,6 +88,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
     public static final String READ_BY_MARKERS = "readByMarkers";
     public static final String MARKABLE = "markable";
     public static final String DELETED = "deleted";
+    public static final String DELETE_FOR_ME = "deletedForMe";
     public static final String FORWARDED = "forwarded";
     public static final String TRANSLATED_BODY = "translatedBody";
     public static final String ME_COMMAND = "/me ";
@@ -109,6 +110,9 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
     protected int status;
     protected int type;
     protected boolean deleted = false;
+
+
+    protected boolean deletedForMe = false;
     protected boolean forwarded = false;
 
 
@@ -182,6 +186,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
                 false,
                 false,
                 false,
+                false,
                 null);
     }
 
@@ -210,6 +215,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
                 false,
                 false,
                 false,
+                false,
                 null);
     }
 
@@ -219,7 +225,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
                       final String remoteMsgId, final String relativeFilePath,
                       final String serverMsgId, String parentMsgId, final String fingerprint, final boolean read,
                       final String edited, final boolean oob, final String errorMessage, final Set<ReadByMarker> readByMarkers,
-                      final boolean markable, final boolean deleted, final boolean forwarded, final String bodyLanguage) {
+                      final boolean markable, final boolean deleted, final boolean deletedForMe, final boolean forwarded, final String bodyLanguage) {
         this.conversation = conversation;
         this.uuid = uuid;
         this.conversationUuid = conversationUUid;
@@ -244,6 +250,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
         this.readByMarkers = readByMarkers == null ? new CopyOnWriteArraySet<>() : readByMarkers;
         this.markable = markable;
         this.deleted = deleted;
+        this.deletedForMe = deletedForMe;
         this.forwarded = forwarded;
         this.bodyLanguage = bodyLanguage;
     }
@@ -275,6 +282,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
                 ReadByMarker.fromJsonString(cursor.getString(cursor.getColumnIndex(READ_BY_MARKERS))),
                 cursor.getInt(cursor.getColumnIndex(MARKABLE)) > 0,
                 cursor.getInt(cursor.getColumnIndex(DELETED)) > 0,
+                cursor.getInt(cursor.getColumnIndex(DELETE_FOR_ME)) > 0,
                 cursor.getInt(cursor.getColumnIndex(FORWARDED)) > 0,
                 cursor.getString(cursor.getColumnIndex(BODY_LANGUAGE))
         );
@@ -347,6 +355,7 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
         values.put(READ_BY_MARKERS, ReadByMarker.toJson(readByMarkers).toString());
         values.put(MARKABLE, markable ? 1 : 0);
         values.put(DELETED, deleted ? 1 : 0);
+        values.put(DELETE_FOR_ME, deletedForMe ? 1 : 0);
         values.put(FORWARDED, forwarded ? 1 : 0);
         values.put(BODY_LANGUAGE, bodyLanguage);
         return values;
@@ -407,6 +416,14 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
 
     public synchronized void setForwarded(boolean forwarded) {
         this.forwarded = forwarded;
+    }
+
+    public boolean isDeletedForMe() {
+        return deletedForMe;
+    }
+
+    public void setDeletedForMe(boolean deletedForMe) {
+        this.deletedForMe = deletedForMe;
     }
 
     public boolean isReply() {

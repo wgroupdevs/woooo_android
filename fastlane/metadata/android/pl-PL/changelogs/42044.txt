@@ -1,3 +1,0 @@
-* Naprawiono ponowne wysyłanie wiadomości podczas używania SASL2
-* Naprawiono czarny obraz wideo pomiędzy niektórymi urządzeniami
-* Naprawiono awarię przy użyciu pustych haseł

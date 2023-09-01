@@ -1,2 +1,0 @@
-* Knapp för att byta kamera under videosamtal
-* Fix för röstsamtal på plattor

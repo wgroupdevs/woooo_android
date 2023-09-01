@@ -1,2 +1,0 @@
-* Ndreqje përzgjedhjesh avatari në disa pajisje Android 10
-* Ndreqje shpërnguljesh kartelash për kartela të mëdha

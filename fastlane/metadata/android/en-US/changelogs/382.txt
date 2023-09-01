@@ -1,2 +1,0 @@
-* Add button to switch camera during video call
-* Fixed voice calls on tablets

@@ -1,1 +1,0 @@
-* Naprawiono regresję w przesyłaniu plików P2P

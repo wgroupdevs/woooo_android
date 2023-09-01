@@ -43,8 +43,8 @@ public class IndividualMessage extends Message {
         super(conversation);
     }
 
-    private IndividualMessage(Conversational conversation, String uuid, String conversationUUid, Jid counterpart, Jid trueCounterpart, String body, String translatedBody, long timeSent, int encryption, int status, int type, boolean carbon, String remoteMsgId, String relativeFilePath, String serverMsgId, String parentMsgId, String fingerprint, boolean read, String edited, boolean oob, String errorMessage, Set<ReadByMarker> readByMarkers, boolean markable, boolean deleted, boolean forwarded, String bodyLanguage) {
-        super(conversation, uuid, conversationUUid, counterpart, trueCounterpart, body, translatedBody, timeSent, encryption, status, type, carbon, remoteMsgId, relativeFilePath, serverMsgId, parentMsgId, fingerprint, read, edited, oob, errorMessage, readByMarkers, markable, deleted, forwarded, bodyLanguage);
+    private IndividualMessage(Conversational conversation, String uuid, String conversationUUid, Jid counterpart, Jid trueCounterpart, String body, String translatedBody, long timeSent, int encryption, int status, int type, boolean carbon, String remoteMsgId, String relativeFilePath, String serverMsgId, String parentMsgId, String fingerprint, boolean read, String edited, boolean oob, String errorMessage, Set<ReadByMarker> readByMarkers, boolean markable, boolean deleted,boolean deletedForMe, boolean forwarded, String bodyLanguage) {
+        super(conversation, uuid, conversationUUid, counterpart, trueCounterpart, body, translatedBody, timeSent, encryption, status, type, carbon, remoteMsgId, relativeFilePath, serverMsgId, parentMsgId, fingerprint, read, edited, oob, errorMessage, readByMarkers, markable, deleted, deletedForMe,forwarded, bodyLanguage);
     }
 
     @Override
@@ -119,6 +119,7 @@ public class IndividualMessage extends Message {
                 ReadByMarker.fromJsonString(cursor.getString(cursor.getColumnIndex(READ_BY_MARKERS))),
                 cursor.getInt(cursor.getColumnIndex(MARKABLE)) > 0,
                 cursor.getInt(cursor.getColumnIndex(DELETED)) > 0,
+                cursor.getInt(cursor.getColumnIndex(DELETE_FOR_ME)) > 0,
                 cursor.getInt(cursor.getColumnIndex(FORWARDED)) > 0,
                 cursor.getString(cursor.getColumnIndex(BODY_LANGUAGE))
         );

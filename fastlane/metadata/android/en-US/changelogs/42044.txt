@@ -1,3 +1,0 @@
-* Fix messages getting resend when using SASL2
-* Fix black video between some devices
-* Fix crash on empty passwords

@@ -30,12 +30,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 
 import org.openintents.openpgp.util.OpenPgpUtils;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
@@ -59,7 +62,6 @@ import eu.siacs.conversations.ui.util.MenuDoubleTabUtil;
 import eu.siacs.conversations.utils.AccountUtils;
 import eu.siacs.conversations.utils.Compatibility;
 import eu.siacs.conversations.utils.Emoticons;
-import eu.siacs.conversations.utils.IrregularUnicodeDetector;
 import eu.siacs.conversations.utils.PhoneNumberUtilWrapper;
 import eu.siacs.conversations.utils.UIHelper;
 import eu.siacs.conversations.utils.XmppUri;
@@ -196,7 +198,8 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
             return "xmpp:" + contact.getJid().asBareJid().toEscapedString();
         }
     }
-
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -226,6 +229,15 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
         mMediaAdapter = new MediaAdapter(this, R.dimen.media_size);
         this.binding.media.setAdapter(mMediaAdapter);
         GridManager.setupLayoutManager(this, this.binding.media, R.dimen.media_size);
+//
+//        UserPreferencesViewModel userPrefVM = new ViewModelProvider(this, viewModelFactory).get(UserPreferencesViewModel.class);
+//
+//        Log.d("CONTACT_DETAIL_LOG","User_INFO :" + userPrefVM.getUser().getPhoneNumber());
+//        Log.d("CONTACT_DETAIL_LOG","User_INFO :" + userPrefVM.getUser().getEmail());
+//        Log.d("CONTACT_DETAIL_LOG","User_INFO :" + userPrefVM.getUser().getFirstName());
+//
+
+
     }
 
     @Override
@@ -423,7 +435,7 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
             }
         }
 
-        binding.detailsContactjid.setText(IrregularUnicodeDetector.style(this, contact.getJid()));
+        binding.detailsContactjid.setText(contact.getDisplayName());
         String account;
         if (Config.DOMAIN_LOCK != null) {
             account = contact.getAccount().getJid().getEscapedLocal();

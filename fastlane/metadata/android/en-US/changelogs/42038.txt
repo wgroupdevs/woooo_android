@@ -1,2 +1,0 @@
-* Minor bug fixes
-* Restore ability to call out via JMP and other services (Playstore version)

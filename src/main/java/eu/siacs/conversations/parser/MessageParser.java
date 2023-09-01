@@ -587,8 +587,6 @@ public class MessageParser extends AbstractParser implements OnMessagePacketRece
                     message.setBodyLanguage(body.language);
                 }
             }
-
-            message.setTranslatedBody("");
             message.setCounterpart(counterpart);
             message.setRemoteMsgId(remoteMsgId);
             message.setServerMsgId(serverMsgId);

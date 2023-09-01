@@ -68,7 +68,6 @@ import eu.siacs.conversations.utils.CryptoHelper;
 import eu.siacs.conversations.utils.Emoticons;
 import eu.siacs.conversations.utils.GeoHelper;
 import eu.siacs.conversations.utils.MessageUtils;
-import eu.siacs.conversations.utils.MimeUtils;
 import eu.siacs.conversations.utils.StylingHelper;
 import eu.siacs.conversations.utils.TimeFrameUtils;
 import eu.siacs.conversations.utils.UIHelper;
@@ -143,6 +142,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             OnContactPictureLongClicked listener) {
         this.mOnContactPictureLongClickedListener = listener;
     }
+
 
     @Override
     public int getViewTypeCount() {
@@ -529,72 +529,6 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
         }
 
-    }
-
-
-    void showMessageIcon(final ViewHolder viewHolder, Message message) {
-        final boolean fileAvailable = !message.isDeleted();
-        final boolean showPreviewText;
-        if (fileAvailable
-                && (message.isFileOrImage()
-                || message.treatAsDownloadable()
-                || message.isGeoUri())) {
-            final int imageResource;
-            if (message.isGeoUri()) {
-                imageResource =
-                        activity.getThemeResource(
-                                R.attr.ic_attach_location, R.drawable.ic_attach_location);
-            } else {
-                // TODO move this into static MediaPreview method and use same icons as in
-                // MediaAdapter
-                final String mime = message.getMimeType();
-                if (MimeUtils.AMBIGUOUS_CONTAINER_FORMATS.contains(mime)) {
-                    final Message.FileParams fileParams = message.getFileParams();
-                    if (fileParams.width > 0 && fileParams.height > 0) {
-                        imageResource =
-                                activity.getThemeResource(
-                                        R.attr.ic_attach_videocam,
-                                        R.drawable.ic_attach_videocam);
-                    } else if (fileParams.runtime > 0) {
-                        imageResource =
-                                activity.getThemeResource(
-                                        R.attr.ic_attach_record, R.drawable.ic_attach_record);
-                    } else {
-                        imageResource =
-                                activity.getThemeResource(
-                                        R.attr.ic_attach_document,
-                                        R.drawable.ic_attach_document);
-                    }
-                } else {
-                    switch (Strings.nullToEmpty(mime).split("/")[0]) {
-                        case "image":
-                            imageResource =
-                                    activity.getThemeResource(
-                                            R.attr.ic_attach_photo, R.drawable.ic_attach_photo);
-                            break;
-                        case "video":
-                            imageResource =
-                                    activity.getThemeResource(
-                                            R.attr.ic_attach_videocam,
-                                            R.drawable.ic_attach_videocam);
-                            break;
-                        case "audio":
-                            imageResource =
-                                    activity.getThemeResource(
-                                            R.attr.ic_attach_record,
-                                            R.drawable.ic_attach_record);
-                            break;
-                        default:
-                            imageResource =
-                                    activity.getThemeResource(
-                                            R.attr.ic_attach_document,
-                                            R.drawable.ic_attach_document);
-                            break;
-                    }
-                }
-            }
-            viewHolder.parentBody.setVisibility(View.GONE);
-        }
     }
 
     private void displayDownloadableMessage(ViewHolder viewHolder, final Message message, String text, final boolean darkBackground) {

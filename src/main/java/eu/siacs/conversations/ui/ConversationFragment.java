@@ -50,6 +50,7 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.PopupMenu;
@@ -681,7 +682,12 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         if (conversation == null) {
             return;
         }
-        activity.xmppConnectionService.attachLocationToConversation(conversation, uri, new UiCallback<Message>() {
+        if (reply) {
+            selectedMessage.setReply(true);
+            this.binding.replyMessageBox.setVisibility(View.GONE);
+            reply = false;
+        }
+        activity.xmppConnectionService.attachLocationToConversation(selectedMessage, conversation, uri, new UiCallback<Message>() {
 
             @Override
             public void success(Message message) {
@@ -705,7 +711,13 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         final Toast prepareFileToast = Toast.makeText(getActivity(), getText(R.string.preparing_file), Toast.LENGTH_LONG);
         prepareFileToast.show();
         activity.delegateUriPermissionsToService(uri);
-        activity.xmppConnectionService.attachFileToConversation(conversation, uri, type, new UiInformableCallback<Message>() {
+
+        if (reply) {
+            selectedMessage.setReply(true);
+            this.binding.replyMessageBox.setVisibility(View.GONE);
+            reply = false;
+        }
+        activity.xmppConnectionService.attachFileToConversation(selectedMessage, conversation, uri, type, new UiInformableCallback<Message>() {
             @Override
             public void inform(final String text) {
                 hidePrepareFileToast(prepareFileToast);
@@ -743,7 +755,13 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         final Toast prepareFileToast = Toast.makeText(getActivity(), getText(R.string.preparing_image), Toast.LENGTH_LONG);
         prepareFileToast.show();
         activity.delegateUriPermissionsToService(uri);
-        activity.xmppConnectionService.attachImageToConversation(conversation, uri, type, new UiCallback<Message>() {
+
+        if (reply) {
+            selectedMessage.setReply(true);
+            this.binding.replyMessageBox.setVisibility(View.GONE);
+            reply = false;
+        }
+        activity.xmppConnectionService.attachImageToConversation(selectedMessage, conversation, uri, type, new UiCallback<Message>() {
 
             @Override
             public void userInputRequired(PendingIntent pi, Message object) {
@@ -818,11 +836,8 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             Log.d(TAG, "UUID.randomUUID().toString()");
 
         }
-        if (conversation.getNextEncryption() == Message.ENCRYPTION_PGP) {
-            sendPgpMessage(message);
-        } else {
-            sendMessage(message);
-        }
+        sendMessage(message);
+
     }
 
     private boolean trustKeysIfNeeded(final Conversation conversation, final int requestCode) {
@@ -1288,15 +1303,13 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
                 cancelTransmission.setVisible(true);
             }
             if (m.isFileOrImage() && !deleted && !cancelable) {
-
-
                 final String path = m.getRelativeFilePath();
                 Log.d("populateContextMenu", "File Path :" + path);
-
                 if (path == null || !path.startsWith("/") || FileBackend.inConversationsDirectory(requireActivity(), path)) {
-                    deleteFile.setVisible(true);
                     deleteFile.setTitle(activity.getString(R.string.delete_x_file, UIHelper.getFileDescriptionString(activity, m)));
                 }
+            } else {
+                deleteFile.setTitle("Delete message");
             }
             if (showError) {
                 showErrorMessage.setVisible(true);
@@ -1399,7 +1412,8 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             retryDecryption(selectedMessage);
             return true;
         } else if (itemId == R.id.delete_file) {
-            deleteFile(selectedMessage);
+            showDeleteMessageDialog(selectedMessage);
+//            deleteFile(selectedMessage);
             return true;
         } else if (itemId == R.id.show_error_message) {
             showErrorMessage(selectedMessage);
@@ -2053,6 +2067,45 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         builder.create().show();
     }
 
+
+    private void showDeleteMessageDialog(final Message message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        View dialogView = activity.getLayoutInflater().inflate(R.layout.delete_message_dialog, null);
+        builder.setTitle("Delete message ?");
+        // Customize the dialog view as needed
+        Button deleteForMe = dialogView.findViewById(R.id.delete_for_me);
+        Button deleteForEveryone = dialogView.findViewById(R.id.delete_for_everyone);
+
+        if (message.getStatus() > Message.STATUS_RECEIVED) {
+            deleteForEveryone.setVisibility(View.VISIBLE);
+        }
+        // Set the custom view to the builder
+        builder.setView(dialogView);
+
+        // Add buttons or other configurations as needed
+        builder.setNegativeButton(R.string.cancel, null);
+
+        // Create and show the dialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        deleteForMe.setOnClickListener(v -> {
+            Log.d(TAG, "DELETE FOR ME CLICKED....");
+            message.setDeletedForMe(true);
+            activity.xmppConnectionService.updateMessage(message, false);
+            this.messageList.remove(message);
+            messageListAdapter.remove(message);
+            messageListAdapter.notifyDataSetChanged();
+            this.conversation.removeMessage(message);
+            alertDialog.dismiss();
+        });
+        deleteForEveryone.setOnClickListener(v -> {
+            Log.d(TAG, "DELETE FOR EVERYONE CLICKED....");
+            alertDialog.dismiss();
+        });
+
+    }
+
     private void deleteFile(final Message message) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setNegativeButton(R.string.cancel, null);
@@ -2615,6 +2668,8 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     private void refresh(boolean notifyConversationRead) {
         synchronized (this.messageList) {
             if (this.conversation != null) {
+
+                Log.d(TAG, "refresh Called.......");
                 conversation.populateWithMessages(this.messageList);
                 updateSnackBar(conversation);
                 updateStatusMessages();

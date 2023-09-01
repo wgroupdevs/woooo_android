@@ -41,7 +41,14 @@ public class MessagePacket extends AbstractAcknowledgeableStanza {
         this.children.add(forwarded);
     }
 
-    public void setReplyElement(Message message) {
+    public void setRemoveElement(final Message message){
+        this.children.clear();
+        Element remove = new Element("remove", Namespace.REMOVE);
+        remove.setAttribute("id", message.getParentMsgId());
+        this.children.add(remove);
+    }
+
+    public void setReplyElement(final Message message) {
         Element reply = new Element("reply", Namespace.REPLY);
         reply.setAttribute("to", message.getContact().getJid());
         reply.setAttribute("id", message.getParentMsgId());

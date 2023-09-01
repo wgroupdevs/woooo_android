@@ -1,3 +1,0 @@
-* Shfaq shtylla të zeza, kur videoja nga larg nuk përputhet me përpjesëtimet e ekranit
-* Përmirësim funksionimi kërkimi
-* Shtim rregullimi për parandalim fotosh ekrani

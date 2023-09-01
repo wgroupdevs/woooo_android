@@ -140,8 +140,6 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
     implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
-
-
     //retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit"
     // country picker
@@ -149,7 +147,6 @@ dependencies {
     //okHttp
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.10.0'
-
     //coil
     implementation("io.coil-kt:coil-compose:2.3.0")
     //multidex
@@ -163,11 +160,14 @@ dependencies {
     //DataStore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     // socket
-    implementation ('io.socket:socket.io-client:2.1.0') {
+    implementation('io.socket:socket.io-client:2.1.0') {
         exclude group: 'org.json', module: 'json'
     }
-    // media Soup
-//    implementation 'io.github.haiyangwu:mediasoup-client:3.4.0'
+
+//     media Soup
+//    implementation('io.github.haiyangwu:mediasoup-client:3.4.0') {
+//        transitive = true
+//        exclude group: 'org.webrtc', module: 'webrtc' }
 
 }
 

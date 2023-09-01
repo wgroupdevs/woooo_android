@@ -18,6 +18,7 @@ public final class Namespace {
     public static final String OOB = "jabber:x:oob";
     public static final String FORWARD = "urn:xmpp:forward:0";
     public static final String REPLY = "urn:xmpp:reply:0";
+    public static final String REMOVE = "urn:xmpp:message-delete:0";
     public static final String SASL = "urn:ietf:params:xml:ns:xmpp-sasl";
     public static final String SASL_2 = "urn:xmpp:sasl:2";
     public static final String CHANNEL_BINDING = "urn:xmpp:sasl-cb:0";

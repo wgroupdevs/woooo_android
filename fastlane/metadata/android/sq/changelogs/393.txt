@@ -1,3 +1,0 @@
-* Shfaqje butoni ndihme, nëse thirrja A/V dështon
-* U ndreqën disa vithisje të bezdisshme
-* U ndreqën lidhje Jingle (shpërngulje kartelash + thirrje) me JID-ra të zhveshura

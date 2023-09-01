@@ -63,7 +63,7 @@ import eu.siacs.conversations.xmpp.mam.MamReference;
 
 public class DatabaseBackend extends SQLiteOpenHelper {
 
-    private static final String DATABASE_NAME = "history";
+    public static final String DATABASE_NAME = "history";
     private static final int DATABASE_VERSION = 51;
 
     private static boolean requiresMessageIndexRebuild = false;
@@ -263,6 +263,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 + Message.READ_BY_MARKERS + " TEXT,"
                 + Message.MARKABLE + " NUMBER DEFAULT 0,"
                 + Message.DELETED + " NUMBER DEFAULT 0,"
+                + Message.DELETE_FOR_ME + " NUMBER DEFAULT 0,"
                 + Message.FORWARDED + " NUMBER DEFAULT 0,"
                 + Message.BODY_LANGUAGE + " TEXT,"
                 + Message.REMOTE_MSG_ID + " TEXT, FOREIGN KEY("
@@ -805,15 +806,17 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor;
         if (timestamp == -1) {
-            String[] selectionArgs = {conversation.getUuid()};
-            cursor = db.query(Message.TABLENAME, null, Message.CONVERSATION
-                    + "=?", selectionArgs, null, null, Message.TIME_SENT
-                    + " DESC", String.valueOf(limit));
+            String[] selectionArgs = {conversation.getUuid(), "0"};
+            cursor = db.query(Message.TABLENAME, null,
+                    Message.CONVERSATION + "=? AND " +
+                            Message.DELETE_FOR_ME + "=?",
+                    selectionArgs, null, null, Message.TIME_SENT
+                            + " DESC", String.valueOf(limit));
         } else {
             String[] selectionArgs = {conversation.getUuid(),
-                    Long.toString(timestamp)};
+                    Long.toString(timestamp), "0"};
             cursor = db.query(Message.TABLENAME, null, Message.CONVERSATION
-                            + "=? and " + Message.TIME_SENT + "<?", selectionArgs,
+                            + "=? and " + Message.TIME_SENT + "<? AND " + Message.DELETE_FOR_ME + "=?", selectionArgs,
                     null, null, Message.TIME_SENT + " DESC",
                     String.valueOf(limit));
         }
@@ -879,6 +882,19 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         final ContentValues contentValues = new ContentValues();
         final String where = Message.UUID + "=?";
         contentValues.put(Message.DELETED, 1);
+        db.beginTransaction();
+        for (String uuid : uuids) {
+            db.update(Message.TABLENAME, contentValues, where, new String[]{uuid});
+        }
+        db.setTransactionSuccessful();
+        db.endTransaction();
+    }
+
+    public void markMessageDeletedForMe(List<String> uuids) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        final ContentValues contentValues = new ContentValues();
+        final String where = Message.UUID + "=?";
+        contentValues.put(Message.DELETE_FOR_ME, 1);
         db.beginTransaction();
         for (String uuid : uuids) {
             db.update(Message.TABLENAME, contentValues, where, new String[]{uuid});
@@ -1264,19 +1280,36 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 args);
     }
 
+    public void deleteAllData() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                String tableName = cursor.getString(0);
+                if (!tableName.equals("android_metadata") && !tableName.equals("sqlite_sequence")) {
+                    db.delete(tableName, null, null);
+                }
+            }
+            cursor.close();
+        }
+        Log.d("DATABASE_BACKEND", "deleteAllData Called : ");
+
+    }
+
+
     public void clearDatabase() {
 
         Log.d("DATABASE_BACKEND", "clearDatabase Called");
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM " + Account.TABLENAME);
-        db.execSQL("DELETE FROM " + SQLiteAxolotlStore.SESSION_TABLENAME);
-        db.execSQL("DELETE FROM " + Contact.TABLENAME);
-        db.execSQL("DELETE FROM " + Conversation.TABLENAME);
-        db.execSQL("DELETE FROM " + Message.TABLENAME);
-        db.execSQL("DELETE FROM " + SQLiteAxolotlStore.IDENTITIES_TABLENAME);
-        db.close();
+        db.delete(Account.TABLENAME, null, null);
+        db.delete(SQLiteAxolotlStore.SESSION_TABLENAME, null, null);
+        db.delete(Contact.TABLENAME, null, null);
+        db.delete(Conversation.TABLENAME, null, null);
+        db.delete(Message.TABLENAME, null, null);
+        db.delete(SQLiteAxolotlStore.IDENTITIES_TABLENAME, null, null);
 
-
+        deleteAllData();
     }
 
     private Cursor getCursorForPreKey(Account account, int preKeyId) {

@@ -1,2 +1,0 @@
-* Sjellje e paraparjes për PDF në Android 5+
-* Përdor 12 byte IV për OMEMO

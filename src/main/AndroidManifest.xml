@@ -78,7 +78,7 @@
 
     <application
         android:name="com.wgroup.woooo_app.woooo.di.WooApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:appCategory="social"
         android:fullBackupContent="@xml/backup_content"
         android:hardwareAccelerated="true"
