@@ -108,7 +108,7 @@ dependencies {
 
     implementation 'com.google.guava:guava:31.1-android'
     quicksyImplementation 'io.michaelrocks:libphonenumber-android:8.12.49'
-    implementation 'im.conversations.webrtc:webrtc-android:104.0.0'
+//    implementation 'im.conversations.webrtc:webrtc-android:104.0.0'
 
 
     /// New dependencies
@@ -164,10 +164,9 @@ dependencies {
         exclude group: 'org.json', module: 'json'
     }
 
-//     media Soup
-//    implementation('io.github.haiyangwu:mediasoup-client:3.4.0') {
-//        transitive = true
-//        exclude group: 'org.webrtc', module: 'webrtc' }
+    //media-soup
+    implementation 'io.github.haiyangwu:mediasoup-client:3.4.0'
+
 
 }
 
