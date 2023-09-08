@@ -1409,6 +1409,8 @@ public class XmppConnectionService extends Service {
                 startForeground(id, notification);
                 mNotificationService.cancel(NotificationService.FOREGROUND_NOTIFICATION_ID);
             } else {
+
+                //foreground Service notification
                 notification = this.mNotificationService.createForegroundNotification();
                 id = NotificationService.FOREGROUND_NOTIFICATION_ID;
                 startForeground(id, notification);

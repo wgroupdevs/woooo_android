@@ -24,8 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_1sdp"
         android:autoLink="web"
-        android:longClickable="false"
-        android:textAppearance="@style/TextAppearance.Conversations.Body1" />
+        android:longClickable="false"/>
 
 
     <ImageView

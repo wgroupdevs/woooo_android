@@ -90,6 +90,7 @@ import eu.siacs.conversations.utils.XmppUri;
 import eu.siacs.conversations.xmpp.Jid;
 import eu.siacs.conversations.xmpp.OnUpdateBlocklist;
 import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel;
+
 @AndroidEntryPoint
 public class ConversationsActivity extends XmppActivity implements OnConversationSelected, OnConversationArchived, OnConversationsListItemUpdated, OnConversationRead, XmppConnectionService.OnAccountUpdate, XmppConnectionService.OnConversationUpdate, XmppConnectionService.OnRosterUpdate, OnUpdateBlocklist, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnAffiliationChanged {
 
@@ -97,6 +98,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
     public static final String EXTRA_CONVERSATION = "conversationUuid";
     public static final String EXTRA_DOWNLOAD_UUID = "eu.siacs.conversations.download_uuid";
     public static final String EXTRA_AS_QUOTE = "eu.siacs.conversations.as_quote";
+    public static final String EXTRA_SHOW_CALL_LOGS = "show_call_logs";
     public static final String EXTRA_NICK = "nick";
     public static final String EXTRA_IS_PRIVATE_MESSAGE = "pm";
     public static final String EXTRA_DO_NOT_APPEND = "do_not_append";
@@ -387,32 +389,59 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         ImageView backButton = findViewById(R.id.toolbar_back_button);
         backButton.setOnClickListener(v -> super.onBackPressed());
 
-        assert binding.navigation != null;
-        binding.navigation.setOnItemSelectedListener(item -> {
-            super.onBackPressed();
-            return true;
-        });
-
+        //Bottom-Navigation-Bar
+        if (this.binding.navigation != null) {
+            binding.navigation.setOnItemSelectedListener(item -> {
+                switch (item.getItemId()) {
+                    case R.id.nav_call_btn:
+                        replaceFragment(new CallLogsFragment());
+                        break;
+                    case R.id.nav_chat_btn:
+                        replaceFragment(new ConversationsOverviewFragment());
+                        break;
+                    case R.id.nav_meeting_btn:
+                        replaceFragment(new MeetingMainFragment());
+                        break;
+                    case R.id.nav_wallet_btn:
+                        replaceFragment(new WalletMainFragment());
+                        break;
+                    default:
+                        super.onBackPressed();
+                        break;
+                }
+                return true;
+            });
+        }
         configureActionBar(getSupportActionBar());
         this.getFragmentManager().addOnBackStackChangedListener(this::invalidateActionBarTitle);
         this.getFragmentManager().addOnBackStackChangedListener(this::showDialogsIfMainIsOverview);
-        this.initializeFragments();
-        this.invalidateActionBarTitle();
+
         final Intent intent;
         if (savedInstanceState == null) {
             intent = getIntent();
         } else {
             intent = savedInstanceState.getParcelable("intent");
         }
+
+        if (intent != null) {
+            boolean showCall = intent.getBooleanExtra(ConversationsActivity.EXTRA_SHOW_CALL_LOGS, false);
+            if (showCall) {
+                this.binding.navigation.setSelectedItemId(R.id.nav_call_btn);
+                replaceFragment(new CallLogsFragment());
+            } else {
+                this.initializeFragments();
+            }
+        }
+
+        this.invalidateActionBarTitle();
+
         if (isViewOrShareIntent(intent)) {
             pendingViewIntent.push(intent);
             setIntent(createLauncherIntent(this));
         }
 
 
-
 //
-
 
 
         Log.d(TAG, "OnCreate Called");
@@ -618,6 +647,8 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         final Fragment mainFragment = fragmentManager.findFragmentById(R.id.main_fragment);
         final Fragment secondaryFragment = fragmentManager.findFragmentById(R.id.secondary_fragment);
+        Log.d(TAG, "initializeFragments Called ");
+
         if (mainFragment != null) {
             if (binding.secondaryFragment != null) {
                 if (mainFragment instanceof ConversationFragment) {
@@ -632,6 +663,8 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
                     return;
                 }
             } else {
+                Log.d(TAG, "initializeFragments Called binding.secondaryFragment != null else");
+
                 if (secondaryFragment instanceof ConversationFragment) {
                     transaction.remove(secondaryFragment);
                     transaction.commit();
@@ -650,6 +683,14 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
             transaction.replace(R.id.secondary_fragment, new ConversationFragment());
         }
         transaction.commit();
+    }
+
+    private void replaceFragment(Fragment fragment) {
+        final FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.main_fragment, fragment);
+        transaction.commit();
+
     }
 
     private void invalidateActionBarTitle() {

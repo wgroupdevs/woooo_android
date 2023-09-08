@@ -111,7 +111,6 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
     private boolean mHideOfflineContacts = false;
     private boolean createdByViewIntent = false;
     private final MenuItem.OnActionExpandListener mOnActionExpandListener = new MenuItem.OnActionExpandListener() {
-
         @Override
         public boolean onMenuItemActionExpand(MenuItem item) {
             mSearchEditText.post(() -> {
@@ -1310,7 +1309,7 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return getResources().getString(R.string.contacts);
+                    return getResources().getString(R.string.contact_list);
                 case 1:
                     return getResources().getString(R.string.group_chats);
                 default:

@@ -41,7 +41,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="-4dp"
         android:layout_toLeftOf="@+id/message_photo_box"
-        android:background="@drawable/sent_message_shape"
+        android:background="@drawable/message_sent_bubble_bg"
         android:longClickable="true"
         android:orientation="vertical"
         android:padding="@dimen/_5sdp"
@@ -56,7 +56,7 @@
             android:layout_marginStart="@dimen/_5sdp"
             android:layout_marginTop="2dp"
             android:layout_marginEnd="@dimen/_46sdp"
-            android:background="@drawable/bg_border"
+            android:background="@drawable/message_sent_bubble_bg"
             android:longClickable="true"
             android:orientation="vertical"
             android:minWidth="@dimen/_100sdp"
@@ -137,6 +137,7 @@
                     android:gravity="center_vertical"
                     android:text="@string/sending"
                     android:textColor="@color/white"
+                    android:alpha="0.70"
                     android:textAppearance="@style/TextAppearance.Conversations.Caption" />
 
                 <ImageView
@@ -162,9 +163,8 @@
                     android:layout_width="?attr/TextSizeSubhead"
                     android:layout_height="?attr/TextSizeSubhead"
                     android:layout_gravity="center_vertical"
-                    android:alpha="0.54"
                     android:gravity="center_vertical"
-                    android:src="@drawable/ic_done_black_18dp" />
+                    android:src="@drawable/unseen_message" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

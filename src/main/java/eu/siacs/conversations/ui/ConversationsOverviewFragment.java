@@ -293,6 +293,7 @@ public class ConversationsOverviewFragment extends XmppFragment {
         this.mSwipeEscapeVelocity = getResources().getDimension(R.dimen.swipe_escape_velocity);
         this.binding = DataBindingUtil.inflate(inflater, R.layout.fragment_conversations_overview, container, false);
         this.binding.fab.setOnClickListener((view) -> StartConversationActivity.launch(getActivity()));
+        this.binding.noChatFound.setOnClickListener((view) -> StartConversationActivity.launch(getActivity()));
         Log.d(TAG, "TOTAL CONVERSATIONS : " + this.conversations.size());
 
         this.conversationsAdapter = new ConversationAdapter(this.activity, this.conversations);
@@ -422,6 +423,12 @@ public class ConversationsOverviewFragment extends XmppFragment {
         ScrollState scrollState = pendingScrollState.pop();
         if (scrollState != null) {
             setScrollPosition(scrollState);
+        }
+
+        if (this.conversations.size() == 0) {
+            this.binding.noChatFound.setVisibility(View.VISIBLE);
+        } else {
+            this.binding.noChatFound.setVisibility(View.GONE);
         }
     }
 

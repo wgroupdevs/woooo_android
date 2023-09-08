@@ -59,6 +59,7 @@
     <string name="invite_contact">Invite contact</string>
     <string name="invite">Invite</string>
     <string name="contacts">Contacts</string>
+    <string name="contact_list">Contact list</string>
     <string name="contact">Contact</string>
     <string name="cancel">Cancel</string>
     <string name="set">Set</string>
@@ -504,7 +505,7 @@
     <string name="hostname_or_onion">Server- or .onion-address</string>
     <string name="not_a_valid_port">This is not a valid port number</string>
     <string name="not_valid_hostname">This is not a valid hostname</string>
-    <string name="connected_accounts">%1$d of %2$d accounts connected</string>
+    <!--    <string name="connected_accounts">%1$d of %2$d accounts connected</string>-->
     <plurals name="x_messages">
         <item quantity="one">%d message</item>
         <item quantity="other">%d messages</item>
@@ -1018,5 +1019,12 @@
     <string name="attach_image">Attach Image</string>
     <string name="capture_video">Capture Video</string>
     <string name="record_audio">Record Audio</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string-array name="Currency">
+        <item>USD</item>
+        <item>YEN</item>
+        <item>EURO</item>
+    </string-array>
 </resources>

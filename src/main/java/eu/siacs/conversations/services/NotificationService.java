@@ -1720,32 +1720,34 @@ public class NotificationService {
     Notification createForegroundNotification() {
         final Notification.Builder mBuilder = new Notification.Builder(mXmppConnectionService);
         mBuilder.setContentTitle(mXmppConnectionService.getString(R.string.app_name));
-        final List<Account> accounts = mXmppConnectionService.getAccounts();
-        int enabled = 0;
-        int connected = 0;
-        if (accounts != null) {
-            for (Account account : accounts) {
-                if (account.isOnlineAndConnected()) {
-                    connected++;
-                    enabled++;
-                } else if (account.isEnabled()) {
-                    enabled++;
-                }
-            }
-        }
-        mBuilder.setContentText(
-                mXmppConnectionService.getString(R.string.connected_accounts, connected, enabled));
+//        final List<Account> accounts = mXmppConnectionService.getAccounts();
+//        int enabled = 0;
+//        int connected = 0;
+//        if (accounts != null) {
+//            for (Account account : accounts) {
+//                if (account.isOnlineAndConnected()) {
+//                    connected++;
+//                    enabled++;
+//                } else if (account.isEnabled()) {
+//                    enabled++;
+//                }
+//            }
+//        }
+        mBuilder.setContentText("You may have new messages.");
+//         mBuilder.setContentText(
+//                mXmppConnectionService.getString(R.string.connected_accounts, connected, enabled));
+//
+
         final PendingIntent openIntent = createOpenConversationsIntent();
         if (openIntent != null) {
             mBuilder.setContentIntent(openIntent);
         }
         mBuilder.setWhen(0)
                 .setPriority(Notification.PRIORITY_MIN)
-                .setSmallIcon(
-                        connected > 0
-                                ? R.drawable.ic_link_white_24dp
-                                : R.drawable.ic_link_off_white_24dp)
-                .setLocalOnly(true);
+                .setSmallIcon(R.drawable.ic_refresh_white_24dp)
+                .setLocalOnly(true)
+                .setVisibility(Notification.VISIBILITY_SECRET)
+                .setOngoing(false);
 
         if (Compatibility.runsTwentySix()) {
             mBuilder.setChannelId("foreground");

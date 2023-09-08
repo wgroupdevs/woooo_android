@@ -182,8 +182,10 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         String filesize = null;
         String info = null;
         boolean error = false;
+
         if (viewHolder.indicatorReceived != null) {
-            viewHolder.indicatorReceived.setVisibility(View.GONE);
+            viewHolder.indicatorReceived.setImageResource(R.drawable.unseen_message);
+
         }
 
         if (viewHolder.edit_indicator != null) {
@@ -221,8 +223,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                 break;
             case Message.STATUS_SEND_RECEIVED:
             case Message.STATUS_SEND_DISPLAYED:
-                viewHolder.indicatorReceived.setImageResource(darkBackground ? R.drawable.ic_done_white_18dp : R.drawable.ic_done_black_18dp);
-                viewHolder.indicatorReceived.setAlpha(darkBackground ? 0.7f : 0.57f);
+                viewHolder.indicatorReceived.setImageResource(R.drawable.seen_message);
                 viewHolder.indicatorReceived.setVisibility(View.VISIBLE);
                 break;
             case Message.STATUS_SEND_FAILED:
@@ -328,11 +329,11 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         viewHolder.image.setVisibility(View.GONE);
         viewHolder.messageBody.setVisibility(View.VISIBLE);
         viewHolder.messageBody.setText(text);
-        if (darkBackground) {
-            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_Secondary_OnDark);
-        } else {
-            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_Secondary);
-        }
+//        if (darkBackground) {
+//            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_Secondary_OnDark);
+//        } else {
+//            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_Secondary);
+//        }
         viewHolder.messageBody.setTextIsSelectable(false);
     }
 
@@ -341,11 +342,11 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         viewHolder.audioPlayer.setVisibility(View.GONE);
         viewHolder.image.setVisibility(View.GONE);
         viewHolder.messageBody.setVisibility(View.VISIBLE);
-        if (darkBackground) {
-            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_Emoji_OnDark);
-        } else {
-            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_Emoji);
-        }
+//        if (darkBackground) {
+//            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_Emoji_OnDark);
+//        } else {
+//            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_Emoji);
+//        }
         Spannable span = new SpannableString(body);
         float size = Emoticons.isEmoji(body) ? 3.0f : 2.0f;
         span.setSpan(new RelativeSizeSpan(size), 0, body.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -430,14 +431,14 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         viewHolder.messageBody.setVisibility(View.VISIBLE);
         viewHolder.messageTranslatedBody.setVisibility(View.GONE);
         viewHolder.translationBodyDivider.setVisibility(View.GONE);
-        if (darkBackground) {
-            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_OnDark);
-        } else {
-            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1);
-        }
-        viewHolder.messageBody.setHighlightColor(ContextCompat.getColor(activity, darkBackground
-                ? (type == SENT || !mUseGreenBackground ? R.color.black26 : R.color.grey800) : R.color.grey500));
-        viewHolder.messageBody.setTypeface(null, Typeface.NORMAL);
+//        if (darkBackground) {
+//            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_OnDark);
+//        } else {
+//            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1);
+//        }
+//        viewHolder.messageBody.setHighlightColor(ContextCompat.getColor(activity, darkBackground
+//                ? (type == SENT || !mUseGreenBackground ? R.color.black26 : R.color.grey800) : R.color.grey500));
+//        viewHolder.messageBody.setTypeface(null, Typeface.NORMAL);
 
 
         if (message.getBody() != null) {
