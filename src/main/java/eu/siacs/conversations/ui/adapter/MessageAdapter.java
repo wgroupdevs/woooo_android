@@ -269,7 +269,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             }
         }
         if (message.getEncryption() == Message.ENCRYPTION_NONE) {
-            viewHolder.indicator.setVisibility(View.GONE);
+//            viewHolder.indicator.setVisibility(View.GONE);
         } else {
             boolean verified = false;
             if (message.getEncryption() == Message.ENCRYPTION_AXOLOTL) {
@@ -280,17 +280,17 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                     verified = true;
                 }
             }
-            if (verified) {
-                viewHolder.indicator.setImageResource(darkBackground ? R.drawable.ic_verified_user_white_18dp : R.drawable.ic_verified_user_black_18dp);
-            } else {
-                viewHolder.indicator.setImageResource(darkBackground ? R.drawable.ic_lock_white_18dp : R.drawable.ic_lock_black_18dp);
-            }
-            if (darkBackground) {
-                viewHolder.indicator.setAlpha(0.7f);
-            } else {
-                viewHolder.indicator.setAlpha(0.57f);
-            }
-            viewHolder.indicator.setVisibility(View.VISIBLE);
+//            if (verified) {
+//                viewHolder.indicator.setImageResource(darkBackground ? R.drawable.ic_verified_user_white_18dp : R.drawable.ic_verified_user_black_18dp);
+//            } else {
+//                viewHolder.indicator.setImageResource(darkBackground ? R.drawable.ic_lock_white_18dp : R.drawable.ic_lock_black_18dp);
+//            }
+//            if (darkBackground) {
+//                viewHolder.indicator.setAlpha(0.7f);
+//            } else {
+//                viewHolder.indicator.setAlpha(0.57f);
+//            }
+//            viewHolder.indicator.setVisibility(View.VISIBLE);
         }
 
         final String formattedTime = UIHelper.readableTimeDifferenceFull(getContext(), message.getMergedTimeSent());
@@ -670,7 +670,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                     viewHolder.messageForwarded = view.findViewById(R.id.message_forwarded);
                     viewHolder.contact_picture = view.findViewById(R.id.toolbar_profile_photo);
                     viewHolder.download_button = view.findViewById(R.id.download_button);
-                    viewHolder.indicator = view.findViewById(R.id.security_indicator);
+//                    viewHolder.indicator = view.findViewById(R.id.security_indicator);
                     viewHolder.edit_indicator = view.findViewById(R.id.edit_indicator);
                     viewHolder.image = view.findViewById(R.id.message_image);
                     viewHolder.messageBody = view.findViewById(R.id.message_body);
@@ -691,7 +691,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                     viewHolder.reply_box = view.findViewById(R.id.reply_message_box);
                     viewHolder.contact_picture = view.findViewById(R.id.toolbar_profile_photo);
                     viewHolder.download_button = view.findViewById(R.id.download_button);
-                    viewHolder.indicator = view.findViewById(R.id.security_indicator);
+//                    viewHolder.indicator = view.findViewById(R.id.security_indicator);
                     viewHolder.edit_indicator = view.findViewById(R.id.edit_indicator);
                     viewHolder.image = view.findViewById(R.id.message_image);
                     viewHolder.parent_msg_preview = view.findViewById(R.id.message_preview_image);

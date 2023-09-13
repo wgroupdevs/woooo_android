@@ -22,8 +22,6 @@ import eu.siacs.conversations.ui.SettingsActivity;
 import eu.siacs.conversations.ui.XmppActivity;
 import eu.siacs.conversations.ui.util.AvatarWorkerTask;
 import eu.siacs.conversations.ui.util.StyledAttributes;
-import eu.siacs.conversations.utils.IrregularUnicodeDetector;
-import eu.siacs.conversations.xmpp.Jid;
 
 public class ListItemAdapter extends ArrayAdapter<ListItem> {
 
@@ -77,13 +75,13 @@ public class ListItemAdapter extends ArrayAdapter<ListItem> {
 				viewHolder.tags.addView(tv);
 			}
 		}
-		final Jid jid = item.getJid();
-		if (jid != null) {
-			viewHolder.jid.setVisibility(View.VISIBLE);
-			viewHolder.jid.setText(IrregularUnicodeDetector.style(activity, jid));
-		} else {
-			viewHolder.jid.setVisibility(View.GONE);
-		}
+//		final Jid jid = item.getJid();
+//		if (jid != null) {
+//			viewHolder.jid.setVisibility(View.VISIBLE);
+//			viewHolder.jid.setText(IrregularUnicodeDetector.style(activity, jid));
+//		} else {
+//			viewHolder.jid.setVisibility(View.GONE);
+//		}
 		viewHolder.name.setText(item.getDisplayName());
 		AvatarWorkerTask.loadAvatar(item, viewHolder.avatar, R.dimen.avatar);
 		return view;

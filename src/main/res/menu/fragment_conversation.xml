@@ -26,23 +26,23 @@
     </item>
     <item
         android:id="@+id/action_security"
-        android:icon="?attr/icon_not_secure"
+        android:icon="@drawable/ic_lock_white_24dp"
         android:orderInCategory="20"
         android:title="@string/encrypted_with_omemo"
         app:showAsAction="always">
-        <menu>
-            <group android:checkableBehavior="single">
-                <item
-                    android:id="@+id/encryption_choice_none"
-                    android:title="@string/unprotected" />
-                <item
-                    android:id="@+id/encryption_choice_axolotl"
-                    android:title="@string/stealth_mode" />
-                <!--                <item-->
-                <!--                    android:id="@+id/encryption_choice_pgp"-->
-                <!--                    android:title="@string/private_mode" />-->
-            </group>
-        </menu>
+<!--        <menu>-->
+<!--            <group android:checkableBehavior="single">-->
+<!--                <item-->
+<!--                    android:id="@+id/encryption_choice_none"-->
+<!--                    android:title="@string/unprotected" />-->
+<!--                <item-->
+<!--                    android:id="@+id/encryption_choice_axolotl"-->
+<!--                    android:title="@string/stealth_mode" />-->
+<!--                &lt;!&ndash;                <item&ndash;&gt;-->
+<!--                &lt;!&ndash;                    android:id="@+id/encryption_choice_pgp"&ndash;&gt;-->
+<!--                &lt;!&ndash;                    android:title="@string/private_mode" />&ndash;&gt;-->
+<!--            </group>-->
+<!--        </menu>-->
     </item>
     <item
         android:id="@+id/action_a_i_button"
@@ -105,6 +105,13 @@
         android:orderInCategory="73"
         android:title="@string/add_to_favorites"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/stealth_mode"
+        android:orderInCategory="74"
+        android:title="Stealth mode"
+        android:visible="true"
+        />
     <item
         android:id="@+id/changeLanguage"
         android:orderInCategory="74"

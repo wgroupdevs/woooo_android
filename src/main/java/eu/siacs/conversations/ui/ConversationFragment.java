@@ -22,6 +22,7 @@ import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -125,7 +126,6 @@ import eu.siacs.conversations.ui.adapter.MessageAdapter;
 import eu.siacs.conversations.ui.util.ActivityResult;
 import eu.siacs.conversations.ui.util.Attachment;
 import eu.siacs.conversations.ui.util.AvatarWorkerTask;
-import eu.siacs.conversations.ui.util.ConversationMenuConfigurator;
 import eu.siacs.conversations.ui.util.DateSeparator;
 import eu.siacs.conversations.ui.util.EditMessageActionModeCallback;
 import eu.siacs.conversations.ui.util.ListViewUtils;
@@ -795,6 +795,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     private void sendMessage() {
         Log.d(TAG, "TRANSLATION STATUS .... : " + translation);
         Log.d(TAG, "REPLY STATUS .... : " + reply);
+        Log.d(TAG, "REPLY STATUS .... : " + conversation.getNextEncryption());
         if (mediaPreviewAdapter.hasAttachments()) {
             commitAttachments();
             return;
@@ -1118,7 +1119,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
                 menuUnmute.setVisible(false);
             }
 //            ConversationMenuConfigurator.configureAttachmentMenu(conversation, menu);
-            ConversationMenuConfigurator.configureEncryptionMenu(conversation, menu);
+//            ConversationMenuConfigurator.configureEncryptionMenu(conversation, menu);
             if (conversation.getBooleanAttribute(Conversation.ATTRIBUTE_PINNED_ON_TOP, false)) {
                 menuTogglePinned.setTitle(R.string.remove_from_favorites);
             } else {
@@ -1204,7 +1205,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         Log.d(Config.LOGTAG, "ConversationFragment.onDestroyView()");
         messageListAdapter.setOnContactPictureClicked(null);
         messageListAdapter.setOnContactPictureLongClicked(null);
-        if(activity.binding.speedDial != null) {
+        if (activity.binding.speedDial != null) {
             activity.binding.speedDial.setVisibility(View.VISIBLE);
             activity.binding.speedDial.close();
         }
@@ -1329,14 +1330,8 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             }
 
 
-
-
-
         }
     }
-
-
-
 
 
     void replyMessage() {
@@ -1452,8 +1447,12 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             return super.onOptionsItemSelected(item);
         }
         int itemId = item.getItemId();
-        if (itemId == R.id.encryption_choice_axolotl || itemId == R.id.encryption_choice_none) {
-            handleEncryptionSelection(item);
+        if (itemId == R.id.action_security) {
+            showEncrptionDialog(activity);
+//            Toast.makeText(activity, "Chat is end to end encrypted", Toast.LENGTH_SHORT).show();
+
+
+//            handleEncryptionSelection(item);
         } else if (itemId == R.id.action_a_i_button) {
             translation = !translation;
             if (translation) {
@@ -1495,11 +1494,30 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             togglePinned();
         } else if (itemId == R.id.changeLanguage) {
             showLanguageChangeDialog(activity);
+        } else if (itemId == R.id.stealth_mode) {
+            boolean use_tor = activity.getPreferences().getBoolean("use_tor", false);
+            if(!use_tor){
+                Toast.makeText(activity, "Stealth mode activated.", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(activity, "Stealth mode disabled.", Toast.LENGTH_SHORT).show();
+            }
+            activity.getPreferences().edit().putBoolean("use_tor", !use_tor).commit();
+
+            reconnectAccounts();
+            activity.xmppConnectionService.reinitializeMuclumbusService();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public void showLanguageChangeDialog(Context context) {
+    private void reconnectAccounts() {
+        for (Account account : activity.xmppConnectionService.getAccounts()) {
+            if (account.isEnabled()) {
+                activity.xmppConnectionService.reconnectAccountInBackground(account);
+            }
+        }
+    }
+
+    private void showLanguageChangeDialog(Context context) {
         android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context);
         // Inflate the custom layout
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -1514,6 +1532,9 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 
         // Create and show the AlertDialog
         android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
         alertDialog.show();
         languagesListView.setOnItemClickListener((parent, view, position, id) -> {
             try {
@@ -1525,6 +1546,21 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
                 Log.d("" + e, "dcsdcsdcs" + languageList.get(position).name + languageList.get(position).code);
             }
         });
+    }
+
+    private void showEncrptionDialog(Context context) {
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context);
+        // Inflate the custom layout
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View customView = inflater.inflate(R.layout.encryption_dialog, null);
+        // Set the custom layout to the dialog
+        alertDialogBuilder.setView(customView);
+        // Create and show the AlertDialog
+        android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+
+        alertDialog.show();
     }
 
     private static ArrayList<Language> parseJSON(Context context) {
@@ -1683,44 +1719,44 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         }
     }
 
-    private void handleEncryptionSelection(MenuItem item) {
-        if (conversation == null) {
-            return;
-        }
-        final boolean updated;
-        int itemId = item.getItemId();
-        if (itemId == R.id.encryption_choice_none) {
-            updated = conversation.setNextEncryption(Message.ENCRYPTION_NONE);
-            item.setChecked(true);
-        }
-//        else if (itemId == R.id.encryption_choice_pgp) {
-//            if (activity.hasPgp()) {
-//                if (conversation.getAccount().getPgpSignature() != null) {
-//                    updated = conversation.setNextEncryption(Message.ENCRYPTION_PGP);
-//                    item.setChecked(true);
-//                } else {
-//                    updated = false;
-//                    activity.announcePgp(conversation.getAccount(), conversation, null, activity.onOpenPGPKeyPublished);
-//                }
-//            } else {
-//                activity.showInstallPgpDialog();
-//                updated = false;
-//            }
+//    private void handleEncryptionSelection(MenuItem item) {
+//        if (conversation == null) {
+//            return;
 //        }
-        else if (itemId == R.id.encryption_choice_axolotl) {
-            Log.d(Config.LOGTAG, AxolotlService.getLogprefix(conversation.getAccount()) + "Enabled axolotl for Contact " + conversation.getContact().getJid());
-            updated = conversation.setNextEncryption(Message.ENCRYPTION_AXOLOTL);
-            item.setChecked(true);
-        } else {
-            updated = conversation.setNextEncryption(Message.ENCRYPTION_NONE);
-        }
-        if (updated) {
-            activity.xmppConnectionService.updateConversation(conversation);
-        }
-        updateChatMsgHint();
-        getActivity().invalidateOptionsMenu();
-        activity.refreshUi();
-    }
+//        final boolean updated;
+//        int itemId = item.getItemId();
+//        if (itemId == R.id.encryption_choice_none) {
+//            updated = conversation.setNextEncryption(Message.ENCRYPTION_NONE);
+//            item.setChecked(true);
+//        }
+////        else if (itemId == R.id.encryption_choice_pgp) {
+////            if (activity.hasPgp()) {
+////                if (conversation.getAccount().getPgpSignature() != null) {
+////                    updated = conversation.setNextEncryption(Message.ENCRYPTION_PGP);
+////                    item.setChecked(true);
+////                } else {
+////                    updated = false;
+////                    activity.announcePgp(conversation.getAccount(), conversation, null, activity.onOpenPGPKeyPublished);
+////                }
+////            } else {
+////                activity.showInstallPgpDialog();
+////                updated = false;
+////            }
+////        }
+//        else if (itemId == R.id.encryption_choice_axolotl) {
+//            Log.d(Config.LOGTAG, AxolotlService.getLogprefix(conversation.getAccount()) + "Enabled axolotl for Contact " + conversation.getContact().getJid());
+//            updated = conversation.setNextEncryption(Message.ENCRYPTION_AXOLOTL);
+//            item.setChecked(true);
+//        } else {
+//            updated = conversation.setNextEncryption(Message.ENCRYPTION_NONE);
+//        }
+//        if (updated) {
+//            activity.xmppConnectionService.updateConversation(conversation);
+//        }
+//        updateChatMsgHint();
+//        getActivity().invalidateOptionsMenu();
+//        activity.refreshUi();
+//    }
 
     public void attachFile(final int attachmentChoice) {
         attachFile(attachmentChoice, true);

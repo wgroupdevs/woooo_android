@@ -174,7 +174,7 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     //Blur
-    implementation 'jp.wasabeef:blurry:4.0.1'
+    implementation 'com.github.furkankaplan:fk-blur-view-android:1.0.1'
 
 
 
