@@ -1345,7 +1345,7 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
         }
     }
 
-    private class Invite extends XmppUri {
+    public class Invite extends XmppUri {
 
         public String account;
 

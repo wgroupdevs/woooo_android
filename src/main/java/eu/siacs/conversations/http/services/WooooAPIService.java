@@ -55,41 +55,24 @@ public class WooooAPIService {
 
 
     public void login(boolean isLoginWithEmail, String email, String phone, String password, OnLoginAPiResult listener) {
-        Log.d("WooooAuthService", "LOGIN STARTED...");
-        Log.d(phone, "LOGIN STARTED... With Phone");
+        Log.d(phone, "LOGIN STARTED...");
         final LoginRequestParams requestParams = new LoginRequestParams(email, phone, password, "", "", "");
         final Call<LoginAPIResponseJAVA> searchResultCall = wooooService.login(isLoginWithEmail, requestParams);
         searchResultCall.enqueue(new Callback<LoginAPIResponseJAVA>() {
             @Override
             public void onResponse(@NonNull Call<LoginAPIResponseJAVA> call, @NonNull Response<LoginAPIResponseJAVA> response) {
                 final LoginAPIResponseJAVA body = response.body();
-
-
-                Log.d("WooooAuthService", "API RESPONSE " + response.isSuccessful());
-                Log.d("WooooAuthService", "API RESPONSE " + response.code());
-                Log.d("WooooAuthService", "API RESPONSE BODY " + response.body());
                 if (body == null) {
-
-                    Log.d("WooooAuthService", "API RESPONSE ");
                     assert response.errorBody() != null;
                     try {
                         String errorBodyFound = response.errorBody().byteString().utf8();
-
-                        Log.d("WooooAuthService", "API RESPONSE " + errorBodyFound);
-
                         listener.onLoginApiResultFound(parseErrorBody(errorBodyFound));
                     } catch (IOException e) {
-
-                        Log.d("WooooAuthService", "API Exception " + e.getStackTrace().toString());
-
                         throw new RuntimeException(e);
                     }
-
                 } else {
-
                     listener.onLoginApiResultFound(body);
                 }
-
             }
 
             @Override

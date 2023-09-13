@@ -24,8 +24,8 @@ public class ConversationActivity extends AppCompatActivity {
         }
 
         if (receivedIntent != null) {
-            boolean showCall = receivedIntent.getBooleanExtra(ConversationsActivity.EXTRA_SHOW_CALL_LOGS, false);
-            newIntent.putExtra(ConversationsActivity.EXTRA_SHOW_CALL_LOGS, showCall);
+            int showCall = receivedIntent.getIntExtra(ConversationsActivity.EXTRA_CIRCLE_MENU_INDEX, -1);
+            newIntent.putExtra(ConversationsActivity.EXTRA_CIRCLE_MENU_INDEX, showCall);
             Log.d("ConActivity_Tag", "SHOW_CALL : " + showCall);
         }
 

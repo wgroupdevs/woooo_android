@@ -84,7 +84,7 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
         super.onStart();
         final Activity activity = getActivity();
         if (activity instanceof XmppActivity && ((XmppActivity) activity).xmppConnectionService != null) {
-            refreshKnownHosts();
+//            refreshKnownHosts();
         }
     }
 
@@ -94,8 +94,8 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getArguments().getString(TITLE_KEY));
         binding = DataBindingUtil.inflate(getActivity().getLayoutInflater(), R.layout.enter_jid_dialog, null, false);
-        this.knownHostsAdapter = new KnownHostsAdapter(getActivity(), R.layout.simple_list_item);
-        binding.jid.setAdapter(this.knownHostsAdapter);
+//        this.knownHostsAdapter = new KnownHostsAdapter(getActivity(), R.layout.simple_list_item);
+//        binding.jid.setAdapter(this.knownHostsAdapter);
         binding.jid.addTextChangedListener(this);
         String prefilledJid = getArguments().getString(PREFILLED_JID_KEY);
         if (prefilledJid != null) {
@@ -256,7 +256,7 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
 
     @Override
     public void onBackendConnected() {
-        refreshKnownHosts();
+//        refreshKnownHosts();
     }
 
     private void refreshKnownHosts() {

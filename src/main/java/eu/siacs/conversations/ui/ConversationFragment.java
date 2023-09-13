@@ -22,6 +22,7 @@ import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -1132,6 +1133,8 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         this.binding = DataBindingUtil.inflate(inflater, R.layout.fragment_conversation, container, false);
         binding.getRoot().setOnClickListener(null); // TODO why the fuck did we do this?
 
+        activity.binding.speedDial.setVisibility(View.INVISIBLE);
+
         binding.textinput.addTextChangedListener(new StylingHelper.MessageEditorStyler(binding.textinput));
 
         binding.textinput.setOnEditorActionListener(mEditorActionListener);
@@ -1201,6 +1204,10 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         Log.d(Config.LOGTAG, "ConversationFragment.onDestroyView()");
         messageListAdapter.setOnContactPictureClicked(null);
         messageListAdapter.setOnContactPictureLongClicked(null);
+        if(activity.binding.speedDial != null) {
+            activity.binding.speedDial.setVisibility(View.VISIBLE);
+            activity.binding.speedDial.close();
+        }
         ChooseContactActivity.setOnForwardItemsSelected(null);
     }
 
@@ -1249,6 +1256,8 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             final boolean encrypted = m.getEncryption() == Message.ENCRYPTION_DECRYPTION_FAILED || m.getEncryption() == Message.ENCRYPTION_PGP;
             final boolean receiving = m.getStatus() == Message.STATUS_RECEIVED && (t instanceof JingleFileTransferConnection || t instanceof HttpDownloadConnection);
             activity.getMenuInflater().inflate(R.menu.message_context, menu);
+            activity.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+
 //            menu.setHeaderTitle(R.string.message_options);
             MenuItem openWith = menu.findItem(R.id.open_with);
             MenuItem copyMessage = menu.findItem(R.id.copy_message);
@@ -1318,8 +1327,16 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             if ((m.isGeoUri() && GeoHelper.openInOsmAnd(getActivity(), m)) || (mime != null && mime.startsWith("audio/"))) {
                 openWith.setVisible(true);
             }
+
+
+
+
+
         }
     }
+
+
+
 
 
     void replyMessage() {

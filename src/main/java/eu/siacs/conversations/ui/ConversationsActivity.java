@@ -31,6 +31,7 @@ package eu.siacs.conversations.ui;
 
 
 import static eu.siacs.conversations.ui.ConversationFragment.REQUEST_DECRYPT_PGP;
+import static eu.siacs.conversations.ui.StartConversationActivity.getSelectedAccount;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -38,6 +39,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -48,19 +50,29 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.IdRes;
+import androidx.annotation.MenuRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
+
+import com.leinardi.android.speeddial.SpeedDialActionItem;
+import com.leinardi.android.speeddial.SpeedDialView;
 
 import org.openintents.openpgp.util.OpenPgpApi;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -70,6 +82,7 @@ import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.crypto.OmemoSetting;
 import eu.siacs.conversations.databinding.ActivityConversationsBinding;
+import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.Conversational;
@@ -84,6 +97,7 @@ import eu.siacs.conversations.ui.util.ActivityResult;
 import eu.siacs.conversations.ui.util.ConversationMenuConfigurator;
 import eu.siacs.conversations.ui.util.MenuDoubleTabUtil;
 import eu.siacs.conversations.ui.util.PendingItem;
+import eu.siacs.conversations.utils.AccountUtils;
 import eu.siacs.conversations.utils.ExceptionHelper;
 import eu.siacs.conversations.utils.SignupUtils;
 import eu.siacs.conversations.utils.XmppUri;
@@ -92,13 +106,13 @@ import eu.siacs.conversations.xmpp.OnUpdateBlocklist;
 import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel;
 
 @AndroidEntryPoint
-public class ConversationsActivity extends XmppActivity implements OnConversationSelected, OnConversationArchived, OnConversationsListItemUpdated, OnConversationRead, XmppConnectionService.OnAccountUpdate, XmppConnectionService.OnConversationUpdate, XmppConnectionService.OnRosterUpdate, OnUpdateBlocklist, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnAffiliationChanged {
+public class ConversationsActivity extends XmppActivity implements OnConversationSelected, OnConversationArchived, OnConversationsListItemUpdated, OnConversationRead, XmppConnectionService.OnAccountUpdate, XmppConnectionService.OnConversationUpdate, XmppConnectionService.OnRosterUpdate, OnUpdateBlocklist, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnAffiliationChanged, CreatePrivateGroupChatDialog.CreateConferenceDialogListener {
 
     public static final String ACTION_VIEW_CONVERSATION = "eu.siacs.conversations.action.VIEW";
     public static final String EXTRA_CONVERSATION = "conversationUuid";
     public static final String EXTRA_DOWNLOAD_UUID = "eu.siacs.conversations.download_uuid";
     public static final String EXTRA_AS_QUOTE = "eu.siacs.conversations.as_quote";
-    public static final String EXTRA_SHOW_CALL_LOGS = "show_call_logs";
+    public static final String EXTRA_CIRCLE_MENU_INDEX = "circle_menu_value";
     public static final String EXTRA_NICK = "nick";
     public static final String EXTRA_IS_PRIVATE_MESSAGE = "pm";
     public static final String EXTRA_DO_NOT_APPEND = "do_not_append";
@@ -106,6 +120,8 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
     public static final String POST_ACTION_RECORD_VOICE = "record_voice";
     public static final String EXTRA_TYPE = "type";
     public static final String TAG = "ConversationsActivity";
+    private final int REQUEST_CREATE_CONFERENCE = 0x39da;
+
     private UserPreferencesViewModel userPreferencesViewModel;
 
     private static final List<String> VIEW_AND_SHARE_ACTIONS = Arrays.asList(
@@ -352,9 +368,29 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         }
     }
 
+    private final UiCallback<Conversation> mAdhocConferenceCallback = new UiCallback<Conversation>() {
+        @Override
+        public void success(final Conversation conversation) {
+            runOnUiThread(() -> {
+                hideToast();
+                switchToConversation(conversation);
+            });
+        }
+
+        @Override
+        public void error(final int errorCode, Conversation object) {
+            runOnUiThread(() -> replaceToast(getString(errorCode)));
+        }
+
+        @Override
+        public void userInputRequired(PendingIntent pi, Conversation object) {
+
+        }
+    };
+
     private void handlePositiveActivityResult(int requestCode, final Intent data) {
         Conversation conversation = ConversationFragment.getConversationReliable(this);
-        if (conversation == null) {
+        if (conversation == null && requestCode != REQUEST_CREATE_CONFERENCE) {
             Log.d(Config.LOGTAG, "conversation not found");
             return;
         }
@@ -374,7 +410,19 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
             case REQUEST_ANNOUNCE_PGP:
                 announcePgp(conversation.getAccount(), conversation, data, onOpenPGPKeyPublished);
                 break;
+            case REQUEST_CREATE_CONFERENCE:
+                Account account = extractAccount(data);
+                final String name = data.getStringExtra(ChooseContactActivity.EXTRA_GROUP_CHAT_NAME);
+                final List<Jid> jids = ChooseContactActivity.extractJabberIds(data);
+                if (account != null && jids.size() > 0) {
+                    if (xmppConnectionService.createAdhocConference(account, name, jids, mAdhocConferenceCallback)) {
+                        mToast = Toast.makeText(this, R.string.creating_conference, Toast.LENGTH_LONG);
+                        mToast.show();
+                    }
+                }
+                break;
         }
+
     }
 
     @Override
@@ -392,12 +440,14 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         //Bottom-Navigation-Bar
         if (this.binding.navigation != null) {
             binding.navigation.setOnItemSelectedListener(item -> {
+                this.binding.speedDial.setVisibility(View.INVISIBLE);
                 switch (item.getItemId()) {
                     case R.id.nav_call_btn:
                         replaceFragment(new CallLogsFragment());
                         break;
                     case R.id.nav_chat_btn:
                         replaceFragment(new ConversationsOverviewFragment());
+                        this.binding.speedDial.setVisibility(View.VISIBLE);
                         break;
                     case R.id.nav_meeting_btn:
                         replaceFragment(new MeetingMainFragment());
@@ -424,13 +474,30 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         }
 
         if (intent != null) {
-            boolean showCall = intent.getBooleanExtra(ConversationsActivity.EXTRA_SHOW_CALL_LOGS, false);
-            if (showCall) {
-                this.binding.navigation.setSelectedItemId(R.id.nav_call_btn);
-                replaceFragment(new CallLogsFragment());
-            } else {
-                this.initializeFragments();
+            int circle_index = intent.getIntExtra(ConversationsActivity.EXTRA_CIRCLE_MENU_INDEX, -1);
+
+            switch (circle_index) {
+                case 1: {
+                    this.binding.navigation.setSelectedItemId(R.id.nav_meeting_btn);
+                    replaceFragment(new MeetingMainFragment());
+                    break;
+                }
+                case 2: {
+                    this.binding.navigation.setSelectedItemId(R.id.nav_wallet_btn);
+                    replaceFragment(new WalletMainFragment());
+                    break;
+                }
+                case 3: {
+                    this.binding.navigation.setSelectedItemId(R.id.nav_call_btn);
+                    replaceFragment(new CallLogsFragment());
+                    break;
+                }
+                default: {
+                    this.initializeFragments();
+
+                }
             }
+
         }
 
         this.invalidateActionBarTitle();
@@ -443,8 +510,115 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
 
 //
 
+        inflateFab(binding.speedDial, R.menu.conversation_overview_fab_menu);
+
+        binding.speedDial.setOnActionSelectedListener(actionItem -> {
+
+            int id = actionItem.getId();
+            if (id == R.id.create_private_group_chat) {
+                showCreatePrivateGroupChatDialog();
+            } else if (id == R.id.create_contact) {
+                showCreateContactDialog(null, null);
+            } else if (id == R.id.start_chat) {
+                StartConversationActivity.launch(this);
+            }
+            return false;
+        });
 
         Log.d(TAG, "OnCreate Called");
+    }
+
+    private void inflateFab(final SpeedDialView speedDialView, final @MenuRes int menuRes) {
+        speedDialView.clearActionItems();
+        final PopupMenu popupMenu = new PopupMenu(this, new View(this));
+        popupMenu.inflate(menuRes);
+        final Menu menu = popupMenu.getMenu();
+        for (int i = 0; i < menu.size(); i++) {
+            final MenuItem menuItem = menu.getItem(i);
+            final SpeedDialActionItem actionItem = new SpeedDialActionItem.Builder(menuItem.getItemId(), menuItem.getIcon())
+                    .setLabel(menuItem.getTitle() != null ? menuItem.getTitle().toString() : null)
+                    .setFabImageTintColor(ContextCompat.getColor(this, R.color.white))
+                    .create();
+            speedDialView.addActionItem(actionItem);
+        }
+    }
+
+    protected void switchToConversation(Contact contact) {
+        Conversation conversation = xmppConnectionService.findOrCreateConversation(contact.getAccount(), contact.getJid(), false, true);
+        switchToConversation(conversation);
+    }
+
+    protected void switchToConversationDoNotAppend(Contact contact, String body) {
+        Conversation conversation = xmppConnectionService.findOrCreateConversation(contact.getAccount(), contact.getJid(), false, true);
+        switchToConversationDoNotAppend(conversation, body);
+    }
+
+    @SuppressLint("InflateParams")
+    protected void showCreateContactDialog(final String prefilledJid, final StartConversationActivity.Invite invite) {
+        androidx.fragment.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        androidx.fragment.app.Fragment prev = getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_DIALOG);
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        final List<String> mActivatedAccounts = new ArrayList<>();
+        mActivatedAccounts.clear();
+        mActivatedAccounts.addAll(AccountUtils.getEnabledAccounts(xmppConnectionService));
+
+        Log.d(TAG, "showCreateContactDialog Called..");
+        ft.addToBackStack(null);
+        EnterJidDialog dialog = EnterJidDialog.newInstance(
+                mActivatedAccounts,
+                getString(R.string.add_contact),
+                getString(R.string.add),
+                prefilledJid,
+                invite == null ? null : invite.account,
+                invite == null || !invite.hasFingerprints(),
+                true
+        );
+
+        dialog.setOnEnterJidDialogPositiveListener((accountJid, contactJid) -> {
+            if (!xmppConnectionServiceBound) {
+                return false;
+            }
+
+            final Account account = xmppConnectionService.findAccountByJid(accountJid);
+            if (account == null) {
+                return true;
+            }
+
+            final Contact contact = account.getRoster().getContact(contactJid);
+            if (invite != null && invite.getName() != null) {
+                contact.setServerName(invite.getName());
+            }
+            if (contact.isSelf()) {
+                switchToConversation(contact);
+                return true;
+            } else if (contact.showInRoster()) {
+                throw new EnterJidDialog.JidError(getString(R.string.contact_already_exists));
+            } else {
+                final String preAuth = invite == null ? null : invite.getParameter(XmppUri.PARAMETER_PRE_AUTH);
+                xmppConnectionService.createContact(contact, true, preAuth);
+                if (invite != null && invite.hasFingerprints()) {
+                    xmppConnectionService.verifyFingerprints(contact, invite.getFingerprints());
+                }
+                switchToConversationDoNotAppend(contact, invite == null ? null : invite.getBody());
+                return true;
+            }
+        });
+        dialog.show(ft, FRAGMENT_TAG_DIALOG);
+    }
+
+    private void showCreatePrivateGroupChatDialog() {
+        androidx.fragment.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        androidx.fragment.app.Fragment prev = getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_DIALOG);
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        final List<String> mActivatedAccounts = new ArrayList<>(AccountUtils.getEnabledAccounts(xmppConnectionService));
+
+        ft.addToBackStack(null);
+        CreatePrivateGroupChatDialog createConferenceFragment = CreatePrivateGroupChatDialog.newInstance(mActivatedAccounts);
+        createConferenceFragment.show(ft, FRAGMENT_TAG_DIALOG);
     }
 
 //    @Override
@@ -686,6 +860,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
     }
 
     private void replaceFragment(Fragment fragment) {
+        this.binding.speedDial.setVisibility(View.INVISIBLE);
         final FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.main_fragment, fragment);
@@ -811,5 +986,22 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         runOnUiThread(() -> Toast.makeText(this, resId, Toast.LENGTH_SHORT).show());
     }
 
+    @Override
+    public void onCreateDialogPositiveClick(Spinner spinner, String name) {
+        if (!xmppConnectionServiceBound) {
+            return;
+        }
+        final Account account = getSelectedAccount(this, spinner);
+        if (account == null) {
+            return;
+        }
+        Intent intent = new Intent(getApplicationContext(), ChooseContactActivity.class);
+        intent.putExtra(ChooseContactActivity.EXTRA_SHOW_ENTER_JID, false);
+        intent.putExtra(ChooseContactActivity.EXTRA_SELECT_MULTIPLE, true);
+        intent.putExtra(ChooseContactActivity.EXTRA_GROUP_CHAT_NAME, name.trim());
+        intent.putExtra(ChooseContactActivity.EXTRA_ACCOUNT, account.getJid().asBareJid().toEscapedString());
+        intent.putExtra(ChooseContactActivity.EXTRA_TITLE_RES_ID, R.string.choose_participants);
+        startActivityForResult(intent, REQUEST_CREATE_CONFERENCE);
+    }
 
 }

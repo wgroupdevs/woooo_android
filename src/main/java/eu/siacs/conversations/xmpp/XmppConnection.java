@@ -572,7 +572,6 @@ public class XmppConnection implements Runnable {
                 if (processSuccess(success)) {
                     break;
                 }
-
             } else if (nextTag.isStart("failure", Namespace.TLS)) {
                 throw new StateChangingException(Account.State.TLS_ERROR);
             } else if (nextTag.isStart("failure")) {
@@ -644,7 +643,7 @@ public class XmppConnection implements Runnable {
                     } else {
                         acknowledgedMessages = false;
                         Log.d(
-                                Config.LOGTAG,
+                                    Config.LOGTAG,
                                 account.getJid().asBareJid()
                                         + ": server send ack without sequence number");
                     }

@@ -525,6 +525,8 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                 viewHolder.messageTranslatedBody.setVisibility(View.VISIBLE);
                 viewHolder.translationBodyDivider.setVisibility(View.VISIBLE);
                 viewHolder.messageTranslatedBody.setText(message.getTranslatedBody());
+                viewHolder.messageTranslatedBody.setTypeface(null, Typeface.NORMAL);
+
             }
 
 

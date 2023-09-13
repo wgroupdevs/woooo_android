@@ -39,7 +39,6 @@ import eu.siacs.conversations.ui.ConversationsActivity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
-import woooo_app.woooo.destinations.MeetingMainViewScreenDestination
 import woooo_app.woooo.destinations.MiningMainScreenDestination
 import woooo_app.woooo.feature.home.screen.initCircleTextOffset
 import woooo_app.woooo.feature.wallet.views.PieChart
@@ -167,9 +166,8 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                         scopeAntiClockWise.launch {
                             circularMenuViewModel.rotateMiddleCircleAntiClockWise()
                             val newIntent = Intent(context, ConversationActivity::class.java);
-                            newIntent.putExtra(ConversationsActivity.EXTRA_SHOW_CALL_LOGS, false)
+                            newIntent.putExtra(ConversationsActivity.EXTRA_CIRCLE_MENU_INDEX, 4)
                             context.startActivity(newIntent)
-//
                             indexToBePressed = 0
                         }
                     })
@@ -201,8 +199,11 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                     }
                     scopeAntiClockWise.launch {
                         circularMenuViewModel.rotateMiddleCircleClockWise()
+                        val newIntent = Intent(context, ConversationActivity::class.java);
+                        newIntent.putExtra(ConversationsActivity.EXTRA_CIRCLE_MENU_INDEX, 1)
+                        context.startActivity(newIntent)
                         indexToBePressed = 0
-                        navigator.navigate(MeetingMainViewScreenDestination)
+//                        navigator.navigate(MeetingMainViewScreenDestination)
                     }
                 },
         ) {
@@ -233,7 +234,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                     scopeAntiClockWise.launch {
                         circularMenuViewModel.rotateMiddleCircleAntiClockWise()
                         val newIntent = Intent(context, ConversationActivity::class.java);
-                        newIntent.putExtra(ConversationsActivity.EXTRA_SHOW_CALL_LOGS, true)
+                        newIntent.putExtra(ConversationsActivity.EXTRA_CIRCLE_MENU_INDEX, 3)
                         context.startActivity(newIntent)
                         indexToBePressed = 0
                     }
@@ -267,7 +268,10 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                     scopeAntiClockWise.launch {
                         circularMenuViewModel.rotateMiddleCircleClockWise()
                         /// open verify dialog
-                        circularMenuViewModel.setOpenVerifyDialogValue(true)
+                        val newIntent = Intent(context, ConversationActivity::class.java);
+                        newIntent.putExtra(ConversationsActivity.EXTRA_CIRCLE_MENU_INDEX, 2)
+                        context.startActivity(newIntent)
+//                        circularMenuViewModel.setOpenVerifyDialogValue(true)
                         indexToBePressed = 0
 
                     }

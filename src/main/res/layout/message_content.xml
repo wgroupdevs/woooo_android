@@ -9,8 +9,8 @@
         android:layout_marginBottom="@dimen/_1sdp"
         android:autoLink="web"
         android:longClickable="false"
-        android:textAppearance="@style/TextAppearance.Conversations.Title"
-
+        android:typeface="normal"
+        android:textSize="@dimen/_20sdp"
         android:visibility="gone" />
 
     <View

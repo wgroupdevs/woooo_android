@@ -101,6 +101,7 @@ fun HomePage(navigator: DestinationsNavigator) {
                     sheetDragHandle = {},
                     sheetTonalElevation = 0.dp,
                     sheetShadowElevation = 0.dp,
+                    sheetPeekHeight = 45.dp,
                     sheetContent = { BottomSheetContent() },
                     modifier = Modifier
                         .fillMaxSize()
@@ -254,7 +255,7 @@ fun BottomSheetContent(
             ),onClick = { /*TODO*/ }) {
                 Text(text = "Slide up",style = MaterialTheme.typography.bodyMedium)
             }
-
+            VerticalSpacer()
             BottomSheetCard("Chat") {}
             VerticalSpacer()
             BottomSheetCard("Call") {}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/create_contact"
+        android:icon="@drawable/ic_person_add_48"
+        android:title="@string/add_contact" />
+    <item
+        android:id="@+id/create_private_group_chat"
+        android:icon="@drawable/ic_group_white_24dp"
+        android:title="Create Group" />
+    <item
+        android:id="@+id/start_chat"
+        android:icon="@drawable/baseline_chat_24"
+        android:title="Start Chat" />
+
+</menu>

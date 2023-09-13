@@ -19,21 +19,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="No chat found \n Let's start new chat with friends."
-            android:textAlignment="center"
             android:clickable="true"
             android:focusable="true"
+            android:text="No chat found \n Let's start new chat with friends."
+            android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.Conversations.Subhead"
             android:visibility="gone" />
 
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:layout_margin="16dp"
-            android:src="@drawable/ic_chat_white_24dp"
-            app:backgroundTint="?colorPrimary" />
+        <!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+        <!--            android:id="@+id/fab"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_gravity="end|bottom"-->
+        <!--            android:layout_margin="16dp"-->
+        <!--            android:src="@drawable/ic_chat_white_24dp"-->
+        <!--            app:backgroundTint="?colorPrimary" />-->
+
+
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

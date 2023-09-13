@@ -48,6 +48,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.MenuRes;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -55,6 +58,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.common.collect.Collections2;
+import com.leinardi.android.speeddial.SpeedDialActionItem;
+import com.leinardi.android.speeddial.SpeedDialView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -292,7 +297,7 @@ public class ConversationsOverviewFragment extends XmppFragment {
 
         this.mSwipeEscapeVelocity = getResources().getDimension(R.dimen.swipe_escape_velocity);
         this.binding = DataBindingUtil.inflate(inflater, R.layout.fragment_conversations_overview, container, false);
-        this.binding.fab.setOnClickListener((view) -> StartConversationActivity.launch(getActivity()));
+//        this.binding.fab.setOnClickListener((view) -> StartConversationActivity.launch(getActivity()));
         this.binding.noChatFound.setOnClickListener((view) -> StartConversationActivity.launch(getActivity()));
         Log.d(TAG, "TOTAL CONVERSATIONS : " + this.conversations.size());
 
@@ -311,8 +316,27 @@ public class ConversationsOverviewFragment extends XmppFragment {
         this.binding.list.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         this.touchHelper = new ItemTouchHelper(this.callback);
         this.touchHelper.attachToRecyclerView(this.binding.list);
+
+
         return binding.getRoot();
     }
+
+    private void inflateFab(final SpeedDialView speedDialView, final @MenuRes int menuRes) {
+        speedDialView.clearActionItems();
+        final PopupMenu popupMenu = new PopupMenu(activity, new View(activity));
+        popupMenu.inflate(menuRes);
+        final Menu menu = popupMenu.getMenu();
+        for (int i = 0; i < menu.size(); i++) {
+            final MenuItem menuItem = menu.getItem(i);
+            final SpeedDialActionItem actionItem = new SpeedDialActionItem.Builder(menuItem.getItemId(), menuItem.getIcon())
+                    .setLabel(menuItem.getTitle() != null ? menuItem.getTitle().toString() : null)
+                    .setFabImageTintColor(ContextCompat.getColor(activity, R.color.white))
+                    .create();
+            speedDialView.addActionItem(actionItem);
+        }
+    }
+
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
@@ -438,4 +462,5 @@ public class ConversationsOverviewFragment extends XmppFragment {
             layoutManager.scrollToPositionWithOffset(scrollPosition.position, scrollPosition.offset);
         }
     }
+
 }
