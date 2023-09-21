@@ -40,7 +40,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
@@ -50,7 +49,6 @@ import woooo_app.woooo.destinations.SignUpScreenDestination
 import woooo_app.woooo.feature.auth.GV
 import woooo_app.woooo.feature.home.ui.AppDrawer
 import woooo_app.woooo.feature.home.ui.CircularMenu
-import woooo_app.woooo.feature.home.viewmodel.HomeViewModel
 import woooo_app.woooo.shared.components.CustomIcon
 import woooo_app.woooo.shared.components.UserProfileImage
 import woooo_app.woooo.shared.components.ViewDivider
@@ -67,8 +65,6 @@ fun HomePage(navigator: DestinationsNavigator) {
         var notificationTrayState by remember {
             mutableStateOf(false)
         }
-
-
 
         ModalNavigationDrawer(drawerContent = {
 
@@ -103,6 +99,7 @@ fun HomePage(navigator: DestinationsNavigator) {
                     sheetDragHandle = {},
                     sheetTonalElevation = 0.dp,
                     sheetShadowElevation = 0.dp,
+                    sheetPeekHeight = 45.dp,
                     sheetContent = { BottomSheetContent() },
                     modifier = Modifier
                         .fillMaxSize()
@@ -254,10 +251,9 @@ fun BottomSheetContent(
             Button(modifier = Modifier.align(
                 alignment = Alignment.CenterHorizontally
             ),onClick = { /*TODO*/ }) {
-                Text(text = "Show more",style = MaterialTheme.typography.bodyMedium)
+                Text(text = "Slide up",style = MaterialTheme.typography.bodyMedium)
             }
-
-
+            VerticalSpacer()
             BottomSheetCard("Chat") {}
             VerticalSpacer()
             BottomSheetCard("Call") {}

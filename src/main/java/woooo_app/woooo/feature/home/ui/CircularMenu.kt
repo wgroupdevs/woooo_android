@@ -35,10 +35,10 @@ import com.wgroup.woooo_app.woooo.feature.wallet.views.Wallet_Pin_Verify_Dialog
 import com.wgroup.woooo_app.woooo.theme.WooColor
 import eu.siacs.conversations.R
 import eu.siacs.conversations.ui.ConversationActivity
+import eu.siacs.conversations.ui.ConversationsActivity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
-import woooo_app.woooo.destinations.MeetingMainViewScreenDestination
 import woooo_app.woooo.destinations.MiningMainScreenDestination
 import woooo_app.woooo.feature.home.screen.initCircleTextOffset
 import woooo_app.woooo.feature.wallet.views.PieChart
@@ -49,19 +49,19 @@ fun CircularMenu(navigator: DestinationsNavigator) {
     var indexToBePressed by remember { mutableStateOf(0) }
 
     val transparentColor = mutableListOf(
-        Color.Transparent,Color.Transparent,Color.Transparent,Color.Transparent,
+        Color.Transparent, Color.Transparent, Color.Transparent, Color.Transparent,
     )
     val meetingColors = mutableListOf(
-        WooColor.halfTransparent,Color.Transparent,Color.Transparent,Color.Transparent
+        WooColor.halfTransparent, Color.Transparent, Color.Transparent, Color.Transparent
     )
     val walletColors = mutableListOf(
-        Color.Transparent,WooColor.halfTransparent,Color.Transparent,Color.Transparent
+        Color.Transparent, WooColor.halfTransparent, Color.Transparent, Color.Transparent
     )
     val callColors = mutableListOf(
-        Color.Transparent,Color.Transparent,WooColor.halfTransparent,Color.Transparent
+        Color.Transparent, Color.Transparent, WooColor.halfTransparent, Color.Transparent
     )
     val chatColor = mutableListOf(
-        Color.Transparent,Color.Transparent,Color.Transparent,WooColor.halfTransparent
+        Color.Transparent, Color.Transparent, Color.Transparent, WooColor.halfTransparent
     )
 
     val circularMenuViewModel: CircularMenuViewModel = hiltViewModel()
@@ -102,10 +102,10 @@ fun CircularMenu(navigator: DestinationsNavigator) {
 
             PieChart(
                 data = mapOf(
-                    Pair("Sample-1",25),
-                    Pair("Sample-2",25),
-                    Pair("Sample-3",25),
-                    Pair("Sample-4",25),
+                    Pair("Sample-1", 25),
+                    Pair("Sample-2", 25),
+                    Pair("Sample-3", 25),
+                    Pair("Sample-4", 25),
                 ),
                 radiusOuter = (Dimension.boxWithConstraintsScope.maxWidth * 0.55f),
                 chartBarWidth = 34.dp,
@@ -132,7 +132,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                 .clickable(
                     interactionSource = MutableInteractionSource(),
                     indication = rememberRipple(
-                        bounded = false,color = WooColor.white,radius = 100.dp
+                        bounded = false, color = WooColor.white, radius = 100.dp
                     ),
 
                     ) {
@@ -153,7 +153,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
         Box(
             modifier = Modifier
                 .absoluteOffset(
-                    x = Dimension.chatTextOffset_X,y = Dimension.chatTextOffset_Y
+                    x = Dimension.chatTextOffset_X, y = Dimension.chatTextOffset_Y
                 )
                 .align(Alignment.TopStart)
                 .clickable(interactionSource = MutableInteractionSource(),
@@ -165,12 +165,9 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                         }
                         scopeAntiClockWise.launch {
                             circularMenuViewModel.rotateMiddleCircleAntiClockWise()
-                        context.startActivity(Intent(context, ConversationActivity::class.java))
-//                            context.startActivity(
-//                                Intent(
-//                                    context,StartConversationActivity::class.java
-//                                )
-//                            )
+                            val newIntent = Intent(context, ConversationActivity::class.java);
+                            newIntent.putExtra(ConversationsActivity.EXTRA_CIRCLE_MENU_INDEX, 4)
+                            context.startActivity(newIntent)
                             indexToBePressed = 0
                         }
                     })
@@ -188,7 +185,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
         Box(
             modifier = Modifier
                 .absoluteOffset(
-                    x = -Dimension.meetingTextOffset_X,y = Dimension.meetingTextOffset_Y
+                    x = -Dimension.meetingTextOffset_X, y = Dimension.meetingTextOffset_Y
                 )
                 .align(Alignment.TopEnd)
                 .clickable(
@@ -202,13 +199,16 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                     }
                     scopeAntiClockWise.launch {
                         circularMenuViewModel.rotateMiddleCircleClockWise()
+                        val newIntent = Intent(context, ConversationActivity::class.java);
+                        newIntent.putExtra(ConversationsActivity.EXTRA_CIRCLE_MENU_INDEX, 1)
+                        context.startActivity(newIntent)
                         indexToBePressed = 0
-                        navigator.navigate(MeetingMainViewScreenDestination)
+//                        navigator.navigate(MeetingMainViewScreenDestination)
                     }
                 },
         ) {
             Image(
-                painter = meeting_text_active,contentDescription = null,
+                painter = meeting_text_active, contentDescription = null,
                 modifier = Modifier
                     .height(Dimension.circleWheelTextHeight)
                     .width(Dimension.circleWheelTextHeight)
@@ -220,7 +220,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
         Box(
             modifier = Modifier
                 .absoluteOffset(
-                    x = Dimension.callTextOffset_X,y = -Dimension.callTextOffset_Y
+                    x = Dimension.callTextOffset_X, y = -Dimension.callTextOffset_Y
                 )
                 .align(Alignment.BottomStart)
                 .clickable(
@@ -233,12 +233,15 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                     }
                     scopeAntiClockWise.launch {
                         circularMenuViewModel.rotateMiddleCircleAntiClockWise()
+                        val newIntent = Intent(context, ConversationActivity::class.java);
+                        newIntent.putExtra(ConversationsActivity.EXTRA_CIRCLE_MENU_INDEX, 3)
+                        context.startActivity(newIntent)
                         indexToBePressed = 0
                     }
                 },
         ) {
             Image(
-                painter = call_text_active,contentDescription = null,
+                painter = call_text_active, contentDescription = null,
                 modifier = Modifier
                     .height(Dimension.circleWheelTextHeight)
                     .width(Dimension.circleWheelTextHeight)
@@ -251,7 +254,7 @@ fun CircularMenu(navigator: DestinationsNavigator) {
         Box(
             modifier = Modifier
                 .absoluteOffset(
-                    x = -Dimension.walletTextOffset_X,y = -Dimension.walletTextOffset_Y
+                    x = -Dimension.walletTextOffset_X, y = -Dimension.walletTextOffset_Y
                 )
                 .align(Alignment.BottomEnd)
                 .clickable(
@@ -265,7 +268,10 @@ fun CircularMenu(navigator: DestinationsNavigator) {
                     scopeAntiClockWise.launch {
                         circularMenuViewModel.rotateMiddleCircleClockWise()
                         /// open verify dialog
-                        circularMenuViewModel.setOpenVerifyDialogValue(true)
+                        val newIntent = Intent(context, ConversationActivity::class.java);
+                        newIntent.putExtra(ConversationsActivity.EXTRA_CIRCLE_MENU_INDEX, 2)
+                        context.startActivity(newIntent)
+//                        circularMenuViewModel.setOpenVerifyDialogValue(true)
                         indexToBePressed = 0
 
                     }

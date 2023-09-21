@@ -4,21 +4,25 @@ import java.io.Serializable;
 
 
 public class UserBasicInfo implements Serializable {
-    public String accountId = "";
-    public String firstName = "";
-    public String lastName = "";
-    public String email = "";
-    public boolean isVarified = false;
-    public String phoneNumber = "";
-    public String imageURL = "";
-    public int id = 0;
-    public String jid = "";
-    public String description = "";
-    public String dateOfBirth = "";
-    public String address = "";
-    public String postalCode = "";
-    public String language = "";
-    public String languageCode = "";
+    public String accountId;
+    public String firstName;
+    public String lastName;
+    public String email;
+    public String phoneNumber;
+    public String imageURL;
+    public int id;
+    public String jid;
+    public boolean isVarified;
+    public String description;
+    public String dateOfBirth;
+
+    public String address;
+    public String city;
+    public String postalCode;
+    public String state;
+    public String country;
+    public String language;
+    public String languageCode;
 
 
     public String getAccountId() {
@@ -140,5 +144,45 @@ public class UserBasicInfo implements Serializable {
 
     public void setAccountId(String accountId) {
         this.accountId = accountId;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }

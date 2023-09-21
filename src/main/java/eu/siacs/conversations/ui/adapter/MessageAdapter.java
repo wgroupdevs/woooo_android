@@ -182,8 +182,10 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         String filesize = null;
         String info = null;
         boolean error = false;
+
         if (viewHolder.indicatorReceived != null) {
-            viewHolder.indicatorReceived.setVisibility(View.GONE);
+            viewHolder.indicatorReceived.setImageResource(R.drawable.unseen_message);
+
         }
 
         if (viewHolder.edit_indicator != null) {
@@ -221,8 +223,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                 break;
             case Message.STATUS_SEND_RECEIVED:
             case Message.STATUS_SEND_DISPLAYED:
-                viewHolder.indicatorReceived.setImageResource(darkBackground ? R.drawable.ic_done_white_18dp : R.drawable.ic_done_black_18dp);
-                viewHolder.indicatorReceived.setAlpha(darkBackground ? 0.7f : 0.57f);
+                viewHolder.indicatorReceived.setImageResource(R.drawable.seen_message);
                 viewHolder.indicatorReceived.setVisibility(View.VISIBLE);
                 break;
             case Message.STATUS_SEND_FAILED:
@@ -268,7 +269,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             }
         }
         if (message.getEncryption() == Message.ENCRYPTION_NONE) {
-            viewHolder.indicator.setVisibility(View.GONE);
+//            viewHolder.indicator.setVisibility(View.GONE);
         } else {
             boolean verified = false;
             if (message.getEncryption() == Message.ENCRYPTION_AXOLOTL) {
@@ -279,17 +280,17 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                     verified = true;
                 }
             }
-            if (verified) {
-                viewHolder.indicator.setImageResource(darkBackground ? R.drawable.ic_verified_user_white_18dp : R.drawable.ic_verified_user_black_18dp);
-            } else {
-                viewHolder.indicator.setImageResource(darkBackground ? R.drawable.ic_lock_white_18dp : R.drawable.ic_lock_black_18dp);
-            }
-            if (darkBackground) {
-                viewHolder.indicator.setAlpha(0.7f);
-            } else {
-                viewHolder.indicator.setAlpha(0.57f);
-            }
-            viewHolder.indicator.setVisibility(View.VISIBLE);
+//            if (verified) {
+//                viewHolder.indicator.setImageResource(darkBackground ? R.drawable.ic_verified_user_white_18dp : R.drawable.ic_verified_user_black_18dp);
+//            } else {
+//                viewHolder.indicator.setImageResource(darkBackground ? R.drawable.ic_lock_white_18dp : R.drawable.ic_lock_black_18dp);
+//            }
+//            if (darkBackground) {
+//                viewHolder.indicator.setAlpha(0.7f);
+//            } else {
+//                viewHolder.indicator.setAlpha(0.57f);
+//            }
+//            viewHolder.indicator.setVisibility(View.VISIBLE);
         }
 
         final String formattedTime = UIHelper.readableTimeDifferenceFull(getContext(), message.getMergedTimeSent());
@@ -328,11 +329,11 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         viewHolder.image.setVisibility(View.GONE);
         viewHolder.messageBody.setVisibility(View.VISIBLE);
         viewHolder.messageBody.setText(text);
-        if (darkBackground) {
-            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_Secondary_OnDark);
-        } else {
-            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_Secondary);
-        }
+//        if (darkBackground) {
+//            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_Secondary_OnDark);
+//        } else {
+//            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_Secondary);
+//        }
         viewHolder.messageBody.setTextIsSelectable(false);
     }
 
@@ -341,11 +342,11 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         viewHolder.audioPlayer.setVisibility(View.GONE);
         viewHolder.image.setVisibility(View.GONE);
         viewHolder.messageBody.setVisibility(View.VISIBLE);
-        if (darkBackground) {
-            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_Emoji_OnDark);
-        } else {
-            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_Emoji);
-        }
+//        if (darkBackground) {
+//            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_Emoji_OnDark);
+//        } else {
+//            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_Emoji);
+//        }
         Spannable span = new SpannableString(body);
         float size = Emoticons.isEmoji(body) ? 3.0f : 2.0f;
         span.setSpan(new RelativeSizeSpan(size), 0, body.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -430,14 +431,14 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         viewHolder.messageBody.setVisibility(View.VISIBLE);
         viewHolder.messageTranslatedBody.setVisibility(View.GONE);
         viewHolder.translationBodyDivider.setVisibility(View.GONE);
-        if (darkBackground) {
-            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_OnDark);
-        } else {
-            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1);
-        }
-        viewHolder.messageBody.setHighlightColor(ContextCompat.getColor(activity, darkBackground
-                ? (type == SENT || !mUseGreenBackground ? R.color.black26 : R.color.grey800) : R.color.grey500));
-        viewHolder.messageBody.setTypeface(null, Typeface.NORMAL);
+//        if (darkBackground) {
+//            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1_OnDark);
+//        } else {
+//            viewHolder.messageBody.setTextAppearance(getContext(), R.style.TextAppearance_Conversations_Body1);
+//        }
+//        viewHolder.messageBody.setHighlightColor(ContextCompat.getColor(activity, darkBackground
+//                ? (type == SENT || !mUseGreenBackground ? R.color.black26 : R.color.grey800) : R.color.grey500));
+//        viewHolder.messageBody.setTypeface(null, Typeface.NORMAL);
 
 
         if (message.getBody() != null) {
@@ -524,6 +525,8 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                 viewHolder.messageTranslatedBody.setVisibility(View.VISIBLE);
                 viewHolder.translationBodyDivider.setVisibility(View.VISIBLE);
                 viewHolder.messageTranslatedBody.setText(message.getTranslatedBody());
+                viewHolder.messageTranslatedBody.setTypeface(null, Typeface.NORMAL);
+
             }
 
 
@@ -638,7 +641,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         final Message message = getItem(position);
-        final boolean omemoEncryption = message.getEncryption() == Message.ENCRYPTION_AXOLOTL;
+        final boolean omemoEncryption = true;
         final boolean isInValidSession = message.isValidInSession() && (!omemoEncryption || message.isTrusted());
         final Conversational conversation = message.getConversation();
         final Account account = conversation.getAccount();
@@ -667,7 +670,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                     viewHolder.messageForwarded = view.findViewById(R.id.message_forwarded);
                     viewHolder.contact_picture = view.findViewById(R.id.toolbar_profile_photo);
                     viewHolder.download_button = view.findViewById(R.id.download_button);
-                    viewHolder.indicator = view.findViewById(R.id.security_indicator);
+//                    viewHolder.indicator = view.findViewById(R.id.security_indicator);
                     viewHolder.edit_indicator = view.findViewById(R.id.edit_indicator);
                     viewHolder.image = view.findViewById(R.id.message_image);
                     viewHolder.messageBody = view.findViewById(R.id.message_body);
@@ -688,7 +691,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                     viewHolder.reply_box = view.findViewById(R.id.reply_message_box);
                     viewHolder.contact_picture = view.findViewById(R.id.toolbar_profile_photo);
                     viewHolder.download_button = view.findViewById(R.id.download_button);
-                    viewHolder.indicator = view.findViewById(R.id.security_indicator);
+//                    viewHolder.indicator = view.findViewById(R.id.security_indicator);
                     viewHolder.edit_indicator = view.findViewById(R.id.edit_indicator);
                     viewHolder.image = view.findViewById(R.id.message_image);
                     viewHolder.parent_msg_preview = view.findViewById(R.id.message_preview_image);
@@ -862,7 +865,10 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         } else if (message.getEncryption() == Message.ENCRYPTION_DECRYPTION_FAILED) {
             displayInfoMessage(viewHolder, activity.getString(R.string.decryption_failed), darkBackground);
         } else if (message.getEncryption() == Message.ENCRYPTION_AXOLOTL_NOT_FOR_THIS_DEVICE) {
+
+            Log.d(TAG,"MESSAGE BODY :" + message.getBody());
             displayInfoMessage(viewHolder, activity.getString(R.string.not_encrypted_for_this_device), darkBackground);
+
         } else if (message.getEncryption() == Message.ENCRYPTION_AXOLOTL_FAILED) {
             displayInfoMessage(viewHolder, activity.getString(R.string.omemo_decryption_failed), darkBackground);
         } else {
@@ -901,8 +907,9 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 //                viewHolder.message_box.setBackgroundResource(bubble);
                 viewHolder.encryption.setVisibility(View.GONE);
             } else {
+
                 viewHolder.message_box.setBackgroundResource(R.color.blue_primary300);
-                viewHolder.encryption.setVisibility(View.VISIBLE);
+//                viewHolder.encryption.setVisibility(View.VISIBLE);
                 if (omemoEncryption && !message.isTrusted()) {
                     viewHolder.encryption.setText(R.string.not_trusted);
                 } else {

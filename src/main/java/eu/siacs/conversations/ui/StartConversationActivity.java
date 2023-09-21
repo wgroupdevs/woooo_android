@@ -111,7 +111,6 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
     private boolean mHideOfflineContacts = false;
     private boolean createdByViewIntent = false;
     private final MenuItem.OnActionExpandListener mOnActionExpandListener = new MenuItem.OnActionExpandListener() {
-
         @Override
         public boolean onMenuItemActionExpand(MenuItem item) {
             mSearchEditText.post(() -> {
@@ -270,7 +269,7 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_start_conversation);
         setSupportActionBar(binding.toolbar);
         configureActionBar(getSupportActionBar());
-        inflateFab(binding.speedDial, R.menu.start_conversation_fab_submenu);
+        inflateFab(binding.speedDial, R.menu.conversation_overview_fab_menu);
         binding.tabLayout.setupWithViewPager(binding.startConversationViewPager);
         binding.startConversationViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
@@ -325,23 +324,14 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
                 prefilled = null;
             }
             int id = actionItem.getId();
-            if (id == R.id.discover_public_channels) {
-                startActivity(new Intent(this, ChannelDiscoveryActivity.class));
-            } else if (id == R.id.join_public_channel) {
-                showJoinConferenceDialog(prefilled);
-            } else if (id == R.id.create_private_group_chat) {
+            if (id == R.id.create_private_group_chat) {
                 showCreatePrivateGroupChatDialog();
-            } else if (id == R.id.create_public_channel) {
-                showPublicChannelDialog();
             } else if (id == R.id.create_contact) {
                 showCreateContactDialog(prefilled, null);
             }
             return false;
         });
 
-
-//        ImageView backButton = binding.toolbar.findViewById(R.id.toolbar_back_button);
-//        backButton.setOnClickListener(v -> finish());
     }
 
     private void inflateFab(final SpeedDialView speedDialView, final @MenuRes int menuRes) {
@@ -351,6 +341,10 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
         final Menu menu = popupMenu.getMenu();
         for (int i = 0; i < menu.size(); i++) {
             final MenuItem menuItem = menu.getItem(i);
+            if (menuItem.getItemId() == R.id.start_chat) {
+                menuItem.setVisible(false);
+                continue;
+            }
             final SpeedDialActionItem actionItem = new SpeedDialActionItem.Builder(menuItem.getItemId(), menuItem.getIcon())
                     .setLabel(menuItem.getTitle() != null ? menuItem.getTitle().toString() : null)
                     .setFabImageTintColor(ContextCompat.getColor(this, R.color.white))
@@ -1310,7 +1304,7 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return getResources().getString(R.string.contacts);
+                    return getResources().getString(R.string.contact_list);
                 case 1:
                     return getResources().getString(R.string.group_chats);
                 default:
@@ -1346,7 +1340,7 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
         }
     }
 
-    private class Invite extends XmppUri {
+    public class Invite extends XmppUri {
 
         public String account;
 

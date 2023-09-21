@@ -116,6 +116,7 @@ import eu.siacs.conversations.generator.MessageGenerator;
 import eu.siacs.conversations.generator.PresenceGenerator;
 import eu.siacs.conversations.http.HttpConnectionManager;
 import eu.siacs.conversations.http.model.TextTranslateModel;
+import eu.siacs.conversations.http.model.UserBasicInfo;
 import eu.siacs.conversations.http.services.WooooAPIService;
 import eu.siacs.conversations.parser.AbstractParser;
 import eu.siacs.conversations.parser.IqParser;
@@ -971,13 +972,19 @@ public class XmppConnectionService extends Service {
 
 
     public void loginUserOnWoooo(boolean isLoginWithEmail, String email, String phone, String password, WooooAPIService.OnLoginAPiResult onLoginAPiResult) {
-
-        Log.d(TAG, "loginUserOnWoooo" + wooooAuthService);
         if (wooooAuthService == null) {
             wooooAuthService = WooooAPIService.getInstance();
         }
 
         wooooAuthService.login(isLoginWithEmail, email, phone, password, onLoginAPiResult);
+    }
+
+    public void updateProfile(UserBasicInfo user, WooooAPIService.OnUpdateAccountApiResult listener) {
+
+        if (wooooAuthService == null) {
+            wooooAuthService = WooooAPIService.getInstance();
+        }
+        wooooAuthService.updateProfile(user, listener);
     }
 
     public void searchAccount(String value, boolean isEmail, WooooAPIService.OnSearchAccountAPiResult onSearchAccountAPiResult) {
@@ -1409,6 +1416,8 @@ public class XmppConnectionService extends Service {
                 startForeground(id, notification);
                 mNotificationService.cancel(NotificationService.FOREGROUND_NOTIFICATION_ID);
             } else {
+
+                //foreground Service notification
                 notification = this.mNotificationService.createForegroundNotification();
                 id = NotificationService.FOREGROUND_NOTIFICATION_ID;
                 startForeground(id, notification);
@@ -4526,6 +4535,7 @@ public class XmppConnectionService extends Service {
     public void sendPresencePacket(Account account, PresencePacket packet) {
         XmppConnection connection = account.getXmppConnection();
         if (connection != null) {
+            Log.d(TAG, "sendPresencePacket CALLED.....");
             connection.sendPresencePacket(packet);
         }
     }

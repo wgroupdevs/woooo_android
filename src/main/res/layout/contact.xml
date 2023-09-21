@@ -36,6 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
+                android:visibility="gone"
                 android:textAppearance="@style/TextAppearance.Conversations.Body1.Secondary"/>
 
             <com.wefika.flowlayout.FlowLayout

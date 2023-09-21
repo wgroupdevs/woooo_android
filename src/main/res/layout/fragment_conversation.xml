@@ -5,6 +5,7 @@
     <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="@dimen/_5sdp"
         android:background="?attr/color_background_secondary">
 
         <ListView
@@ -123,7 +124,7 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
             android:background="?attr/color_background_primary">
 
             <LinearLayout
@@ -223,7 +224,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="4dp"
-            android:background="@drawable/snackbar"
+            android:background="@drawable/bg_border"
             android:minHeight="48dp"
             android:visibility="gone">
 
@@ -238,7 +239,7 @@
                 android:layout_toLeftOf="@+id/snackbar_action"
                 android:paddingStart="24dp"
                 android:paddingLeft="24dp"
-                android:textAppearance="@style/TextAppearance.Conversations.Body1.OnDark" />
+                android:textAppearance="@style/TextAppearance.Conversations.Body1" />
 
             <TextView
                 android:id="@+id/snackbar_action"
@@ -252,6 +253,8 @@
                 android:paddingRight="24dp"
                 android:paddingBottom="16dp"
                 android:textAllCaps="true"
+                android:layout_margin="@dimen/_5sdp"
+                android:background="@drawable/button"
                 android:textAppearance="@style/TextAppearance.Conversations.Body1.OnDark"
                 android:textStyle="bold" />
         </RelativeLayout>

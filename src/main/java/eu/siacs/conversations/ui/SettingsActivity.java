@@ -205,11 +205,11 @@ public class SettingsActivity extends XmppActivity implements OnSharedPreference
 
         boolean removeLocation =
                 new Intent("eu.siacs.conversations.location.request")
-                                .resolveActivity(getPackageManager())
+                        .resolveActivity(getPackageManager())
                         == null;
         boolean removeVoice =
                 new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION)
-                                .resolveActivity(getPackageManager())
+                        .resolveActivity(getPackageManager())
                         == null;
 
         ListPreference quickAction =
@@ -342,7 +342,7 @@ public class SettingsActivity extends XmppActivity implements OnSharedPreference
         if (Config.omemoOnly()) {
             final PreferenceCategory privacyCategory =
                     (PreferenceCategory) mSettingsFragment.findPreference("privacy");
-            final Preference omemoPreference =mSettingsFragment.findPreference(OMEMO_SETTING);
+            final Preference omemoPreference = mSettingsFragment.findPreference(OMEMO_SETTING);
             if (omemoPreference != null) {
                 privacyCategory.removePreference(omemoPreference);
             }
@@ -372,9 +372,9 @@ public class SettingsActivity extends XmppActivity implements OnSharedPreference
     private boolean isCallable(final Intent i) {
         return i != null
                 && getPackageManager()
-                                .queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY)
-                                .size()
-                        > 0;
+                .queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY)
+                .size()
+                > 0;
     }
 
     private boolean cleanCache() {
@@ -493,6 +493,7 @@ public class SettingsActivity extends XmppActivity implements OnSharedPreference
             xmppConnectionService.updateMemorizingTrustmanager();
             reconnectAccounts();
         } else if (name.equals("use_tor")) {
+            Log.d("SETTINGS_ACTIVITY", "USE_TORE STATUS : " + preferences.getBoolean(name, false));
             if (preferences.getBoolean(name, false)) {
                 displayToast(getString(R.string.audio_video_disabled_tor));
             }
@@ -513,7 +514,7 @@ public class SettingsActivity extends XmppActivity implements OnSharedPreference
                             UnifiedPushDistributor.PREFERENCE_PUSH_SERVER,
                             getString(R.string.default_push_server))).trim();
             if (isJidInvalid(pushServerPreference) || isHttpUri(pushServerPreference)) {
-                Toast.makeText(this,R.string.invalid_jid,Toast.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.invalid_jid, Toast.LENGTH_LONG).show();
             }
             if (xmppConnectionService.reconfigurePushDistributor()) {
                 xmppConnectionService.renewUnifiedPushEndpoints();
@@ -540,7 +541,7 @@ public class SettingsActivity extends XmppActivity implements OnSharedPreference
         } catch (final URISyntaxException e) {
             return false;
         }
-        return Arrays.asList("http","https").contains(uri.getScheme());
+        return Arrays.asList("http", "https").contains(uri.getScheme());
     }
 
     @Override

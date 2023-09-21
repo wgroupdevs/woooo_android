@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <item
-        android:id="@+id/chat"
+        android:id="@+id/nav_chat_btn"
         android:icon="@drawable/baseline_chat_24"
         android:title="Chat" />
     <item
-        android:id="@+id/call"
+        android:id="@+id/nav_call_btn"
         android:icon="@drawable/ic_call_white_24dp"
         android:title="Call" />
 
@@ -16,11 +16,11 @@
         tools:ignore="MenuTitle" />
 
     <item
-        android:id="@+id/meeting"
+        android:id="@+id/nav_meeting_btn"
         android:icon="@drawable/baseline_groups_24"
         android:title="Meeting" />
     <item
-        android:id="@+id/wallet"
+        android:id="@+id/nav_wallet_btn"
         android:icon="@drawable/baseline_account_balance_wallet_24"
         android:title="Wallet" />
 

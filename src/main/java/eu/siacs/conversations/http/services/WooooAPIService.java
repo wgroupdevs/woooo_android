@@ -18,6 +18,7 @@ import eu.siacs.conversations.http.model.SearchAccountAPIResponse;
 import eu.siacs.conversations.http.model.TextTranslateApiResponse;
 import eu.siacs.conversations.http.model.TextTranslateModel;
 import eu.siacs.conversations.http.model.UpdateUserLanguageModel;
+import eu.siacs.conversations.http.model.UserBasicInfo;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,7 +40,6 @@ public class WooooAPIService {
         // create object if it's not already created
 
         if (wooooAuthService == null) {
-
             wooooAuthService = new WooooAPIService();
             final OkHttpClient.Builder builder = HttpConnectionManager.OK_HTTP_CLIENT.newBuilder();
             builder.connectTimeout(50, TimeUnit.SECONDS);
@@ -55,41 +55,24 @@ public class WooooAPIService {
 
 
     public void login(boolean isLoginWithEmail, String email, String phone, String password, OnLoginAPiResult listener) {
-        Log.d("WooooAuthService", "LOGIN STARTED...");
-        Log.d(phone, "LOGIN STARTED... With Phone");
+        Log.d(phone, "LOGIN STARTED...");
         final LoginRequestParams requestParams = new LoginRequestParams(email, phone, password, "", "", "");
         final Call<LoginAPIResponseJAVA> searchResultCall = wooooService.login(isLoginWithEmail, requestParams);
         searchResultCall.enqueue(new Callback<LoginAPIResponseJAVA>() {
             @Override
             public void onResponse(@NonNull Call<LoginAPIResponseJAVA> call, @NonNull Response<LoginAPIResponseJAVA> response) {
                 final LoginAPIResponseJAVA body = response.body();
-
-
-                Log.d("WooooAuthService", "API RESPONSE " + response.isSuccessful());
-                Log.d("WooooAuthService", "API RESPONSE " + response.code());
-                Log.d("WooooAuthService", "API RESPONSE BODY " + response.body());
                 if (body == null) {
-
-                    Log.d("WooooAuthService", "API RESPONSE ");
                     assert response.errorBody() != null;
                     try {
                         String errorBodyFound = response.errorBody().byteString().utf8();
-
-                        Log.d("WooooAuthService", "API RESPONSE " + errorBodyFound);
-
                         listener.onLoginApiResultFound(parseErrorBody(errorBodyFound));
                     } catch (IOException e) {
-
-                        Log.d("WooooAuthService", "API Exception " + e.getStackTrace().toString());
-
                         throw new RuntimeException(e);
                     }
-
                 } else {
-
                     listener.onLoginApiResultFound(body);
                 }
-
             }
 
             @Override
@@ -101,37 +84,20 @@ public class WooooAPIService {
     }
 
     public void searchAccount(String value, boolean isEmail, OnSearchAccountAPiResult listener) {
-        Log.d("WooooAuthService", "searchAccount STARTED...");
-
         final Call<SearchAccountAPIResponse> searchResultCall = wooooService.searchAccount(value, isEmail);
         searchResultCall.enqueue(new Callback<SearchAccountAPIResponse>() {
             @Override
             public void onResponse(@NonNull Call<SearchAccountAPIResponse> call, @NonNull Response<SearchAccountAPIResponse> response) {
                 final SearchAccountAPIResponse body = response.body();
-
-
-                Log.d("WooooAuthService", "API RESPONSE " + response.isSuccessful());
-                Log.d("WooooAuthService", "API RESPONSE " + response.code());
-                Log.d("WooooAuthService", "API RESPONSE BODY " + response.body());
                 if (body == null) {
-
-                    Log.d("WooooAuthService", "API RESPONSE ");
                     assert response.errorBody() != null;
                     try {
                         String errorBodyFound = response.errorBody().byteString().utf8();
-
-                        Log.d("WooooAuthService", "API RESPONSE " + errorBodyFound);
-
                         listener.onSearchAccountApiResultFound(parseErrorBody(errorBodyFound));
                     } catch (IOException e) {
-
-                        Log.d("WooooAuthService", "API Exception " + e.getStackTrace().toString());
-
                         throw new RuntimeException(e);
                     }
-
                 } else {
-
                     listener.onSearchAccountApiResultFound(body);
                 }
 
@@ -146,40 +112,22 @@ public class WooooAPIService {
     }
 
     public void getWooContact(GetWooContactsRequestParams params, OnGetWooContactAPiResult listener) {
-        Log.d("WooooAuthService", "getWooContact STARTED...");
-
         final Call<GetWooContactsModel> searchResultCall = wooooService.getWooContacts(params);
         searchResultCall.enqueue(new Callback<GetWooContactsModel>() {
             @Override
             public void onResponse(@NonNull Call<GetWooContactsModel> call, @NonNull Response<GetWooContactsModel> response) {
                 final GetWooContactsModel body = response.body();
-
-
-                Log.d("WooooAuthService", "API RESPONSE " + response.isSuccessful());
-                Log.d("API RESPONSE " + response.code(), "WooooAuthService Status Code");
-                Log.d("WooooAuthService", "API RESPONSE BODY " + response.body());
                 if (body == null) {
-
-                    Log.d("WooooAuthService", "API RESPONSE ");
                     assert response.errorBody() != null;
                     try {
                         String errorBodyFound = response.errorBody().byteString().utf8();
-
-                        Log.d("WooooAuthService", "API RESPONSE " + errorBodyFound);
-
                         listener.OnGetWooContactAPiResultFound(parseErrorBody(errorBodyFound));
                     } catch (IOException e) {
-
-                        Log.d("WooooAuthService", "API Exception " + e.getStackTrace().toString());
-
                         throw new RuntimeException(e);
                     }
-
                 } else {
-
                     listener.OnGetWooContactAPiResultFound(body);
                 }
-
             }
 
             @Override
@@ -191,40 +139,22 @@ public class WooooAPIService {
     }
 
     public void updateUserLanguage(String accountId, String language, String languageCode, OnUpdateUserLanguageApiResult listener) {
-        Log.d("WooooAuthService", "updateUserLanguage STARTED...");
-
         final Call<UpdateUserLanguageModel> searchResultCall = wooooService.updateUserLanguage(accountId, language, languageCode);
         searchResultCall.enqueue(new Callback<UpdateUserLanguageModel>() {
             @Override
             public void onResponse(@NonNull Call<UpdateUserLanguageModel> call, @NonNull Response<UpdateUserLanguageModel> response) {
                 final UpdateUserLanguageModel body = response.body();
-
-
-                Log.d("WooooAuthService", "API RESPONSE " + response.isSuccessful());
-                Log.d("API RESPONSE " + response.code(), "WooooAuthService Status Code");
-                Log.d("WooooAuthService", "API RESPONSE BODY " + response.body());
                 if (body == null) {
-
-                    Log.d("WooooAuthService", "API RESPONSE ");
                     assert response.errorBody() != null;
                     try {
                         String errorBodyFound = response.errorBody().byteString().utf8();
-
-                        Log.d("WooooAuthService", "API RESPONSE " + errorBodyFound);
-
                         listener.OnUpdateUserLanguageAPiResultFound(parseErrorBody(errorBodyFound));
                     } catch (IOException e) {
-
-                        Log.d("WooooAuthService", "API Exception " + e.getStackTrace().toString());
-
                         throw new RuntimeException(e);
                     }
-
                 } else {
-
                     listener.OnUpdateUserLanguageAPiResultFound(body);
                 }
-
             }
 
             @Override
@@ -235,42 +165,50 @@ public class WooooAPIService {
         });
     }
 
-    public void translateText(TextTranslateModel translateModel, OnTextTranslateAPiResult listener) {
-        Log.d("WooooAuthService", "translateText STARTED..." + translateModel.text);
-        Log.d("WooooAuthService", "translateText STARTED..." + translateModel.languageCode);
+    public void updateProfile(UserBasicInfo user, OnUpdateAccountApiResult listener) {
+        final Call<UserBasicInfo> searchResultCall = wooooService.updateProfile(user.accountId, user);
+        searchResultCall.enqueue(new Callback<UserBasicInfo>() {
+            @Override
+            public void onResponse(@NonNull Call<UserBasicInfo> call, @NonNull Response<UserBasicInfo> response) {
+                final UserBasicInfo body = response.body();
+                if (body == null) {
+                    assert response.errorBody() != null;
+                    try {
+                        String errorBodyFound = response.errorBody().byteString().utf8();
+                        listener.OnUpdateAccountAPiResultFound(parseErrorBody(errorBodyFound));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    listener.OnUpdateAccountAPiResultFound(body);
+                }
+            }
 
+            @Override
+            public void onFailure(@NonNull Call<UserBasicInfo> call, @NonNull Throwable throwable) {
+                Log.d(Config.LOGTAG, "Unable to query WoooService on " + Config.WOOOO_BASE_URL, throwable);
+//                        listener.);
+            }
+        });
+    }
+
+    public void translateText(TextTranslateModel translateModel, OnTextTranslateAPiResult listener) {
         final Call<TextTranslateApiResponse> translateTextResultCall = wooooService.translateText(translateModel);
         translateTextResultCall.enqueue(new Callback<TextTranslateApiResponse>() {
             @Override
             public void onResponse(@NonNull Call<TextTranslateApiResponse> call, @NonNull Response<TextTranslateApiResponse> response) {
                 final TextTranslateApiResponse body = response.body();
-
-
-                Log.d("WooooAuthService", "API RESPONSE " + response.isSuccessful());
-                Log.d("API RESPONSE " + response.code(), "WooooAuthService Status Code");
-                Log.d("WooooAuthService", "API RESPONSE BODY " + response.body());
                 if (body == null) {
-
-                    Log.d("WooooAuthService", "API RESPONSE ");
                     assert response.errorBody() != null;
                     try {
                         String errorBodyFound = response.errorBody().byteString().utf8();
-
-                        Log.d("WooooAuthService", "API RESPONSE " + errorBodyFound);
-
                         listener.OnTextTranslateResultFound(parseErrorBody(errorBodyFound));
                     } catch (IOException e) {
-
-                        Log.d("WooooAuthService", "API Exception " + e.getStackTrace().toString());
-
                         throw new RuntimeException(e);
                     }
-
                 } else {
-
                     listener.OnTextTranslateResultFound(body);
                 }
-
             }
 
             @Override
@@ -300,6 +238,10 @@ public class WooooAPIService {
 
     public interface OnUpdateUserLanguageApiResult {
         <T> void OnUpdateUserLanguageAPiResultFound(T result);
+    }
+
+    public interface OnUpdateAccountApiResult {
+        <T> void OnUpdateAccountAPiResultFound(T result);
     }
 
 

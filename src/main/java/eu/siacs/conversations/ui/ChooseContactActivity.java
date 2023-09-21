@@ -205,6 +205,8 @@ public class ChooseContactActivity extends AbstractSearchableListItemActivity im
     }
 
     private void submitSelection() {
+
+        Log.d(TAG,"submitSelection called....");
         final Intent request = getIntent();
         final Intent data = new Intent();
         data.putExtra("contacts", getSelectedContactJids());

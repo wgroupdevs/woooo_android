@@ -11,7 +11,7 @@
     <string name="action_add_account">Add account</string>
     <string name="action_edit_contact">Edit name</string>
     <string name="action_add_phone_book">Add to address book</string>
-    <string name="action_delete_contact">Delete from roster</string>
+    <string name="action_delete_contact">Delete contact</string>
     <string name="action_block_contact">Block contact</string>
     <string name="action_unblock_contact">Unblock contact</string>
     <string name="action_block_domain">Block domain</string>
@@ -59,6 +59,7 @@
     <string name="invite_contact">Invite contact</string>
     <string name="invite">Invite</string>
     <string name="contacts">Contacts</string>
+    <string name="contact_list">Contact list</string>
     <string name="contact">Contact</string>
     <string name="cancel">Cancel</string>
     <string name="set">Set</string>
@@ -363,7 +364,7 @@
     <string name="clear_other_devices">Clear devices</string>
     <string name="clear_other_devices_desc">Are you sure you want to clear all other devices from the ARMORED announcement? The next time your devices connect, they will reannounce themselves, but might not receive messages sent meanwhile.</string>
     <string name="error_no_keys_to_trust_server_error">There are no usable keys available for this contact.\nCould not fetch new keys from the server. Maybe there is something wrong with your contact’s server?</string>
-    <string name="error_no_keys_to_trust_presence">There are no usable keys available for this contact.\nMake sure you both have presence subscription.</string>
+    <string name="error_no_keys_to_trust_presence">No valid keys are currently accessible for this contact.</string>
     <string name="error_trustkeys_title">Something went wrong</string>
     <string name="fetching_history_from_server">Fetching history from server</string>
     <string name="no_more_history_on_server">No more history on server</string>
@@ -504,7 +505,7 @@
     <string name="hostname_or_onion">Server- or .onion-address</string>
     <string name="not_a_valid_port">This is not a valid port number</string>
     <string name="not_valid_hostname">This is not a valid hostname</string>
-    <string name="connected_accounts">%1$d of %2$d accounts connected</string>
+    <!--    <string name="connected_accounts">%1$d of %2$d accounts connected</string>-->
     <plurals name="x_messages">
         <item quantity="one">%d message</item>
         <item quantity="other">%d messages</item>
@@ -705,7 +706,7 @@
     <string name="edit_status_message_title">Edit Status Message</string>
     <string name="edit_status_message">Edit status message</string>
     <string name="disable_encryption">Disable encryption</string>
-    <string name="error_trustkey_general">%1$s is unable to send encrypted messages to %2$s. This may be due to your contact using an outdated server or client that can not handle ARMORED.</string>
+    <string name="error_trustkey_general">%1$s is currently unable to send ARMORED-Chat to %2$s.</string>
     <string name="error_trustkey_device_list">Could not fetch device list</string>
     <string name="error_trustkey_bundle">Could not fetch encryption keys</string>
     <string name="error_trustkey_hint_mutual">Hint: In some cases this can be fixed by adding each other your contact lists.</string>
@@ -832,7 +833,7 @@
     <string name="enter_your_name_instructions">Please enter your name to let people, who don’t have you in their address books, know who you are.</string>
     <string name="your_name">Your name</string>
     <string name="enter_your_name">Enter your name</string>
-    <string name="no_name_set_instructions">Use the edit button to set your name.</string>
+    <string name="no_name_set_instructions">Edit your display name.</string>
     <string name="reject_request">Reject request</string>
     <string name="install_orbot">Install Orbot</string>
     <string name="start_orbot">Start Orbot</string>
@@ -1018,9 +1019,15 @@
     <string name="attach_image">Attach Image</string>
     <string name="capture_video">Capture Video</string>
     <string name="record_audio">Record Audio</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="armored_chat">Armored Chat</string>
+    <string name="stealth_net">Stealth net</string>
+    <string name="include_in_your_contact_list">Include in your contact list.</string>
+    <string name="show_current_status">Show Current Status</string>
 
 
-    <string name="invitation_link">invitation link</string>
+    <!-- <string name="invitation_link">invitation link</string>
     <!-- Meeting Preference Titles -->
     <string name="room_header">Room</string>
     <string name="device_header">Device</string>
@@ -1047,5 +1054,11 @@
     <string name="audio_producer_copied">Copy audio producer id to clipboard</string>
     <string name="audio_consumer_copied">Copy audio consumer id to clipboard</string>
     <string name="video_producer_copied">Copy video producer id to clipboard</string>
-    <string name="video_consumer_copied">Copy video consumer id to clipboard</string>
+    <string name="video_consumer_copied">Copy video consumer id to clipboard</string> -->
+
+    <!-- <string-array name="Currency">
+        <item>USD</item>
+        <item>YEN</item>
+        <item>EURO</item>
+    </string-array> -->
 </resources>

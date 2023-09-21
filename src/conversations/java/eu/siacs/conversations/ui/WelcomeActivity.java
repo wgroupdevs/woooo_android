@@ -120,6 +120,7 @@ public class WelcomeActivity extends XmppActivity implements XmppConnectionServi
         Intent intent = new Intent(WelcomeActivity.this, EditAccountActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra(EditAccountActivity.EXTRA_FORCE_REGISTER, false);
+        intent.putExtra("init", true);
         addInviteUri(intent);
         startActivity(intent);
 
