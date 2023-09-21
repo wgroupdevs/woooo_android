@@ -86,7 +86,7 @@
     <item
         android:id="@+id/action_clear_history"
         android:orderInCategory="50"
-        android:title="Delete Chat"
+        android:title="Delete chat"
         app:showAsAction="never" />
 
     <item
@@ -109,7 +109,7 @@
     <item
         android:id="@+id/stealth_mode"
         android:orderInCategory="74"
-        android:title="Stealth mode"
+        android:title="@string/stealth_net"
         android:visible="true"
         />
     <item

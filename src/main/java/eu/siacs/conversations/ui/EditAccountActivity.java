@@ -2,6 +2,7 @@ package eu.siacs.conversations.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
@@ -46,10 +47,11 @@ import androidx.databinding.DataBindingUtil;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hbb20.CountryCodePicker;
 
-import org.openintents.openpgp.util.OpenPgpUtils;
-
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -66,6 +68,7 @@ import eu.siacs.conversations.entities.Presence;
 import eu.siacs.conversations.entities.PresenceTemplate;
 import eu.siacs.conversations.http.model.GetWooContactsModel;
 import eu.siacs.conversations.http.model.LoginAPIResponseJAVA;
+import eu.siacs.conversations.http.model.UserBasicInfo;
 import eu.siacs.conversations.http.services.BaseModelAPIResponse;
 import eu.siacs.conversations.http.services.WooooAPIService;
 import eu.siacs.conversations.services.BarcodeProvider;
@@ -80,7 +83,6 @@ import eu.siacs.conversations.ui.util.MenuDoubleTabUtil;
 import eu.siacs.conversations.ui.util.PendingItem;
 import eu.siacs.conversations.ui.util.SoftKeyboardUtils;
 import eu.siacs.conversations.ui.widget.KeyboardVisibility;
-import eu.siacs.conversations.utils.CryptoHelper;
 import eu.siacs.conversations.utils.Resolver;
 import eu.siacs.conversations.utils.SignupUtils;
 import eu.siacs.conversations.utils.TorServiceUtils;
@@ -99,7 +101,7 @@ import woooo_app.woooo.data.models.auth.requestmodels.GetWooContactsRequestParam
 import woooo_app.woooo.feature.auth.GV;
 import woooo_app.woooo.utils.NavIntentConstantKt;
 
-public class EditAccountActivity extends OmemoActivity implements OnAccountUpdate, OnUpdateBlocklist, OnKeyStatusUpdated, OnCaptchaRequested, KeyChainAliasCallback, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnMamPreferencesFetched, WooooAPIService.OnLoginAPiResult, WooooAPIService.OnGetWooContactAPiResult {
+public class EditAccountActivity extends OmemoActivity implements OnAccountUpdate, OnUpdateBlocklist, OnKeyStatusUpdated, OnCaptchaRequested, KeyChainAliasCallback, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnMamPreferencesFetched, WooooAPIService.OnLoginAPiResult, WooooAPIService.OnGetWooContactAPiResult, WooooAPIService.OnUpdateAccountApiResult {
     Boolean isLoginWithEmail = false;
     CountryCodePicker codePicker;
     Context context;
@@ -554,13 +556,21 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     }
 
 
-    private void performXMPPLoginAttempt(Jid jid, String password, int numericPort, String hostname, String languageCode) {
+    private void performXMPPLoginAttempt(UserBasicInfo user, Jid jid, String password, int numericPort, String hostname, String languageCode) {
         //Perform Login Attempt here
         mAccount = new Account(jid.asBareJid(), password);
         mAccount.setPort(numericPort);
         mAccount.setHostname(hostname);
         mAccount.setLanguageCode(languageCode);
         mAccount.setOption(Account.OPTION_REGISTER, false);
+        mAccount.setUserEmail(user.email);
+        mAccount.setUserPhone(user.phoneNumber);
+        mAccount.setAccountId(user.accountId);
+        mAccount.setDescription(user.description);
+        mAccount.setFirstName(user.firstName);
+        mAccount.setLastName(user.lastName);
+        mAccount.setDateOfBirth(user.dateOfBirth);
+        mAccount.setPostalCode(user.postalCode);
         xmppConnectionService.createAccount(mAccount);
 
 
@@ -772,7 +782,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         this.binding.actionEditYourName.setOnClickListener(this::onEditYourNameClicked);
 
 //        keyboard visibility checker
-        keyboardVisibilityChecker();
+//        keyboardVisibilityChecker();
         // button state
         loginWithEmailState();
 
@@ -782,7 +792,6 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         // open dialog when click on text view
         binding.countryCodetv.setOnClickListener(view -> codePicker.launchCountrySelectionDialog());
 
-        String number = codePicker.getSelectedCountryCode() + binding.phoneNumberField.getText();
 //        binding.loginButton.setOnClickListener(new OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -810,6 +819,49 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
     }
 
+
+    private void setUpInitialViews() {
+
+
+        if (mInitMode) {
+            binding.editProfileLayout.setVisibility(View.GONE);
+            binding.countryCodetv.setVisibility(View.VISIBLE);
+            binding.loginWithPhoneLayout.setVisibility(View.VISIBLE);
+            binding.loginButton.setVisibility(View.VISIBLE);
+            binding.forgotPassword.setVisibility(View.VISIBLE);
+            binding.dividerHorizontal.setVisibility(View.VISIBLE);
+            binding.newAccount.setVisibility(View.VISIBLE);
+            binding.accountPassword.setVisibility(View.VISIBLE);
+            binding.accountPasswordLayout.setVisibility(View.VISIBLE);
+            binding.lgnwithEmailBtn.setVisibility(View.VISIBLE);
+        } else {
+            binding.editProfileLayout.setVisibility(View.VISIBLE);
+            binding.savveBtn.setOnClickListener(v -> {
+                if (validateProfileFormData()) {
+                    updateAccountInfo();
+                }
+            });
+            showDatePicker();
+
+            if (mAccount != null) {
+                binding.aboutEt.setText(mAccount.getDescription());
+                binding.firstNameEt.setText(mAccount.getFirstName());
+                binding.lastNameEt.setText(mAccount.getLastName());
+                binding.emailEt.setText(mAccount.getUserEmail());
+                binding.phoneNumberEt.setText(mAccount.getUserPhone());
+                binding.dobEt.setText(mAccount.getDateOfBirth());
+                binding.countryEt.setText(mAccount.getCountry());
+                binding.stateEt.setText(mAccount.getState());
+                binding.cityEt.setText(mAccount.getCity());
+                binding.addressEt.setText(mAccount.getAddress());
+                binding.postalCodeEt.setText(mAccount.getPostalCode());
+            }
+
+        }
+
+
+    }
+
     @SuppressLint("Range")
     void getContactListFromPhoneBook() {
         if (hasPermissions(PERMISSIONS)) {
@@ -832,7 +884,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         }
         getWooContactsRequestParams.accountId = uId;
         xmppConnectionService.getWooContacts(getWooContactsRequestParams, EditAccountActivity.this);
-        Log.d(TAG ,"iwejfpiscpsaomcpSC"+uId);
+        Log.d(TAG, "iwejfpiscpsaomcpSC" + uId);
     }
 
 
@@ -858,6 +910,118 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
     public String[] getNumbers() {
         return contactsFromPhoneBook;
+    }
+
+
+    private boolean validateProfileFormData() {
+
+        String description = binding.aboutEt.getText().toString();
+        String firstName = binding.firstNameEt.getText().toString();
+        String lastName = binding.lastNameEt.getText().toString();
+        String email = binding.emailEt.getText().toString();
+        String phoneNumber = binding.phoneNumberEt.getText().toString();
+        String dateOfBirth = binding.dobEt.getText().toString();
+        String country = binding.countryEt.getText().toString();
+        String state = binding.stateEt.getText().toString();
+        String city = binding.cityEt.getText().toString();
+        String address = binding.addressEt.getText().toString();
+        String postalCode = binding.postalCodeEt.getText().toString();
+
+        if (description.trim().isEmpty()) {
+            binding.aboutEt.setError("Please enter something about yourself.");
+            return false;
+        } else if (firstName.trim().isEmpty()) {
+            binding.firstNameEt.setError("Please enter first name.");
+            return false;
+        } else if (lastName.trim().isEmpty()) {
+            binding.lastNameEt.setError("Please enter last name.");
+            return false;
+        } else if (dateOfBirth.trim().isEmpty()) {
+            binding.dobEt.setError("Please enter date of birth.");
+            return false;
+        } else if (country.trim().isEmpty()) {
+            binding.countryEt.setError("Please enter country.");
+            return false;
+        } else if (state.trim().isEmpty()) {
+            binding.stateEt.setError("Please enter state.");
+            return false;
+        } else if (city.trim().isEmpty()) {
+            binding.cityEt.setError("Please enter city.");
+            return false;
+        } else if (address.trim().isEmpty()) {
+            binding.addressEt.setError("Please enter address.");
+            return false;
+        } else if (postalCode.trim().isEmpty()) {
+            binding.postalCodeEt.setError("Please enter postal code.");
+            return false;
+        }
+
+
+        mAccount.setDescription(description);
+        mAccount.setFirstName(firstName);
+        mAccount.setLastName(lastName);
+        mAccount.setDateOfBirth(dateOfBirth);
+        mAccount.setCountry(country);
+        mAccount.setState(state);
+        mAccount.setCity(city);
+        mAccount.setAddress(address);
+        mAccount.setPostalCode(postalCode);
+
+
+        return true;
+
+    }
+
+
+    private void updateAccountInfo() {
+
+        UserBasicInfo user = new UserBasicInfo();
+        user.setAccountId(mAccount.getAccountId());
+        user.setDescription(mAccount.getDescription());
+        user.setFirstName(mAccount.getFirstName());
+        user.setLastName(mAccount.getLastName());
+        user.setDOB(mAccount.getDateOfBirth());
+        user.setCountry(mAccount.getCountry());
+        user.setState(mAccount.getState());
+        user.setCity(mAccount.getCity());
+        user.setAddress(mAccount.getAddress());
+        user.setPostalCode(mAccount.getPostalCode());
+        user.setImageURL(mAccount.getAvatar());
+
+        Log.d(TAG,user.getAccountId());
+        Log.d(TAG,user.getDescription());
+        Log.d(TAG,user.getFirstName());
+        Log.d(TAG,user.getLastName());
+
+        showProgressDialog(EditAccountActivity.this);
+        xmppConnectionService.updateProfile(user,EditAccountActivity.this);
+
+
+
+    }
+
+    private void showDatePicker() {
+        final Calendar myCalendar = Calendar.getInstance();
+        DatePickerDialog.OnDateSetListener date = (view, year, month, day) -> {
+            myCalendar.set(Calendar.YEAR, year);
+            myCalendar.set(Calendar.MONTH, month);
+            myCalendar.set(Calendar.DAY_OF_MONTH, day);
+            updateLabel(myCalendar);
+        };
+        binding.dobEt.setOnClickListener(v -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(EditAccountActivity.this, R.style.datePickerDialogTheme, date, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH));
+            datePickerDialog.show();
+            datePickerDialog.getButton(DatePickerDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.blue_primary300));
+            datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.blue_primary300));
+
+        });
+    }
+
+
+    private void updateLabel(Calendar myCalendar) {
+        String myFormat = "MM/dd/yyyy";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(myFormat, Locale.US);
+        binding.dobEt.setText(dateFormat.format(myCalendar.getTime()));
     }
 
     private void countryPicker() {
@@ -1038,6 +1202,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 //        if (mForceRegister != null) {
 //            this.binding.accountRegisterNew.setVisibility(View.GONE);
 //        }
+
     }
 
     private void displayVerificationWarningDialog(final XmppUri xmppUri) {
@@ -1128,6 +1293,8 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         updatePortLayout();
         updateloginButton();
         invalidateOptionsMenu();
+        setUpInitialViews();
+
     }
 
     private String getUserModeDomain() {
@@ -1408,32 +1575,32 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             if (pgpKeyId != 0 && Config.supportOpenPgp()) {
                 OnClickListener openPgp = view -> launchOpenKeyChain(pgpKeyId);
                 OnClickListener delete = view -> showDeletePgpDialog();
-                this.binding.pgpFingerprintBox.setVisibility(View.VISIBLE);
-                this.binding.pgpFingerprint.setText(OpenPgpUtils.convertKeyIdToHex(pgpKeyId));
-                this.binding.pgpFingerprint.setOnClickListener(openPgp);
+//                this.binding.pgpFingerprintBox.setVisibility(View.VISIBLE);
+//                this.binding.pgpFingerprint.setText(OpenPgpUtils.convertKeyIdToHex(pgpKeyId));
+//                this.binding.pgpFingerprint.setOnClickListener(openPgp);
                 if ("pgp".equals(messageFingerprint)) {
-                    this.binding.pgpFingerprintDesc.setTextAppearance(this, R.style.TextAppearance_Conversations_Caption_Highlight);
+//                    this.binding.pgpFingerprintDesc.setTextAppearance(this, R.style.TextAppearance_Conversations_Caption_Highlight);
                 }
-                this.binding.pgpFingerprintDesc.setOnClickListener(openPgp);
-                this.binding.actionDeletePgp.setOnClickListener(delete);
+//                this.binding.pgpFingerprintDesc.setOnClickListener(openPgp);
+//                this.binding.actionDeletePgp.setOnClickListener(delete);
             } else {
-                this.binding.pgpFingerprintBox.setVisibility(View.GONE);
+//                this.binding.pgpFingerprintBox.setVisibility(View.GONE);
             }
             final String ownAxolotlFingerprint = this.mAccount.getAxolotlService().getOwnFingerprint();
             if (ownAxolotlFingerprint != null && Config.supportOmemo()) {
-                this.binding.axolotlFingerprintBox.setVisibility(View.VISIBLE);
+//                this.binding.axolotlFingerprintBox.setVisibility(View.VISIBLE);
                 if (ownAxolotlFingerprint.equals(messageFingerprint)) {
-                    this.binding.ownFingerprintDesc.setTextAppearance(this, R.style.TextAppearance_Conversations_Caption_Highlight);
-                    this.binding.ownFingerprintDesc.setText(R.string.omemo_fingerprint_selected_message);
+//                    this.binding.ownFingerprintDesc.setTextAppearance(this, R.style.TextAppearance_Conversations_Caption_Highlight);
+//                    this.binding.ownFingerprintDesc.setText(R.string.omemo_fingerprint_selected_message);
                 } else {
-                    this.binding.ownFingerprintDesc.setTextAppearance(this, R.style.TextAppearance_Conversations_Caption);
-                    this.binding.ownFingerprintDesc.setText(R.string.omemo_fingerprint);
+//                    this.binding.ownFingerprintDesc.setTextAppearance(this, R.style.TextAppearance_Conversations_Caption);
+//                    this.binding.ownFingerprintDesc.setText(R.string.omemo_fingerprint);
                 }
-                this.binding.axolotlFingerprint.setText(CryptoHelper.prettifyFingerprint(ownAxolotlFingerprint.substring(2)));
-                this.binding.actionCopyAxolotlToClipboard.setVisibility(View.VISIBLE);
-                this.binding.actionCopyAxolotlToClipboard.setOnClickListener(v -> copyOmemoFingerprint(ownAxolotlFingerprint));
+//                this.binding.axolotlFingerprint.setText(CryptoHelper.prettifyFingerprint(ownAxolotlFingerprint.substring(2)));
+//                this.binding.actionCopyAxolotlToClipboard.setVisibility(View.VISIBLE);
+//                this.binding.actionCopyAxolotlToClipboard.setOnClickListener(v -> copyOmemoFingerprint(ownAxolotlFingerprint));
             } else {
-                this.binding.axolotlFingerprintBox.setVisibility(View.GONE);
+//                this.binding.axolotlFingerprintBox.setVisibility(View.GONE);
             }
             boolean hasKeys = false;
 //            binding.otherDeviceKeys.removeAllViews();
@@ -1675,8 +1842,8 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                 Resolver.checkDomain(jid);
                 final String password = binding.accountPassword.getText().toString();
                 loginAPIResponseJAVA = (LoginAPIResponseJAVA) result;
-
-                String languageCode = loginAPIResponseJAVA.getData().getUser().languageCode;
+                UserBasicInfo userBasicInfo = loginAPIResponseJAVA.getData().getUser();
+                String languageCode = userBasicInfo.languageCode;
                 Log.d("onLoginApiResultFound", " LoginAPIResponseJAVA Called in EditActivity LANGUAGE CODE " + languageCode);
 
                 if (languageCode == null || languageCode.isEmpty()) {
@@ -1685,7 +1852,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
                 // get Woaa Contacts Api
                 getContactPermission();
-                performXMPPLoginAttempt(jid, password, 5222, null, languageCode);
+                performXMPPLoginAttempt(userBasicInfo, jid, password, 5222, null, languageCode);
 
             } else if (result instanceof BaseModelAPIResponse) {
                 Toast.makeText(context, ((BaseModelAPIResponse) result).Message, Toast.LENGTH_LONG).show();
@@ -1704,7 +1871,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     }
 
     private void getContactPermission() {
-        Log.d(TAG, "iojoasicoaksncasicn: " );
+        Log.d(TAG, "iojoasicoaksncasicn: ");
 
 //        if (Build.VERSION.SDK_INT >= 23) {
         if (!hasPermissions(PERMISSIONS)) {
@@ -1747,6 +1914,25 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             } else {
                 hideProgressDialog();
                 Log.d("WooContactAPiResult", "ECEPTION FOUND... " + result);
+
+            }
+        });
+    }
+
+    @Override
+    public <T> void OnUpdateAccountAPiResultFound(T result) {
+        runOnUiThread(() -> {
+            hideProgressDialog();
+
+            if (result instanceof UserBasicInfo) {
+                Log.d(TAG, " OnUpdateAccountAPiResultFound Called in EditActivity ");
+                xmppConnectionService.updateAccount(mAccount);
+            } else if (result instanceof BaseModelAPIResponse) {
+                hideProgressDialog();
+                Log.d(TAG, " BaseModelAPIResponse Called in EditActivity " + ((BaseModelAPIResponse) result).Message);
+            } else {
+                hideProgressDialog();
+                Log.d(TAG, "ECEPTION FOUND... " + result);
 
             }
         });

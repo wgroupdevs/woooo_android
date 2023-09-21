@@ -66,8 +66,6 @@ fun HomePage(navigator: DestinationsNavigator) {
             mutableStateOf(false)
         }
 
-
-
         ModalNavigationDrawer(drawerContent = {
 
             AppDrawer(navigator = navigator)

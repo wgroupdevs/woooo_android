@@ -222,7 +222,20 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 + Account.SERVER + " TEXT,"
                 + Account.PASSWORD + " TEXT,"
                 + Account.DISPLAY_NAME + " TEXT, "
+                + Account.DESCRIPTION + " TEXT, "
+                + Account.FIRST_NAME + " TEXT, "
+                + Account.LAST_NAME + " TEXT, "
+                + Account.USER_EMAIL + " TEXT, "
+                + Account.PHONE_NUMBER + " TEXT, "
+                + Account.LANGUAGE + " TEXT, "
                 + Account.LANGUAGE_CODE + " TEXT, "
+                + Account.DATE_OF_BIRTH + " TEXT, "
+                + Account.ACCOUNT_UNIQUE_ID + " TEXT, "
+                + Account.COUNTRY + " TEXT, "
+                + Account.STATE + " TEXT, "
+                + Account.CITY + " TEXT, "
+                + Account.ADDRESS + " TEXT, "
+                + Account.POSTAL_CODE + " TEXT, "
                 + Account.STATUS + " TEXT,"
                 + Account.STATUS_MESSAGE + " TEXT,"
                 + Account.ROSTERVERSION + " TEXT,"
@@ -236,6 +249,8 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 + Account.FAST_MECHANISM + " TEXT,"
                 + Account.FAST_TOKEN + " TEXT,"
                 + Account.PORT + " NUMBER DEFAULT 5222)");
+
+
         db.execSQL("create table " + Conversation.TABLENAME + " ("
                 + Conversation.UUID + " TEXT PRIMARY KEY, " + Conversation.NAME
                 + " TEXT, " + Conversation.CONTACT + " TEXT, "

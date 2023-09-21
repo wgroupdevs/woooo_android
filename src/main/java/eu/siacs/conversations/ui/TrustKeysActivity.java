@@ -25,7 +25,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
-import eu.siacs.conversations.crypto.OmemoSetting;
 import eu.siacs.conversations.crypto.axolotl.AxolotlService;
 import eu.siacs.conversations.crypto.axolotl.FingerprintStatus;
 import eu.siacs.conversations.databinding.ActivityTrustKeysBinding;
@@ -35,7 +34,6 @@ import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.Message;
 import eu.siacs.conversations.utils.CryptoHelper;
-import eu.siacs.conversations.utils.IrregularUnicodeDetector;
 import eu.siacs.conversations.utils.XmppUri;
 import eu.siacs.conversations.xmpp.Jid;
 import eu.siacs.conversations.xmpp.OnKeyStatusUpdated;
@@ -180,7 +178,7 @@ public class TrustKeysActivity extends OmemoActivity implements OnKeyStatusUpdat
                 hasForeignKeys = true;
                 KeysCardBinding keysCardBinding = DataBindingUtil.inflate(getLayoutInflater(), R.layout.keys_card, binding.foreignKeys, false);
                 final Jid jid = entry.getKey();
-                keysCardBinding.foreignKeysTitle.setText(IrregularUnicodeDetector.style(this, jid));
+                keysCardBinding.foreignKeysTitle.setText(mAccount.getRoster().getContact(jid).getDisplayName());
                 keysCardBinding.foreignKeysTitle.setOnClickListener(v -> switchToContactDetails(mAccount.getRoster().getContact(jid)));
                 final Map<String, Boolean> fingerprints = entry.getValue();
                 for (final String fingerprint : fingerprints.keySet()) {
@@ -195,9 +193,12 @@ public class TrustKeysActivity extends OmemoActivity implements OnKeyStatusUpdat
                 if (fingerprints.size() == 0) {
                     keysCardBinding.noKeysToAccept.setVisibility(View.VISIBLE);
                     if (hasNoOtherTrustedKeys(jid)) {
+                        Contact contact = mAccount.getRoster().getContact(jid);
                         if (!mAccount.getRoster().getContact(jid).mutualPresenceSubscription()) {
+                            xmppConnectionService.sendPresencePacket(contact.getAccount(), xmppConnectionService.getPresenceGenerator().requestPresenceUpdatesFrom(contact));
                             keysCardBinding.noKeysToAccept.setText(R.string.error_no_keys_to_trust_presence);
                         } else {
+                            xmppConnectionService.sendPresencePacket(contact.getAccount(), xmppConnectionService.getPresenceGenerator().requestPresenceUpdatesFrom(contact));
                             keysCardBinding.noKeysToAccept.setText(R.string.error_no_keys_to_trust_server_error);
                         }
                     } else {
@@ -240,12 +241,7 @@ public class TrustKeysActivity extends OmemoActivity implements OnKeyStatusUpdat
                 Contact contact = mAccount.getRoster().getContact(contactJids.get(0));
                 binding.keyErrorGeneral.setText(getString(R.string.error_trustkey_general, getString(R.string.app_name), contact.getDisplayName()));
                 binding.ownKeysDetails.removeAllViews();
-                if (OmemoSetting.isAlways()) {
-                    binding.disableButton.setVisibility(View.GONE);
-                } else {
-                    binding.disableButton.setVisibility(View.VISIBLE);
-                    binding.disableButton.setOnClickListener(this::disableEncryptionDialog);
-                }
+
                 binding.ownKeysCard.setVisibility(View.GONE);
                 binding.foreignKeys.removeAllViews();
                 binding.foreignKeys.setVisibility(View.GONE);
@@ -449,10 +445,13 @@ public class TrustKeysActivity extends OmemoActivity implements OnKeyStatusUpdat
     }
 
     private void setDone() {
+        binding.contactSyncingLabel.setVisibility(View.GONE);
         binding.loginButton.setText(getString(R.string.done));
     }
 
     private void setFetching() {
-        binding.loginButton.setText(getString(R.string.fetching_keys));
+//        Toast.makeText(this,"Contact synchronization in progress. Just a moment.",Toast.LENGTH_SHORT).show();
+        binding.contactSyncingLabel.setVisibility(View.VISIBLE);
+        binding.loginButton.setText("Synchronizing Contacts...");
     }
 }

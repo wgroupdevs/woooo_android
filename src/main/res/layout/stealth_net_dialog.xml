@@ -12,20 +12,14 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:orientation="horizontal"
-
         >
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:background="@drawable/ic_lock_white_24dp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_5sdp"
-            android:text="Armored Chat"
+            android:text="Stealth Net"
             android:textAppearance="@style/TextAppearance.Conversations.Title" />
     </LinearLayout>
 
@@ -34,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_10sdp"
-        android:text="Bulletproof Security with End-to-End Encryption. Keep your messages private and secure!"
+        android:text="Stealth Net will be accessible shortly."
         android:textAlignment="textStart" />
 
 </LinearLayout>

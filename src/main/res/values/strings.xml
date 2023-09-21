@@ -11,7 +11,7 @@
     <string name="action_add_account">Add account</string>
     <string name="action_edit_contact">Edit name</string>
     <string name="action_add_phone_book">Add to address book</string>
-    <string name="action_delete_contact">Delete from roster</string>
+    <string name="action_delete_contact">Delete contact</string>
     <string name="action_block_contact">Block contact</string>
     <string name="action_unblock_contact">Unblock contact</string>
     <string name="action_block_domain">Block domain</string>
@@ -364,7 +364,7 @@
     <string name="clear_other_devices">Clear devices</string>
     <string name="clear_other_devices_desc">Are you sure you want to clear all other devices from the ARMORED announcement? The next time your devices connect, they will reannounce themselves, but might not receive messages sent meanwhile.</string>
     <string name="error_no_keys_to_trust_server_error">There are no usable keys available for this contact.\nCould not fetch new keys from the server. Maybe there is something wrong with your contact’s server?</string>
-    <string name="error_no_keys_to_trust_presence">There are no usable keys available for this contact.\nMake sure you both have presence subscription.</string>
+    <string name="error_no_keys_to_trust_presence">No valid keys are currently accessible for this contact.</string>
     <string name="error_trustkeys_title">Something went wrong</string>
     <string name="fetching_history_from_server">Fetching history from server</string>
     <string name="no_more_history_on_server">No more history on server</string>
@@ -706,7 +706,7 @@
     <string name="edit_status_message_title">Edit Status Message</string>
     <string name="edit_status_message">Edit status message</string>
     <string name="disable_encryption">Disable encryption</string>
-    <string name="error_trustkey_general">%1$s is unable to send encrypted messages to %2$s. This may be due to your contact using an outdated server or client that can not handle ARMORED.</string>
+    <string name="error_trustkey_general">%1$s is currently unable to send ARMORED-Chat to %2$s.</string>
     <string name="error_trustkey_device_list">Could not fetch device list</string>
     <string name="error_trustkey_bundle">Could not fetch encryption keys</string>
     <string name="error_trustkey_hint_mutual">Hint: In some cases this can be fixed by adding each other your contact lists.</string>
@@ -833,7 +833,7 @@
     <string name="enter_your_name_instructions">Please enter your name to let people, who don’t have you in their address books, know who you are.</string>
     <string name="your_name">Your name</string>
     <string name="enter_your_name">Enter your name</string>
-    <string name="no_name_set_instructions">Use the edit button to set your name.</string>
+    <string name="no_name_set_instructions">Edit your display name.</string>
     <string name="reject_request">Reject request</string>
     <string name="install_orbot">Install Orbot</string>
     <string name="start_orbot">Start Orbot</string>
@@ -1021,6 +1021,10 @@
     <string name="record_audio">Record Audio</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="armored_chat">Armored Chat</string>
+    <string name="stealth_net">Stealth net</string>
+    <string name="include_in_your_contact_list">Include in your contact list.</string>
+    <string name="show_current_status">Show Current Status</string>
 
     <string-array name="Currency">
         <item>USD</item>

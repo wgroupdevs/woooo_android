@@ -22,7 +22,6 @@ import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -45,6 +44,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
@@ -1495,16 +1495,19 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         } else if (itemId == R.id.changeLanguage) {
             showLanguageChangeDialog(activity);
         } else if (itemId == R.id.stealth_mode) {
-            boolean use_tor = activity.getPreferences().getBoolean("use_tor", false);
-            if(!use_tor){
-                Toast.makeText(activity, "Stealth mode activated.", Toast.LENGTH_SHORT).show();
-            }else {
-                Toast.makeText(activity, "Stealth mode disabled.", Toast.LENGTH_SHORT).show();
-            }
-            activity.getPreferences().edit().putBoolean("use_tor", !use_tor).commit();
 
-            reconnectAccounts();
-            activity.xmppConnectionService.reinitializeMuclumbusService();
+            showStealthNetDialog(activity);
+
+//            boolean use_tor = activity.getPreferences().getBoolean("use_tor", false);
+//            if(!use_tor){
+//                Toast.makeText(activity, "Stealth mode activated.", Toast.LENGTH_SHORT).show();
+//            }else {
+//                Toast.makeText(activity, "Stealth mode disabled.", Toast.LENGTH_SHORT).show();
+//            }
+//            activity.getPreferences().edit().putBoolean("use_tor", !use_tor).commit();
+//
+//            reconnectAccounts();
+//            activity.xmppConnectionService.reinitializeMuclumbusService();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -1518,7 +1521,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     }
 
     private void showLanguageChangeDialog(Context context) {
-        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context);
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context,R.style.popup_dialog_theme);
         // Inflate the custom layout
         LayoutInflater inflater = LayoutInflater.from(context);
         View customView = inflater.inflate(R.layout.language_dialog, null);
@@ -1532,8 +1535,13 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 
         // Create and show the AlertDialog
         android.app.AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
+//        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+// Set the width of the dialog to 70% of the screen width
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
+        layoutParams.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.5);
+        layoutParams.height = (int) (getResources().getDisplayMetrics().heightPixels * 0.7);
+        alertDialog.getWindow().setAttributes(layoutParams);
 
         alertDialog.show();
         languagesListView.setOnItemClickListener((parent, view, position, id) -> {
@@ -1549,19 +1557,46 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     }
 
     private void showEncrptionDialog(Context context) {
-        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context);
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context,R.style.popup_dialog_theme);
         // Inflate the custom layout
         LayoutInflater inflater = LayoutInflater.from(context);
         View customView = inflater.inflate(R.layout.encryption_dialog, null);
         // Set the custom layout to the dialog
+
         alertDialogBuilder.setView(customView);
         // Create and show the AlertDialog
         android.app.AlertDialog alertDialog = alertDialogBuilder.create();
-        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
+//        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+// Set the width of the dialog to 70% of the screen width
+//        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+//        layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
+//        layoutParams.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.7);
+//        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+//        alertDialog.getWindow().setAttributes(layoutParams);
 
         alertDialog.show();
     }
+    private void showStealthNetDialog(Context context) {
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context,R.style.popup_dialog_theme);
+        // Inflate the custom layout
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View customView = inflater.inflate(R.layout.stealth_net_dialog, null);
+        // Set the custom layout to the dialog
+
+        alertDialogBuilder.setView(customView);
+        // Create and show the AlertDialog
+        android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+//        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+// Set the width of the dialog to 70% of the screen width
+//        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+//        layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
+//        layoutParams.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.7);
+//        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+//        alertDialog.getWindow().setAttributes(layoutParams);
+
+        alertDialog.show();
+    }
+
 
     private static ArrayList<Language> parseJSON(Context context) {
         ArrayList<Language> languageList = new ArrayList<>();

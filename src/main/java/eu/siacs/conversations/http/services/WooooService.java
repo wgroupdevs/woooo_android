@@ -6,6 +6,7 @@ import eu.siacs.conversations.http.model.SearchAccountAPIResponse;
 import eu.siacs.conversations.http.model.TextTranslateApiResponse;
 import eu.siacs.conversations.http.model.TextTranslateModel;
 import eu.siacs.conversations.http.model.UpdateUserLanguageModel;
+import eu.siacs.conversations.http.model.UserBasicInfo;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -30,4 +31,11 @@ public interface WooooService {
 
     @PUT("/api/v1/Account/UpdateUserLanguage")
     Call<UpdateUserLanguageModel> updateUserLanguage(@Query("accountId") String accountId, @Query("language") String language, @Query("languageCode") String languageCode);
+    @PUT("/api/v1/Account/UpdateAccount")
+    Call<UserBasicInfo> updateProfile(@Query("id") String id,@Body UserBasicInfo params);
+
+//    @PUT("/api/v1/Account/UpdateAccount")
+//    suspend fun updateProfile(
+//            @Query("id") id: String,@Body params:UpdateProfileRequestModel
+//    ): Response<UpdateProfileModel>
 }

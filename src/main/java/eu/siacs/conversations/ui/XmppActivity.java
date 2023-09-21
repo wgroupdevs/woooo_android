@@ -48,7 +48,6 @@ import android.widget.Toast;
 
 import androidx.annotation.BoolRes;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
@@ -80,11 +79,11 @@ import eu.siacs.conversations.services.XmppConnectionService;
 import eu.siacs.conversations.services.XmppConnectionService.XmppConnectionBinder;
 import eu.siacs.conversations.ui.util.MenuDoubleTabUtil;
 import eu.siacs.conversations.ui.util.PresenceSelector;
+import eu.siacs.conversations.ui.util.SettingsUtils;
 import eu.siacs.conversations.ui.util.SoftKeyboardUtils;
 import eu.siacs.conversations.utils.AccountUtils;
 import eu.siacs.conversations.utils.Compatibility;
 import eu.siacs.conversations.utils.ExceptionHelper;
-import eu.siacs.conversations.ui.util.SettingsUtils;
 import eu.siacs.conversations.utils.SignupUtils;
 import eu.siacs.conversations.utils.ThemeHelper;
 import eu.siacs.conversations.xmpp.Jid;
@@ -728,7 +727,7 @@ public abstract class XmppActivity extends ActionBarActivity {
 
     protected void showAddToRosterDialog(final Contact contact) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(contact.getJid().toString());
+        builder.setTitle(contact.getDisplayName().toString());
         builder.setMessage(getString(R.string.not_in_roster));
         builder.setNegativeButton(getString(R.string.cancel), null);
         builder.setPositiveButton(getString(R.string.add_contact), (dialog, which) -> xmppConnectionService.createContact(contact, true));

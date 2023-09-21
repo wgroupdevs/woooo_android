@@ -51,6 +51,19 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
     public static final String KEYS = "keys";
     public static final String AVATAR = "avatar";
     public static final String DISPLAY_NAME = "display_name";
+    public static final String FIRST_NAME = "first_name";
+    public static final String ACCOUNT_UNIQUE_ID = "account_unique_id";
+    public static final String DESCRIPTION = "description";
+    public static final String LAST_NAME = "last_name";
+    public static final String DATE_OF_BIRTH = "date_of_birth";
+    public static final String USER_EMAIL = "user_email";
+    public static final String PHONE_NUMBER = "phone_number";
+    public static final String LANGUAGE = "language";
+    public static final String COUNTRY = "country";
+    public static final String STATE = "state";
+    public static final String CITY = "city";
+    public static final String ADDRESS = "address";
+    public static final String POSTAL_CODE = "postal_code";
     public static final String LANGUAGE_CODE = "language_code";
 
     public static final String HOSTNAME = "hostname";
@@ -98,6 +111,20 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
     private String rosterVersion;
     private String displayName = null;
 
+    private String accountId = null;
+    private String userEmail = null;
+    private String userPhone = null;
+    private String firstName = null;
+    private String lastName = null;
+    private String dateOfBirth = null;
+    private String language = null;
+    private String description = null;
+    private String address = null;
+    private String country = null;
+    private String state = null;
+    private String city = null;
+
+    private String postalCode = null;
 
     private String languageCode = null;
     private AxolotlService axolotlService = null;
@@ -116,10 +143,23 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
         this(
                 java.util.UUID.randomUUID().toString(),
                 jid,
+                null,
                 password,
                 0,
                 null,
                 "",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
                 null,
                 null,
                 null,
@@ -136,13 +176,26 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
     private Account(
             final String uuid,
             final Jid jid,
+            String accountId,
             final String password,
             final int options,
             final String rosterVersion,
             final String keys,
             final String avatar,
             String displayName,
+            String description,
+            String firstName,
+            String lastName,
+            String userEmail,
+            String userPhone,
+            String language,
             String languageCode,
+            String dateOfBirth,
+            String country,
+            String state,
+            String city,
+            String address,
+            String postalCode,
             String hostname,
             int port,
             final Presence.Status status,
@@ -153,6 +206,7 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
             final String fastToken) {
         this.uuid = uuid;
         this.jid = jid;
+        this.accountId = accountId;
         this.password = password;
         this.options = options;
         this.rosterVersion = rosterVersion;
@@ -165,7 +219,19 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
         this.keys = tmp;
         this.avatar = avatar;
         this.displayName = displayName;
+        this.description = description;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userEmail = userEmail;
+        this.userPhone = userPhone;
+        this.language = language;
         this.languageCode = languageCode;
+        this.dateOfBirth = dateOfBirth;
+        this.country = country;
+        this.state = state;
+        this.city = city;
+        this.address = address;
+        this.postalCode = postalCode;
         this.hostname = hostname;
         this.port = port;
         this.presenceStatus = status;
@@ -196,13 +262,26 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
         return new Account(
                 cursor.getString(cursor.getColumnIndexOrThrow(UUID)),
                 jid,
+                cursor.getString(cursor.getColumnIndexOrThrow(ACCOUNT_UNIQUE_ID)),
                 cursor.getString(cursor.getColumnIndexOrThrow(PASSWORD)),
                 cursor.getInt(cursor.getColumnIndexOrThrow(OPTIONS)),
                 cursor.getString(cursor.getColumnIndexOrThrow(ROSTERVERSION)),
                 cursor.getString(cursor.getColumnIndexOrThrow(KEYS)),
                 cursor.getString(cursor.getColumnIndexOrThrow(AVATAR)),
                 cursor.getString(cursor.getColumnIndexOrThrow(DISPLAY_NAME)),
+                cursor.getString(cursor.getColumnIndexOrThrow(DESCRIPTION)),
+                cursor.getString(cursor.getColumnIndexOrThrow(FIRST_NAME)),
+                cursor.getString(cursor.getColumnIndexOrThrow(LAST_NAME)),
+                cursor.getString(cursor.getColumnIndexOrThrow(USER_EMAIL)),
+                cursor.getString(cursor.getColumnIndexOrThrow(PHONE_NUMBER)),
+                cursor.getString(cursor.getColumnIndexOrThrow(LANGUAGE)),
                 cursor.getString(cursor.getColumnIndexOrThrow(LANGUAGE_CODE)),
+                cursor.getString(cursor.getColumnIndexOrThrow(DATE_OF_BIRTH)),
+                cursor.getString(cursor.getColumnIndexOrThrow(COUNTRY)),
+                cursor.getString(cursor.getColumnIndexOrThrow(STATE)),
+                cursor.getString(cursor.getColumnIndexOrThrow(CITY)),
+                cursor.getString(cursor.getColumnIndexOrThrow(ADDRESS)),
+                cursor.getString(cursor.getColumnIndexOrThrow(POSTAL_CODE)),
                 cursor.getString(cursor.getColumnIndexOrThrow(HOSTNAME)),
                 cursor.getInt(cursor.getColumnIndexOrThrow(PORT)),
                 Presence.Status.fromShowString(
@@ -212,6 +291,111 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
                 cursor.getString(cursor.getColumnIndexOrThrow(PINNED_CHANNEL_BINDING)),
                 cursor.getString(cursor.getColumnIndexOrThrow(FAST_MECHANISM)),
                 cursor.getString(cursor.getColumnIndexOrThrow(FAST_TOKEN)));
+    }
+
+
+    public String getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(String accountId) {
+        this.accountId = accountId;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String getUserPhone() {
+        return userPhone;
+    }
+
+    public void setUserPhone(String userPhone) {
+        this.userPhone = userPhone;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
     }
 
     public boolean httpUploadAvailable(long size) {
@@ -511,6 +695,7 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
     public ContentValues getContentValues() {
         final ContentValues values = new ContentValues();
         values.put(UUID, uuid);
+        values.put(ACCOUNT_UNIQUE_ID, accountId);
         values.put(USERNAME, jid.getLocal());
         values.put(SERVER, jid.getDomain().toEscapedString());
         values.put(PASSWORD, password);
@@ -521,7 +706,20 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
         values.put(ROSTERVERSION, rosterVersion);
         values.put(AVATAR, avatar);
         values.put(DISPLAY_NAME, displayName);
+        values.put(DESCRIPTION, description);
+        values.put(FIRST_NAME, firstName);
+        values.put(LAST_NAME, lastName);
+        values.put(USER_EMAIL, userEmail);
+        values.put(PHONE_NUMBER, userPhone);
+        values.put(LANGUAGE, language);
         values.put(LANGUAGE_CODE, languageCode);
+        values.put(DATE_OF_BIRTH, dateOfBirth);
+        values.put(COUNTRY, country);
+        values.put(STATE, state);
+        values.put(CITY, city);
+        values.put(ADDRESS, address);
+        values.put(POSTAL_CODE, postalCode);
+
         values.put(HOSTNAME, hostname);
         values.put(PORT, port);
         values.put(STATUS, presenceStatus.toShowString());

@@ -641,7 +641,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
     @Override
     public View getView(int position, View view, ViewGroup parent) {
         final Message message = getItem(position);
-        final boolean omemoEncryption = message.getEncryption() == Message.ENCRYPTION_AXOLOTL;
+        final boolean omemoEncryption = true;
         final boolean isInValidSession = message.isValidInSession() && (!omemoEncryption || message.isTrusted());
         final Conversational conversation = message.getConversation();
         final Account account = conversation.getAccount();
@@ -865,7 +865,10 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         } else if (message.getEncryption() == Message.ENCRYPTION_DECRYPTION_FAILED) {
             displayInfoMessage(viewHolder, activity.getString(R.string.decryption_failed), darkBackground);
         } else if (message.getEncryption() == Message.ENCRYPTION_AXOLOTL_NOT_FOR_THIS_DEVICE) {
+
+            Log.d(TAG,"MESSAGE BODY :" + message.getBody());
             displayInfoMessage(viewHolder, activity.getString(R.string.not_encrypted_for_this_device), darkBackground);
+
         } else if (message.getEncryption() == Message.ENCRYPTION_AXOLOTL_FAILED) {
             displayInfoMessage(viewHolder, activity.getString(R.string.omemo_decryption_failed), darkBackground);
         } else {
@@ -904,8 +907,9 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 //                viewHolder.message_box.setBackgroundResource(bubble);
                 viewHolder.encryption.setVisibility(View.GONE);
             } else {
+
                 viewHolder.message_box.setBackgroundResource(R.color.blue_primary300);
-                viewHolder.encryption.setVisibility(View.VISIBLE);
+//                viewHolder.encryption.setVisibility(View.VISIBLE);
                 if (omemoEncryption && !message.isTrusted()) {
                     viewHolder.encryption.setText(R.string.not_trusted);
                 } else {

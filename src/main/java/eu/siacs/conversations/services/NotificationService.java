@@ -1733,7 +1733,7 @@ public class NotificationService {
 //                }
 //            }
 //        }
-        mBuilder.setContentText("You may have new messages.");
+        mBuilder.setContentText("Connected.");
 //         mBuilder.setContentText(
 //                mXmppConnectionService.getString(R.string.connected_accounts, connected, enabled));
 //
@@ -1744,7 +1744,7 @@ public class NotificationService {
         }
         mBuilder.setWhen(0)
                 .setPriority(Notification.PRIORITY_MIN)
-                .setSmallIcon(R.drawable.ic_refresh_white_24dp)
+                .setSmallIcon(R.drawable.woooo_logo)
                 .setLocalOnly(true)
                 .setVisibility(Notification.VISIBILITY_SECRET)
                 .setOngoing(false);
