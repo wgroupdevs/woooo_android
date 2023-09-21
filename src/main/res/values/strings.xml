@@ -1027,7 +1027,7 @@
     <string name="show_current_status">Show Current Status</string>
 
 
-    <!-- <string name="invitation_link">invitation link</string>
+    <string name="invitation_link">invitation link</string>
     <!-- Meeting Preference Titles -->
     <string name="room_header">Room</string>
     <string name="device_header">Device</string>
@@ -1054,11 +1054,11 @@
     <string name="audio_producer_copied">Copy audio producer id to clipboard</string>
     <string name="audio_consumer_copied">Copy audio consumer id to clipboard</string>
     <string name="video_producer_copied">Copy video producer id to clipboard</string>
-    <string name="video_consumer_copied">Copy video consumer id to clipboard</string> -->
+    <string name="video_consumer_copied">Copy video consumer id to clipboard</string> 
 
-    <!-- <string-array name="Currency">
+    <string-array name="Currency">
         <item>USD</item>
         <item>YEN</item>
         <item>EURO</item>
-    </string-array> -->
+    </string-array>
 </resources>
