@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="androidx.core.util.Consumer" />
+        <import type="android.text.TextUtils" />
+        <import type="android.view.View" />
+
+        <variable
+            name="wooPeerViewProps"
+            type="com.woooapp.meeting.impl.vm.PeerViewProps" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <org.webrtc.SurfaceViewRenderer
+            android:id="@+id/wooVideoRenderer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            bind:edias_render="@{wooPeerViewProps.videoTrack}"
+            />
+
+        <LinearLayout
+            android:id="@+id/videoHidden"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            bind:edias_render_empty="@{wooPeerViewProps.videoTrack}">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="5"
+                android:scaleType="fitCenter"
+                android:src="@drawable/buddy" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</layout>

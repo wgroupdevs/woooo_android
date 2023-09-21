@@ -1,0 +1,1020 @@
+package com.woooapp.meeting.lib.socket;
+
+import android.content.Context;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.annotation.WorkerThread;
+
+import com.woooapp.meeting.impl.utils.WooDirector;
+import com.woooapp.meeting.lib.Async;
+import com.woooapp.meeting.lib.MeetingClient;
+import com.woooapp.meeting.lib.PeerConnectionUtils;
+import com.woooapp.meeting.lib.lv.RoomStore;
+import com.woooapp.meeting.net.models.CreateMeetingResponse;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.mediasoup.droid.Consumer;
+import org.mediasoup.droid.Device;
+import org.mediasoup.droid.Logger;
+import org.mediasoup.droid.MediasoupException;
+import org.mediasoup.droid.Producer;
+import org.mediasoup.droid.RecvTransport;
+import org.mediasoup.droid.SendTransport;
+import org.mediasoup.droid.Transport;
+import org.webrtc.AudioTrack;
+import org.webrtc.CameraVideoCapturer;
+import org.webrtc.VideoTrack;
+
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicReference;
+
+import eu.siacs.conversations.xmpp.jingle.Media;
+import io.reactivex.disposables.CompositeDisposable;
+import io.socket.client.IO;
+import io.socket.client.Socket;
+
+/**
+ * @author Muneeb Ahmad (ahmadgallian@yahoo.com)
+ * <p>
+ * Class WooSocket.java
+ * Created on 15/09/2023 at 4:43 am
+ */
+@WorkerThread
+public class WooSocket {
+    private static final String TAG = WooSocket.class.getSimpleName();
+    private static final String SOCKET_URL = "https://wmediasoup.watchblock.net/";
+    private static WooSocket sInstance = null;
+    private final Context mContext;
+    private final RoomStore mStore;
+    private Socket mSocket;
+    private String mSocketId;
+    private boolean mConnected = false;
+    private Device mMediaSoupDevice;
+    private SendTransport mSendTransport;
+    private RecvTransport mRecvTransport;
+    private final Map<String, RecvTransport> mRecvTransports = new HashMap<>();
+    private AudioTrack mLocalAudioTrack;
+    private VideoTrack mLocalVideoTrack;
+    private Producer mMicProducer;
+    private Producer mCamProducer;
+    private Producer mShareProducer;
+    private final PeerConnectionUtils mPeerConnectionUtils;
+    private final Handler mMainHandler;
+    private final Handler mWorkHandler;
+    private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
+    private final String deviceUUID;
+    private String consumeBackDeviceUUID;
+    private List<String> audioProducersIds = new ArrayList<>();
+    private final List<String> producerIds = new ArrayList<>();
+    private String videoProducerId = null;
+    private final MeetingClient mMeetingClient;
+    private String mProducerSockId;
+    /**
+     *
+     * @param context
+     * @param roomStore
+     * @param workHandler
+     * @param meetingClient
+     */
+    private WooSocket(
+            @NonNull Context context,
+            @NonNull RoomStore roomStore,
+            @NonNull Handler workHandler,
+            @NonNull MeetingClient meetingClient) {
+        this.mContext = context;
+        this.mStore = roomStore;
+        this.mMeetingClient = meetingClient;
+        this.mPeerConnectionUtils = new PeerConnectionUtils();
+
+        // Thread Handlers
+        this.mMainHandler = new Handler(Looper.getMainLooper());
+        this.mWorkHandler = workHandler;
+
+        // Created once per session
+        this.deviceUUID = WooDirector.getInstance().getDeviceUUID();
+    }
+
+    public void connect() {
+        try {
+            mSocket = IO.socket(SOCKET_URL);
+            mSocket.connect();
+            Log.d(TAG, "Connected to Socket @" + SOCKET_URL);
+            listenSocketEvents();
+        } catch (URISyntaxException e) {
+            Log.e(TAG, "Socket connection to " + SOCKET_URL + " failed");
+            e.printStackTrace();
+        }
+    }
+
+    @WorkerThread
+    public void disconnect() {
+        // Say Bye
+        emitClose();
+        mSocket.disconnect();
+        if (mSocket != null && mSocket.isActive()) {
+            Log.d(TAG, "Releasing Mic & Camera");
+            mMainHandler.post(this::disableMic);
+            mMainHandler.post(this::disableCam);
+//            if (mLocalAudioTrack != null) {
+//                mLocalAudioTrack.setEnabled(false);
+//                mLocalAudioTrack.dispose();
+//            }
+//            if (mLocalVideoTrack != null) {
+//                mLocalVideoTrack.setEnabled(false);
+//                mLocalVideoTrack.dispose();
+//            }
+            mWorkHandler.post(() -> {
+                disposeTransport();
+
+                // dispose audio track.
+                if (mLocalAudioTrack != null) {
+                    mLocalAudioTrack.setEnabled(false);
+                    mLocalAudioTrack.dispose();
+                    mLocalAudioTrack = null;
+                }
+
+                // dispose video track.
+                if (mLocalVideoTrack != null) {
+                    mLocalVideoTrack.setEnabled(false);
+                    mLocalVideoTrack.dispose();
+                    mLocalVideoTrack = null;
+                }
+
+                // Dispose everything
+                this.mPeerConnectionUtils.dispose();
+            });
+            mSocketId = null;
+            mConnected = false;
+            this.audioProducersIds.clear();
+            this.videoProducerId = null;
+            sInstance = null;
+            // Deliberate call to GC
+            Runtime.getRuntime().gc();
+            Log.d(TAG, "Socket Disconnected !");
+        }
+    }
+
+    private void disposeTransport() {
+        if (mSendTransport != null) {
+//            mSendTransport.close();
+            mSendTransport.dispose();
+            mSendTransport = null;
+        }
+        if (mRecvTransport != null) {
+//            mRecvTransport.close();
+            mRecvTransport.dispose();
+            mRecvTransport = null;
+        }
+        if (mMediaSoupDevice != null) {
+            mMediaSoupDevice.dispose();
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    public Socket getSocket() {
+        return this.mSocket;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getSocketId() {
+        return mSocketId;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isConnected() {
+        return this.mConnected;
+    }
+
+    private void listenSocketEvents() {
+        this.mSocket.on("connect", args -> {
+            Log.d(TAG, "<-- Event connect -->");
+            mConnected = true;
+        });
+
+        this.mSocket.on("myData", args -> {
+            if (args[0] != null) {
+                mSocketId = args[0].toString();
+                Log.d(TAG, "SOCKET ID >>> " + mSocketId);
+                try {
+                    mMainHandler.post(() -> mStore.setMe(mSocketId, mMeetingClient.getUsername(), null));
+                    emitRTPCaps();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        this.mSocket.on("RTPCaps", args -> {
+            if (args[0] != null) {
+                String jsonRTPCaps = String.valueOf(args[0]);
+                Log.d(TAG, "RTPCaps >>> " + jsonRTPCaps);
+                try {
+                    JSONObject obj = new JSONObject(jsonRTPCaps);
+                    JSONObject obj2 = obj.getJSONObject("capabilities");
+                    JSONArray codecs = obj2.getJSONArray("codecs");
+                    JSONArray headerExtensions = obj2.getJSONArray("headerExtensions");
+                    JSONObject result = new JSONObject();
+                    result.put("codecs", codecs);
+                    result.put("headerExtensions", headerExtensions);
+                    String jsonStr = result.toString();
+                    Log.d(TAG, "RTPCaps Converted >>> " + jsonStr);
+
+                    // Create Device
+                    createMediaSoupDevice(jsonStr);
+
+                    // Emit Create Transport
+                    emitCreateTransport();
+                } catch (JSONException | MediasoupException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        this.mSocket.on("transportCreated", args -> {
+            if (args[0] != null) {
+                String jsonStr = String.valueOf(args[0]);
+                Log.d(TAG, "EVENT TRANSPORT CREATED >>> " + jsonStr);
+                try {
+                    JSONObject obj = new JSONObject(jsonStr);
+                    JSONObject data = obj.getJSONObject("data");
+                    String id = data.getString("id");
+                    JSONObject iceParams = data.getJSONObject("iceParameters");
+                    JSONArray iceCandidates = data.getJSONArray("iceCandidates");
+                    JSONObject dtlsParameters = data.getJSONObject("dtlsParameters");
+
+                    Log.d(TAG, "<<< Creating Send Transport (TX) >>> ");
+                    Log.d(TAG, "iceParams >>> " + iceParams);
+                    Log.d(TAG, "iceCandidates >>> " + iceCandidates);
+                    Log.d(TAG, "dtlsParams >>> " + dtlsParameters);
+
+                    Log.d(TAG, "device#createSendTransport()");
+                    this.mSendTransport = mMediaSoupDevice.createSendTransport(
+                            sendListener,
+                            id,
+                            iceParams.toString(),
+                            iceCandidates.toString(),
+                            dtlsParameters.toString());
+
+                    // Enable mic
+                    mMainHandler.post(this::enableMic);
+                    // Enable camera
+                    mMainHandler.post(this::enableCam);
+
+                } catch (JSONException | MediasoupException e) {
+                    Log.e(TAG, e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        // CONSUMER EVENTS
+        mSocket.on("consumeProducer", args -> {
+            Log.v(TAG, "<<< Event CONSUME PRODUCER >>>");
+            if (args[0] != null) {
+                Log.d(TAG, "CONSUME PRODUCER >> " + String.valueOf(args[0]));
+                try {
+                    JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                    String producerId = obj.getString("producerId");
+                    String producerSockId = obj.getString("producerSockId");
+                    boolean screenShare = false;
+                    mProducerSockId = producerSockId;
+                    emitCreateConsumeTransport(producerId, producerSockId);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+        mSocket.on("consumeTransportCreated", args -> {
+            Log.d(TAG, "<<< Event CONSUME TRANSPORT CREATED >>>");
+            if (args != null) {
+                Log.d(TAG, String.valueOf(args[0]));
+
+                // Create RecvTransport.
+                try {
+                    JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                    JSONObject data = obj.getJSONObject("data");
+                    String id = data.getString("id");
+                    JSONObject iceParameters = data.getJSONObject("iceParameters");
+                    JSONArray iceCandidates = data.getJSONArray("iceCandidates");
+                    JSONObject dtlsParameters = data.getJSONObject("dtlsParameters");
+                    String producerId = obj.getString("producerId");
+                    String storageId = obj.getString("storageId");
+
+                    mRecvTransport = mMediaSoupDevice.createRecvTransport(
+                            recvListener,
+                            id,
+                            iceParameters.toString(),
+                            iceCandidates.toString(),
+                            dtlsParameters.toString());
+
+                    Log.d(TAG, "<<< Creating Recv Transport (RX) >>>");
+                    Log.d(TAG, "Ice Parameters >> " + iceParameters);
+                    Log.d(TAG, "Ice Candidates >> " + iceCandidates);
+                    Log.d(TAG, "DTLS Parameters >> " + dtlsParameters);
+                    Log.d(TAG, "Producer ID >> " + producerId);
+                    Log.d(TAG, "Storage ID >> " + storageId);
+
+                    emitStartConsuming(producerId, storageId);
+                } catch (JSONException | MediasoupException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        mSocket.on("consumerCreated", args -> {
+            Log.d(TAG, "<< Event Consumer Created");
+            if (args != null) {
+                Log.d(TAG, "Created Consumer -> " + String.valueOf(args[0]));
+                try {
+                    JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                    String producerId = obj.getString("producerId");
+                    String kind = obj.getString("kind");
+                    String id = obj.getString("id");
+                    String type = obj.getString("type");
+                    JSONObject rtpParams = obj.getJSONObject("rtpParameters");
+                    boolean producerPaused = obj.getBoolean("producerPaused");
+                    String producerSockId = obj.getString("producerSockId");
+                    String storageId = obj.getString("storageId");
+
+                    Log.d(TAG, "Consumer Created of Kind [" + kind + "]");
+
+                    // TODO Mark Check
+                    mMainHandler.post(() -> {
+                        try {
+                            JSONObject peer = new JSONObject();
+                            peer.put("id", producerSockId);
+                            peer.put("displayName", producerId);
+                            peer.put("device", null);
+                            mStore.addPeer(producerSockId, peer);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    // TODO End Mark
+
+                    Consumer consumer = mRecvTransport
+                            .consume(
+                                    consumer1 -> mMeetingClient.getConsumers().remove(consumer1.getId()),
+                                    id,
+                                    producerId,
+                                    kind,
+                                    rtpParams.toString(),
+                                    "{}");
+
+                    mMeetingClient.getConsumers().put(consumer.getId(),
+                            new MeetingClient.ConsumerHolder(producerSockId, consumer));
+                    mStore.addConsumer(producerSockId, type, consumer, producerPaused);
+                    // CONSUME BACK Starts here
+                    emitConsumeBack(producerSockId);
+                } catch (JSONException | MediasoupException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        // Consume Back Events
+        mSocket.on("consumeProducerBack", args -> {
+            Log.d(TAG, "<< Event CONSUME PRODUCER BACK >>");
+            if (args != null) {
+                Log.d(TAG, "<< ARGS >> " + args[0]);
+                try {
+                    JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                    String producerId = obj.getString("producerId");
+                    String producerSockId = obj.getString("producerSockId");
+                    boolean screenShare = obj.getBoolean("screenShare");
+                    consumeBackDeviceUUID = WooDirector.getInstance().getDeviceUUID();
+
+                    emitCreateBackConsumeTransport(producerId, producerSockId);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+        mSocket.on("consumeBackTransportCreated", args -> {
+            Log.d(TAG, "<< Event Consume Back Transport Created");
+            if (args != null) {
+                Log.d(TAG, "<< ARGS >> " + args[0]);
+                try {
+                    JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                    JSONObject data = obj.getJSONObject("data");
+                    String id = data.getString("id");
+                    JSONObject iceParameters = data.getJSONObject("iceParameters");
+                    JSONArray iceCandidates = data.getJSONArray("iceCandidates");
+                    JSONObject dtlsParameters = data.getJSONObject("dtlsParameters");
+                    String producerId = obj.getString("producerId");
+                    String storageId = obj.getString("storageId");
+                    String producerSockId = obj.getString("producerSockId");
+
+                    mRecvTransport = mMediaSoupDevice.createRecvTransport(new RecvTransport.Listener() {
+                        @Override
+                        public void onConnect(Transport transport, String dtlsParameters) {
+                            Log.d(TAG, "RecvTransport#onConnect() >> dtlsParameters > " + dtlsParameters);
+                            try {
+                                emitConsumeTransportConnectBack(dtlsParameters);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            mSocket.on("consumerTransportConnectedBack", args1 -> {
+                                Log.d(TAG, "<< Event Consumer Transport Connected Back >>");
+                                // callback()
+                            });
+                        }
+
+                        @Override
+                        public void onConnectionStateChange(Transport transport, String connectionState) {
+
+                        }
+                    },
+                            id,
+                            iceParameters.toString(),
+                            iceCandidates.toString(),
+                            dtlsParameters.toString());
+
+                    emitStartConsumingBack(producerId, producerSockId);
+                } catch (JSONException | MediasoupException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        mSocket.on("consumerCreatedBack", args -> {
+            Log.d(TAG, "<< Event Consumer Created Back >>");
+            if (args != null) {
+                Log.d(TAG, "<< ARGS >> " + args[0]);
+                try {
+                    JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                    String producerId = obj.getString("producerId");
+                    String kind = obj.getString("kind");
+                    String id = obj.getString("id");
+                    String type = obj.getString("type");
+                    JSONObject rtpParams = obj.getJSONObject("rtpParameters");
+                    boolean producerPaused = obj.getBoolean("producerPaused");
+                    String producerSockId = obj.getString("producerSockId");
+                    String storageId = obj.getString("storageId");
+
+                    // TODO Mark Check
+                    mMainHandler.post(() -> {
+                        try {
+                            JSONObject peer = new JSONObject();
+                            peer.put("id", producerSockId);
+                            peer.put("displayName", producerId);
+                            peer.put("device", null);
+                            mStore.addPeer(producerSockId, peer);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    // TODO End Mark
+
+                    Consumer consumer = mRecvTransport
+                            .consume(
+                                    consumer1 -> mMeetingClient.getConsumers().remove(consumer1.getId()),
+                                    id,
+                                    producerId,
+                                    kind,
+                                    rtpParams.toString(),
+                                    "{}");
+
+                    mMeetingClient.getConsumers().put(consumer.getId(),
+                            new MeetingClient.ConsumerHolder(producerSockId, consumer));
+                    mStore.addConsumer(producerSockId, type, consumer, producerPaused);
+                } catch (JSONException | MediasoupException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        mSocket.on("check", args -> {
+            if (args != null) {
+                Log.d(TAG, "<< Event Check -> " + args[0]);
+            }
+        });
+    }
+
+    // Emitters
+    private void emitRTPCaps() throws JSONException {
+        JSONObject data = new JSONObject();
+        data.put("id", this.mSocketId);
+        Log.d(TAG, "Emitting RTP Caps event with data: " + data.toString());
+        mSocket.emit("getRTPCaps", data);
+    }
+
+    private void emitCreateTransport() throws JSONException, MediasoupException {
+        JSONObject obj = new JSONObject();
+        obj.put("id", this.mSocketId);
+        obj.put("rtpCapabilities", this.mMediaSoupDevice.getRtpCapabilities());
+        Log.d(TAG, "Emitting Create Transport >>> " + obj);
+        mSocket.emit("createTransport", obj);
+    }
+
+    /**
+     *
+     * @param dtlsParameters
+     */
+    private void emitConnectTransport(@NonNull final String dtlsParameters) throws JSONException {
+        JSONObject dtls = new JSONObject(dtlsParameters);
+        JSONObject obj = new JSONObject();
+        obj.put("dtlsParameters", dtls);
+        obj.put("id", mSocketId);
+        Log.d(TAG, "Emitting Connect Transport >>> " + obj);
+        mSocket.emit("connectTransport", obj);
+    }
+
+    /**
+     *
+     * @param kind
+     * @param rtpParams
+     */
+    private void emitProduce(String kind, String rtpParams) throws JSONException {
+       JSONObject rtpParameters = new JSONObject(rtpParams);
+       JSONObject obj = new JSONObject();
+       obj.put("kind", kind);
+       obj.put("rtpParameters", rtpParameters);
+       obj.put("id", mSocketId);
+       obj.put("roomId", mMeetingClient.getMeetingId());
+       Log.d(TAG, "Emitting Produce >>> " + obj);
+       mSocket.emit("produce", obj);
+    }
+
+    private void emitCreateConsumeTransport(@NonNull String producerId, @NonNull String producerSockId) throws JSONException {
+        JSONObject obj = new JSONObject();
+        obj.put("producerId", producerId);
+        obj.put("storageId", deviceUUID);
+        obj.put("id", mSocketId);
+        obj.put("producerSocketId", producerSockId);
+        Log.d(TAG, "Emitting createConsumeTransport >>> " + obj);
+        mSocket.emit("createConsumeTransport", obj);
+    }
+
+    private void emitConsumeTransportConnect(@NonNull String dtlsParams) throws JSONException {
+        JSONObject dtls = new JSONObject(dtlsParams);
+        JSONObject obj = new JSONObject();
+        obj.put("dtlsParameters", dtls);
+        obj.put("id", mSocketId);
+        obj.put("storageId", deviceUUID);
+        Log.d(TAG, "Emitting Consume Transport Connect >>> " + obj);
+        mSocket.emit("consumeTransportConnect", obj);
+    }
+
+    private void emitStartConsuming(@NonNull String producerId,
+                                    @NonNull String storageId) throws MediasoupException, JSONException {
+        JSONObject rtpCaps = new JSONObject(mMediaSoupDevice.getRtpCapabilities());
+        JSONObject obj = new JSONObject();
+        obj.put("rtpCapabilities", rtpCaps);
+        obj.put("producerId", producerId);
+        obj.put("id", mSocketId);
+        obj.put("storageId", storageId);
+        obj.put("producerSockId", mProducerSockId);
+        Log.d(TAG, "Emitting Start Consuming >>> " + obj);
+        mSocket.emit("startConsuming", obj);
+    }
+
+    private void emitConsumeBack(@NonNull String producerSockId) throws JSONException {
+        for (final String id : producerIds) {
+            JSONObject obj = new JSONObject();
+            obj.put("producerId", id);
+            obj.put("producerSockId", mSocketId);
+            obj.put("id", producerSockId);
+            Log.d(TAG, "Emitting, Consume Back >>> " + obj);
+            mSocket.emit("consumeBack", obj);
+        }
+    }
+
+    private void emitCreateBackConsumeTransport(@NonNull String producerId,
+                                                @NonNull String producerSockId) throws JSONException {
+        JSONObject obj = new JSONObject();
+        obj.put("producerId", producerId);
+        obj.put("storageId", consumeBackDeviceUUID);
+        obj.put("id", mSocketId);
+        obj.put("producerSockId", producerSockId);
+        Log.d(TAG, "Emitting, Create Back Consume Transport >>> " + obj);
+        mSocket.emit("createBackConsumeTransport", obj);
+    }
+
+    private void emitConsumeTransportConnectBack(@NonNull String dtlsParams) throws JSONException {
+        JSONObject dtls = new JSONObject(dtlsParams);
+        JSONObject obj = new JSONObject();
+        obj.put("dtlsParameters", dtls);
+        obj.put("id", mSocketId);
+        obj.put("storageId", consumeBackDeviceUUID);
+        Log.d(TAG, "Emitting, Consume Transport Connect Back >>> " + obj);
+        mSocket.emit("consumeTransportConnectBack", obj);
+    }
+
+    private void emitStartConsumingBack(@NonNull String producerId,
+                                        @NonNull String producerSockId) throws JSONException, MediasoupException {
+        JSONObject rtpCaps = new JSONObject(mMediaSoupDevice.getRtpCapabilities());
+        JSONObject obj = new JSONObject();
+        obj.put("rtpCapabilities", rtpCaps);
+        obj.put("producerId", producerId);
+        obj.put("id", mSocketId);
+        obj.put("storageId", consumeBackDeviceUUID);
+        obj.put("producerSockId", producerSockId);
+        Log.d(TAG, "Emitting, Start Consuming Back" + obj);
+        mSocket.emit("startConsumingBack", obj);
+    }
+
+    // Close Consumer
+    private void emitClose() {
+        JSONArray storageIds = new JSONArray();
+        storageIds.put(deviceUUID);
+        if (consumeBackDeviceUUID != null)
+            storageIds.put(consumeBackDeviceUUID);
+        Log.d(TAG, "Emitting Close Consumer >> " + storageIds);
+        mSocket.emit("closeConsumer", storageIds);
+    }
+
+    /**
+     *
+     * @param rtpCaps
+     */
+    private void createMediaSoupDevice(String rtpCaps) {
+        try {
+            this.mMediaSoupDevice = new Device();
+            this.mMediaSoupDevice.load(rtpCaps, null);
+            String rtpCapabilities = mMediaSoupDevice.getRtpCapabilities();
+            Log.d(TAG, "MediaSoupDevice Loaded RTP Caps >>> " + rtpCapabilities);
+        } catch (MediasoupException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     *
+     * @param audProducerId
+     */
+    private void addAudioProducerId(@NonNull final String audProducerId) {
+        for (String ids : audioProducersIds) {
+            if (ids.equals(audProducerId)) {
+                Log.d(TAG, "Audio Producer ID already exist. Skipping this one > [" + audProducerId + "]");
+                return;
+            }
+        }
+        audioProducersIds.add(audProducerId);
+        Log.d(TAG, "<--------- AUDIO PRODUCERS IDs ----------->");
+        for (String ids: audioProducersIds) {
+            Log.d(TAG, "[" + ids + "]");
+        }
+    }
+
+    // NOT CALLED AS IT REQUIRES MIN SDK TO BE 24
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private String getProducerId(@NonNull String kind, @NonNull String rtpParameters) throws JSONException, ExecutionException, InterruptedException {
+        emitProduce(kind, rtpParameters);
+
+        final CompletableFuture<String> future = new CompletableFuture<>();
+        mSocket.on("producing", args -> {
+            if (args != null) {
+                try {
+                    Log.d(TAG, "<< Event Producing >>> " + args[0]);
+                    JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                    String producerId = obj.getString("producerId");
+                    String kind1 = obj.getString("kind");
+                    boolean appData = obj.getBoolean("appData");
+                    Log.d(TAG, "Producer ID >>> " + producerId);
+                    future.complete(producerId);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        return future.get();
+    }
+
+    // Send Transport Listener
+    private SendTransport.Listener sendListener = new SendTransport.Listener() {
+
+        @Override
+        public String onProduce(Transport transport, String kind, String rtpParameters, String appData) {
+            Log.d(TAG, "SendTransport.Listen.onProduce()");
+            AtomicReference<String> producerId = new AtomicReference<>(null);
+            try {
+                emitProduce(kind, rtpParameters);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            mSocket.on("producing", args -> {
+                if (args != null) {
+                    try {
+                        Log.d(TAG, "<< Event Producing >>> " + args[0]);
+                        JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                        producerId.set(obj.getString("producerId"));
+                        String kind1 = obj.getString("kind");
+                        boolean appData1 = obj.getBoolean("appData");
+                        if ("audio".equals(kind1)) {
+                            addAudioProducerId(producerId.get());
+                        } else if ("video".equals(kind1)) {
+                            videoProducerId = producerId.get();
+                        }
+                        producerIds.add(producerId.get());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            while (producerId.get() == null) {
+            }
+
+            String pId = producerId.get();
+            Log.d(TAG, "Producer ID >>> " + pId);
+            Log.d(TAG, "returning producer id [" + pId + "]");
+            return pId;
+        }
+
+        @Override
+        public String onProduceData(Transport transport, String sctpStreamParameters, String label, String protocol, String appData) {
+            Log.d(TAG, "SendTransport.Listen.onProduceData()");
+            return "";
+        }
+
+        @Override
+        public void onConnect(Transport transport, String dtlsParameters) {
+            Log.d(TAG, "SendTransport.Listen.onConnect() >> dtlsParameters >>> " + dtlsParameters);
+            try {
+                emitConnectTransport(dtlsParameters);
+
+                mSocket.on("transportConnected", args -> {
+                    Log.d(TAG, "<<< Event > onTransportConnected >>> " );
+                    // callback();
+                });
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onConnectionStateChange(Transport transport, String connectionState) {
+            Log.d(TAG, "SendTransport.Listen.onConnectionStateChange()");
+            if ("failed".equals(connectionState)) {
+                // Close transport
+                // Reload or go back.
+            }
+        }
+    };
+
+    // Recv Transport Listener
+    private RecvTransport.Listener recvListener = new RecvTransport.Listener() {
+        @Override
+        public void onConnect(Transport transport, String dtlsParameters) {
+            Log.d(TAG, "<<< RecvTransport.Listener#onConnect() >>>");
+            Log.d(TAG, "RecvTransport.Listener#onConnect() dtlsParametes -> " + dtlsParameters);
+            try {
+                emitConsumeTransportConnect(dtlsParameters);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            mSocket.on("consumerTransportConnected", args -> {
+               Log.d(TAG, " << CONSUMER TRANSPORT CONNECTED >>");
+               if (args != null) {
+                   Log.d(TAG, "CONSUMER TRANSPORT CONNECTED >> " + args[0]);
+               }
+               // callback();
+            });
+        }
+
+        @Override
+        public void onConnectionStateChange(Transport transport, String connectionState) {
+            Log.d(TAG, "<<< RecvTransport.Listener#onConnectionStateChanged() >>>");
+        }
+    };
+
+    @Async
+    public void enableMic() {
+        Log.d(TAG, "enableMic()");
+        mWorkHandler.post(this::enableMicImpl);
+    }
+
+    @Async
+    public void disableMic() {
+        Log.d(TAG, "disableMic()");
+        mWorkHandler.post(this::disableMicImpl);
+    }
+
+    @Async
+    public void muteMic() {
+        Log.d(TAG, "muteMic()");
+        mWorkHandler.post(this::muteMicImpl);
+    }
+
+    @Async
+    public void unmuteMic() {
+        Log.d(TAG, "unmuteMic()");
+        mWorkHandler.post(this::unmuteMicImpl);
+    }
+
+    @Async
+    public void enableCam() {
+        Log.d(TAG, "enableCam()");
+        mStore.setCamInProgress(true);
+        mWorkHandler.post(() -> {
+            enableCamImpl();
+            mStore.setCamInProgress(false);
+        });
+    }
+
+    @Async
+    public void disableCam() {
+        Log.d(TAG, "disableCam()");
+        mWorkHandler.post(this::disableCamImpl);
+    }
+
+    @Async
+    public void changeCam() {
+        Log.d(TAG, "changeCam()");
+        mStore.setCamInProgress(true);
+        mWorkHandler.post(() ->
+            mPeerConnectionUtils.switchCam(
+                    new CameraVideoCapturer.CameraSwitchHandler() {
+                        @Override
+                        public void onCameraSwitchDone(boolean b) {
+                            mStore.setCamInProgress(false);
+                        }
+
+                        @Override
+                        public void onCameraSwitchError(String s) {
+                            Logger.w(TAG, "changeCam() | failed: " + s);
+                            mStore.addNotify("error", "Could not change cam: " + s);
+                            mStore.setCamInProgress(false);
+                        }
+                    })
+        );
+    }
+
+    @WorkerThread
+    private void enableMicImpl() {
+        Log.d(TAG, "enableMicImpl()");
+        try {
+            if (mMicProducer != null) {
+                return;
+            }
+            if (!mMediaSoupDevice.isLoaded()) {
+                Log.w(TAG, "enableMic() | device not loaded");
+                return;
+            }
+            if (!mMediaSoupDevice.canProduce("audio")) {
+                Log.w(TAG, "enableMic() | cannot produce audio");
+                return;
+            }
+            if (mSendTransport == null) {
+                Log.w(TAG, "enableMic() | mSendTransport isn't ready");
+                return;
+            }
+            if (mLocalAudioTrack == null) {
+                mLocalAudioTrack = mPeerConnectionUtils.createAudioTrack(mContext, "mic");
+                mLocalAudioTrack.setEnabled(true);
+            }
+            mMicProducer = mSendTransport.produce(
+                    producer -> {
+                        Log.e(TAG, "onTransportClose(), micProducer");
+                        if (mMicProducer != null) {
+                            mStore.removeProducer(mMicProducer.getId());
+                            mMicProducer = null;
+                        }
+                    },
+                    mLocalAudioTrack,
+                    null,
+                    null,
+                    null);
+            mStore.addProducer(mMicProducer);
+        } catch (MediasoupException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    @WorkerThread
+    private void disableMicImpl() {
+        Logger.d(TAG, "disableMicImpl()");
+        if (mMicProducer == null) {
+            return;
+        }
+
+        mMicProducer.close();
+        mStore.removeProducer(mMicProducer.getId());
+        mMicProducer = null;
+    }
+
+    @WorkerThread
+    private void muteMicImpl() {
+        Logger.d(TAG, "muteMicImpl()");
+        mMicProducer.pause();
+    }
+
+    @WorkerThread
+    private void unmuteMicImpl() {
+        Logger.d(TAG, "unmuteMicImpl()");
+        mMicProducer.resume();
+    }
+
+    @WorkerThread
+    private void enableCamImpl() {
+        Logger.d(TAG, "enableCamImpl()");
+        try {
+            if (mCamProducer != null) {
+                return;
+            }
+            if (!mMediaSoupDevice.isLoaded()) {
+                Logger.w(TAG, "enableCam() | not loaded");
+                return;
+            }
+            if (!mMediaSoupDevice.canProduce("video")) {
+                Logger.w(TAG, "enableCam() | cannot produce video");
+                return;
+            }
+            if (mSendTransport == null) {
+                Logger.w(TAG, "enableCam() | mSendTransport doesn't ready");
+                return;
+            }
+
+            if (mLocalVideoTrack == null) {
+                mLocalVideoTrack = mPeerConnectionUtils.createVideoTrack(mContext, "cam");
+                mLocalVideoTrack.setEnabled(true);
+            }
+            mCamProducer =
+                    mSendTransport.produce(
+                            producer -> {
+                                Logger.e(TAG, "onTransportClose(), camProducer");
+                                if (mCamProducer != null) {
+                                    mStore.removeProducer(mCamProducer.getId());
+                                    mCamProducer = null;
+                                }
+                            },
+                            mLocalVideoTrack,
+                            null,
+                            null,
+                            null);
+            mStore.addProducer(mCamProducer);
+        } catch (MediasoupException e) {
+            e.printStackTrace();
+            mStore.addNotify("error", "Error enabling webcam: " + e.getMessage());
+            if (mLocalVideoTrack != null) {
+                mLocalVideoTrack.setEnabled(false);
+            }
+        }
+    }
+
+    @WorkerThread
+    private void disableCamImpl() {
+        Logger.d(TAG, "disableCamImpl()");
+        if (mCamProducer == null) {
+            return;
+        }
+        mCamProducer.close();
+        mStore.removeProducer(mCamProducer.getId());
+
+        mCamProducer = null;
+    }
+
+    /**
+     *
+     * @param roomStore
+     * @param context
+     * @param workHandler
+     * @return {@link WooSocket} as a Singleton.
+     */
+    public static WooSocket create(
+            @NonNull final Context context,
+            @NonNull final RoomStore roomStore,
+            @NonNull final Handler workHandler,
+            @NonNull final MeetingClient meetingClient) {
+        synchronized (WooSocket.class) {
+            if (sInstance == null) {
+                sInstance = new WooSocket(
+                        context,
+                        roomStore,
+                        workHandler,
+                        meetingClient);
+            }
+            return sInstance;
+        }
+    }
+
+} /** end class. */

@@ -16,6 +16,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.spec.Route
+import com.woooapp.meeting.lib.socket.WooSocket
 import dagger.hilt.android.AndroidEntryPoint
 import eu.siacs.conversations.http.model.UserBasicInfo
 import eu.siacs.conversations.services.XmppConnectionService.OnAccountUpdate
@@ -27,7 +28,6 @@ import woooo_app.woooo.destinations.ForgotPasswordScreenDestination
 import woooo_app.woooo.destinations.HomeScreenDestination
 import woooo_app.woooo.destinations.SignUpScreenDestination
 import woooo_app.woooo.feature.auth.GV
-import woooo_app.woooo.feature.meeting.SocketHandler
 import woooo_app.woooo.goToWelcomeActivity
 import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel
 import woooo_app.woooo.theme.Woooo_androidTheme
@@ -102,9 +102,6 @@ class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRo
                             GV.uniqueId = userPreferences.getAccountUniqueId()
 
                             Log.d("accountUniqueId", "" + userPreferences.getAccountUniqueId())
-
-                            // connect to Socket
-                            SocketHandler.connectToSocket()
                         }
                         startRoute = HomeScreenDestination
                         navigateTo(navController = navController, startRoute = startRoute)

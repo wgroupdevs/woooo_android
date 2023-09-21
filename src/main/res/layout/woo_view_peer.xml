@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="wooPeerProps"
+            type="com.woooapp.meeting.impl.vm.PeerProps" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        bind:cardBackgroundColor="@color/bg"
+        bind:cardCornerRadius="2dp"
+        bind:cardElevation="5dp"
+        bind:cardUseCompatPadding="true">
+
+        <include
+            android:id="@+id/wooPeerView"
+            layout="@layout/woo_view_peer_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            bind:wooPeerViewProps="@{wooPeerProps}" />
+
+    </androidx.cardview.widget.CardView>
+
+</layout>

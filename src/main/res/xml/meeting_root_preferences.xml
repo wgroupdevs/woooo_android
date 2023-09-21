@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="?attr/color_background_secondary"
+    >
+    <PreferenceCategory app:title="@string/room_header">
+
+        <EditTextPreference
+            app:key="roomId"
+            app:title="@string/room_id"
+            app:useSimpleSummaryProvider="true"
+            />
+
+        <EditTextPreference
+            app:key="peerId"
+            app:title="@string/peer_id"
+            app:useSimpleSummaryProvider="true" />
+
+        <EditTextPreference
+            app:key="displayName"
+            app:title="@string/display_name"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            app:key="forceTcp"
+            app:title="@string/force_tcp" />
+
+        <SwitchPreferenceCompat
+            app:key="forceH264"
+            app:title="@string/force_h264" />
+
+        <SwitchPreferenceCompat
+            app:key="forceVP9"
+            app:title="@string/force_vp9" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="produce"
+            app:title="@string/produce" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="false"
+            app:key="consume"
+            app:title="@string/consume" />
+
+        <SwitchPreferenceCompat
+            app:defaultValue="true"
+            app:key="dataChannel"
+            app:title="@string/dataChannel" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/device_header">
+
+        <ListPreference
+            app:defaultValue="front"
+            app:entries="@array/camera_entries"
+            app:entryValues="@array/camera_values"
+            app:key="camera"
+            app:title="@string/camera"
+            app:useSimpleSummaryProvider="true" />
+
+        <!--        <SwitchPreferenceCompat-->
+        <!--            app:key="sync"-->
+        <!--            app:title="@string/sync_title" />-->
+
+        <!--        <SwitchPreferenceCompat-->
+        <!--            app:dependency="sync"-->
+        <!--            app:key="attachment"-->
+        <!--            app:summaryOff="@string/attachment_summary_off"-->
+        <!--            app:summaryOn="@string/attachment_summary_on"-->
+        <!--            app:title="@string/attachment_title" />-->
+
+    </PreferenceCategory>
+</PreferenceScreen>
