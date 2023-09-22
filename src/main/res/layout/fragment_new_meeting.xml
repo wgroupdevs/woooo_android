@@ -1,142 +1,174 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.meeting.NewMeetingFragment">
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingHorizontal="@dimen/_10sdp">
+        android:layout_height="wrap_content"
+        tools:context=".ui.meeting.NewMeetingFragment">
 
-        <!--    Mic Camera States-->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:layout_marginBottom="@dimen/_10sdp"
-            android:background="@drawable/bg_border"
-            android:gravity="center"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="@dimen/_30sdp">
+            android:paddingHorizontal="@dimen/_10sdp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Camera is On"
-                android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_5sdp"
-                android:text="Mic is OFF"
-                android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
-
-
+            <!--    Mic Camera States-->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/_15sdp"
-                android:orientation="horizontal">
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:background="@drawable/bg_border"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="@dimen/_30sdp">
 
-                <ImageView
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/baseline_mic_34" />
+                    android:text="Camera is On"
+                    android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
 
-
-                <ImageView
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_15sdp"
-                    android:src="@drawable/baseline_videocam_34" />
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:text="Mic is OFF"
+                    android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/baseline_mic_34" />
+
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_15sdp"
+                        android:src="@drawable/baseline_videocam_34" />
+
+                </LinearLayout>
+
 
             </LinearLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:text="Meeting Name"
+                android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+
+            <eu.siacs.conversations.ui.widget.TextInputEditText
+                android:id="@+id/meeting_name_et"
+                style="@style/Widget.Conversations.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/textfield_background"
+                android:hint="Woooo Meeting Name"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:paddingVertical="@dimen/_10sdp"
+                android:paddingStart="@dimen/_5sdp"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:layout_marginBottom="@dimen/_8sdp"
+                android:text="Meeting URL"
+                android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="7"
+                >
+
+                <eu.siacs.conversations.ui.widget.TextInputEditText
+                    android:id="@+id/meeting_url_et"
+                    style="@style/Widget.Conversations.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:background="@drawable/textfield_background"
+                    android:hint="https://cc.watchblock.net"
+                    android:imeOptions="actionNext"
+                    android:inputType="none"
+                    android:paddingVertical="@dimen/_10sdp"
+                    android:paddingStart="@dimen/_5sdp"
+                    android:textColor="@color/white"
+                    android:enabled="false"
+                    android:layout_weight="1"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    />
+
+                <ImageButton
+                    android:id="@+id/meetingCopyUrlBtn"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_copy_all_24"
+                    android:layout_weight="6"
+                    android:layout_marginStart="10sp"
+                    android:background="@drawable/button"
+                    android:foreground="?attr/selectableItemBackground"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_30sdp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/start_meeting_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/button"
+                    android:enabled="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:text="Start Meeting"
+                    android:paddingLeft="10sp"
+                    android:paddingRight="10sp"
+                    />
+
+                <Button
+                    android:id="@+id/join_meeting_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:background="@drawable/button"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:enabled="true"
+                    android:text="Join Meeting"
+                    android:paddingLeft="10sp"
+                    android:paddingRight="10sp"/>
+
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_20sdp"
-            android:layout_marginBottom="@dimen/_8sdp"
-            android:text="Meeting Name"
-            android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
 
-        <eu.siacs.conversations.ui.widget.TextInputEditText
-            android:id="@+id/meeting_name_et"
-            style="@style/Widget.Conversations.EditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:background="@drawable/textfield_background"
-            android:hint="woooo meeting"
-            android:imeOptions="actionNext"
-            android:inputType="textEmailAddress"
-            android:paddingVertical="@dimen/_10sdp"
-            android:paddingStart="@dimen/_5sdp"
-            android:textColor="@color/white" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_15sdp"
-            android:layout_marginBottom="@dimen/_8sdp"
-            android:text="Meeting URL"
-            android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
-
-        <eu.siacs.conversations.ui.widget.TextInputEditText
-            android:id="@+id/meeting_url_et"
-            style="@style/Widget.Conversations.EditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:background="@drawable/textfield_background"
-            android:hint="https://woooo"
-            android:imeOptions="actionNext"
-            android:inputType="textEmailAddress"
-            android:paddingVertical="@dimen/_10sdp"
-            android:paddingStart="@dimen/_5sdp"
-            android:textColor="@color/white" />
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_30sdp"
-            android:gravity="center"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/start_meeting_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/button"
-                android:enabled="true"
-                android:text="Start" />
-
-            <Button
-                android:id="@+id/join_meeting_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginStart="@dimen/_20sdp"
-                android:background="@drawable/button"
-                android:enabled="true"
-                android:text="Join" />
-
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-
-</ScrollView>
+    </ScrollView>
+</layout>

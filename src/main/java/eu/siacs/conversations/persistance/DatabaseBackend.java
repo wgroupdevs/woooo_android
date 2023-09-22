@@ -202,6 +202,11 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         Log.d(Config.LOGTAG, "rebuilt message index in " + stopwatch.stop().toString());
     }
 
+    /**
+     *
+     * @param context
+     * @return {@link DatabaseBackend} as a Singleton
+     */
     public static synchronized DatabaseBackend getInstance(Context context) {
         if (instance == null) {
             instance = new DatabaseBackend(context);

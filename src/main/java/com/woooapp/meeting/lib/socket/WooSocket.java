@@ -105,6 +105,11 @@ public class WooSocket {
 
         // Created once per session
         this.deviceUUID = WooDirector.getInstance().getDeviceUUID();
+
+        mMainHandler.post(() -> {
+            Logger.setLogLevel(Logger.LogLevel.LOG_DEBUG);
+            Logger.setDefaultHandler();
+        });
     }
 
     public void connect() {
@@ -123,21 +128,15 @@ public class WooSocket {
     public void disconnect() {
         // Say Bye
         emitClose();
-        mSocket.disconnect();
         if (mSocket != null && mSocket.isActive()) {
             Log.d(TAG, "Releasing Mic & Camera");
             mMainHandler.post(this::disableMic);
             mMainHandler.post(this::disableCam);
-//            if (mLocalAudioTrack != null) {
-//                mLocalAudioTrack.setEnabled(false);
-//                mLocalAudioTrack.dispose();
-//            }
-//            if (mLocalVideoTrack != null) {
-//                mLocalVideoTrack.setEnabled(false);
-//                mLocalVideoTrack.dispose();
-//            }
             mWorkHandler.post(() -> {
                 disposeTransport();
+
+                // Dispose everything
+                this.mPeerConnectionUtils.dispose();
 
                 // dispose audio track.
                 if (mLocalAudioTrack != null) {
@@ -152,34 +151,40 @@ public class WooSocket {
                     mLocalVideoTrack.dispose();
                     mLocalVideoTrack = null;
                 }
-
-                // Dispose everything
-                this.mPeerConnectionUtils.dispose();
             });
-            mSocketId = null;
-            mConnected = false;
+
+            mMainHandler.post(Logger::freeHandler);
             this.audioProducersIds.clear();
             this.videoProducerId = null;
+
+            // Close socket
+            mWorkHandler.post(() -> {
+                mSocket.disconnect();
+                mSocketId = null;
+                mConnected = false;
+            });
+
             sInstance = null;
             // Deliberate call to GC
             Runtime.getRuntime().gc();
-            Log.d(TAG, "Socket Disconnected !");
+            Log.d(TAG, "<< Socket Disconnected ! >>");
         }
     }
 
     private void disposeTransport() {
         if (mSendTransport != null) {
-//            mSendTransport.close();
+            mSendTransport.close();
             mSendTransport.dispose();
             mSendTransport = null;
         }
         if (mRecvTransport != null) {
-//            mRecvTransport.close();
+            mRecvTransport.close();
             mRecvTransport.dispose();
             mRecvTransport = null;
         }
         if (mMediaSoupDevice != null) {
             mMediaSoupDevice.dispose();
+            mMediaSoupDevice = null;
         }
     }
 
@@ -513,6 +518,19 @@ public class WooSocket {
         mSocket.on("check", args -> {
             if (args != null) {
                 Log.d(TAG, "<< Event Check -> " + args[0]);
+                try {
+                    JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                    String id = obj.getString("id");
+                    boolean disconnected = obj.getBoolean("disconnected");
+                    if (disconnected) {
+                        if (id.equals(mProducerSockId)) {
+                            Log.d(TAG, "<<< Peer Disconnected Disconnecting ....");
+                            disconnect();
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

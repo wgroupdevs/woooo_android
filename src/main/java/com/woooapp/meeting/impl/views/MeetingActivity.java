@@ -84,6 +84,7 @@ public class MeetingActivity extends AppCompatActivity {
     private String accountUniqueId;
     private String picture;
     private String mMeetingId;
+    private String meetingName;
     // TODO only 1 peer for now
     private Peer mPeer;
 
@@ -124,15 +125,23 @@ public class MeetingActivity extends AppCompatActivity {
             }
         }
         this.picture = getIntent().getStringExtra("picture");
-        if (picture.isEmpty())
-            picture = "https://picsum.com/200";
-        this.joining = getIntent().getBooleanExtra("joining", false);
-        if (joining) {
-            this.mMeetingId = getIntent().getStringExtra("joinMeetingId");
-            Log.d(TAG, "<< JOIN MEETING ID [" + mMeetingId + "]");
+        if (picture != null) {
+            if (picture.isEmpty())
+                picture = "https://picsum.com/200";
         } else {
-            this.mMeetingId = Utils.getRandomString(8);
+            picture = "https://picsum.com/200";
         }
+        this.joining = getIntent().getBooleanExtra("joining", false);
+        this.mMeetingId = getIntent().getStringExtra("meetingId");
+        this.meetingName = getIntent().getStringExtra("meetingName");
+        if (meetingName != null) {
+            if (meetingName.isEmpty()) {
+                meetingName = "Droid-" + Utils.getRandomString(4);
+            }
+        } else {
+            meetingName = "Droid-" + Utils.getRandomString(4);
+        }
+        Log.d(TAG, "<< MEETING ID [" + mMeetingId + "]");
         if (!joining) {
             CreateMeetingBody.Admin admin1 = new CreateMeetingBody.Admin();
             admin1.setEmail(email);
@@ -143,7 +152,7 @@ public class MeetingActivity extends AppCompatActivity {
             admins.add(admin1);
             CreateMeetingBody body = new CreateMeetingBody();
             body.setMeetingId(mMeetingId);
-            body.setMeetingName("testDroidMeeting" + getRandomString(2));
+            body.setMeetingName(meetingName);
             body.setAdmins(admins);
 
             // Create new meeting

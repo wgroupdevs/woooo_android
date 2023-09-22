@@ -16,8 +16,6 @@ class WooApplication : Application() {
         super.onCreate()
         sharedInstance = this
 
-        Logger.setLogLevel(Logger.LogLevel.LOG_DEBUG)
-        Logger.setDefaultHandler()
         MediasoupClient.initialize(applicationContext)
     }
 

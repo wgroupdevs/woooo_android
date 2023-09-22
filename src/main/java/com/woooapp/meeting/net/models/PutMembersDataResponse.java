@@ -87,10 +87,12 @@ public class PutMembersDataResponse implements Serializable {
         this.updatedAt = updatedAt;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     private static class Member implements Serializable {
         private String accountUniqueId;
         private String email;
         private String username;
+        private String language;
         private String picture;
         private String socketId;
         private String id;
