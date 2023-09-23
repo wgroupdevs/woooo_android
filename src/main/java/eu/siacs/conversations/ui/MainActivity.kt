@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -17,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.spec.Route
 import dagger.hilt.android.AndroidEntryPoint
+import eu.siacs.conversations.entities.Account
 import eu.siacs.conversations.http.model.UserBasicInfo
 import eu.siacs.conversations.services.XmppConnectionService.OnAccountUpdate
 import eu.siacs.conversations.services.XmppConnectionService.OnConversationUpdate
@@ -27,6 +29,7 @@ import woooo_app.woooo.destinations.ForgotPasswordScreenDestination
 import woooo_app.woooo.destinations.HomeScreenDestination
 import woooo_app.woooo.destinations.SignUpScreenDestination
 import woooo_app.woooo.feature.auth.GV
+import woooo_app.woooo.feature.home.viewmodel.HomeViewModel
 import woooo_app.woooo.feature.meeting.SocketHandler
 import woooo_app.woooo.goToWelcomeActivity
 import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel
@@ -45,10 +48,9 @@ class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val model: HomeViewModel by viewModels()
+        homeViewModel = model
 
-        setContent {
-            MainScreen()
-        }
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -60,19 +62,28 @@ class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRo
 
     }
 
+    // do this instead
     override fun refreshUiReal() {
     }
 
     override fun onBackendConnected() {
-
-        Log.d(TAG, "MY_ACCOUNT_COUNT : " + xmppConnectionService);
+        xmppConnectionService?.let {
+            if (it.accounts.isNotEmpty()) {
+                mAccount = it.accounts[0]
+            }
+            Log.d(TAG, "MY_ACCOUNT_COUNT :onBackendConnected  " + mAccount?.displayName);
+            setContent {
+                MainScreen()
+            }
+        }
     }
 
     @Composable
     fun MainScreen() {
+        Log.d(TAG, "homeViewModel : ${homeViewModel.hashCode()}")
+
         val context = LocalContext.current
         val navController = rememberNavController()
-
         val userPreferences: UserPreferencesViewModel = hiltViewModel()
 
         var startRoute = NavGraphs.root.startRoute
@@ -93,7 +104,7 @@ class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRo
 //                navigateTo(navController = navController, startRoute = startRoute)
 
                 if (navIntent.isNullOrBlank()) {
-                    if (getDataPreferences(userPreferences).isEmpty()) {
+                    if (mAccount == null) {
                         goToWelcomeActivity(context)
                     } else {
                         runBlocking {
@@ -107,7 +118,9 @@ class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRo
                             SocketHandler.connectToSocket()
                         }
                         startRoute = HomeScreenDestination
-                        navigateTo(navController = navController, startRoute = startRoute)
+                        Log.d(TAG, "SHOW Home Page VIEW")
+                        goToHomeActivity()
+//                        navigateTo(navController = navController, startRoute = startRoute)
                     }
                 }
 
@@ -132,20 +145,13 @@ class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRo
 
                                 if (userInfo != null && token != null) {
                                     userInfo = userInfo as UserBasicInfo
-                                    Log.d(TAG, "Token : $token")
-                                    Log.d(TAG, "AccountId : " + userInfo.accountId)
-                                    Log.d(TAG, "Email : " + userInfo.email)
-                                    Log.d(TAG, "PhoneNumber : " + userInfo.phoneNumber)
-                                    Log.d(TAG, "jid : " + userInfo.jid)
-                                    Log.d(TAG, "FirstName : " + userInfo.firstName)
-                                    Log.d(TAG, "LastName : " + userInfo.lastName)
-                                    Log.d(TAG, "DOB : " + userInfo.dateOfBirth)
-
                                     saveUserInfoToPreferences(userPreferences, token, userInfo)
                                     getDataPreferences(userPreferences)
                                 }
 
-                                startRoute = HomeScreenDestination
+//                                startRoute = HomeScreenDestination
+                                goToHomeActivity()
+
                                 Log.d(TAG, "SHOW Home Page VIEW")
                             }
                             navigateTo(navController = navController, startRoute = startRoute)
@@ -166,6 +172,14 @@ class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRo
 
             }
         }
+    }
+
+
+    private fun goToHomeActivity(): Unit {
+
+        val intent = Intent(this, HomeActivity::class.java)
+
+        startActivity(intent)
     }
 
     private fun getDataPreferences(userPreferences: UserPreferencesViewModel): String =
@@ -210,10 +224,15 @@ class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRo
     }
 
     override fun onAccountUpdate() {
-
     }
 
     override fun onRosterUpdate() {
+
+    }
+
+    companion object {
+        var mAccount: Account? = null
+        var homeViewModel: HomeViewModel? = null
 
     }
 

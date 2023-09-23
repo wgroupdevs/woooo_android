@@ -89,7 +89,7 @@ public class SettingsActivity extends XmppActivity implements OnSharedPreference
                 .getDecorView()
                 .setBackgroundColor(
                         StyledAttributes.getColor(this, R.attr.color_background_primary));
-        setSupportActionBar(findViewById(R.id.contact_details_tool_Bar));
+        setSupportActionBar(findViewById(R.id.contact_detail_appBar));
         configureActionBar(getSupportActionBar());
     }
 

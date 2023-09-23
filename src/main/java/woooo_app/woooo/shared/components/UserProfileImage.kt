@@ -16,24 +16,26 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import eu.siacs.conversations.R
-import woooo_app.woooo.feature.auth.GV
+import eu.siacs.conversations.ui.MainActivity
 
 @Composable
 fun UserProfileImage(size: Dp,onClick: () -> Unit) {
-    val url = GV.getUserProfileImage.value
+    val url = MainActivity.homeViewModel?.avatar?.value
     val painter = rememberAsyncImagePainter(url)
     Box(
         Modifier
             .clip(CircleShape)
             .clickable(onClick = onClick)
     ) {
-        Image(
-            painter = if (url.isEmpty()) painterResource(R.drawable.empty_profile) else painter,
-            contentDescription = null,
-            modifier = Modifier
-                .size(size)
-                .background(color = Color.Transparent,shape = CircleShape)
-                .border(2.dp,Color.White,shape = CircleShape),
-        )
+        if (url != null) {
+            Image(
+                painter = if (url.isEmpty()) painterResource(R.drawable.empty_profile) else painter,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(size)
+                    .background(color = Color.Transparent,shape = CircleShape)
+                    .border(2.dp,Color.White,shape = CircleShape),
+            )
+        }
     }
 }

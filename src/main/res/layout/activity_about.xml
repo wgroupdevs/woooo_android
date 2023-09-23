@@ -6,7 +6,9 @@
               android:orientation="vertical"
               tools:context="eu.siacs.conversations.ui.AboutActivity">
 
-    <include layout="@layout/contact_details_toolbar"/>
+    <include
+        android:id="@+id/about_toolbar"
+        layout="@layout/contact_details_toolbar"/>
 
     <ScrollView
         android:layout_width="match_parent"

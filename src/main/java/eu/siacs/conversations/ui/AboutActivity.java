@@ -23,7 +23,7 @@ public class AboutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setTheme(ThemeHelper.find(this));
         setContentView(R.layout.activity_about);
-        setSupportActionBar(findViewById(R.id.contact_details_tool_Bar));
+        setSupportActionBar(findViewById(R.id.about_toolbar));
         configureActionBar(getSupportActionBar());
         setTitle(getString(R.string.title_activity_about_x, getString(R.string.app_name)));
     }

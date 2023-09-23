@@ -155,6 +155,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         return intent;
     }
 
+
     @Override
     protected void refreshUiReal() {
         invalidateOptionsMenu();
@@ -431,11 +432,16 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         ConversationMenuConfigurator.reloadFeatures(this);
         OmemoSetting.load(this);
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_conversations);
-        setSupportActionBar(binding.toolbar);
+        setSupportActionBar(binding.toolbar.toolbar);
 
         //Back Button on TollBar
-        ImageView backButton = findViewById(R.id.toolbar_back_button);
+        ImageView backButton = findViewById(R.id.toolBar_leading_View);
         backButton.setOnClickListener(v -> super.onBackPressed());
+
+        binding.toolbar.toolbarSearch.setOnClickListener(v->{
+            startActivity(new Intent(this, SearchActivity.class));
+        });
+
 
         //Bottom-Navigation-Bar
         if (this.binding.navigation != null) {
@@ -881,7 +887,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
 //                actionBar.setTitle(conversation.getName());
 //                actionBar.setDisplayHomeAsUpEnabled(true);
                 ActionBarUtil.setActionBarOnClickListener(
-                        binding.toolbar,
+                        binding.toolbar.toolbar,
                         (v) -> openConversationDetails(conversation)
                 );
                 return;
@@ -889,7 +895,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         }
 //        actionBar.setTitle(R.string.app_name);
         actionBar.setDisplayHomeAsUpEnabled(false);
-        ActionBarUtil.resetActionBarOnClickListeners(binding.toolbar);
+        ActionBarUtil.resetActionBarOnClickListeners(binding.toolbar.toolbar);
     }
 
     private void openConversationDetails(final Conversation conversation) {

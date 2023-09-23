@@ -1,36 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--    android:id="@+id/contact_details_tool_Bar"-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:layout_marginStart="0dp"-->
+<!--    android:background="?attr/colorPrimary"-->
+<!--    android:gravity="center_vertical"-->
+<!--    android:minHeight="?attr/actionBarSize"-->
+<!--    android:paddingTop="@dimen/_5sdp"-->
+<!--    app:contentInsetLeft="0dp"-->
+<!--    app:contentInsetStart="0dp">-->
+
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:background="?attr/colorPrimary"-->
+<!--        android:gravity="center_vertical"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:paddingEnd="@dimen/_20sdp">-->
+<!--        <EditText-->
+<!--            android:id="@+id/toolbar_search"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="48dp"-->
+<!--            android:layout_gravity="center_vertical"-->
+<!--            android:layout_weight="1"-->
+<!--            android:background="@drawable/rounded_edit_text"-->
+<!--            android:drawableStart="@drawable/outline_search_24"-->
+<!--            android:hint="@string/search"-->
+<!--            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />-->
+<!--    </LinearLayout>-->
+
+<!--</androidx.appcompat.widget.Toolbar>-->
+
+
+<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/contact_details_tool_Bar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="0dp"
-    android:background="?attr/colorPrimary"
-    android:gravity="center_vertical"
-    android:minHeight="?attr/actionBarSize"
-    android:paddingTop="@dimen/_5sdp"
-    app:contentInsetLeft="0dp"
-    app:contentInsetStart="0dp">
+    android:id="@+id/contact_detail_appBar"
+    android:theme="@style/ConversationsTheme.AppBarOverlay">
 
-    <LinearLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingEnd="@dimen/_20sdp">
-        <EditText
-            android:id="@+id/toolbar_search"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="1"
-            android:background="@drawable/rounded_edit_text"
-            android:drawableStart="@drawable/outline_search_24"
-            android:hint="@string/search"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
-    </LinearLayout>
+        app:popupTheme="@style/ConversationsTheme.PopupOverlay" />
 
-</androidx.appcompat.widget.Toolbar>
+</com.google.android.material.appbar.AppBarLayout>
