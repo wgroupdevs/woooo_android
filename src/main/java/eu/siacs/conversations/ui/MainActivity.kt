@@ -17,6 +17,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.spec.Route
+import com.woooapp.meeting.lib.socket.WooSocket
 import dagger.hilt.android.AndroidEntryPoint
 import eu.siacs.conversations.entities.Account
 import eu.siacs.conversations.http.model.UserBasicInfo
@@ -48,9 +49,10 @@ class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val model: HomeViewModel by viewModels()
-        homeViewModel = model
 
+        setContent {
+            MainScreen()
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -113,9 +115,6 @@ class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRo
                             GV.uniqueId = userPreferences.getAccountUniqueId()
 
                             Log.d("accountUniqueId", "" + userPreferences.getAccountUniqueId())
-
-                            // connect to Socket
-                            SocketHandler.connectToSocket()
                         }
                         startRoute = HomeScreenDestination
                         Log.d(TAG, "SHOW Home Page VIEW")

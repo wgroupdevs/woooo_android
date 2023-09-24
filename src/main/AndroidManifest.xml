@@ -76,7 +76,7 @@
     </queries>
 
     <application
-        android:name="com.wgroup.woooo_app.woooo.di.WooApplication"
+        android:name="com.woogroup.woooo_app.woooo.di.WooApplication"
         android:allowBackup="false"
         android:appCategory="social"
         android:fullBackupContent="@xml/backup_content"
@@ -371,6 +371,25 @@
             android:autoRemoveFromRecents="true"
             android:launchMode="singleInstance"
             android:supportsPictureInPicture="true" />
+
+
+        <!-- MEETING -->
+        <activity
+            android:name="com.woooapp.meeting.impl.views.SettingsActivity"
+            android:exported="false"
+            android:label="Meeting Settings" />
+
+        <activity
+            android:name="com.woooapp.meeting.impl.views.RoomActivity"
+            android:label="@string/title_activity_room_meet"
+            android:screenOrientation="portrait"
+            android:launchMode="singleInstance" />
+
+        <activity android:name="com.woooapp.meeting.impl.views.MeetingActivity"
+            android:label="Meeting"
+            android:screenOrientation="portrait"
+            android:launchMode="singleInstance"
+            />
     </application>
 
 </manifest>

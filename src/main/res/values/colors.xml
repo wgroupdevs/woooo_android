@@ -51,4 +51,26 @@
 	<color name="splash_screen_status_bar">#ffe0e0e0</color> <!-- gray300 -->
 
 	<color name="blue500">#ff2196f3</color>
+
+
+
+	<color name="bg">#243B55</color>
+	<color name="state_new_closed">#aaaaaa</color>
+	<color name="state_connecting">#ffa500</color>
+	<color name="state_connected">#30bd18</color>
+	<color name="area_bg">#22ffffff</color>
+
+	<color name="text_color">#bfffffff</color>
+	<color name="text_u_color">#80ffffff</color>
+
+	<color name="trans_bg">#80243B55</color>
+	<color name="ic_launcher_background">#FFFFFF</color>
+
+	<color name="pink_dark">#FF4081</color>
+	<color name="orange">#ffd700</color>
+	<color name="yellow">#ffff00</color>
+	<color name="light_blue">#1e90ff</color>
+	<color name="carrot">#e67e22</color>
+	<color name="pomegranate">#c0392b</color>
+	<color name="pumpkin">#d35400</color>
 </resources>

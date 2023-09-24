@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+    <data>
+        <variable
+            name="meetProps"
+            type="com.woooapp.meeting.impl.vm.RoomProps" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.woooapp.meeting.impl.views.MeetingActivity"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="2"
+            >
+
+            <com.woooapp.meeting.impl.views.PeerView
+                android:id="@+id/peerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_marginBottom="68dp"
+                android:layout_weight="1"
+                />
+
+            <com.woooapp.meeting.impl.views.MeView
+                android:id="@+id/meView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_marginBottom="68dp"
+                android:layout_weight="1"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvTempLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:background="@color/blue_primary300"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:padding="10sp"
+            android:textSize="25sp"
+            android:gravity="center"
+            android:text="Meeting ID"
+            />
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/meetingButtonExit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_end_call_white"
+            android:text="End"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:foregroundGravity="center"
+            android:layout_margin="25sp"
+            app:backgroundTint="@android:color/holo_red_light"
+            />
+
+    </RelativeLayout>
+
+</layout>
