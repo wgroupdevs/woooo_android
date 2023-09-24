@@ -223,6 +223,13 @@ public class WebRTCWrapper {
         }
     }
 
+    /**
+     * Setup PeerConnection Factory
+     *
+     * @param service
+     * @param speakerPhonePreference
+     * @throws InitializationException
+     */
     public void setup(
             final XmppConnectionService service,
             @Nonnull final AppRTCAudioManager.SpeakerPhonePreference speakerPhonePreference)
@@ -231,6 +238,7 @@ public class WebRTCWrapper {
             PeerConnectionFactory.initialize(
                     PeerConnectionFactory.InitializationOptions.builder(service)
                             .setFieldTrials("WebRTC-BindUsingInterfaceName/Enabled/")
+                            .setNativeLibraryName("mediasoupclient_so")
                             .createInitializationOptions());
         } catch (final UnsatisfiedLinkError e) {
             throw new InitializationException("Unable to initialize PeerConnectionFactory", e);

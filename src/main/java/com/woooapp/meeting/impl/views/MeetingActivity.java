@@ -172,7 +172,7 @@ public class MeetingActivity extends AppCompatActivity {
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
-        }, 2000);
+        }, 8000);
     }
 
     private void fetchRoomData() {

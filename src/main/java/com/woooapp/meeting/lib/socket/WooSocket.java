@@ -521,7 +521,7 @@ public class WooSocket {
                 try {
                     JSONObject obj = new JSONObject(String.valueOf(args[0]));
                     String id = obj.getString("id");
-                    boolean disconnected = obj.getBoolean("disconnected");
+                    boolean disconnected = obj.getBoolean("disconnect");
                     if (disconnected) {
                         if (id.equals(mProducerSockId)) {
                             Log.d(TAG, "<<< Peer Disconnected Disconnecting ....");
