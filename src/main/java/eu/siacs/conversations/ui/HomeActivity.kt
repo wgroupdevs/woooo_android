@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.animation.addListener
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.ui.AppBarConfiguration
 import eu.siacs.conversations.R
 import eu.siacs.conversations.databinding.ActivityHomeBinding
 import eu.siacs.conversations.entities.Account
@@ -20,7 +19,6 @@ import eu.siacs.conversations.ui.util.AvatarWorkerTask
 
 class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
 
-    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityHomeBinding
 
     private var mAccount: Account? = null
@@ -38,15 +36,6 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
 
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                eu.siacs.conversations.R.id.nav_home,
-                eu.siacs.conversations.R.id.nav_gallery,
-                eu.siacs.conversations.R.id.nav_slideshow
-            ), drawerLayout
-        )
         binding.appBarHome.toolbar.toolbarProfilePhoto.setOnClickListener {
             drawerLayout.open()
         }
@@ -205,14 +194,6 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
         runOnUiThread {
             populateView()
         }
-
-//        xmppConnectionService?.let {
-//            if (it.accounts.isNotEmpty()) {
-//                mAccount = it.accounts[0]
-//                populateView()
-//            }
-//        }
-//        refreshUi()
     }
 }
 
