@@ -987,8 +987,8 @@ public class XmppConnectionService extends Service {
         wooooAuthService.updateProfile(user, listener);
     }
 
-    public void searchAccount(String value, boolean isEmail, WooooAPIService.OnSearchAccountAPiResult onSearchAccountAPiResult) {
-        wooooAuthService.searchAccount(value, isEmail, onSearchAccountAPiResult);
+    public void getAccountByJid(String jId, WooooAPIService.OnGetAccountByJidAPiResult onGetAccountByJidAPiResult) {
+        wooooAuthService.getAccountByJidAccount(jId, onGetAccountByJidAPiResult);
     }
 
     public void getWooContacts(GetWooContactsRequestParams params, WooooAPIService.OnGetWooContactAPiResult onGetWooContactAPiResult) {

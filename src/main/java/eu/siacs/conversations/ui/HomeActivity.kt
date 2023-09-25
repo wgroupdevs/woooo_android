@@ -9,7 +9,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.animation.addListener
-import androidx.drawerlayout.widget.DrawerLayout
 import eu.siacs.conversations.R
 import eu.siacs.conversations.databinding.ActivityHomeBinding
 import eu.siacs.conversations.entities.Account
@@ -35,9 +34,8 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
         binding.appBarHome.toolbar.toolbarNotification.visibility = View.VISIBLE
 
 
-        val drawerLayout: DrawerLayout = binding.drawerLayout
         binding.appBarHome.toolbar.toolbarProfilePhoto.setOnClickListener {
-            drawerLayout.open()
+            binding.drawerLayout.open()
         }
 
     }
@@ -81,7 +79,7 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
                 startActivity(Intent(this, SearchActivity::class.java))
             }
 
-            binding.appBarHome.displayName.setText("Hi, ${mAccount?.displayName}")
+            binding.appBarHome.displayName.setText("Hi, ${getDisplayName()}")
 
             val headerLayout: View = binding.navView.getHeaderView(0) // 0-index header
             val nameTextView = headerLayout.findViewById<TextView>(R.id.header_displayName_tv)
@@ -92,7 +90,7 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
 
             val logoutButton =
                 headerLayout.findViewById<LinearLayout>(R.id.header_logout_bt)
-            nameTextView.text = "${mAccount?.displayName}"
+            nameTextView.text = getDisplayName()
             emailTextView.text = "${mAccount?.userEmail}"
             AvatarWorkerTask.loadAvatar(
                 it,
@@ -102,6 +100,7 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
 
 
             editProfileButton.setOnClickListener {
+                binding.drawerLayout.close()
                 val intent = Intent(this, EditAccountActivity::class.java)
                 intent.putExtra("jid", mAccount?.jid?.asBareJid().toString())
                 intent.putExtra("init", false)
@@ -117,6 +116,10 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
             }
         }
 
+    }
+
+    private fun getDisplayName(): String {
+        return mAccount?.displayName ?: "${mAccount?.firstName} ${mAccount?.lastName}"
     }
 
     private fun populateCircularMenu() {
@@ -163,12 +166,27 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
             rotateAnimatorClockWise =
                 ObjectAnimator.ofFloat(binding.appBarHome.outerWheel, View.ROTATION, 0f, degree)
             rotateAnimatorAntiClockWise =
-                ObjectAnimator.ofFloat(binding.appBarHome.middleWheel, View.ROTATION, 0f, -degree)
+                ObjectAnimator.ofFloat(
+                    binding.appBarHome.middleWheel,
+                    View.ROTATION,
+                    0f,
+                    -degree
+                )
         } else {
             rotateAnimatorClockWise =
-                ObjectAnimator.ofFloat(binding.appBarHome.outerWheel, View.ROTATION, 0f, -degree)
+                ObjectAnimator.ofFloat(
+                    binding.appBarHome.outerWheel,
+                    View.ROTATION,
+                    0f,
+                    -degree
+                )
             rotateAnimatorAntiClockWise =
-                ObjectAnimator.ofFloat(binding.appBarHome.middleWheel, View.ROTATION, 0f, degree)
+                ObjectAnimator.ofFloat(
+                    binding.appBarHome.middleWheel,
+                    View.ROTATION,
+                    0f,
+                    degree
+                )
         }
 
         rotateAnimatorClockWise.duration = duration
@@ -192,6 +210,14 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
 
     override fun onAccountUpdate() {
         runOnUiThread {
+            xmppConnectionService?.let {
+                if (it.accounts.isNotEmpty()) {
+                    mAccount = it.accounts.first()
+                    runOnUiThread {
+                        populateView()
+                    }
+                }
+            }
             populateView()
         }
     }

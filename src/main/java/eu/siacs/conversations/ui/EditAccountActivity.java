@@ -23,6 +23,7 @@ import android.provider.Settings;
 import android.security.KeyChain;
 import android.security.KeyChainAliasCallback;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -570,7 +571,12 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         mAccount.setFirstName(user.firstName);
         mAccount.setLastName(user.lastName);
         mAccount.setDateOfBirth(user.dateOfBirth);
+        mAccount.setCountry(user.country);
+        mAccount.setState(user.state);
+        mAccount.setCity(user.city);
+        mAccount.setAddress(user.address);
         mAccount.setPostalCode(user.postalCode);
+
         xmppConnectionService.createAccount(mAccount);
 
 
@@ -781,8 +787,6 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 //        }
         this.binding.actionEditYourName.setOnClickListener(this::onEditYourNameClicked);
 
-//        keyboard visibility checker
-//        keyboardVisibilityChecker();
         // button state
         loginWithEmailState();
 
@@ -834,6 +838,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             binding.accountPassword.setVisibility(View.VISIBLE);
             binding.accountPasswordLayout.setVisibility(View.VISIBLE);
             binding.lgnwithEmailBtn.setVisibility(View.VISIBLE);
+            keyboardVisibilityChecker();
         } else {
             binding.editProfileLayout.setVisibility(View.VISIBLE);
             binding.savveBtn.setOnClickListener(v -> {
@@ -845,7 +850,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
             if (mAccount != null) {
 
-                Log.d(TAG,"AVATAR URL : "+mAccount.getAvatar());
+                Log.d(TAG, "AVATAR URL : " + mAccount.getAvatar());
                 binding.aboutEt.setText(mAccount.getDescription());
                 binding.firstNameEt.setText(mAccount.getFirstName());
                 binding.lastNameEt.setText(mAccount.getLastName());
@@ -857,6 +862,11 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                 binding.cityEt.setText(mAccount.getCity());
                 binding.addressEt.setText(mAccount.getAddress());
                 binding.postalCodeEt.setText(mAccount.getPostalCode());
+
+                binding.firstNameEt.setFilters(new InputFilter[]{new InputFilter.LengthFilter(25)});
+                binding.lastNameEt.setFilters(new InputFilter[]{new InputFilter.LengthFilter(25)});
+
+
             }
 
         }
@@ -990,14 +1000,13 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         user.setPostalCode(mAccount.getPostalCode());
         user.setImageURL(mAccount.getAvatar());
 
-        Log.d(TAG,user.getAccountId());
-        Log.d(TAG,user.getDescription());
-        Log.d(TAG,user.getFirstName());
-        Log.d(TAG,user.getLastName());
+        Log.d(TAG, user.getAccountId());
+        Log.d(TAG, user.getDescription());
+        Log.d(TAG, user.getFirstName());
+        Log.d(TAG, user.getLastName());
 
         showProgressDialog(EditAccountActivity.this);
-        xmppConnectionService.updateProfile(user,EditAccountActivity.this);
-
+        xmppConnectionService.updateProfile(user, EditAccountActivity.this);
 
 
     }
@@ -1936,6 +1945,10 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                 Log.d(TAG, "ECEPTION FOUND... " + result);
 
             }
+
+            finish();
+
+
         });
     }
 }

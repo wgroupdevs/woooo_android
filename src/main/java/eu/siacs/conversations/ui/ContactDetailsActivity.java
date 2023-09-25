@@ -46,6 +46,10 @@ import eu.siacs.conversations.databinding.ActivityContactDetailsBinding;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.ListItem;
+import eu.siacs.conversations.http.model.SearchAccountAPIResponse;
+import eu.siacs.conversations.http.model.UserBasicInfo;
+import eu.siacs.conversations.http.services.BaseModelAPIResponse;
+import eu.siacs.conversations.http.services.WooooAPIService;
 import eu.siacs.conversations.services.AbstractQuickConversationsService;
 import eu.siacs.conversations.services.XmppConnectionService.OnAccountUpdate;
 import eu.siacs.conversations.services.XmppConnectionService.OnRosterUpdate;
@@ -68,7 +72,7 @@ import eu.siacs.conversations.xmpp.OnKeyStatusUpdated;
 import eu.siacs.conversations.xmpp.OnUpdateBlocklist;
 import eu.siacs.conversations.xmpp.XmppConnection;
 
-public class ContactDetailsActivity extends OmemoActivity implements OnAccountUpdate, OnRosterUpdate, OnUpdateBlocklist, OnKeyStatusUpdated, OnMediaLoaded {
+public class ContactDetailsActivity extends OmemoActivity implements OnAccountUpdate, OnRosterUpdate, OnUpdateBlocklist, OnKeyStatusUpdated, OnMediaLoaded, WooooAPIService.OnGetAccountByJidAPiResult {
     public static final String ACTION_VIEW_CONTACT = "view_contact";
     private final int REQUEST_SYNC_CONTACTS = 0x28cf;
     ActivityContactDetailsBinding binding;
@@ -211,6 +215,8 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
             }
             try {
                 this.contactJid = Jid.ofEscaped(getIntent().getExtras().getString("contact"));
+
+
             } catch (final IllegalArgumentException ignored) {
             }
         }
@@ -258,6 +264,7 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
         }
         binding.mediaWrapper.setVisibility(Compatibility.hasStoragePermission(this) ? View.VISIBLE : View.GONE);
         mMediaAdapter.setAttachments(Collections.emptyList());
+
     }
 
     @Override
@@ -486,8 +493,6 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
             }
 
 
-
-
 //            if (showsInactive || skippedInactive) {
 //                binding.showInactiveDevices.setText(showsInactive ? R.string.hide_inactive_devices : R.string.show_inactive_devices);
 //                binding.showInactiveDevices.setVisibility(View.VISIBLE);
@@ -570,6 +575,12 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
                 xmppConnectionService.getAttachments(account, contact.getJid().asBareJid(), limit, this);
                 this.binding.showMedia.setOnClickListener((v) -> MediaBrowserActivity.launch(this, contact));
             }
+
+//            String jId = this.contactJid.asBareJid().toString();
+//            Log.d(TAG,"J_I_D : " +jId);
+//            xmppConnectionService.getAccountByJid(jId, ContactDetailsActivity.this);
+
+
             populateView();
         }
     }
@@ -596,6 +607,49 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
             int limit = GridManager.getCurrentColumnCount(binding.media);
             mMediaAdapter.setAttachments(attachments.subList(0, Math.min(limit, attachments.size())));
             binding.mediaWrapper.setVisibility(attachments.size() > 0 ? View.VISIBLE : View.GONE);
+        });
+
+    }
+
+    @Override
+    public <T> void onGetAccountByJidResultFound(T searchAccount) {
+
+        runOnUiThread(() -> {
+
+            if (searchAccount != null) {
+
+                if (searchAccount instanceof SearchAccountAPIResponse) {
+
+                    try {
+                        SearchAccountAPIResponse apiResponse = ((SearchAccountAPIResponse) searchAccount);
+
+                        UserBasicInfo user = apiResponse.Data;
+
+
+                        this.contact.setEmail(user.email);
+                        this.contact.setPhoneNumber(user.phoneNumber);
+
+
+                        Log.d("SEARCH_ACCOUNT_API ", " SearchAccountAPIResponse Called in EditActivity " + apiResponse.Message);
+                        Log.d("SEARCH_ACCOUNT_API ", " SearchAccountAPIResponse Called in EditActivity " + user.jid);
+                        Log.d("SEARCH_ACCOUNT_API ", " SearchAccountAPIResponse Called in EditActivity " + user.email);
+                        Log.d("SEARCH_ACCOUNT_API ", " SearchAccountAPIResponse Called in EditActivity " + user.phoneNumber);
+
+                    } catch (Exception e) {
+                    }
+                    Log.d("ENTER_DIALOG", "mesg");
+
+
+                } else if (searchAccount instanceof BaseModelAPIResponse) {
+                    Log.d("SEARCH_ACCOUNT_API ", " BaseModelAPIResponse Called in EditActivity " + ((BaseModelAPIResponse) searchAccount).Message);
+                }
+
+            } else {
+                Log.d("onLoginApiResultFound", "ECEPTION FOUND... " + searchAccount);
+
+            }
+
+
         });
 
     }

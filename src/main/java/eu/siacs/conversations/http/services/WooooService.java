@@ -26,16 +26,17 @@ public interface WooooService {
 
     @POST("/api/v1/Contact/ContactsFromPhone")
     Call<GetWooContactsModel> getWooContacts(@Body GetWooContactsRequestParams params);
-  @POST("/api/v1/Chat/TranslateText")
+
+    @POST("/api/v1/Chat/TranslateText")
     Call<TextTranslateApiResponse> translateText(@Body TextTranslateModel params);
 
     @PUT("/api/v1/Account/UpdateUserLanguage")
     Call<UpdateUserLanguageModel> updateUserLanguage(@Query("accountId") String accountId, @Query("language") String language, @Query("languageCode") String languageCode);
-    @PUT("/api/v1/Account/UpdateAccount")
-    Call<UserBasicInfo> updateProfile(@Query("id") String id,@Body UserBasicInfo params);
 
-//    @PUT("/api/v1/Account/UpdateAccount")
-//    suspend fun updateProfile(
-//            @Query("id") id: String,@Body params:UpdateProfileRequestModel
-//    ): Response<UpdateProfileModel>
+    @PUT("/api/v1/Account/UpdateAccount")
+    Call<UserBasicInfo> updateProfile(@Query("id") String id, @Body UserBasicInfo params);
+
+    @GET("/api/v1/Account/GetByJID")
+    Call<SearchAccountAPIResponse> getAccountByJidAccount(@Query("jid") String jid );
+
 }

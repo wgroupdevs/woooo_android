@@ -1113,6 +1113,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
                 menuMucDetails.setVisible(false);
                 menuInviteContact.setVisible(service != null && service.findConferenceServer(conversation.getAccount()) != null);
             }
+
             if (conversation.isMuted()) {
                 menuMute.setVisible(false);
             } else {
@@ -1136,10 +1137,12 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 
         activity.binding.speedDial.setVisibility(View.INVISIBLE);
 
-        binding.textinput.addTextChangedListener(new StylingHelper.MessageEditorStyler(binding.textinput));
+        binding.textinput.addTextChangedListener(new StylingHelper.MessageEditorStyler(binding.textinput, binding.attachmentsIv));
+
 
         binding.textinput.setOnEditorActionListener(mEditorActionListener);
         binding.textinput.setRichContentListener(new String[]{"image/*"}, mEditorContentListener);
+
 
         binding.textSendButton.setOnClickListener(this.mSendButtonListener);
 
@@ -1198,6 +1201,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 
         return binding.getRoot();
     }
+
 
     @Override
     public void onDestroyView() {
@@ -1521,7 +1525,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     }
 
     private void showLanguageChangeDialog(Context context) {
-        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context,R.style.popup_dialog_theme);
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context, R.style.popup_dialog_theme);
         // Inflate the custom layout
         LayoutInflater inflater = LayoutInflater.from(context);
         View customView = inflater.inflate(R.layout.language_dialog, null);
@@ -1557,7 +1561,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     }
 
     private void showEncrptionDialog(Context context) {
-        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context,R.style.popup_dialog_theme);
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context, R.style.popup_dialog_theme);
         // Inflate the custom layout
         LayoutInflater inflater = LayoutInflater.from(context);
         View customView = inflater.inflate(R.layout.encryption_dialog, null);
@@ -1576,8 +1580,9 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 
         alertDialog.show();
     }
+
     private void showStealthNetDialog(Context context) {
-        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context,R.style.popup_dialog_theme);
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context, R.style.popup_dialog_theme);
         // Inflate the custom layout
         LayoutInflater inflater = LayoutInflater.from(context);
         View customView = inflater.inflate(R.layout.stealth_net_dialog, null);

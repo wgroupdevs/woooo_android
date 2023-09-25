@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -17,7 +16,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.spec.Route
-import com.woooapp.meeting.lib.socket.WooSocket
 import dagger.hilt.android.AndroidEntryPoint
 import eu.siacs.conversations.entities.Account
 import eu.siacs.conversations.http.model.UserBasicInfo
@@ -31,7 +29,6 @@ import woooo_app.woooo.destinations.HomeScreenDestination
 import woooo_app.woooo.destinations.SignUpScreenDestination
 import woooo_app.woooo.feature.auth.GV
 import woooo_app.woooo.feature.home.viewmodel.HomeViewModel
-import woooo_app.woooo.feature.meeting.SocketHandler
 import woooo_app.woooo.goToWelcomeActivity
 import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel
 import woooo_app.woooo.theme.Woooo_androidTheme
@@ -49,10 +46,6 @@ class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        setContent {
-            MainScreen()
-        }
     }
 
     override fun onNewIntent(intent: Intent?) {
