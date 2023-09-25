@@ -22,6 +22,16 @@
             android:weightSum="2"
             >
 
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:layout_weight="1"-->
+<!--                android:weightSum="2"-->
+<!--                >-->
+<!--                -->
+<!--            </LinearLayout>-->
+
             <com.woooapp.meeting.impl.views.PeerView
                 android:id="@+id/peerView"
                 android:layout_width="match_parent"
@@ -29,6 +39,8 @@
                 android:layout_margin="10dp"
                 android:layout_marginBottom="68dp"
                 android:layout_weight="1"
+                android:background="@drawable/bg_peer"
+                android:padding="5sp"
                 />
 
             <com.woooapp.meeting.impl.views.MeView
@@ -38,6 +50,8 @@
                 android:layout_margin="10dp"
                 android:layout_marginBottom="68dp"
                 android:layout_weight="1"
+                android:background="@drawable/bg_me_peer"
+                android:padding="5sp"
                 />
 
         </LinearLayout>
@@ -47,13 +61,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
-            android:background="@color/blue_primary300"
+            android:background="@drawable/bg_meeting_id_tv"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:padding="10sp"
             android:textSize="25sp"
             android:gravity="center"
             android:text="Meeting ID"
+            android:elevation="10sp"
             />
 
 

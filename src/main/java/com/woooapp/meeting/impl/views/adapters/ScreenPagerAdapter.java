@@ -4,13 +4,11 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 
 import com.woooapp.meeting.lib.RoomClient;
 import com.woooapp.meeting.lib.lv.RoomStore;
@@ -65,7 +63,7 @@ public class ScreenPagerAdapter extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         View screenView = LayoutInflater.from(mContext).inflate(R.layout.layout_meet_screen_slider, null);
         GridView gv = (GridView) screenView.findViewById(R.id.meetGridView);
-        gv.setAdapter(new ScreenGridAdapter(mContext, getPeersList(position), mStore, mRoomClient));
+//        gv.setAdapter(new MeetingGridAdapter(mContext, getPeersList(position), mStore, mRoomClient));
         gv.setOnItemClickListener((parent, view, position1, id) -> {
             // TODO On Peer Clicked
         });

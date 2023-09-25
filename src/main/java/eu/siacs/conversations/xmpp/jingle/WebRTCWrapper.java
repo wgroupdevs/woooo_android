@@ -238,7 +238,7 @@ public class WebRTCWrapper {
             PeerConnectionFactory.initialize(
                     PeerConnectionFactory.InitializationOptions.builder(service)
                             .setFieldTrials("WebRTC-BindUsingInterfaceName/Enabled/")
-                            .setNativeLibraryName("mediasoupclient_so")
+                            .setNativeLibraryName(Config.NATIVE_LIB)
                             .createInitializationOptions());
         } catch (final UnsatisfiedLinkError e) {
             throw new InitializationException("Unable to initialize PeerConnectionFactory", e);

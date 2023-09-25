@@ -42,6 +42,10 @@ public class MeetingClient {
 
     private String username;
 
+    private String email;
+    private String accountUniqueId;
+    private String picture;
+
     public enum ConnectionState {
         // initial state.
         NEW,
@@ -113,6 +117,30 @@ public class MeetingClient {
     @NonNull
     public Map<String, ConsumerHolder> getConsumers() {
         return mConsumers;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAccountUniqueId() {
+        return accountUniqueId;
+    }
+
+    public void setAccountUniqueId(String accountUniqueId) {
+        this.accountUniqueId = accountUniqueId;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 
     /**
