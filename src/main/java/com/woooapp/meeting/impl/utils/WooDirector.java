@@ -9,7 +9,9 @@ import androidx.annotation.NonNull;
 
 import com.android.volley.VolleyError;
 import com.woogroup.woooo_app.woooo.di.WooApplication;
+import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.net.ApiManager;
+import com.woooapp.meeting.net.models.PutMembersDataBody;
 
 import java.util.UUID;
 
@@ -42,7 +44,9 @@ public final class WooDirector {
      * @param meetingId
      * @param callback
      */
-    public void fetchRoomData(@NonNull String meetingId, @Nullable ApiManager.ApiResult callback) {
+    public void fetchRoomData(
+            @NonNull String meetingId,
+            @Nullable ApiManager.ApiResult callback) {
        ApiManager.build(WooApplication.Companion.getSharedInstance())
                .fetchRoomData(meetingId,
                        callback != null ? callback : new ApiManager.ApiResult() {
@@ -56,6 +60,20 @@ public final class WooDirector {
 
                            }
                        });
+    }
+
+    /**
+     *
+     * @param socketId
+     * @param meetingClient
+     */
+    public void addMember(@NonNull final String socketId, @NonNull MeetingClient meetingClient) {
+        PutMembersDataBody body = new PutMembersDataBody();
+        body.setEmail(meetingClient.getEmail());
+        body.setAccountUniqueId(meetingClient.getAccountUniqueId());
+        body.setUsername(meetingClient.getUsername());
+        body.setPicture(meetingClient.getPicture());
+        body.setSocketId(socketId);
     }
 
     /**

@@ -6,13 +6,12 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
-import android.graphics.ColorFilter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +24,7 @@ import com.android.volley.VolleyError;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.android.material.snackbar.Snackbar;
 import com.woogroup.woooo_app.woooo.di.WooApplication;
+import com.woooapp.meeting.impl.utils.WooEvents;
 import com.woooapp.meeting.impl.views.adapters.ScreenPagerAdapter;
 import com.woooapp.meeting.impl.vm.EdiasProps;
 import com.woooapp.meeting.impl.vm.MeProps;
@@ -42,6 +42,7 @@ import com.woooapp.meeting.net.models.PutMembersDataBody;
 import com.woooapp.meeting.net.models.PutMembersDataResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -55,7 +56,7 @@ import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel;
  * Created On 6:36 pm 11/09/2023
  * <code>class</code> MeetingActivity.java
  */
-public class MeetingActivity extends AppCompatActivity {
+public class MeetingActivity extends AppCompatActivity implements Handler.Callback {
 
     private static final String TAG = MeetingActivity.class.getSimpleName().toUpperCase(Locale.ROOT);
 
@@ -88,11 +89,16 @@ public class MeetingActivity extends AppCompatActivity {
     // TODO only 1 peer for now
     private Peer mPeer;
 
+    private List<Peer> peersList = new ArrayList<>();
+    private final Handler callbackHandler = new Handler(this);
+
     @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_meet);
+
+        WooEvents.getInstance().addHandler(callbackHandler);
 
         mBinding.meetingButtonExit.hide();
 
@@ -166,13 +172,6 @@ public class MeetingActivity extends AppCompatActivity {
 
     private void joinMeeting() {
         initMeetingClient();
-        new Handler().postDelayed(() -> {
-            try {
-                putMember();
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
-            }
-        }, 8000);
     }
 
     private void fetchRoomData() {
@@ -258,7 +257,10 @@ public class MeetingActivity extends AppCompatActivity {
     private void initMeetingClient() {
         this.mRoomStore = new RoomStore();
         this.mMeetingClient = new MeetingClient(this, mRoomStore, this.mMeetingId);
+        this.mMeetingClient.setAccountUniqueId(accountUniqueId);
+        this.mMeetingClient.setEmail(email);
         this.mMeetingClient.setUsername(username);
+        this.mMeetingClient.setPicture(picture);
         this.mMeetingClient.start();
 
         getViewModelStore().clear();
@@ -290,7 +292,7 @@ public class MeetingActivity extends AppCompatActivity {
                 .observe(
                         this,
                         peers -> {
-                            List<Peer> peersList = peers.getAllPeers();
+                            peersList = peers.getAllPeers();
                             Log.d(TAG, "Peer list size[" + peersList.size() + "]");
                             if (peersList.isEmpty()) {
 //                                mBinding.remotePeers.setVisibility(View.GONE);
@@ -384,6 +386,43 @@ public class MeetingActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean handleMessage(@NonNull Message msg) {
+        switch (msg.what) {
+            case WooEvents.EVENT_TYPE_SOCKET_ID:
+                Log.d(TAG, "<< Handler Event SOCKET_ID Received >> " + msg.obj);
+                return true;
+            case WooEvents.EVENT_TYPE_PRODUCER_CREATED:
+                Log.d(TAG, "<< Handler Event PRODUCER CREATED [" + msg.obj + "]");
+                if (joining) {
+                    try {
+                        putMember();
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return true;
+            case WooEvents.EVENT_TYPE_CONSUMER_CREATED:
+                Log.d(TAG, "<< Handler Event CONSUMER CREATED [" + msg.obj + "]");
+                return true;
+            case WooEvents.EVENT_TYPE_CONSUME_BACK_CREATED:
+                Log.d(TAG, "<< Handler Event CONUME BACK CREATED [" + msg.obj + "]");
+                return true;
+            case WooEvents.EVENT_TYPE_PEER_DISCONNECTED:
+                Log.d(TAG, "<< Handler Event Peer Disconnected with socket id >> " + msg.obj);
+                if (peersList.isEmpty()) {
+                    // Destroy and finish()
+                    onBackPressed();
+                }
+                return true;
+            case WooEvents.EVENT_TYPE_SOCKET_DISCONNECTED:
+                Log.d(TAG, "<< Handler Event Socket disconnected with socket id: [" + msg.obj + "]");
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         destroyMeeting();
@@ -391,6 +430,7 @@ public class MeetingActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        WooEvents.getInstance().removeHandler(callbackHandler);
         destroyMeeting();
         super.onBackPressed();
         finish();

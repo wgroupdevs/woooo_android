@@ -8,10 +8,11 @@ import android.widget.BaseAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LifecycleOwner;
 
 import com.woooapp.meeting.impl.views.PeerView;
 import com.woooapp.meeting.impl.vm.PeerProps;
-import com.woooapp.meeting.lib.RoomClient;
+import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.lv.RoomStore;
 import com.woooapp.meeting.lib.model.Peer;
 
@@ -25,30 +26,32 @@ import eu.siacs.conversations.R;
  * Created On 1:33 pm 13/09/2023
  * <code>class</code> ScreenGridAdapter.java
  */
-public class ScreenGridAdapter extends BaseAdapter {
+public class MeetingGridAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<Peer> mPeers = new LinkedList<>();
-
     private RoomStore mStore;
-    private RoomClient mRoomClient;
+    private MeetingClient mMeetingClient;
+    private final LifecycleOwner mLifecycleOwner;
 
     /**
      *
      * @param mContext
      * @param mPeers
      * @param mStore
-     * @param mRoomClient
+     * @param meetingClient
      */
-    public ScreenGridAdapter(
+    public MeetingGridAdapter(
             @NonNull Context mContext,
+            @NonNull LifecycleOwner lifecycleOwner,
             @NonNull List<Peer> mPeers,
             @NonNull RoomStore mStore,
-            @NonNull RoomClient mRoomClient) {
+            @NonNull MeetingClient meetingClient) {
         this.mContext = mContext;
+        this.mLifecycleOwner = lifecycleOwner;
         this.mPeers = mPeers;
         this.mStore = mStore;
-        this.mRoomClient = mRoomClient;
+        this.mMeetingClient = meetingClient;
     }
 
     @Override
@@ -70,16 +73,18 @@ public class ScreenGridAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder vh = null;
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.grid_cell_me_view, null);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.grid_cell_peer_view, null);
             vh = new ViewHolder();
             convertView.setTag(vh);
         } else {
             vh = (ViewHolder) convertView.getTag();
         }
 
-        vh.mPeerView = (PeerView) convertView.findViewById(R.id.remotePeer);
+        vh.mPeerView = (PeerView) convertView.findViewById(R.id.remotePeerView);
+        Peer peer = (Peer) getItem(position);
         PeerProps peerProps = new PeerProps(((AppCompatActivity) mContext).getApplication(), mStore);
-//        vh.mPeerView.setProps(peerProps, mRoomClient);
+        peerProps.connect(mLifecycleOwner, peer.getId());
+        vh.mPeerView.setProps(peerProps, mMeetingClient);
         return convertView;
     }
 

@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi;
 import androidx.annotation.WorkerThread;
 
 import com.woooapp.meeting.impl.utils.WooDirector;
+import com.woooapp.meeting.impl.utils.WooEvents;
 import com.woooapp.meeting.lib.Async;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.PeerConnectionUtils;
@@ -35,8 +36,10 @@ import org.webrtc.VideoTrack;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
@@ -82,6 +85,8 @@ public class WooSocket {
     private String videoProducerId = null;
     private final MeetingClient mMeetingClient;
     private String mProducerSockId;
+    private final Set<String> producerSockIds = new HashSet<>();
+    private final Set<String> consumeBackDeviceUUIDs = new HashSet<>();
     /**
      *
      * @param context
@@ -105,6 +110,12 @@ public class WooSocket {
 
         // Created once per session
         this.deviceUUID = WooDirector.getInstance().getDeviceUUID();
+
+        // Clean up first
+        this.producerIds.clear();
+        this.audioProducersIds.clear();
+        this.producerSockIds.clear();
+        this.consumeBackDeviceUUIDs.clear();
 
         mMainHandler.post(() -> {
             Logger.setLogLevel(Logger.LogLevel.LOG_DEBUG);
@@ -163,6 +174,9 @@ public class WooSocket {
                 mSocketId = null;
                 mConnected = false;
             });
+
+            // Say Bye Bye
+            WooEvents.getInstance().notify(WooEvents.EVENT_TYPE_SOCKET_DISCONNECTED, mSocketId);
 
             sInstance = null;
             // Deliberate call to GC
@@ -228,6 +242,7 @@ public class WooSocket {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                WooEvents.getInstance().notify(WooEvents.EVENT_TYPE_SOCKET_ID, mSocketId);
             }
         });
 
@@ -287,6 +302,7 @@ public class WooSocket {
                     // Enable camera
                     mMainHandler.post(this::enableCam);
 
+                    WooEvents.getInstance().notify(WooEvents.EVENT_TYPE_PRODUCER_CREATED, id);
                 } catch (JSONException | MediasoupException e) {
                     Log.e(TAG, e.getMessage());
                     e.printStackTrace();
@@ -393,6 +409,10 @@ public class WooSocket {
                     mMeetingClient.getConsumers().put(consumer.getId(),
                             new MeetingClient.ConsumerHolder(producerSockId, consumer));
                     mStore.addConsumer(producerSockId, type, consumer, producerPaused);
+
+                    // Notify
+                    WooEvents.getInstance().notify(WooEvents.EVENT_TYPE_CONSUMER_CREATED, id);
+
                     // CONSUME BACK Starts here
                     emitConsumeBack(producerSockId);
                 } catch (JSONException | MediasoupException e) {
@@ -409,11 +429,12 @@ public class WooSocket {
                 try {
                     JSONObject obj = new JSONObject(String.valueOf(args[0]));
                     String producerId = obj.getString("producerId");
-                    String producerSockId = obj.getString("producerSockId");
+                    mProducerSockId = obj.getString("producerSockId");
                     boolean screenShare = obj.getBoolean("screenShare");
                     consumeBackDeviceUUID = WooDirector.getInstance().getDeviceUUID();
+                    consumeBackDeviceUUIDs.add(consumeBackDeviceUUID);
 
-                    emitCreateBackConsumeTransport(producerId, producerSockId);
+                    emitCreateBackConsumeTransport(producerId, mProducerSockId);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -509,6 +530,7 @@ public class WooSocket {
                     mMeetingClient.getConsumers().put(consumer.getId(),
                             new MeetingClient.ConsumerHolder(producerSockId, consumer));
                     mStore.addConsumer(producerSockId, type, consumer, producerPaused);
+                    WooEvents.getInstance().notify(WooEvents.EVENT_TYPE_CONSUME_BACK_CREATED, obj);
                 } catch (JSONException | MediasoupException e) {
                     e.printStackTrace();
                 }
@@ -524,8 +546,9 @@ public class WooSocket {
                     boolean disconnected = obj.getBoolean("disconnect");
                     if (disconnected) {
                         if (id.equals(mProducerSockId)) {
-                            Log.d(TAG, "<<< Peer Disconnected Disconnecting ....");
-                            disconnect();
+                            Log.d(TAG, "<<< Peer Disconnected, Disconnecting ....");
+                            mStore.removePeer(mProducerSockId);
+                            WooEvents.getInstance().notify(WooEvents.EVENT_TYPE_PEER_DISCONNECTED, mProducerSockId);
                         }
                     }
                 } catch (JSONException e) {
@@ -662,8 +685,9 @@ public class WooSocket {
     private void emitClose() {
         JSONArray storageIds = new JSONArray();
         storageIds.put(deviceUUID);
-        if (consumeBackDeviceUUID != null)
-            storageIds.put(consumeBackDeviceUUID);
+        for (String uuid : consumeBackDeviceUUIDs) {
+            storageIds.put(uuid);
+        }
         Log.d(TAG, "Emitting Close Consumer >> " + storageIds);
         mSocket.emit("closeConsumer", storageIds);
     }
@@ -702,10 +726,11 @@ public class WooSocket {
     }
 
     // NOT CALLED AS IT REQUIRES MIN SDK TO BE 24
+    @Deprecated
     @RequiresApi(api = Build.VERSION_CODES.N)
     private String getProducerId(@NonNull String kind, @NonNull String rtpParameters) throws JSONException, ExecutionException, InterruptedException {
         emitProduce(kind, rtpParameters);
-
+        // CompletableFuture
         final CompletableFuture<String> future = new CompletableFuture<>();
         mSocket.on("producing", args -> {
             if (args != null) {

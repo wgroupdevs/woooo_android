@@ -41,6 +41,8 @@ public final class Config {
 
     public static final String LOGTAG = BuildConfig.APP_NAME.toLowerCase(Locale.US);
 
+    public static final String NATIVE_LIB = "mediasoupclient_so";
+
     public static final Jid BUG_REPORTS = Jid.of("bugs@conversations.im");
     public static final Uri HELP = Uri.parse("https://help.conversations.im");
 
@@ -59,7 +61,6 @@ public final class Config {
     public static final boolean ALLOW_NON_TLS_CONNECTIONS = false; //very dangerous. you should have a good reason to set this to true
 
     public static final long CONTACT_SYNC_RETRY_INTERVAL = 1000L * 60 * 5;
-
 
     public static final boolean QUICKSTART_ENABLED = true;
 

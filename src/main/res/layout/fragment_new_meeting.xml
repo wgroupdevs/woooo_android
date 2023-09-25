@@ -104,18 +104,17 @@
                     style="@style/Widget.Conversations.EditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
                     android:background="@drawable/textfield_background"
-                    android:hint="https://cc.watchblock.net"
+                    android:hint="https://cc.watchblock.net/meeting/123456"
                     android:imeOptions="actionNext"
                     android:inputType="none"
                     android:paddingVertical="@dimen/_10sdp"
                     android:paddingStart="@dimen/_5sdp"
                     android:textColor="@color/white"
                     android:enabled="false"
+                    android:singleLine="true"
+                    android:ellipsize="start"
                     android:layout_weight="1"
-                    android:maxLines="1"
-                    android:ellipsize="end"
                     />
 
                 <ImageButton

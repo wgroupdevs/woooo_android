@@ -1,8 +1,11 @@
 package eu.siacs.conversations.ui.meeting
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.text.Editable
 import android.util.Log
 import android.view.LayoutInflater
@@ -44,6 +47,8 @@ class NewMeetingFragment : Fragment() {
     private var account: Account? = null
     private var meetingId: String? = null
 
+    private var vibrator: Vibrator? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -53,6 +58,7 @@ class NewMeetingFragment : Fragment() {
         // Database backend
         Log.d(TAG, "<< Initializing DatabaseBackend and fetching accounts")
         var databaseBackend = DatabaseBackend.getInstance(context)
+        vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         this.accounts = databaseBackend.accounts
         if (accounts != null) {
             if (accounts?.size!! > 0)
@@ -82,7 +88,6 @@ class NewMeetingFragment : Fragment() {
             val accountUniqueId = account!!.accountId
             val picture = account!!.avatar
             val username = account!!.username
-            val meetingName = mBinding?.meetingNameEt?.text.toString()
             Log.d(TAG, "Account >> MeetingId[$meetingId], Email[$email], AccountUniqueID[$accountUniqueId], Picture[$picture], Username[$username]")
             intent = Intent(context, MeetingActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -90,14 +95,22 @@ class NewMeetingFragment : Fragment() {
             intent.putExtra("accountUniqueId", accountUniqueId)
             intent.putExtra("picture", picture)
             intent.putExtra("username", username.toString().toLowerCase(Locale.current))
-            intent.putExtra("meetingName", meetingName)
         }
 
         // Start Meeting
         mBinding?.startMeetingBtn?.setOnClickListener {
-            if (intent != null) {
-                intent.putExtra("meetingId", meetingId)
-                startActivity(intent)
+            if (mBinding?.meetingNameEt?.text.toString() != null) {
+                if (mBinding?.meetingNameEt?.text.toString().isNotEmpty()) {
+                    if (intent != null) {
+                        intent.putExtra("meetingName", mBinding?.meetingNameEt?.text.toString())
+                        intent.putExtra("meetingId", meetingId)
+                        startActivity(intent)
+                    }
+                } else {
+                    meetingEtEmptyError()
+                }
+            } else {
+                meetingEtEmptyError()
             }
         }
 
@@ -145,6 +158,13 @@ class NewMeetingFragment : Fragment() {
                     Snackbar.LENGTH_LONG).show()
             }
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    fun meetingEtEmptyError() {
+        mBinding?.meetingNameEt?.setHintTextColor(Color.parseColor("#ff0000"))
+        mBinding?.meetingNameEt?.hint = "* Meeting name is required!"
+        vibrator?.vibrate(100L)
     }
 
     companion object {
