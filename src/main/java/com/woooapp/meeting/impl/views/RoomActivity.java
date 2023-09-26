@@ -54,14 +54,11 @@ public class RoomActivity extends AppCompatActivity {
     private String mRoomId;
     private String mPeerId;
     private String mDisplayName;
-
     private boolean mForceH264;
     private boolean mForceVP9;
-
     private RoomOptions mOptions;
     private RoomStore mRoomStore;
     private RoomClient mRoomClient;
-
     private ActivityRoomBinding mBinding;
     private PeerAdapter mPeerAdapter;
 

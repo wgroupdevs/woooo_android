@@ -46,7 +46,7 @@
     <dimen name="rtp_session_duration_top_margin">15dp</dimen>
 
 
-    <!-- <dimen name="connect_state">15dp</dimen> -->
+    <dimen name="connect_state">15dp</dimen>
 
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">176dp</dimen>

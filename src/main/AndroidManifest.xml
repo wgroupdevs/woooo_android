@@ -90,11 +90,12 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label"
         tools:targetApi="q" >
-        <!-- <activity
+
+        <activity
             android:name=".ui.HomeActivity"
             android:exported="false"
             android:label="@string/title_activity_home"
-            android:theme="@style/ConversationsTheme.NoActionBar" /> -->
+            android:theme="@style/ConversationsTheme.NoActionBar" />
 
         <meta-data
             android:name="com.google.android.gms.car.application"
