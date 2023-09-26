@@ -844,6 +844,8 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             showDatePicker();
 
             if (mAccount != null) {
+
+                Log.d(TAG,"AVATAR URL : "+mAccount.getAvatar());
                 binding.aboutEt.setText(mAccount.getDescription());
                 binding.firstNameEt.setText(mAccount.getFirstName());
                 binding.lastNameEt.setText(mAccount.getLastName());
@@ -1653,7 +1655,6 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             this.binding.yourName.setTextAppearance(this, R.style.TextAppearance_Conversations_Body1_Tertiary);
         } else {
             this.binding.yourName.setText(displayName);
-            this.binding.yourName.setTextAppearance(this, R.style.TextAppearance_Conversations_Body1);
         }
     }
 

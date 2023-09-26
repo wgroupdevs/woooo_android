@@ -14,7 +14,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -44,6 +43,8 @@ public class Contact implements ListItem, Blockable {
     public static final String OPTIONS = "options";
     public static final String SYSTEMACCOUNT = "systemaccount";
     public static final String PHOTOURI = "photouri";
+    public static final String PHONE_NUMBER = "phone_number";
+    public static final String EMAIL = "email";
     public static final String KEYS = "pgpkey";
     public static final String ACCOUNT = "accountUuid";
     public static final String AVATAR = "avatar";
@@ -60,6 +61,10 @@ public class Contact implements ListItem, Blockable {
     private int subscription = 0;
     private Uri systemAccount;
     private String photoUri;
+
+
+    private String phoneNumber;
+    private String email;
     private final JSONObject keys;
     private JSONArray groups = new JSONArray();
     private final Presences presences = new Presences();
@@ -72,7 +77,7 @@ public class Contact implements ListItem, Blockable {
     private RtpCapability.Capability rtpCapability;
 
     public Contact(final String account, final String systemName, final String serverName, final String presenceName,
-                   final Jid jid, final int subscription, final String photoUri,
+                   final Jid jid, final int subscription, final String photoUri, final String phoneNumber, final String email,
                    final Uri systemAccount, final String keys, final String avatar, final long lastseen,
                    final String presence, final String groups, final RtpCapability.Capability rtpCapability) {
         this.accountUuid = account;
@@ -82,6 +87,8 @@ public class Contact implements ListItem, Blockable {
         this.jid = jid;
         this.subscription = subscription;
         this.photoUri = photoUri;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
         this.systemAccount = systemAccount;
         JSONObject tmpJsonObject;
         try {
@@ -131,6 +138,8 @@ public class Contact implements ListItem, Blockable {
                 jid,
                 cursor.getInt(cursor.getColumnIndex(OPTIONS)),
                 cursor.getString(cursor.getColumnIndex(PHOTOURI)),
+                cursor.getString(cursor.getColumnIndex(PHONE_NUMBER)),
+                cursor.getString(cursor.getColumnIndex(EMAIL)),
                 systemAccount,
                 cursor.getString(cursor.getColumnIndex(KEYS)),
                 cursor.getString(cursor.getColumnIndex(AVATAR)),
@@ -242,6 +251,8 @@ public class Contact implements ListItem, Blockable {
             values.put(OPTIONS, subscription);
             values.put(SYSTEMACCOUNT, systemAccount != null ? systemAccount.toString() : null);
             values.put(PHOTOURI, photoUri);
+            values.put(PHONE_NUMBER, phoneNumber);
+            values.put(EMAIL, email);
             values.put(KEYS, keys.toString());
             values.put(AVATAR, avatar == null ? null : avatar.getFilename());
             values.put(LAST_PRESENCE, mLastPresence);
@@ -292,6 +303,22 @@ public class Contact implements ListItem, Blockable {
         } else {
             return false;
         }
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setServerName(String serverName) {

@@ -29,7 +29,7 @@
         <item name="edit_text_color">@color/black87</item>
         <item name="icon_tint">@color/white</item>
         <!--        <item name="tint">@color/white</item>-->
-<!--        <item name="popupMenuStyle">@style/PopupMenuStyle</item>-->
+        <!--        <item name="popupMenuStyle">@style/PopupMenuStyle</item>-->
         <item name="actionOverflowButtonStyle">@style/OverFlow</item>
         <item name="android:itemBackground">@color/blue_primary300</item>
         <item name="activity_background_search">@drawable/search_background_light</item>
@@ -450,5 +450,14 @@
         <item name="TextSizeBody2">18sp</item>
         <item name="TextSizeTitle">56sp</item>
     </style>
+
+    <style name="ConversationsTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="ConversationsTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="ConversationsTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

@@ -1045,8 +1045,8 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             this.activity = (ConversationsActivity) activity;
             assert this.activity.binding.navigation != null;
             this.activity.binding.navigation.setVisibility(View.GONE);
-            this.activity.binding.toolbar.findViewById(R.id.toolbar_search).setVisibility(View.GONE);
-            this.activity.binding.toolbar.findViewById(R.id.toolbar_profile_photo).setVisibility(View.VISIBLE);
+            this.activity.binding.toolbar.toolbarSearch.setVisibility(View.GONE);
+            this.activity.binding.toolbar.toolbarProfilePhoto.setVisibility(View.VISIBLE);
 
         } else {
             throw new IllegalStateException("Trying to attach fragment to activity that is not the ConversationsActivity");
@@ -1058,9 +1058,9 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         super.onDetach();
         assert this.activity.binding.navigation != null;
         this.activity.binding.navigation.setVisibility(View.VISIBLE);
-        this.activity.binding.toolbar.findViewById(R.id.toolbar_search).setVisibility(View.VISIBLE);
-        this.activity.binding.toolbar.findViewById(R.id.toolbar_profile_photo).setVisibility(View.GONE);
-        this.activity.binding.toolbar.findViewById(R.id.toolbar_contact_name).setVisibility(View.GONE);
+        this.activity.binding.toolbar.toolbarSearch.setVisibility(View.VISIBLE);
+        this.activity.binding.toolbar.toolbarProfilePhoto.setVisibility(View.GONE);
+        this.activity.binding.toolbar.toolbarContactName.setVisibility(View.GONE);
 
         this.activity = null; // TODO maybe not a good idea since some callbacks really need it
     }
@@ -1183,8 +1183,8 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         if (contact != null) {
 
 
-            AvatarWorkerTask.loadAvatar(contact, this.activity.binding.toolbar.findViewById(R.id.toolbar_profile_photo), R.dimen.avatar);
-            TextView toolbar_contact_name = this.activity.binding.toolbar.findViewById(R.id.toolbar_contact_name);
+            AvatarWorkerTask.loadAvatar(contact, this.activity.binding.toolbar.toolbarProfilePhoto, R.dimen.avatar);
+            TextView toolbar_contact_name = this.activity.binding.toolbar.toolbarContactName;
             toolbar_contact_name.setVisibility(View.VISIBLE);
             toolbar_contact_name.setText(contact.getDisplayName());
         }

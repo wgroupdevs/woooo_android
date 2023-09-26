@@ -142,7 +142,7 @@ public class ChooseContactActivity extends AbstractSearchableListItemActivity im
         this.binding.fab.setOnClickListener(this::onFabClicked);
 
         //Back Button on TollBar
-        ImageView backButton = findViewById(R.id.toolbar_back_button);
+        ImageView backButton = findViewById(R.id.toolBar_leading_View);
         backButton.setOnClickListener(v -> super.onBackPressed());
         if (this.showEnterJid) {
             this.binding.fab.show();

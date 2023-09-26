@@ -29,6 +29,8 @@
 
 package eu.siacs.conversations.ui;
 
+import static eu.siacs.conversations.ui.PublishProfilePictureActivity.REQUEST_CHOOSE_PICTURE;
+
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -40,16 +42,14 @@ import android.widget.Toast;
 import androidx.annotation.StringRes;
 import androidx.databinding.DataBindingUtil;
 
+import com.canhub.cropper.CropImage;
+
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.databinding.ActivityPublishProfilePictureBinding;
 import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.ui.interfaces.OnAvatarPublication;
 import eu.siacs.conversations.ui.util.PendingItem;
-
-import static eu.siacs.conversations.ui.PublishProfilePictureActivity.REQUEST_CHOOSE_PICTURE;
-
-import com.canhub.cropper.CropImage;
 
 public class PublishGroupChatProfilePictureActivity extends XmppActivity implements OnAvatarPublication {
     private final PendingItem<String> pendingConversationUuid = new PendingItem<>();
@@ -91,7 +91,7 @@ public class PublishGroupChatProfilePictureActivity extends XmppActivity impleme
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_publish_profile_picture);
-        setSupportActionBar(this.binding.toolbar);
+        setSupportActionBar(this.binding.toolbar.emptyToolBar);
         configureActionBar(getSupportActionBar());
         this.binding.cancelButton.setOnClickListener((v) -> this.finish());
         this.binding.secondaryHint.setVisibility(View.GONE);
