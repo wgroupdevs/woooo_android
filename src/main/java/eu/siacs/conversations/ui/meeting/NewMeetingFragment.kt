@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Message
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.text.Editable
@@ -20,6 +22,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.woooapp.meeting.impl.utils.ClipboardCopy
+import com.woooapp.meeting.impl.utils.WooEvents
 import com.woooapp.meeting.impl.views.MeetingActivity
 import com.woooapp.meeting.lib.Utils
 import eu.siacs.conversations.R
@@ -37,7 +40,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [NewMeetingFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class NewMeetingFragment : Fragment() {
+class NewMeetingFragment : Fragment(), Handler.Callback {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -48,6 +51,7 @@ class NewMeetingFragment : Fragment() {
     private var meetingId: String? = null
 
     private var vibrator: Vibrator? = null
+    private val handler: Handler = Handler(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +59,9 @@ class NewMeetingFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
+        WooEvents.getInstance().addHandler(handler)
+
         // Database backend
         Log.d(TAG, "<< Initializing DatabaseBackend and fetching accounts")
         var databaseBackend = DatabaseBackend.getInstance(context)
@@ -165,6 +172,25 @@ class NewMeetingFragment : Fragment() {
         mBinding?.meetingNameEt?.setHintTextColor(Color.parseColor("#ff0000"))
         mBinding?.meetingNameEt?.hint = "* Meeting name is required!"
         vibrator?.vibrate(100L)
+    }
+
+    override fun handleMessage(msg: Message): Boolean {
+        if (msg.what == WooEvents.EVENT_TYPE_SOCKET_DISCONNECTED) {
+            meetingId = Utils.getRandomString(8)
+            mBinding?.meetingUrlEt?.text = Editable.Factory.getInstance()
+                .newEditable("https://cc.watchblock.net/meeting/$meetingId")
+            return true
+        }
+        return false
+    }
+
+    override fun onStop() {
+        super.onStop()
+        WooEvents.getInstance().removeHandler(handler)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
     companion object {
