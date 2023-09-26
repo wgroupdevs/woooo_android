@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:bind="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
         <variable
-            name="roomProps"
+            name="meetProps"
             type="com.woooapp.meeting.impl.vm.RoomProps" />
     </data>
 
@@ -25,22 +25,9 @@
             android:layout_marginRight="10sp"
             android:layout_marginLeft="10sp"
             android:layout_marginTop="5sp"
+            android:background="@android:color/transparent"
             />
         <!-- TODO add layout animation -->
-
-        <com.woooapp.meeting.impl.views.MeView
-            android:id="@+id/meView"
-            android:layout_width="120sp"
-            android:layout_height="200sp"
-            android:layout_margin="20sp"
-            android:layout_marginBottom="68dp"
-            android:layout_weight="1"
-            android:background="@drawable/bg_me_peer"
-            android:padding="5sp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:elevation="10sp"
-            />
 
         <TextView
             android:id="@+id/tvMeetingId"
@@ -54,6 +41,32 @@
             android:textSize="15sp"
             android:gravity="center"
             android:text="Meeting ID"
+            android:elevation="10sp"
+            />
+
+        <ImageButton
+            android:id="@+id/meetingButtonEnd"
+            android:layout_width="100sp"
+            android:layout_height="50sp"
+            android:src="@drawable/ic_call_end_white_48dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:foregroundGravity="center"
+            android:layout_margin="25sp"
+            android:background="@drawable/bg_button_end_meeting"
+            android:elevation="10sp"
+            />
+
+        <com.woooapp.meeting.impl.views.MeView
+            android:id="@+id/meView"
+            android:layout_width="120sp"
+            android:layout_height="200sp"
+            android:background="@drawable/bg_me_peer"
+            android:padding="5sp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="25sp"
+            android:layout_marginBottom="80sp"
             android:elevation="10sp"
             />
 

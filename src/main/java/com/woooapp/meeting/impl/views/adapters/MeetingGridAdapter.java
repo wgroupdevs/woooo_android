@@ -37,19 +37,17 @@ public class MeetingGridAdapter extends BaseAdapter {
     /**
      *
      * @param mContext
-     * @param mPeers
+     * @param lifecycleOwner
      * @param mStore
      * @param meetingClient
      */
     public MeetingGridAdapter(
             @NonNull Context mContext,
             @NonNull LifecycleOwner lifecycleOwner,
-            @NonNull List<Peer> mPeers,
             @NonNull RoomStore mStore,
             @NonNull MeetingClient meetingClient) {
         this.mContext = mContext;
         this.mLifecycleOwner = lifecycleOwner;
-        this.mPeers = mPeers;
         this.mStore = mStore;
         this.mMeetingClient = meetingClient;
     }

@@ -1,7 +1,5 @@
 package com.woooapp.meeting.impl.views;
 
-import static com.woooapp.meeting.lib.Utils.getRandomString;
-
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
@@ -25,6 +23,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.android.material.snackbar.Snackbar;
 import com.woogroup.woooo_app.woooo.di.WooApplication;
 import com.woooapp.meeting.impl.utils.WooEvents;
+import com.woooapp.meeting.impl.views.adapters.MeetingGridAdapter;
 import com.woooapp.meeting.impl.views.adapters.ScreenPagerAdapter;
 import com.woooapp.meeting.impl.vm.EdiasProps;
 import com.woooapp.meeting.impl.vm.MeProps;
@@ -49,6 +48,7 @@ import java.util.Locale;
 
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.databinding.ActivityMeetBinding;
+import eu.siacs.conversations.databinding.ActivityMeetingBinding;
 import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel;
 
 /**
@@ -71,7 +71,8 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     };
 
     private ViewPager mViewPager;
-    private ActivityMeetBinding mBinding;
+//    private ActivityMeetBinding mBinding;
+    private ActivityMeetingBinding mBinding;
     private ScreenPagerAdapter mPeerScreenAdapter;
     private MeetingClient mMeetingClient;
     private ProgressDialog pd;
@@ -88,7 +89,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private String meetingName;
     // TODO only 1 peer for now
     private Peer mPeer;
-
+    private MeetingGridAdapter peerGridAdapter;
     private List<Peer> peersList = new ArrayList<>();
     private final Handler callbackHandler = new Handler(this);
 
@@ -96,11 +97,11 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_meet);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_meeting);
 
         WooEvents.getInstance().addHandler(callbackHandler);
 
-        mBinding.meetingButtonExit.hide();
+        mBinding.meetingButtonEnd.setVisibility(View.GONE);
 
         pd = new ProgressDialog(this);
         pd.setMessage("Setting up ...");
@@ -112,7 +113,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             setup();
         }
 
-        mBinding.meetingButtonExit.setOnClickListener(view -> {
+        mBinding.meetingButtonEnd.setOnClickListener(view -> {
             onBackPressed();
         });
     }
@@ -276,7 +277,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         mBinding.setMeetProps(roomProps);
 
         // Set Meeting ID Link
-        mBinding.tvTempLink.setText(mMeetingId);
+        mBinding.tvMeetingId.setText(mMeetingId);
 
         // ME
         MeProps meProps = new ViewModelProvider(this, factory).get(MeProps.class);
@@ -285,7 +286,9 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         mBinding.meView.setProps(meProps, mMeetingClient);
 
         // PeerView
-        PeerProps peerProps = new PeerProps(getApplication(), mRoomStore);
+        peerGridAdapter = new MeetingGridAdapter(this, this, mRoomStore, mMeetingClient);
+        mBinding.gridViewMeeting.setAdapter(peerGridAdapter);
+//        PeerProps peerProps = new PeerProps(getApplication(), mRoomStore);
 
         mRoomStore
                 .getPeers()
@@ -295,13 +298,9 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                             peersList = peers.getAllPeers();
                             Log.d(TAG, "Peer list size[" + peersList.size() + "]");
                             if (peersList.isEmpty()) {
-//                                mBinding.remotePeers.setVisibility(View.GONE);
-//                                mBinding.roomState.setVisibility(View.VISIBLE);
-                                mBinding.peerView.setVisibility(View.GONE);
+//                                mBinding.peerView.setVisibility(View.GONE);
                             } else {
-                                mBinding.peerView.setVisibility(View.VISIBLE);
-//                                mBinding.remotePeers.setVisibility(View.VISIBLE);
-//                                mBinding.roomState.setVisibility(View.GONE);
+//                                mBinding.peerView.setVisibility(View.VISIBLE);
                                 mPeer = peersList.get(0);
                                 if (mPeer != null) {
                                     Log.d(TAG,
@@ -309,20 +308,12 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                                                     + mPeer.getId() +
                                                     "] consumerCount[" +
                                                     mPeer.getConsumers().size() + "]");
-                                    peerProps.connect(this, mPeer.getId());
-                                    mBinding.peerView.setProps(peerProps, mMeetingClient);
+//                                    peerProps.connect(this, mPeer.getId());
+//                                    mBinding.peerView.setProps(peerProps, mMeetingClient);
                                 }
                             }
-//                            mPeerAdapter.replacePeers(peersList);
+                            peerGridAdapter.replacePeers(peersList);
                         });
-
-        // TODO Move to events
-        new Handler().postDelayed(() -> {
-            mBinding.meetingButtonExit.show();
-        }, 3000);
-        new Handler().postDelayed(() -> {
-            Snackbar.make(mBinding.meetingButtonExit, "Room Created " + mMeetingClient.getMeetingId(), Snackbar.LENGTH_LONG).show();
-        }, 4500);
     }
 
     private void dismissProgressDialog() {
@@ -382,7 +373,8 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             mRoomStore = null;
         }
         mBinding.meView.dispose();
-        mBinding.peerView.dispose();
+        // TODO Mark check
+//        mBinding.peerView.dispose();
     }
 
     @Override
@@ -390,6 +382,9 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         switch (msg.what) {
             case WooEvents.EVENT_TYPE_SOCKET_ID:
                 Log.d(TAG, "<< Handler Event SOCKET_ID Received >> " + msg.obj);
+                runOnUiThread(() -> {
+                    mBinding.meetingButtonEnd.setVisibility(View.VISIBLE);
+                });
                 return true;
             case WooEvents.EVENT_TYPE_PRODUCER_CREATED:
                 Log.d(TAG, "<< Handler Event PRODUCER CREATED [" + msg.obj + "]");
@@ -400,6 +395,9 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                         e.printStackTrace();
                     }
                 }
+                runOnUiThread(() -> {
+                    Snackbar.make(mBinding.meetingButtonEnd, "Room Created " + mMeetingClient.getMeetingId(), Snackbar.LENGTH_LONG).show();
+                });
                 return true;
             case WooEvents.EVENT_TYPE_CONSUMER_CREATED:
                 Log.d(TAG, "<< Handler Event CONSUMER CREATED [" + msg.obj + "]");
