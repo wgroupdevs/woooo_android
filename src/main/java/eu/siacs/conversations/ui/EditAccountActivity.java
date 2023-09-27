@@ -113,6 +113,8 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
     private static final int REQUEST = 112;
 
+    private static final int REQUEST_CODE_READ_CONTACTS = 1;
+
 
     public static final String EXTRA_OPENED_FROM_NOTIFICATION = "opened_from_notification";
     public static final String EXTRA_FORCE_REGISTER = "force_register";
@@ -338,11 +340,13 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
         final String password = binding.accountPassword.getText().toString();
         final String email = binding.accountJid.getText().toString();
-         String phoneNumber = binding.phoneNumberField.getText().toString();
+        String phoneNumber = binding.phoneNumberField.getText().toString();
         final String countryCode = binding.countryCodetv.getText().toString();
-        String validNumber = String.valueOf(phoneNumber.charAt(0));
-        if (validNumber.equals("0")) {
-            phoneNumber = phoneNumber.substring(1);
+        if (!phoneNumber.isEmpty()) {
+            String validNumber = String.valueOf(phoneNumber.charAt(0));
+            if (validNumber.equals("0")) {
+                phoneNumber = phoneNumber.substring(1);
+            }
         }
         String mobileNumber = countryCode + phoneNumber;
         if (mUsernameMode && email.contains("@")) {
@@ -392,7 +396,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         }
 
         showProgressDialog(this);
-Log.d(mobileNumber , "cnasdjcnsadns");
+        Log.d(mobileNumber, "cnasdjcnsadns");
         //Login User with credentials
         xmppConnectionService.loginUserOnWoooo(isLoginWithEmail, email, mobileNumber, password, EditAccountActivity.this);
 
@@ -576,12 +580,8 @@ Log.d(mobileNumber , "cnasdjcnsadns");
         mAccount.setCity(user.city);
         mAccount.setAddress(user.address);
         mAccount.setPostalCode(user.postalCode);
+        mAccount.setLanguage(user.language);
         xmppConnectionService.createAccount(mAccount);
-
-
-        // get Woaa Contacts Api
-        getContactPermission();
-
 
     }
 
@@ -590,7 +590,10 @@ Log.d(mobileNumber , "cnasdjcnsadns");
             SoftKeyboardUtils.hideSoftKeyboard(EditAccountActivity.this);
             final Intent intent;
             final XmppConnection connection = mAccount.getXmppConnection();
-
+            if (mInitMode) {
+                // get Woaa Contacts Api
+                getContactsFromServer();
+            }
             String displayName = mAccount.getFirstName().concat(" " + mAccount.getLastName());
 
             updateDisplayName(displayName);
@@ -833,6 +836,10 @@ Log.d(mobileNumber , "cnasdjcnsadns");
 //            }
 //        });
 
+        if (!hasPermissions(PERMISSIONS)) {
+            ActivityCompat.requestPermissions((Activity) context, PERMISSIONS, REQUEST_CODE_READ_CONTACTS);
+        }
+
     }
 
 
@@ -897,27 +904,18 @@ Log.d(mobileNumber , "cnasdjcnsadns");
                 contactsFromPhoneBook[i] = number;
                 i++;
             }
+            Log.d(TAG, "Phone Book Contacts Count : " + contactsFromPhoneBook.length);
         }
-        GetWooContactsRequestParams getWooContactsRequestParams = new GetWooContactsRequestParams();
-
-        Log.d(TAG, "Phone Book Contacts Count : " + contactsFromPhoneBook.length);
-
-        for(String number:contactsFromPhoneBook){
-            Log.d(TAG,"NUMBER : " +number);
-        }
-
-        getWooContactsRequestParams.number = contactsFromPhoneBook;
-        String uId = "";
-        if (mAccount.getAccountId().isEmpty()) {
-            uId = "";
-        } else {
-            uId = mAccount.getAccountId();
-        }
-        getWooContactsRequestParams.accountId = uId;
-        xmppConnectionService.getWooContacts(getWooContactsRequestParams, EditAccountActivity.this);
-        Log.d(TAG, "iwejfpiscpsaomcpSC" + uId);
     }
 
+
+    void getContactsFromServer() {
+        getContactListFromPhoneBook();
+        GetWooContactsRequestParams getWooContactsRequestParams = new GetWooContactsRequestParams();
+        getWooContactsRequestParams.number = contactsFromPhoneBook;
+        getWooContactsRequestParams.accountId = mAccount.getAccountId();
+        xmppConnectionService.getWooContacts(getWooContactsRequestParams, EditAccountActivity.this);
+    }
 
     private Cursor getContactsCursor() {
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
@@ -1093,7 +1091,6 @@ Log.d(mobileNumber , "cnasdjcnsadns");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             for (String permission : permissions) {
                 if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-
                     return false;
                 }
             }
@@ -1900,7 +1897,7 @@ Log.d(mobileNumber , "cnasdjcnsadns");
 
 //        if (Build.VERSION.SDK_INT >= 23) {
         if (!hasPermissions(PERMISSIONS)) {
-            ActivityCompat.requestPermissions((Activity) context, PERMISSIONS, REQUEST);
+            ActivityCompat.requestPermissions((Activity) context, PERMISSIONS, REQUEST_CODE_READ_CONTACTS);
         } else {
 
             getContactListFromPhoneBook();
@@ -1923,6 +1920,23 @@ Log.d(mobileNumber , "cnasdjcnsadns");
 //        } else {
 //            getContactList();
 //        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_CODE_READ_CONTACTS) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                getContactListFromPhoneBook();
+
+
+            } else {
+                // The user denied the permission.
+                // ...
+            }
+        }
     }
 
     @Override
