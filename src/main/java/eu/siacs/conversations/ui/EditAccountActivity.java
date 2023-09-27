@@ -335,15 +335,13 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
         final String password = binding.accountPassword.getText().toString();
         final String email = binding.accountJid.getText().toString();
-        final String phoneNumber = binding.phoneNumberField.getText().toString();
+         String phoneNumber = binding.phoneNumberField.getText().toString();
         final String countryCode = binding.countryCodetv.getText().toString();
-
-        Log.d(TAG, "CountryCode : " + countryCode);
-        Log.d(TAG, "Phone : " + phoneNumber);
-
+        String validNumber = String.valueOf(phoneNumber.charAt(0));
+        if (validNumber.equals("0")) {
+            phoneNumber = phoneNumber.substring(1);
+        }
         String mobileNumber = countryCode + phoneNumber;
-        Log.d(TAG, "Mobile Number : " + mobileNumber);
-        Log.d(TAG, "isLoginWithEmail : " + isLoginWithEmail);
         if (mUsernameMode && email.contains("@")) {
             binding.accountJidLayout.setError(getString(R.string.invalid_username));
             removeErrorsOnAllBut(binding.accountJidLayout);
@@ -391,7 +389,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         }
 
         showProgressDialog(this);
-
+Log.d(mobileNumber , "cnasdjcnsadns");
         //Login User with credentials
         xmppConnectionService.loginUserOnWoooo(isLoginWithEmail, email, mobileNumber, password, EditAccountActivity.this);
 
@@ -845,7 +843,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
             if (mAccount != null) {
 
-                Log.d(TAG,"AVATAR URL : "+mAccount.getAvatar());
+                Log.d(TAG, "AVATAR URL : " + mAccount.getAvatar());
                 binding.aboutEt.setText(mAccount.getDescription());
                 binding.firstNameEt.setText(mAccount.getFirstName());
                 binding.lastNameEt.setText(mAccount.getLastName());
@@ -990,14 +988,13 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         user.setPostalCode(mAccount.getPostalCode());
         user.setImageURL(mAccount.getAvatar());
 
-        Log.d(TAG,user.getAccountId());
-        Log.d(TAG,user.getDescription());
-        Log.d(TAG,user.getFirstName());
-        Log.d(TAG,user.getLastName());
+        Log.d(TAG, user.getAccountId());
+        Log.d(TAG, user.getDescription());
+        Log.d(TAG, user.getFirstName());
+        Log.d(TAG, user.getLastName());
 
         showProgressDialog(EditAccountActivity.this);
-        xmppConnectionService.updateProfile(user,EditAccountActivity.this);
-
+        xmppConnectionService.updateProfile(user, EditAccountActivity.this);
 
 
     }
