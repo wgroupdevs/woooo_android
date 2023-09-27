@@ -44,31 +44,192 @@
             android:elevation="10sp"
             />
 
-        <ImageButton
-            android:id="@+id/meetingButtonEnd"
-            android:layout_width="100sp"
-            android:layout_height="50sp"
-            android:src="@drawable/ic_call_end_white_48dp"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:foregroundGravity="center"
-            android:layout_margin="25sp"
-            android:background="@drawable/bg_button_end_meeting"
-            android:elevation="10sp"
-            />
+            android:background="@color/blue_primary300"
+            android:padding="10sp"
+            android:gravity="center_horizontal"
+            android:weightSum="5"
+            >
 
-        <com.woooapp.meeting.impl.views.MeView
-            android:id="@+id/meView"
-            android:layout_width="120sp"
-            android:layout_height="200sp"
-            android:background="@drawable/bg_me_peer"
-            android:padding="5sp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="25sp"
-            android:layout_marginBottom="80sp"
-            android:elevation="10sp"
-            />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                >
+
+                <ImageButton
+                    android:id="@+id/meetingButtonStopVideo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_video_camera_white"
+                    android:background="@android:color/transparent"
+                    android:foreground="?attr/selectableItemBackground"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Stop Video"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                >
+
+                <ImageButton
+                    android:id="@+id/meetingButtonMute"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/baseline_mic_34"
+                    android:background="@android:color/transparent"
+                    android:foreground="?attr/selectableItemBackground"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mute"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/meetingButtonLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_weight="1"
+                >
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/meetingButtonEnd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#ff0000"
+                    android:src="@drawable/ic_end_call_white"
+                    android:elevation="10sp"
+                    app:backgroundTint="#ff0000"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="End Call"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                >
+
+                <ImageButton
+                    android:id="@+id/meetingButtonCC"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_cc_white"
+                    android:background="@android:color/transparent"
+                    android:foreground="?attr/selectableItemBackground"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Transcript"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_gravity="bottom"
+                android:layout_weight="1"
+                >
+
+                <ImageButton
+                    android:id="@+id/meetingButtonMore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_more_horiz_white_34"
+                    android:background="@android:color/transparent"
+                    android:foreground="?attr/selectableItemBackground"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="More"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+<!--        <ImageButton-->
+<!--            android:id="@+id/meetingButtonEnd"-->
+<!--            android:layout_width="100sp"-->
+<!--            android:layout_height="50sp"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_centerHorizontal="true"-->
+<!--            android:layout_marginStart="25sp"-->
+<!--            android:layout_marginTop="25sp"-->
+<!--            android:layout_marginEnd="25sp"-->
+<!--            android:layout_marginBottom="25sp"-->
+<!--            android:background="@drawable/bg_button_end_meeting"-->
+<!--            android:elevation="10sp"-->
+<!--            android:foregroundGravity="center"-->
+<!--            android:src="@drawable/ic_call_end_white_48dp" />-->
+
+<!--        <com.woooapp.meeting.impl.views.MeView-->
+<!--            android:id="@+id/meView"-->
+<!--            android:layout_width="120sp"-->
+<!--            android:layout_height="200sp"-->
+<!--            android:background="@drawable/bg_me_peer"-->
+<!--            android:padding="5sp"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_alignParentRight="true"-->
+<!--            android:layout_marginRight="25sp"-->
+<!--            android:layout_marginBottom="80sp"-->
+<!--            android:elevation="10sp"-->
+<!--            />-->
 
     </RelativeLayout>
 

@@ -19,7 +19,6 @@ public class Peer extends Info {
     private String mId;
     private String mDisplayName;
     private DeviceInfo mDevice;
-
     private Set<String> mConsumers;
     private Set<String> mDataConsumers;
 

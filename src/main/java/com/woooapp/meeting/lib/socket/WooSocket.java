@@ -87,6 +87,8 @@ public class WooSocket {
     private String mProducerSockId;
     private final Set<String> producerSockIds = new HashSet<>();
     private final Set<String> consumeBackDeviceUUIDs = new HashSet<>();
+    private boolean destroyed = false;
+
     /**
      *
      * @param context
@@ -136,70 +138,92 @@ public class WooSocket {
     }
 
     @WorkerThread
-    public void disconnect() {
+    public boolean disconnect() {
         // Say Bye
         emitClose();
         if (mSocket != null && mSocket.isActive()) {
-            Log.d(TAG, "Releasing Mic & Camera");
-            mMainHandler.post(this::disableMic);
-            mMainHandler.post(this::disableCam);
-            mWorkHandler.post(() -> {
-                disposeTransport();
+            if (disposeCamMic()) {
+                mWorkHandler.post(() -> {
+                    // Remove the peer
+                    mStore.removePeer(mProducerSockId);
 
-                // Dispose everything
-                this.mPeerConnectionUtils.dispose();
+                    if (disposeTransport()) {
+                        Log.d(TAG, "Transport Disposed >>");
+                        // Dispose everything
+                        this.mPeerConnectionUtils.dispose();
 
-                // dispose audio track.
-                if (mLocalAudioTrack != null) {
-                    mLocalAudioTrack.setEnabled(false);
-                    mLocalAudioTrack.dispose();
-                    mLocalAudioTrack = null;
-                }
+                        // dispose audio track.
+                        if (mLocalAudioTrack != null) {
+                            mLocalAudioTrack.setEnabled(false);
+                            mLocalAudioTrack.dispose();
+                            mLocalAudioTrack = null;
+                        }
 
-                // dispose video track.
-                if (mLocalVideoTrack != null) {
-                    mLocalVideoTrack.setEnabled(false);
-                    mLocalVideoTrack.dispose();
-                    mLocalVideoTrack = null;
-                }
-            });
+                        // dispose video track.
+                        if (mLocalVideoTrack != null) {
+                            mLocalVideoTrack.setEnabled(false);
+                            mLocalVideoTrack.dispose();
+                            mLocalVideoTrack = null;
+                        }
 
-            mMainHandler.post(Logger::freeHandler);
-            this.audioProducersIds.clear();
-            this.videoProducerId = null;
+                        mMainHandler.post(Logger::freeHandler);
+                        this.audioProducersIds.clear();
+                        this.videoProducerId = null;
 
-            // Close socket
-            mWorkHandler.post(() -> {
-                mSocket.disconnect();
-                mSocketId = null;
-                mConnected = false;
-            });
+                        // Close socket
+//                    mWorkHandler.post(() -> {
+                        mSocket.disconnect();
+                        mSocketId = null;
+                        mConnected = false;
+//                    });
 
-            // Say Bye Bye
-            WooEvents.getInstance().notify(WooEvents.EVENT_TYPE_SOCKET_DISCONNECTED, mSocketId);
+                        // Say Bye Bye
+                        WooEvents.getInstance().notify(WooEvents.EVENT_TYPE_SOCKET_DISCONNECTED, mSocketId);
 
-            sInstance = null;
-            // Deliberate call to GC
-            Runtime.getRuntime().gc();
-            Log.d(TAG, "<< Socket Disconnected ! >>");
+                        destroyed = true;
+                        sInstance = null;
+                        // Deliberate call to GC
+                        Runtime.getRuntime().gc();
+                        Log.d(TAG, "<< Socket Disconnected! >>");
+                    }
+                });
+            }
         }
+        return destroyed;
     }
 
-    private void disposeTransport() {
+    private boolean disposeCamMic() {
+        // Disabling mic and cam
+        mMainHandler.post(this::disableMic);
+        mMainHandler.post(this::disableCam);
+        Log.d(TAG, "Mic & Camera Released ... >>");
+        return true;
+    }
+
+    private boolean disposeTransport() {
         if (mSendTransport != null) {
             mSendTransport.close();
             mSendTransport.dispose();
             mSendTransport = null;
         }
-        if (mRecvTransport != null) {
-            mRecvTransport.close();
-            mRecvTransport.dispose();
-            mRecvTransport = null;
+//        if (mRecvTransport != null) {
+//            mRecvTransport.close();
+//            mRecvTransport.dispose();
+//            mRecvTransport = null;
+//        }
+        Log.d(TAG, "<< Clearing RecvTransport Map with size >> " + mRecvTransports.size());
+        for (Map.Entry<String, RecvTransport> entry : mRecvTransports.entrySet()) {
+            Log.d(TAG, "<< Closing and Disposing Recv Transport >> [" + entry.getValue().getId() + "]");
+            entry.getValue().close();
+            entry.getValue().dispose();
         }
+        Log.d(TAG, "<< Clearing all Recv Transports >>");
+        mRecvTransports.clear();
         if (mMediaSoupDevice != null) {
             mMediaSoupDevice.dispose();
             mMediaSoupDevice = null;
         }
+        return true;
     }
 
     /**
@@ -345,14 +369,37 @@ public class WooSocket {
                     String producerId = obj.getString("producerId");
                     String storageId = obj.getString("storageId");
 
-                    mRecvTransport = mMediaSoupDevice.createRecvTransport(
-                            recvListener,
+                    RecvTransport recvTransport = mMediaSoupDevice.createRecvTransport(
+                            new RecvTransport.Listener() {
+                                @Override
+                                public void onConnect(Transport transport, String dtlsParameters) {
+                                    Log.d(TAG, "<<< RecvTransport.Listener#onConnect() >>>");
+                                    Log.d(TAG, "RecvTransport.Listener#onConnect() dtlsParametes -> " + dtlsParameters);
+                                    try {
+                                        emitConsumeTransportConnect(dtlsParameters);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    mSocket.on("consumerTransportConnected", args -> {
+                                        Log.d(TAG, " << CONSUMER TRANSPORT CONNECTED >>");
+                                        if (args != null) {
+                                            Log.d(TAG, "CONSUMER TRANSPORT CONNECTED >> " + args[0]);
+                                        }
+                                        // callback();
+                                    });
+                                }
+
+                                @Override
+                                public void onConnectionStateChange(Transport transport, String connectionState) {
+                                    Log.d(TAG, "<<< RecvTransport.Listener#onConnectionStateChanged() >>>");
+                                }
+                            },
                             id,
                             iceParameters.toString(),
                             iceCandidates.toString(),
                             dtlsParameters.toString());
-
-                    Log.d(TAG, "<<< Creating Recv Transport (RX) >>>");
+                    mRecvTransports.put(storageId, recvTransport);
+                    Log.d(TAG, "<<< Created Recv Transport (RX) >>>");
                     Log.d(TAG, "Ice Parameters >> " + iceParameters);
                     Log.d(TAG, "Ice Candidates >> " + iceCandidates);
                     Log.d(TAG, "DTLS Parameters >> " + dtlsParameters);
@@ -397,7 +444,8 @@ public class WooSocket {
                     });
                     // TODO End Mark
 
-                    Consumer consumer = mRecvTransport
+                    RecvTransport recvTransport = mRecvTransports.get(storageId);
+                    Consumer consumer = recvTransport
                             .consume(
                                     consumer1 -> mMeetingClient.getConsumers().remove(consumer1.getId()),
                                     id,
@@ -457,7 +505,7 @@ public class WooSocket {
                     String storageId = obj.getString("storageId");
                     String producerSockId = obj.getString("producerSockId");
 
-                    mRecvTransport = mMediaSoupDevice.createRecvTransport(new RecvTransport.Listener() {
+                    RecvTransport recvTransport = mMediaSoupDevice.createRecvTransport(new RecvTransport.Listener() {
                         @Override
                         public void onConnect(Transport transport, String dtlsParameters) {
                             Log.d(TAG, "RecvTransport#onConnect() >> dtlsParameters > " + dtlsParameters);
@@ -481,6 +529,7 @@ public class WooSocket {
                             iceParameters.toString(),
                             iceCandidates.toString(),
                             dtlsParameters.toString());
+                    mRecvTransports.put(storageId, recvTransport);
 
                     emitStartConsumingBack(producerId, producerSockId);
                 } catch (JSONException | MediasoupException e) {
@@ -518,7 +567,8 @@ public class WooSocket {
                     });
                     // TODO End Mark
 
-                    Consumer consumer = mRecvTransport
+                    RecvTransport recvTransport = mRecvTransports.get(storageId);
+                    Consumer consumer = recvTransport
                             .consume(
                                     consumer1 -> mMeetingClient.getConsumers().remove(consumer1.getId()),
                                     id,
@@ -825,30 +875,30 @@ public class WooSocket {
     };
 
     // Recv Transport Listener
-    private RecvTransport.Listener recvListener = new RecvTransport.Listener() {
-        @Override
-        public void onConnect(Transport transport, String dtlsParameters) {
-            Log.d(TAG, "<<< RecvTransport.Listener#onConnect() >>>");
-            Log.d(TAG, "RecvTransport.Listener#onConnect() dtlsParametes -> " + dtlsParameters);
-            try {
-                emitConsumeTransportConnect(dtlsParameters);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            mSocket.on("consumerTransportConnected", args -> {
-               Log.d(TAG, " << CONSUMER TRANSPORT CONNECTED >>");
-               if (args != null) {
-                   Log.d(TAG, "CONSUMER TRANSPORT CONNECTED >> " + args[0]);
-               }
-               // callback();
-            });
-        }
-
-        @Override
-        public void onConnectionStateChange(Transport transport, String connectionState) {
-            Log.d(TAG, "<<< RecvTransport.Listener#onConnectionStateChanged() >>>");
-        }
-    };
+//    private RecvTransport.Listener recvListener = new RecvTransport.Listener() {
+//        @Override
+//        public void onConnect(Transport transport, String dtlsParameters) {
+//            Log.d(TAG, "<<< RecvTransport.Listener#onConnect() >>>");
+//            Log.d(TAG, "RecvTransport.Listener#onConnect() dtlsParametes -> " + dtlsParameters);
+//            try {
+//                emitConsumeTransportConnect(dtlsParameters);
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//            mSocket.on("consumerTransportConnected", args -> {
+//               Log.d(TAG, " << CONSUMER TRANSPORT CONNECTED >>");
+//               if (args != null) {
+//                   Log.d(TAG, "CONSUMER TRANSPORT CONNECTED >> " + args[0]);
+//               }
+//               // callback();
+//            });
+//        }
+//
+//        @Override
+//        public void onConnectionStateChange(Transport transport, String connectionState) {
+//            Log.d(TAG, "<<< RecvTransport.Listener#onConnectionStateChanged() >>>");
+//        }
+//    };
 
     @Async
     public void enableMic() {

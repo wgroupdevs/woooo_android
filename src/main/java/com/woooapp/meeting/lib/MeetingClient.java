@@ -24,28 +24,19 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created on 16/09/2023 at 1:21 am
  */
 public class MeetingClient {
-
     private static final String TAG = MeetingClient.class.getCanonicalName().toUpperCase(Locale.ROOT);
-
     private final Context mContext;
     private final Handler mWorkerHandler;
-
     private WooSocket mSocket;
-
     private boolean mStarted = false;
     private final RoomStore mRoomStore;
-
     @NonNull final Map<String, ConsumerHolder> mConsumers;
     @NonNull final Map<String, DataConsumerHolder> mDataConsumers;
-
     private final String mMeetingId;
-
     private String username;
-
     private String email;
     private String accountUniqueId;
     private String picture;
-
     public enum ConnectionState {
         // initial state.
         NEW,
@@ -157,7 +148,7 @@ public class MeetingClient {
                mSocket.disconnect();
                mSocket = null;
                mStarted = false;
-               mWorkerHandler.getLooper().quit();
+//               mWorkerHandler.getLooper().quit();
             });
         }
     }

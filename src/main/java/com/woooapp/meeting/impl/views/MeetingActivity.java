@@ -22,12 +22,13 @@ import com.android.volley.VolleyError;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.android.material.snackbar.Snackbar;
 import com.woogroup.woooo_app.woooo.di.WooApplication;
+import com.woooapp.meeting.device.Display;
 import com.woooapp.meeting.impl.utils.WooEvents;
 import com.woooapp.meeting.impl.views.adapters.MeetingGridAdapter;
 import com.woooapp.meeting.impl.views.adapters.ScreenPagerAdapter;
+import com.woooapp.meeting.impl.views.models.GridPeer;
 import com.woooapp.meeting.impl.vm.EdiasProps;
 import com.woooapp.meeting.impl.vm.MeProps;
-import com.woooapp.meeting.impl.vm.PeerProps;
 import com.woooapp.meeting.impl.vm.RoomProps;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.RoomOptions;
@@ -47,7 +48,6 @@ import java.util.List;
 import java.util.Locale;
 
 import eu.siacs.conversations.R;
-import eu.siacs.conversations.databinding.ActivityMeetBinding;
 import eu.siacs.conversations.databinding.ActivityMeetingBinding;
 import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel;
 
@@ -91,7 +91,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private Peer mPeer;
     private MeetingGridAdapter peerGridAdapter;
     private List<Peer> peersList = new ArrayList<>();
+    private List<GridPeer> gridPeerList = new ArrayList<>();
     private final Handler callbackHandler = new Handler(this);
+    private int deviceWidthDp;
+    private int deviceHeightDp;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -101,7 +104,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
         WooEvents.getInstance().addHandler(callbackHandler);
 
-        mBinding.meetingButtonEnd.setVisibility(View.GONE);
+        deviceWidthDp = Display.getDisplayWidth(this) - 50;
+        deviceHeightDp = Display.getDisplayHeight(this);
+
+        mBinding.meetingButtonLayout.setVisibility(View.GONE);
 
         pd = new ProgressDialog(this);
         pd.setMessage("Setting up ...");
@@ -280,14 +286,14 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         mBinding.tvMeetingId.setText(mMeetingId);
 
         // ME
-        MeProps meProps = new ViewModelProvider(this, factory).get(MeProps.class);
-        meProps.connect(this);
-
-        mBinding.meView.setProps(meProps, mMeetingClient);
+//        MeProps meProps = new ViewModelProvider(this, factory).get(MeProps.class);
+//        meProps.connect(this);
+//        mBinding.meView.setProps(meProps, mMeetingClient);
 
         // PeerView
         peerGridAdapter = new MeetingGridAdapter(this, this, mRoomStore, mMeetingClient);
         mBinding.gridViewMeeting.setAdapter(peerGridAdapter);
+        mBinding.gridViewMeeting.setEnabled(false);
 //        PeerProps peerProps = new PeerProps(getApplication(), mRoomStore);
 
         mRoomStore
@@ -296,6 +302,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                         this,
                         peers -> {
                             peersList = peers.getAllPeers();
+                            gridPeerList = createGridPeers(peersList);
                             Log.d(TAG, "Peer list size[" + peersList.size() + "]");
                             if (peersList.isEmpty()) {
 //                                mBinding.peerView.setVisibility(View.GONE);
@@ -312,8 +319,30 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 //                                    mBinding.peerView.setProps(peerProps, mMeetingClient);
                                 }
                             }
-                            peerGridAdapter.replacePeers(peersList);
+                            if (peersList.size() < 2) {
+                                mBinding.gridViewMeeting.setNumColumns(1);
+                                mBinding.gridViewMeeting.setColumnWidth(deviceWidthDp);
+                            } else if (peersList.size() > 1 && peersList.size() < 5) {
+                                mBinding.gridViewMeeting.setNumColumns(2);
+                                mBinding.gridViewMeeting.setColumnWidth((deviceWidthDp / 2));
+                            }
+                            peerGridAdapter.replacePeers(gridPeerList);
                         });
+    }
+
+    /**
+     *
+     * @param peerList
+     * @return
+     */
+    private List<GridPeer> createGridPeers(List<Peer> peerList) {
+        gridPeerList.clear();
+        List<GridPeer> peers = new LinkedList<>();
+        peers.add(new GridPeer(GridPeer.VIEW_TYPE_ME, null));
+        for (Peer p : peerList) {
+            peers.add(new GridPeer(GridPeer.VIEW_TYPE_PEER, p));
+        }
+        return peers;
     }
 
     private void dismissProgressDialog() {
@@ -372,7 +401,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         if (mRoomStore != null) {
             mRoomStore = null;
         }
-        mBinding.meView.dispose();
+//        mBinding.meView.dispose();
         // TODO Mark check
 //        mBinding.peerView.dispose();
     }
@@ -383,7 +412,8 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             case WooEvents.EVENT_TYPE_SOCKET_ID:
                 Log.d(TAG, "<< Handler Event SOCKET_ID Received >> " + msg.obj);
                 runOnUiThread(() -> {
-                    mBinding.meetingButtonEnd.setVisibility(View.VISIBLE);
+                    mBinding.meetingButtonLayout.setVisibility(View.VISIBLE);
+                    mBinding.meetingButtonEnd.show();
                 });
                 return true;
             case WooEvents.EVENT_TYPE_PRODUCER_CREATED:
@@ -396,24 +426,29 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     }
                 }
                 runOnUiThread(() -> {
-                    Snackbar.make(mBinding.meetingButtonEnd, "Room Created " + mMeetingClient.getMeetingId(), Snackbar.LENGTH_LONG).show();
+                    String txt = "New Meeting Started ";
+                    if (joining) {
+                        txt = "Joined Meeting ";
+                    }
+                    Snackbar.make(mBinding.meetingButtonEnd, txt + mMeetingClient.getMeetingId(), Snackbar.LENGTH_LONG).show();
+                    mBinding.tvMeetingId.setVisibility(View.GONE);
                 });
                 return true;
             case WooEvents.EVENT_TYPE_CONSUMER_CREATED:
                 Log.d(TAG, "<< Handler Event CONSUMER CREATED [" + msg.obj + "]");
                 return true;
             case WooEvents.EVENT_TYPE_CONSUME_BACK_CREATED:
-                Log.d(TAG, "<< Handler Event CONUME BACK CREATED [" + msg.obj + "]");
+                Log.d(TAG, "<< Handler Event CONSUME BACK CREATED [" + msg.obj + "]");
                 return true;
             case WooEvents.EVENT_TYPE_PEER_DISCONNECTED:
                 Log.d(TAG, "<< Handler Event Peer Disconnected with socket id >> " + msg.obj);
+                return true;
+            case WooEvents.EVENT_TYPE_SOCKET_DISCONNECTED:
+                Log.d(TAG, "<< Handler Event Socket disconnected with socket id: [" + msg.obj + "]");
                 if (peersList.isEmpty()) {
                     // Destroy and finish()
                     onBackPressed();
                 }
-                return true;
-            case WooEvents.EVENT_TYPE_SOCKET_DISCONNECTED:
-                Log.d(TAG, "<< Handler Event Socket disconnected with socket id: [" + msg.obj + "]");
                 return true;
             default:
                 return false;
@@ -428,10 +463,12 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
     @Override
     public void onBackPressed() {
-        WooEvents.getInstance().removeHandler(callbackHandler);
-        destroyMeeting();
-        super.onBackPressed();
-        finish();
+        new Handler().postDelayed(() -> {
+            WooEvents.getInstance().removeHandler(callbackHandler);
+            destroyMeeting();
+            super.onBackPressed();
+            finish();
+        }, 5000);
     }
 
 } // end class

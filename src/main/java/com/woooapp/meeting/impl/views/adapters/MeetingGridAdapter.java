@@ -1,16 +1,22 @@
 package com.woooapp.meeting.impl.views.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LifecycleOwner;
 
+import com.woooapp.meeting.device.Display;
+import com.woooapp.meeting.impl.views.MeView;
 import com.woooapp.meeting.impl.views.PeerView;
+import com.woooapp.meeting.impl.views.models.GridPeer;
+import com.woooapp.meeting.impl.vm.MeProps;
 import com.woooapp.meeting.impl.vm.PeerProps;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.lv.RoomStore;
@@ -28,8 +34,9 @@ import eu.siacs.conversations.R;
  */
 public class MeetingGridAdapter extends BaseAdapter {
 
+    private static final String TAG = MeetingGridAdapter.class.getSimpleName() + ".java";
     private Context mContext;
-    private List<Peer> mPeers = new LinkedList<>();
+    private List<GridPeer> mPeers = new LinkedList<>();
     private RoomStore mStore;
     private MeetingClient mMeetingClient;
     private final LifecycleOwner mLifecycleOwner;
@@ -68,34 +75,93 @@ public class MeetingGridAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder vh = null;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.grid_cell_peer_view, null);
-            vh = new ViewHolder();
-            convertView.setTag(vh);
-        } else {
-            vh = (ViewHolder) convertView.getTag();
-        }
+    public int getViewTypeCount() {
+        return 2;
+    }
 
-        vh.mPeerView = (PeerView) convertView.findViewById(R.id.remotePeerView);
-        Peer peer = (Peer) getItem(position);
-        PeerProps peerProps = new PeerProps(((AppCompatActivity) mContext).getApplication(), mStore);
-        peerProps.connect(mLifecycleOwner, peer.getId());
-        vh.mPeerView.setProps(peerProps, mMeetingClient);
-        return convertView;
+    @Override
+    public int getItemViewType(int position) {
+        return mPeers.get(position).getViewType();
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        switch (getItemViewType(position)) {
+            case GridPeer.VIEW_TYPE_ME:
+                MeViewHolder mVh = null;
+                if (convertView == null) {
+                    convertView = LayoutInflater.from(mContext).inflate(R.layout.grid_cell_me_view, null);
+                    mVh = new MeViewHolder();
+                    convertView.setTag(mVh);
+                } else {
+                    mVh = (MeViewHolder) convertView.getTag();
+                }
+                mVh.mMeView = convertView.findViewById(R.id.meView);
+
+                setViewHeight(convertView);
+
+                MeProps meProps = new MeProps(((AppCompatActivity) mContext).getApplication(), mStore);
+                meProps.connect(mLifecycleOwner);
+                mVh.mMeView.setProps(meProps, mMeetingClient);
+
+                return convertView;
+            default:
+                PeerViewHolder vh = null;
+                if (convertView == null) {
+                    convertView = LayoutInflater.from(mContext).inflate(R.layout.grid_cell_peer_view, null);
+                    vh = new PeerViewHolder();
+                    convertView.setTag(vh);
+                } else {
+                    vh = (PeerViewHolder) convertView.getTag();
+                }
+
+                vh.mPeerView = convertView.findViewById(R.id.remotePeerView);
+
+                setViewHeight(convertView);
+
+                Peer peer = ((GridPeer) getItem(position)).getPeer();
+                PeerProps peerProps = new PeerProps(((AppCompatActivity) mContext).getApplication(), mStore);
+                peerProps.connect(mLifecycleOwner, peer.getId());
+                vh.mPeerView.setProps(peerProps, mMeetingClient);
+                return convertView;
+        }
+    }
+
+    /**
+     *
+     * @param view
+     * @return
+     */
+    private boolean setViewHeight(@NonNull final View view) {
+        int height = Display.getDisplayHeight(mContext) - 50;
+        if (mPeers.size() > 1 && mPeers.size() < 3) {
+            height = height / 2 - 50;
+        } else if (mPeers.size() > 2 && mPeers.size() < 5) {
+            height = height / 2 - 50;
+        }
+        if (view.getLayoutParams() != null) {
+            Log.d(TAG, "<< Convert view layout params not null >>");
+            view.getLayoutParams().height = height;
+            view.invalidate();
+            return true;
+        }
+        return false;
     }
 
     /**
      *
      * @param peers
      */
-    public void replacePeers(List<Peer> peers) {
+    public void replacePeers(List<GridPeer> peers) {
         this.mPeers = peers;
         notifyDataSetChanged();
     }
 
-    static class ViewHolder {
+    static class MeViewHolder {
+        MeView mMeView;
+    } // end class
+
+    static class PeerViewHolder {
         PeerView mPeerView;
     } // end class
 
