@@ -44,7 +44,6 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import eu.siacs.conversations.ui.MainActivity
 import kotlinx.coroutines.launch
 import woooo_app.woooo.destinations.SignUpScreenDestination
 import woooo_app.woooo.feature.home.ui.AppDrawer
@@ -117,7 +116,7 @@ fun HomePage(navigator: DestinationsNavigator) {
                         VerticalSpacer()
                         //Name Text
                         Text(
-                            text = "Hi, ${MainActivity.homeViewModel?.displayname?.value}",
+                            text = "Hi,",
                             modifier = Modifier
                                 .align(
                                     alignment = Alignment.Start

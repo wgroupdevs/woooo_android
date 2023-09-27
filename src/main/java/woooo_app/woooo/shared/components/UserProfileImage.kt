@@ -16,11 +16,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import eu.siacs.conversations.R
-import eu.siacs.conversations.ui.MainActivity
 
 @Composable
 fun UserProfileImage(size: Dp,onClick: () -> Unit) {
-    val url = MainActivity.homeViewModel?.avatar?.value
+    val url = ""
     val painter = rememberAsyncImagePainter(url)
     Box(
         Modifier

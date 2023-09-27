@@ -51,7 +51,6 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
@@ -111,7 +110,7 @@ import eu.siacs.conversations.entities.ReadByMarker;
 import eu.siacs.conversations.entities.Transferable;
 import eu.siacs.conversations.entities.TransferablePlaceholder;
 import eu.siacs.conversations.http.HttpDownloadConnection;
-import eu.siacs.conversations.http.model.Language;
+import eu.siacs.conversations.http.model.LanguageModel;
 import eu.siacs.conversations.http.model.TextTranslateApiResponse;
 import eu.siacs.conversations.http.model.TextTranslateModel;
 import eu.siacs.conversations.http.model.UpdateUserLanguageModel;
@@ -121,6 +120,7 @@ import eu.siacs.conversations.persistance.FileBackend;
 import eu.siacs.conversations.services.MessageArchiveService;
 import eu.siacs.conversations.services.QuickConversationsService;
 import eu.siacs.conversations.services.XmppConnectionService;
+import eu.siacs.conversations.ui.adapter.LanguageAdapter;
 import eu.siacs.conversations.ui.adapter.MediaPreviewAdapter;
 import eu.siacs.conversations.ui.adapter.MessageAdapter;
 import eu.siacs.conversations.ui.util.ActivityResult;
@@ -211,7 +211,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     private ProgressDialog progressDialog;
 
 
-    Language currentChatLanguage;
+    LanguageModel currentChatLanguage;
 
     List langaugeList = Arrays.asList("Urdu", "English", "Japanies");
 
@@ -1529,11 +1529,16 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         // Inflate the custom layout
         LayoutInflater inflater = LayoutInflater.from(context);
         View customView = inflater.inflate(R.layout.language_dialog, null);
+        ArrayList<LanguageModel> languageList = parseJSON(context);
+
         ListView languagesListView;
         languagesListView = customView.findViewById(R.id.languagesListView);
-        ArrayList<Language> languageList = parseJSON(context);
-        ArrayAdapter<Language> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, languageList);
-        languagesListView.setAdapter(adapter);
+         LanguageAdapter languageAdapter=new LanguageAdapter(getActivity(),languageList,conversation.getAccount());
+
+//        ArrayAdapter<Language> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, languageList);
+
+
+        languagesListView.setAdapter(languageAdapter);
         // Set the custom layout to the dialog
         alertDialogBuilder.setView(customView);
 
@@ -1551,7 +1556,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         languagesListView.setOnItemClickListener((parent, view, position, id) -> {
             try {
 
-                currentChatLanguage = new Language(languageList.get(position).code, languageList.get(position).name);
+                currentChatLanguage = new LanguageModel(languageList.get(position).code, languageList.get(position).name);
                 updateUserLanguage(languageList.get(position).name, languageList.get(position).code);
                 alertDialog.hide();
             } catch (Exception e) {
@@ -1603,8 +1608,8 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     }
 
 
-    private static ArrayList<Language> parseJSON(Context context) {
-        ArrayList<Language> languageList = new ArrayList<>();
+    private static ArrayList<LanguageModel> parseJSON(Context context) {
+        ArrayList<LanguageModel> languageList = new ArrayList<>();
         try {
             AssetManager assetManager = context.getAssets();
             InputStream inputStream = assetManager.open("languages.json");
@@ -1621,7 +1626,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
                 JSONObject languageObject = languagesArray.getJSONObject(i);
                 String code = languageObject.getString("code");
                 String name = languageObject.getString("name");
-                Language language = new Language(code, name);
+                LanguageModel language = new LanguageModel(code, name);
                 languageList.add(language);
                 Log.d(String.valueOf(+languageList.size()), "qwdqwdqwdqw");
             }

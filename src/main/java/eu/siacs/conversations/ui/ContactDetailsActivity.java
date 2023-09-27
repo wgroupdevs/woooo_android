@@ -10,7 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract.CommonDataKinds;
+import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Intents;
 import android.text.Spannable;
@@ -63,7 +63,6 @@ import eu.siacs.conversations.ui.util.MenuDoubleTabUtil;
 import eu.siacs.conversations.utils.AccountUtils;
 import eu.siacs.conversations.utils.Compatibility;
 import eu.siacs.conversations.utils.Emoticons;
-import eu.siacs.conversations.utils.PhoneNumberUtilWrapper;
 import eu.siacs.conversations.utils.UIHelper;
 import eu.siacs.conversations.utils.XmppUri;
 import eu.siacs.conversations.xml.Namespace;
@@ -74,6 +73,7 @@ import eu.siacs.conversations.xmpp.XmppConnection;
 
 public class ContactDetailsActivity extends OmemoActivity implements OnAccountUpdate, OnRosterUpdate, OnUpdateBlocklist, OnKeyStatusUpdated, OnMediaLoaded, WooooAPIService.OnGetAccountByJidAPiResult {
     public static final String ACTION_VIEW_CONTACT = "view_contact";
+    public static final String TAG = "ContactDetailsActivity";
     private final int REQUEST_SYNC_CONTACTS = 0x28cf;
     ActivityContactDetailsBinding binding;
     private MediaAdapter mMediaAdapter;
@@ -139,12 +139,8 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
     private void showAddToPhoneBookDialog() {
         final Jid jid = contact.getJid();
         final boolean quicksyContact = AbstractQuickConversationsService.isQuicksy() && Config.QUICKSY_DOMAIN.equals(jid.getDomain()) && jid.getLocal() != null;
-        final String value;
-        if (quicksyContact) {
-            value = PhoneNumberUtilWrapper.toFormattedPhoneNumber(this, jid);
-        } else {
-            value = jid.toEscapedString();
-        }
+        String value;
+        value = jid.toEscapedString().toString().split("@")[0];
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.action_add_phone_book));
         builder.setMessage(getString(R.string.add_phone_book_text, value));
@@ -156,7 +152,7 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
                 intent.putExtra(Intents.Insert.PHONE, value);
             } else {
                 intent.putExtra(Intents.Insert.IM_HANDLE, value);
-                intent.putExtra(Intents.Insert.IM_PROTOCOL, CommonDataKinds.Im.PROTOCOL_JABBER);
+                intent.putExtra(Intents.Insert.IM_PROTOCOL, ContactsContract.CommonDataKinds.Im.PROTOCOL_JABBER);
                 //TODO for modern use we want PROTOCOL_CUSTOM and an extra field with a value of 'XMPP'
                 // however we don’t have such a field and thus have to use the legacy PROTOCOL_JABBER
             }

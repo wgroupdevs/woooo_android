@@ -49,6 +49,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.hbb20.CountryCodePicker;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -65,6 +66,7 @@ import eu.siacs.conversations.crypto.axolotl.XmppAxolotlSession;
 import eu.siacs.conversations.databinding.ActivityEditAccountBinding;
 import eu.siacs.conversations.databinding.DialogPresenceBinding;
 import eu.siacs.conversations.entities.Account;
+import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.Presence;
 import eu.siacs.conversations.entities.PresenceTemplate;
 import eu.siacs.conversations.http.model.GetWooContactsModel;
@@ -576,8 +578,11 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         mAccount.setCity(user.city);
         mAccount.setAddress(user.address);
         mAccount.setPostalCode(user.postalCode);
-
         xmppConnectionService.createAccount(mAccount);
+
+
+        // get Woaa Contacts Api
+        getContactPermission();
 
 
     }
@@ -587,6 +592,15 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             SoftKeyboardUtils.hideSoftKeyboard(EditAccountActivity.this);
             final Intent intent;
             final XmppConnection connection = mAccount.getXmppConnection();
+
+            String displayName = mAccount.getFirstName().concat(" " + mAccount.getLastName());
+
+            updateDisplayName(displayName);
+            mAccount.setDisplayName(displayName);
+            xmppConnectionService.publishDisplayName(mAccount);
+            refreshAvatar();
+
+
             final boolean wasFirstAccount = xmppConnectionService != null && xmppConnectionService.getAccounts().size() == 1;
             if (avatar != null || (connection != null && !connection.getFeatures().pep())) {
                 Log.d(TAG, "finishInitialSetup Called");
@@ -841,7 +855,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             keyboardVisibilityChecker();
         } else {
             binding.editProfileLayout.setVisibility(View.VISIBLE);
-            binding.savveBtn.setOnClickListener(v -> {
+            binding.editProfileSaveBtn.setOnClickListener(v -> {
                 if (validateProfileFormData()) {
                     updateAccountInfo();
                 }
@@ -887,12 +901,19 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             }
         }
         GetWooContactsRequestParams getWooContactsRequestParams = new GetWooContactsRequestParams();
+
+        Log.d(TAG, "Phone Book Contacts Count : " + contactsFromPhoneBook.length);
+
+        for(String number:contactsFromPhoneBook){
+            Log.d(TAG,"NUMBER : " +number);
+        }
+
         getWooContactsRequestParams.number = contactsFromPhoneBook;
         String uId = "";
-        if (GV.INSTANCE.getUniqueId().isEmpty()) {
+        if (mAccount.getAccountId().isEmpty()) {
             uId = "";
         } else {
-            uId = GV.INSTANCE.getUniqueId();
+            uId = mAccount.getAccountId();
         }
         getWooContactsRequestParams.accountId = uId;
         xmppConnectionService.getWooContacts(getWooContactsRequestParams, EditAccountActivity.this);
@@ -1860,15 +1881,11 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                     languageCode = "en";
                 }
 
-                // get Woaa Contacts Api
-                getContactPermission();
+
                 performXMPPLoginAttempt(userBasicInfo, jid, password, 5222, null, languageCode);
 
             } else if (result instanceof BaseModelAPIResponse) {
                 Toast.makeText(context, ((BaseModelAPIResponse) result).Message, Toast.LENGTH_LONG).show();
-                // get Woaa Contacts Api
-                getContactPermission();
-
 
                 hideProgressDialog();
                 Log.d("onLoginApiResultFound", " BaseModelAPIResponse Called in EditActivity " + ((BaseModelAPIResponse) result).Message);
@@ -1914,9 +1931,27 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     public <T> void OnGetWooContactAPiResultFound(T result) {
         runOnUiThread(() -> {
             if (result instanceof GetWooContactsModel) {
-                Log.d("WoContactResultFound", " OnGetWooContactAPiResultFoundResponseJAVA Called in EditActivity " + ((GetWooContactsModel) result).Data);
 
+                ArrayList<String> jIds = ((GetWooContactsModel) result).Data;
+
+                Log.d("WoContactResultFound", " OnGetWooContactAPiResultFoundResponseJAVA Called in EditActivity " + ((GetWooContactsModel) result).Data);
                 Log.d("response Contact", String.valueOf(((GetWooContactsModel) result).Data.size()));
+
+                if (!jIds.isEmpty()) {
+
+                    for (String id : jIds) {
+                        Jid jid = Jid.ofEscaped(id);
+                        Contact contact = new Contact(jid);
+                        contact.setAccount(mAccount);
+                        xmppConnectionService.createContact(contact, true);
+                        Log.d("CREATE_CONTACT", "CREATING CONTACT WITH : " + id);
+
+                    }
+
+
+                }
+
+
             } else if (result instanceof BaseModelAPIResponse) {
 //                Toast.makeText(context, ((BaseModelAPIResponse) result).Message, Toast.LENGTH_LONG).show();
                 hideProgressDialog();

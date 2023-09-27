@@ -257,10 +257,12 @@ public class StylingHelper {
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            if (charSequence.length() != 0) {
-                attachmentIv.setVisibility(View.GONE);
-            } else {
-                attachmentIv.setVisibility(View.VISIBLE);
+            if (attachmentIv != null) {
+                if (charSequence.length() != 0) {
+                    attachmentIv.setVisibility(View.GONE);
+                } else {
+                    attachmentIv.setVisibility(View.VISIBLE);
+                }
             }
 
         }

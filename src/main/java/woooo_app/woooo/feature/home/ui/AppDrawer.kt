@@ -34,7 +34,6 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.wgroup.woooo_app.woooo.shared.components.CustomListTile
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.theme.WooColor
-import eu.siacs.conversations.ui.MainActivity
 import kotlinx.coroutines.runBlocking
 import woooo_app.woooo.destinations.SettingsScreenDestination
 import woooo_app.woooo.destinations.UpdateProfileMainScreenDestination
@@ -169,7 +168,7 @@ fun DrawerHeader(
         ) {
 
             Text(
-                text = "${MainActivity.homeViewModel?.displayname?.value}",
+                text = "",
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onPrimary,

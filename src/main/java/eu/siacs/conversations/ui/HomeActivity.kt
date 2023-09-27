@@ -20,8 +20,6 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
 
     private lateinit var binding: ActivityHomeBinding
 
-    private var mAccount: Account? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -108,6 +106,7 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
             }
 
             logoutButton.setOnClickListener {
+                xmppConnectionService.logoutAndSave(true);
                 xmppConnectionService.databaseBackend.clearDatabase()
                 val intent = Intent(this, WelcomeActivity::class.java)
                 intent.flags =
@@ -220,6 +219,11 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
             }
             populateView()
         }
+    }
+
+    companion object {
+        var mAccount: Account? = null
+
     }
 }
 

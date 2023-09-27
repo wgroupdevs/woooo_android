@@ -40,6 +40,7 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
     private OnEnterJidDialogPositiveListener mListener = null;
 
     private static final String TITLE_KEY = "title";
+    private static final String TAG = "Enter_Jid_dialog";
     private static final String POSITIVE_BUTTON_KEY = "positive_button";
     private static final String PREFILLED_JID_KEY = "prefilled_jid";
     private static final String ACCOUNT_KEY = "account";
@@ -58,8 +59,13 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
 
     private boolean searchWithEmail = true;
 
+    private String mAccountJid;
+
 
     public static EnterJidDialog newInstance(final List<String> activatedAccounts, final String title, final String positiveButton, final String prefilledJid, final String account, boolean allowEditJid, final boolean sanity_check_jid) {
+        Log.d(TAG, "activatedAccounts SIZE : " + activatedAccounts.size());
+
+
         EnterJidDialog dialog = new EnterJidDialog();
         Bundle bundle = new Bundle();
         bundle.putString(TITLE_KEY, title);
@@ -93,6 +99,12 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getArguments().getString(TITLE_KEY));
+        ArrayList<String> accounts = getArguments().getStringArrayList(ACCOUNTS_LIST_KEY);
+        if (!accounts.isEmpty()) {
+            mAccountJid = accounts.get(0);
+            Log.d(TAG, "ACCOUNTS JID : " + mAccountJid);
+        }
+
         binding = DataBindingUtil.inflate(getActivity().getLayoutInflater(), R.layout.enter_jid_dialog, null, false);
 //        this.knownHostsAdapter = new KnownHostsAdapter(getActivity(), R.layout.simple_list_item);
 //        binding.jid.setAdapter(this.knownHostsAdapter);
@@ -128,9 +140,9 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
 
         View.OnClickListener dialogOnClick = v -> {
 
-            Log.d("Enter_Jid_dialog", "dialogOnClick");
-            Log.d("Enter_Jid_dialog", "Account " + account);
-            Log.d("Enter_Jid_dialog", "Account " + UserInfoKt.getUSER_JID());
+            Log.d(TAG, "dialogOnClick");
+            Log.d(TAG, "Account " + account);
+            Log.d(TAG, "Account " + UserInfoKt.getUSER_JID());
             searchAccount(binding);
 //                    handleEnter(binding, account);
 
@@ -138,7 +150,7 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
 
         binding.jid.setOnEditorActionListener((v, actionId, event) -> {
 
-            Log.d("Enter_Jid_dialog", "setOnEditorActionListener");
+            Log.d(TAG, "setOnEditorActionListener");
 
 //                    handleEnter(binding, account);
             return true;
@@ -194,10 +206,16 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
 
     private void handleEnter(String accountJID, String contactJId) {
 
-        Log.d("Enter_Jid_dialog", "handleEnter Called..");
+        Log.d(TAG, "handleEnter Called..");
+
+        Log.d(TAG, "accountJid : " + accountJID);
+        Log.d(TAG, "contactJid : " + contactJId);
+        Log.d(TAG, "mListener : " + mListener);
 
         final Jid accountJid = Jid.ofEscaped((accountJID));
         final Jid contactJid = Jid.ofEscaped(contactJId);
+
+
 //        if (!binding.account.isEnabled() && account == null) {
 //            return;
 //        }
@@ -245,6 +263,7 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
                     dialog.dismiss();
                 }
             } catch (JidError error) {
+                Log.d(TAG, "JidError : " + error.toString());
                 binding.jidLayout.setError(error.toString());
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setText(R.string.add);
                 issuedWarning = false;
@@ -303,10 +322,13 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
 
                     try {
                         SearchAccountAPIResponse apiResponse = ((SearchAccountAPIResponse) searchAccount);
-                        Log.d("SEARCH_ACCOUNT_API ", " SearchAccountAPIResponse Called in EditActivity " + apiResponse.Message);
-                        Log.d("SEARCH_ACCOUNT_API ", " SearchAccountAPIResponse Called in EditActivity " + apiResponse.Data.jid);
+                        Log.d("SEARCH_ACCOUNT_API ", " Account Found : " + apiResponse.Data.jid);
 
-                        handleEnter(UserInfoKt.getUSER_JID(), apiResponse.Data.jid);
+
+                        String jid = HomeActivity.Companion.getMAccount().getJid().asBareJid().toString();
+                        Log.d("SEARCH_ACCOUNT_API ", "My Account Found : " + jid);
+
+                        handleEnter(mAccountJid, apiResponse.Data.jid);
 
                     } catch (Exception e) {
                     }

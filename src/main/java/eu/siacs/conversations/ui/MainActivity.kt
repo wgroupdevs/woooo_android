@@ -28,7 +28,6 @@ import woooo_app.woooo.destinations.ForgotPasswordScreenDestination
 import woooo_app.woooo.destinations.HomeScreenDestination
 import woooo_app.woooo.destinations.SignUpScreenDestination
 import woooo_app.woooo.feature.auth.GV
-import woooo_app.woooo.feature.home.viewmodel.HomeViewModel
 import woooo_app.woooo.goToWelcomeActivity
 import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel
 import woooo_app.woooo.theme.Woooo_androidTheme
@@ -43,7 +42,7 @@ import woooo_app.woooo.utils.USER_TOKEN_KEY_INTENT
 @AndroidEntryPoint
 class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRosterUpdate {
     val TAG = "MainActivityLOGS"
-
+    private var mAccount: Account? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -75,8 +74,6 @@ class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRo
 
     @Composable
     fun MainScreen() {
-        Log.d(TAG, "homeViewModel : ${homeViewModel.hashCode()}")
-
         val context = LocalContext.current
         val navController = rememberNavController()
         val userPreferences: UserPreferencesViewModel = hiltViewModel()
@@ -167,10 +164,11 @@ class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRo
     }
 
 
-    private fun goToHomeActivity(): Unit {
+    private fun goToHomeActivity() {
 
         val intent = Intent(this, HomeActivity::class.java)
-
+        intent.flags =
+            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION
         startActivity(intent)
     }
 
@@ -222,10 +220,5 @@ class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRo
 
     }
 
-    companion object {
-        var mAccount: Account? = null
-        var homeViewModel: HomeViewModel? = null
-
-    }
 
 }

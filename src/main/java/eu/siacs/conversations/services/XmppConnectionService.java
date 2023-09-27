@@ -1454,7 +1454,7 @@ public class XmppConnectionService extends Service {
         }
     }
 
-    private void logoutAndSave(boolean stop) {
+    public void logoutAndSave(boolean stop) {
         int activeAccounts = 0;
         for (final Account account : accounts) {
             if (account.getStatus() != Account.State.DISABLED) {
@@ -1465,6 +1465,7 @@ public class XmppConnectionService extends Service {
                 new Thread(() -> disconnect(account, false)).start();
             }
         }
+        accounts.clear();
         if (stop || activeAccounts == 0) {
             Log.d(Config.LOGTAG, "good bye");
             stopSelf();
@@ -3665,17 +3666,18 @@ public class XmppConnectionService extends Service {
         contact.setOption(Contact.Options.DIRTY_PUSH);
         final Account account = contact.getAccount();
         if (account.getStatus() == Account.State.ONLINE) {
-            final boolean ask = contact.getOption(Contact.Options.ASKING);
-            final boolean sendUpdates = contact.getOption(Contact.Options.PENDING_SUBSCRIPTION_REQUEST) && contact.getOption(Contact.Options.PREEMPTIVE_GRANT);
+//            final boolean ask = contact.getOption(Contact.Options.ASKING);
+//            final boolean sendUpdates = contact.getOption(Contact.Options.PENDING_SUBSCRIPTION_REQUEST) && contact.getOption(Contact.Options.PREEMPTIVE_GRANT);
             final IqPacket iq = new IqPacket(IqPacket.TYPE.SET);
             iq.query(Namespace.ROSTER).addChild(contact.asElement());
             account.getXmppConnection().sendIqPacket(iq, mDefaultIqHandler);
-            if (sendUpdates) {
-                sendPresencePacket(account, mPresenceGenerator.sendPresenceUpdatesTo(contact));
-            }
-            if (ask) {
-                sendPresencePacket(account, mPresenceGenerator.requestPresenceUpdatesFrom(contact, preAuth));
-            }
+            sendPresencePacket(account, mPresenceGenerator.sendPresenceUpdatesTo(contact));
+            sendPresencePacket(account, mPresenceGenerator.requestPresenceUpdatesFrom(contact, preAuth));
+
+//            if (sendUpdates) {
+//            }
+//            if (ask) {
+//            }
         } else {
             syncRoster(contact.getAccount());
         }

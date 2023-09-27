@@ -972,7 +972,7 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
 
     @Override
     public String getAvatarName() {
-        throw new IllegalStateException("This method should not be called");
+       return getDisplayName();
     }
 
     public enum State {
