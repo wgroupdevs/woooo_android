@@ -42,6 +42,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 
@@ -347,8 +348,9 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             if (validNumber.equals("0")) {
                 phoneNumber = phoneNumber.substring(1);
             }
+            phoneNumber = countryCode + phoneNumber;
+
         }
-        String mobileNumber = countryCode + phoneNumber;
         if (mUsernameMode && email.contains("@")) {
             binding.accountJidLayout.setError(getString(R.string.invalid_username));
             removeErrorsOnAllBut(binding.accountJidLayout);
@@ -396,9 +398,9 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         }
 
         showProgressDialog(this);
-        Log.d(mobileNumber, "cnasdjcnsadns");
+        Log.d(phoneNumber, "cnasdjcnsadns");
         //Login User with credentials
-        xmppConnectionService.loginUserOnWoooo(isLoginWithEmail, email, mobileNumber, password, EditAccountActivity.this);
+        xmppConnectionService.loginUserOnWoooo(isLoginWithEmail, email, phoneNumber, password, EditAccountActivity.this);
 
 //        final boolean wasDisabled = mAccount != null && mAccount.getStatus() == Account.State.DISABLED;
 //        final boolean accountInfoEdited = accountInfoEdited();
@@ -860,6 +862,10 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             keyboardVisibilityChecker();
         } else {
             binding.editProfileLayout.setVisibility(View.VISIBLE);
+            binding.menuButton.setVisibility(View.VISIBLE);
+            binding.menuButton.setOnClickListener(v -> {
+                showEditProfileMenu();
+            });
             binding.editProfileSaveBtn.setOnClickListener(v -> {
                 if (validateProfileFormData()) {
                     updateAccountInfo();
@@ -891,6 +897,32 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         }
 
 
+    }
+
+    void showEditProfileMenu() {
+
+        PopupMenu popupMenu = new PopupMenu(EditAccountActivity.this, binding.menuButton);
+        popupMenu.getMenuInflater().inflate(R.menu.edit_profile_menu, popupMenu.getMenu());
+
+        popupMenu.setOnMenuItemClickListener(menuItem -> {
+            // Handle menu item clicks here
+            switch (menuItem.getItemId()) {
+                case R.id.edit_profile_update_photo:
+                    // Handle Menu Item 1 click
+                    return true;
+                case R.id.edit_profile_disable_account:
+                    // Handle Menu Item 2 click
+                    return true;
+                case R.id.edit_profile_delete_account:
+                    // Handle Menu Item 2 click
+                    return true;
+                // Add cases for other menu items if needed
+                default:
+                    return false;
+            }
+        });
+
+        popupMenu.show();
     }
 
     @SuppressLint("Range")

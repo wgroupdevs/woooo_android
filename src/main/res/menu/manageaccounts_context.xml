@@ -7,14 +7,12 @@
         android:title="@string/mgmt_account_enable"/>
     <item
         android:id="@+id/mgmt_account_publish_avatar"
-        android:title="@string/mgmt_account_publish_avatar"/>
-    <item
-        android:id="@+id/mgmt_account_announce_pgp"
-        android:title="@string/mgmt_account_publish_pgp"/>
+        android:title="Update Photo"/>
+
     <item
         android:id="@+id/mgmt_account_disable"
         app:showAsAction="never"
-        android:title="@string/mgmt_account_disable"/>
+        android:title="Disable account"/>
     <item
         android:id="@+id/mgmt_account_delete"
         android:title="@string/mgmt_account_delete"/>

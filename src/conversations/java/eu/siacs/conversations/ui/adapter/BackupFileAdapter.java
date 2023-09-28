@@ -46,7 +46,7 @@ public class BackupFileAdapter extends RecyclerView.Adapter<BackupFileAdapter.Ba
     public void onBindViewHolder(@NonNull BackupFileViewHolder backupFileViewHolder, int position) {
         final ImportBackupService.BackupFile backupFile = files.get(position);
         final BackupFileHeader header = backupFile.getHeader();
-        backupFileViewHolder.binding.accountJid.setText(header.getJid().asBareJid().toString());
+        backupFileViewHolder.binding.displayName.setText(header.getJid().asBareJid().toString());
         backupFileViewHolder.binding.accountStatus.setText(String.format("%s · %s",header.getApp(), DateUtils.formatDateTime(backupFileViewHolder.binding.getRoot().getContext(), header.getTimestamp(), DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_YEAR)));
         backupFileViewHolder.binding.tglAccountStatus.setVisibility(View.GONE);
         backupFileViewHolder.binding.getRoot().setOnClickListener(v -> {

@@ -2209,7 +2209,11 @@ public class XmppConnectionService extends Service {
     }
 
     public List<Account> getAccounts() {
-        return this.accounts;
+        ArrayList<Account> accounts1 = new ArrayList<>();
+        if (!this.accounts.isEmpty()) {
+            accounts1.add(this.accounts.get(0));
+        }
+        return accounts1;
     }
 
 

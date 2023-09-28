@@ -10,7 +10,6 @@ import androidx.databinding.DataBindingUtil;
 
 import java.util.List;
 
-import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.databinding.AccountRowBinding;
 import eu.siacs.conversations.entities.Account;
@@ -47,16 +46,13 @@ public class AccountAdapter extends ArrayAdapter<Account> {
         } else {
             viewHolder = (ViewHolder) view.getTag();
         }
-        if (Config.DOMAIN_LOCK != null) {
-            viewHolder.binding.accountJid.setText(account.getJid().getLocal());
-        } else {
-            viewHolder.binding.accountJid.setText(account.getJid().asBareJid().toEscapedString());
-        }
+        viewHolder.binding.displayName.setText(account.getDisplayName());
+
         AvatarWorkerTask.loadAvatar(account, viewHolder.binding.accountImage, R.dimen.avatar);
         viewHolder.binding.accountStatus.setText(getContext().getString(account.getStatus().getReadableId()));
         switch (account.getStatus()) {
             case ONLINE:
-                viewHolder.binding.accountStatus.setTextColor(StyledAttributes.getColor(activity, R.attr.TextColorOnline));
+                viewHolder.binding.accountStatus.setTextColor(StyledAttributes.getColor(activity,android.R.attr.textColorPrimary ));
                 break;
             case DISABLED:
             case CONNECTING:
