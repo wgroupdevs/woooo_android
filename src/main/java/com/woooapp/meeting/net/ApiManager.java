@@ -16,6 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import eu.siacs.conversations.BuildConfig;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 
 /**
  * @author Muneeb Ahmad

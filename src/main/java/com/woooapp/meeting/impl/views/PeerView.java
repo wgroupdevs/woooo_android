@@ -16,6 +16,8 @@ import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.PeerConnectionUtils;
 import com.woooapp.meeting.lib.RoomClient;
 
+import java.util.Objects;
+
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.databinding.ViewPeerBinding;
 import eu.siacs.conversations.databinding.WooViewPeerBinding;
@@ -58,9 +60,10 @@ public class PeerView extends RelativeLayout {
         mBinding.wooPeerView.wooVideoRenderer.init(PeerConnectionUtils.getEglContext(), null);
     }
 
-    public void setProps(PeerProps props, MeetingClient roomClient) {
+    public void setProps(PeerProps props, MeetingClient meetingClient) {
         // set view model into included layout
         mBinding.wooPeerView.setWooPeerViewProps(props);
+//        mBinding.tvPeerName.setText(Objects.requireNonNull(props.getPeer().get()).getDisplayName());
 
 //        // register click listener.
 //        mBinding.peerView.info.setOnClickListener(

@@ -27,6 +27,7 @@ public final class WooEvents {
     public static final int EVENT_TYPE_SEND_TRANSPORT_CREATED     = 0x07;
     public static final int EVENT_TYPE_CONSUMER_CREATED           = 0x08;
     public static final int EVENT_TYPE_CONSUME_BACK_CREATED       = 0x09;
+    public static final int EVENT_TYPE_FETCH_ROOM_DATA            = 0xa;
 
     private WooEvents() {
         Log.d(TAG, "WooEvents Initialized ...");

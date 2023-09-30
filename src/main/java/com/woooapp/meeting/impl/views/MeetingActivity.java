@@ -40,6 +40,7 @@ import com.woooapp.meeting.net.models.CreateMeetingBody;
 import com.woooapp.meeting.net.models.CreateMeetingResponse;
 import com.woooapp.meeting.net.models.PutMembersDataBody;
 import com.woooapp.meeting.net.models.PutMembersDataResponse;
+import com.woooapp.meeting.net.models.RoomData;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,7 +72,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     };
 
     private ViewPager mViewPager;
-//    private ActivityMeetBinding mBinding;
+    //    private ActivityMeetBinding mBinding;
     private ActivityMeetingBinding mBinding;
     private ScreenPagerAdapter mPeerScreenAdapter;
     private MeetingClient mMeetingClient;
@@ -87,14 +88,13 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private String picture;
     private String mMeetingId;
     private String meetingName;
-    // TODO only 1 peer for now
-    private Peer mPeer;
     private MeetingGridAdapter peerGridAdapter;
     private List<Peer> peersList = new ArrayList<>();
     private List<GridPeer> gridPeerList = new ArrayList<>();
     private final Handler callbackHandler = new Handler(this);
     private int deviceWidthDp;
     private int deviceHeightDp;
+    private String peerDisplayName = "";
 
     @SuppressWarnings("deprecation")
     @Override
@@ -107,10 +107,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         deviceWidthDp = Display.getDisplayWidth(this) - 50;
         deviceHeightDp = Display.getDisplayHeight(this);
 
-        mBinding.meetingButtonLayout.setVisibility(View.GONE);
+        mBinding.bottomBarMeeting.setVisibility(View.GONE);
 
         pd = new ProgressDialog(this);
-        pd.setMessage("Setting up ...");
+        pd.setMessage(" ...");
         pd.setCancelable(false);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -285,16 +285,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         // Set Meeting ID Link
         mBinding.tvMeetingId.setText(mMeetingId);
 
-        // ME
-//        MeProps meProps = new ViewModelProvider(this, factory).get(MeProps.class);
-//        meProps.connect(this);
-//        mBinding.meView.setProps(meProps, mMeetingClient);
-
         // PeerView
         peerGridAdapter = new MeetingGridAdapter(this, this, mRoomStore, mMeetingClient);
         mBinding.gridViewMeeting.setAdapter(peerGridAdapter);
         mBinding.gridViewMeeting.setEnabled(false);
-//        PeerProps peerProps = new PeerProps(getApplication(), mRoomStore);
 
         mRoomStore
                 .getPeers()
@@ -304,21 +298,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                             peersList = peers.getAllPeers();
                             gridPeerList = createGridPeers(peersList);
                             Log.d(TAG, "Peer list size[" + peersList.size() + "]");
-                            if (peersList.isEmpty()) {
-//                                mBinding.peerView.setVisibility(View.GONE);
-                            } else {
-//                                mBinding.peerView.setVisibility(View.VISIBLE);
-                                mPeer = peersList.get(0);
-                                if (mPeer != null) {
-                                    Log.d(TAG,
-                                            "Connecting Peer >> id["
-                                                    + mPeer.getId() +
-                                                    "] consumerCount[" +
-                                                    mPeer.getConsumers().size() + "]");
-//                                    peerProps.connect(this, mPeer.getId());
-//                                    mBinding.peerView.setProps(peerProps, mMeetingClient);
-                                }
-                            }
                             if (peersList.size() < 2) {
                                 mBinding.gridViewMeeting.setNumColumns(1);
                                 mBinding.gridViewMeeting.setColumnWidth(deviceWidthDp);
@@ -331,7 +310,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     }
 
     /**
-     *
      * @param peerList
      * @return
      */
@@ -411,10 +389,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         switch (msg.what) {
             case WooEvents.EVENT_TYPE_SOCKET_ID:
                 Log.d(TAG, "<< Handler Event SOCKET_ID Received >> " + msg.obj);
-                runOnUiThread(() -> {
-                    mBinding.meetingButtonLayout.setVisibility(View.VISIBLE);
-                    mBinding.meetingButtonEnd.show();
-                });
                 return true;
             case WooEvents.EVENT_TYPE_PRODUCER_CREATED:
                 Log.d(TAG, "<< Handler Event PRODUCER CREATED [" + msg.obj + "]");
@@ -432,6 +406,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     }
                     Snackbar.make(mBinding.meetingButtonEnd, txt + mMeetingClient.getMeetingId(), Snackbar.LENGTH_LONG).show();
                     mBinding.tvMeetingId.setVisibility(View.GONE);
+                    mBinding.bottomBarMeeting.setVisibility(View.VISIBLE);
                 });
                 return true;
             case WooEvents.EVENT_TYPE_CONSUMER_CREATED:

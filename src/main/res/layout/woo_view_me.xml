@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:clipChildren="true"
         bind:cardBackgroundColor="@color/trans_bg"
-        bind:cardCornerRadius="2dp"
+        bind:cardCornerRadius="15dp"
         bind:cardUseCompatPadding="true">
 
         <include
@@ -24,6 +24,31 @@
             android:layout_height="match_parent"
             bind:wooPeerViewProps="@{wooMeProps}"
             />
+
+        <LinearLayout
+            android:id="@+id/controls"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:orientation="horizontal"
+            android:layout_margin="10sp"
+            >
+<!--            android:visibility="@{wooMeProps.connected ? View.VISIBLE : View.GONE}" -->
+            <TextView
+                android:id="@+id/tvMeName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:padding="5sp"
+                android:text="Me"
+                android:textSize="18sp"
+                android:textColor="@color/white"
+                android:ellipsize="end"
+                />
+
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 

@@ -13,9 +13,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         bind:cardBackgroundColor="@color/bg"
-        bind:cardCornerRadius="2dp"
-        bind:cardElevation="5dp"
-        bind:cardUseCompatPadding="true">
+        bind:cardCornerRadius="15dp"
+        bind:cardUseCompatPadding="true"
+        android:clipChildren="true"
+        >
 
         <include
             android:id="@+id/wooPeerView"
@@ -23,6 +24,22 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             bind:wooPeerViewProps="@{wooPeerProps}" />
+
+        <LinearLayout
+            android:id="@+id/controls"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:orientation="horizontal"
+            android:layout_margin="10sp"
+            >
+            <!--            android:visibility="@{wooMeProps.connected ? View.VISIBLE : View.GONE}" -->
+
+
+
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 

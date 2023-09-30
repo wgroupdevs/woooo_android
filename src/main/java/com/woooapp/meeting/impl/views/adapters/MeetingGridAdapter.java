@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -103,7 +104,6 @@ public class MeetingGridAdapter extends BaseAdapter {
                 MeProps meProps = new MeProps(((AppCompatActivity) mContext).getApplication(), mStore);
                 meProps.connect(mLifecycleOwner);
                 mVh.mMeView.setProps(meProps, mMeetingClient);
-
                 return convertView;
             default:
                 PeerViewHolder vh = null;
@@ -116,6 +116,7 @@ public class MeetingGridAdapter extends BaseAdapter {
                 }
 
                 vh.mPeerView = convertView.findViewById(R.id.remotePeerView);
+                vh.mTvPeerName = convertView.findViewById(R.id.tvPeerName);
 
                 setViewHeight(convertView);
 
@@ -123,6 +124,9 @@ public class MeetingGridAdapter extends BaseAdapter {
                 PeerProps peerProps = new PeerProps(((AppCompatActivity) mContext).getApplication(), mStore);
                 peerProps.connect(mLifecycleOwner, peer.getId());
                 vh.mPeerView.setProps(peerProps, mMeetingClient);
+                if (peer.getDisplayName() != null) {
+                    vh.mTvPeerName.setText(peer.getDisplayName().isEmpty() ? "Empty" : peer.getDisplayName());
+                }
                 return convertView;
         }
     }
@@ -133,7 +137,7 @@ public class MeetingGridAdapter extends BaseAdapter {
      * @return
      */
     private boolean setViewHeight(@NonNull final View view) {
-        int height = Display.getDisplayHeight(mContext) - 50;
+        int height = Display.getDisplayHeight(mContext) - 350;
         if (mPeers.size() > 1 && mPeers.size() < 3) {
             height = height / 2 - 50;
         } else if (mPeers.size() > 2 && mPeers.size() < 5) {
@@ -163,6 +167,7 @@ public class MeetingGridAdapter extends BaseAdapter {
 
     static class PeerViewHolder {
         PeerView mPeerView;
+        TextView mTvPeerName;
     } // end class
 
 } /** end class. */
