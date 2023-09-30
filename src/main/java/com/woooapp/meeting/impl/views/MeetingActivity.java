@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,9 +27,9 @@ import com.woooapp.meeting.device.Display;
 import com.woooapp.meeting.impl.utils.WooEvents;
 import com.woooapp.meeting.impl.views.adapters.MeetingGridAdapter;
 import com.woooapp.meeting.impl.views.adapters.ScreenPagerAdapter;
+import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
 import com.woooapp.meeting.impl.views.models.GridPeer;
 import com.woooapp.meeting.impl.vm.EdiasProps;
-import com.woooapp.meeting.impl.vm.MeProps;
 import com.woooapp.meeting.impl.vm.RoomProps;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.RoomOptions;
@@ -40,13 +41,11 @@ import com.woooapp.meeting.net.models.CreateMeetingBody;
 import com.woooapp.meeting.net.models.CreateMeetingResponse;
 import com.woooapp.meeting.net.models.PutMembersDataBody;
 import com.woooapp.meeting.net.models.PutMembersDataResponse;
-import com.woooapp.meeting.net.models.RoomData;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.databinding.ActivityMeetingBinding;
@@ -59,7 +58,7 @@ import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel;
  */
 public class MeetingActivity extends AppCompatActivity implements Handler.Callback {
 
-    private static final String TAG = MeetingActivity.class.getSimpleName().toUpperCase(Locale.ROOT);
+    private static final String TAG = MeetingActivity.class.getSimpleName() + ".java";
 
     private static final int PERMISSIONS_REQ_CODE = 0x7b;
 
@@ -94,7 +93,8 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private final Handler callbackHandler = new Handler(this);
     private int deviceWidthDp;
     private int deviceHeightDp;
-    private String peerDisplayName = "";
+    private RelativeLayout drawerContainer;
+    private boolean sideMenuOpened = true;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -110,7 +110,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         mBinding.bottomBarMeeting.setVisibility(View.GONE);
 
         pd = new ProgressDialog(this);
-        pd.setMessage(" ...");
+        pd.setMessage("Setting up ...");
         pd.setCancelable(false);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -121,6 +121,16 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
         mBinding.meetingButtonEnd.setOnClickListener(view -> {
             onBackPressed();
+        });
+
+        // Drawer
+        createDrawer();
+        mBinding.drawerButton.setOnClickListener(view -> {
+            if (sideMenuOpened) {
+                closeDrawer();
+            } else {
+                openDrawer();
+            }
         });
     }
 
@@ -179,6 +189,29 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
     private void joinMeeting() {
         initMeetingClient();
+    }
+
+    /**
+     * Custom Drawer Layout
+     */
+    private void createDrawer() {
+        if (sideMenuOpened) {
+            closeDrawer();
+        }
+    }
+
+    private void closeDrawer() {
+        if (sideMenuOpened) {
+            WooAnimationUtil.closeLeftMenu(mBinding.drawerContainer, Display.pxToDp(this, 375));
+            sideMenuOpened = false;
+        }
+    }
+
+    private void openDrawer() {
+        if (!sideMenuOpened) {
+            WooAnimationUtil.openLeftMenu(mBinding.drawerContainer, Display.pxToDp(this, 375));
+            sideMenuOpened = true;
+        }
     }
 
     private void fetchRoomData() {
@@ -359,10 +392,9 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSIONS_REQ_CODE) {
-            if (grantResults.length >= 3) {
+            if (grantResults.length >= 2) {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-                        grantResults[1] == PackageManager.PERMISSION_GRANTED &&
-                        grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                        grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     setup();
                 }
             } else {

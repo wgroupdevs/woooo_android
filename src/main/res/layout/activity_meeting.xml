@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="meetProps"
             type="com.woooapp.meeting.impl.vm.RoomProps" />
@@ -16,99 +18,179 @@
             android:id="@+id/gridViewMeeting"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="10sp"
+            android:layout_marginTop="5sp"
+            android:layout_marginRight="10sp"
+            android:background="@android:color/transparent"
             android:columnWidth="120dp"
             android:gravity="center"
             android:horizontalSpacing="5dp"
             android:numColumns="2"
             android:stretchMode="columnWidth"
-            android:verticalSpacing="10sp"
-            android:layout_marginRight="10sp"
-            android:layout_marginLeft="10sp"
-            android:layout_marginTop="5sp"
-            android:background="@android:color/transparent"
-            />
+            android:verticalSpacing="10sp" />
         <!-- TODO add layout animation -->
 
         <TextView
             android:id="@+id/tvMeetingId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:background="@drawable/bg_meeting_id_tv"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:padding="10sp"
-            android:textSize="15sp"
-            android:gravity="center"
-            android:text="Meeting ID"
+            android:background="@drawable/bg_meeting_id_tv"
             android:elevation="10sp"
-            />
+            android:gravity="center"
+            android:padding="10sp"
+            android:text="Meeting ID"
+            android:textColor="@android:color/white"
+            android:textSize="15sp" />
 
         <LinearLayout
             android:id="@+id/bottomBarMeeting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_alignParentBottom="true"
             android:background="@color/blue_primary300"
-            android:padding="10sp"
             android:gravity="center_horizontal|center_vertical"
-            android:weightSum="5"
-            >
+            android:orientation="horizontal"
+            android:padding="10sp"
+            android:weightSum="5">
 
             <ImageView
                 android:id="@+id/meetingButtonMoreMenu"
                 android:layout_width="40sp"
                 android:layout_height="40sp"
-                android:src="@drawable/ic_menu_dots_vertical_white"
-                android:background="@android:color/transparent"
                 android:layout_weight="1"
+                android:background="@android:color/transparent"
                 android:foreground="?attr/selectableItemBackground"
-                />
+                android:src="@drawable/ic_menu_dots_vertical_white" />
 
             <ImageView
                 android:id="@+id/meetingButtonAI"
                 android:layout_width="40sp"
                 android:layout_height="40sp"
-                android:src="@drawable/ic_button_ai"
+                android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:foreground="?attr/selectableItemBackground"
-                android:layout_weight="1"
-                />
+                android:src="@drawable/ic_button_ai" />
 
             <ImageView
                 android:id="@+id/meetingButtonMic"
                 android:layout_width="40sp"
                 android:layout_height="40sp"
-                android:src="@drawable/baseline_mic_34"
+                android:layout_weight="1"
                 android:background="@android:color/transparent"
                 android:foreground="?attr/selectableItemBackground"
-                android:layout_weight="1"
-                />
+                android:src="@drawable/baseline_mic_34" />
 
             <ImageView
                 android:id="@+id/meetingButtonCam"
                 android:layout_width="34sp"
                 android:layout_height="40sp"
-                android:src="@drawable/ic_video_camera_white"
-                android:background="@android:color/transparent"
-                android:foreground="?attr/selectableItemBackground"
                 android:layout_weight="1"
+                android:background="@android:color/transparent"
                 android:elevation="10sp"
-                />
+                android:foreground="?attr/selectableItemBackground"
+                android:src="@drawable/ic_video_camera_white" />
 
             <ImageView
                 android:id="@+id/meetingButtonEnd"
                 android:layout_width="40sp"
                 android:layout_height="50sp"
-                android:src="@drawable/ic_end_call_with_bg"
-                android:background="@android:color/transparent"
-                android:foreground="?attr/selectableItemBackground"
-                android:elevation="10sp"
                 android:layout_weight="1"
-                />
+                android:background="@android:color/transparent"
+                android:elevation="10sp"
+                android:foreground="?attr/selectableItemBackground"
+                android:src="@drawable/ic_end_call_with_bg" />
 
         </LinearLayout>
+
+        <!-- Custom Drawer -->
+        <RelativeLayout
+            android:id="@+id/drawerContainer"
+            android:layout_width="350sp"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/drawerLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginRight="50sp"
+                android:background="@drawable/bg_meeting_drawer"
+                android:elevation="10sp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_margin="30sp"
+                    android:weightSum="2"
+                    >
+
+                    <LinearLayout
+                        android:id="@+id/tabTranscript"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_meeting_menu_tab_disabled"
+                        android:gravity="center"
+                        android:padding="5sp"
+                        android:layout_weight="1"
+                        >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Live Transcript"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/tabChat"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@drawable/bg_meeting_menu_tab"
+                        android:gravity="center"
+                        android:padding="5sp"
+                        android:layout_weight="1"
+                        >
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Chat"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bg_meeting_drawer_button"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:elevation="10sp"
+                >
+
+                <ImageView
+                    android:id="@+id/drawerButton"
+                    android:layout_width="50sp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_side_menu_meeting" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
     </RelativeLayout>
 

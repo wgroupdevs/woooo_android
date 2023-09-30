@@ -137,7 +137,7 @@ public class MeetingGridAdapter extends BaseAdapter {
      * @return
      */
     private boolean setViewHeight(@NonNull final View view) {
-        int height = Display.getDisplayHeight(mContext) - 350;
+        int height = Display.getDisplayHeight(mContext) - 250;
         if (mPeers.size() > 1 && mPeers.size() < 3) {
             height = height / 2 - 50;
         } else if (mPeers.size() > 2 && mPeers.size() < 5) {
