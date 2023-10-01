@@ -323,16 +323,16 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
                         @Override
                         public void informUser(final int resId) {
 
-                            runOnUiThread(() -> {
-                                if (messageLoaderToast != null) {
-                                    messageLoaderToast.cancel();
-                                }
-                                if (ConversationFragment.this.conversation != conversation) {
-                                    return;
-                                }
-                                messageLoaderToast = Toast.makeText(view.getContext(), resId, Toast.LENGTH_LONG);
-                                messageLoaderToast.show();
-                            });
+//                            runOnUiThread(() -> {
+//                                if (messageLoaderToast != null) {
+//                                    messageLoaderToast.cancel();
+//                                }
+//                                if (ConversationFragment.this.conversation != conversation) {
+//                                    return;
+//                                }
+//                                messageLoaderToast = Toast.makeText(view.getContext(), resId, Toast.LENGTH_LONG);
+//                                messageLoaderToast.show();
+//                            });
                         }
                     });
                 }
@@ -1184,14 +1184,11 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         final Contact contact = conversation == null ? null : conversation.getContact();
 
         if (contact != null) {
-
-
             AvatarWorkerTask.loadAvatar(contact, this.activity.binding.toolbar.toolbarProfilePhoto, R.dimen.avatar);
             TextView toolbar_contact_name = this.activity.binding.toolbar.toolbarContactName;
             toolbar_contact_name.setVisibility(View.VISIBLE);
-            toolbar_contact_name.setText(contact.getDisplayName());
+            toolbar_contact_name.setText(conversation.getName());
         }
-
 
         binding.cancelReplyBtn.setOnClickListener(v -> {
             reply = false;
@@ -1533,7 +1530,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 
         ListView languagesListView;
         languagesListView = customView.findViewById(R.id.languagesListView);
-         LanguageAdapter languageAdapter=new LanguageAdapter(getActivity(),languageList,conversation.getAccount());
+        LanguageAdapter languageAdapter = new LanguageAdapter(getActivity(), languageList, conversation.getAccount());
 
 //        ArrayAdapter<Language> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, languageList);
 
@@ -2678,7 +2675,9 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         } else if (conversation.isBlocked()) {
             showSnackbar(R.string.contact_blocked, R.string.unblock, this.mUnblockClickListener);
         } else if (contact != null && !contact.showInRoster() && contact.getOption(Contact.Options.PENDING_SUBSCRIPTION_REQUEST)) {
-            showSnackbar(R.string.contact_added_you, R.string.add_back, this.mAddBackClickListener, this.mLongPressBlockListener);
+            activity.xmppConnectionService.createContact(contact, true);
+//            showSnackbar(R.string.contact_added_you, R.string.add_back, this.mAddBackClickListener, this.mLongPressBlockListener);
+
         } else if (contact != null && contact.getOption(Contact.Options.PENDING_SUBSCRIPTION_REQUEST)) {
             showSnackbar(R.string.contact_asks_for_presence_subscription, R.string.allow, this.mAllowPresenceSubscription, this.mLongPressBlockListener);
         } else if (mode == Conversation.MODE_MULTI && !conversation.getMucOptions().online() && account.getStatus() == Account.State.ONLINE) {

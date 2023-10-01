@@ -198,6 +198,12 @@ dependencies {
 
     // Volley
     implementation "com.android.volley:volley:1.2.1"
+//
+//    //wallet
+//    implementation(platform("com.walletconnect:android-bom:3.3.1"))
+//    implementation("com.walletconnect:android-core")
+//    implementation("com.walletconnect:web3modal")
+//    implementation "com.walletconnect:push"
 }
 
 ext {

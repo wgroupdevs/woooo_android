@@ -2,13 +2,20 @@ package eu.siacs.conversations.ui
 
 import android.animation.ObjectAnimator
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import eu.siacs.conversations.R
 import eu.siacs.conversations.databinding.ActivityHomeBinding
 import eu.siacs.conversations.entities.Account
@@ -19,7 +26,9 @@ import eu.siacs.conversations.ui.util.AvatarWorkerTask
 class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
 
     private lateinit var binding: ActivityHomeBinding
-
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
+    private var pieChart: PieChart? = null
+    private var circleIndex = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -36,6 +45,12 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
             binding.drawerLayout.open()
         }
 
+        bottomSheetBehavior =
+            BottomSheetBehavior.from(binding.appBarHome.homeBottomSheet.bottomSheet)
+        initBottomSheet()
+
+        populatePIChart()
+
     }
 
 //    override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -44,6 +59,86 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
 //        return true
 //    }
 
+
+    private fun initBottomSheet() {
+        1
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                // handle onSlide
+            }
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_COLLAPSED -> {}
+
+                    BottomSheetBehavior.STATE_EXPANDED -> {}
+
+                    BottomSheetBehavior.STATE_DRAGGING -> {}
+
+                    BottomSheetBehavior.STATE_SETTLING -> {}
+
+                    BottomSheetBehavior.STATE_HIDDEN -> {}
+
+                    else -> {}
+                }
+            }
+        })
+    }
+
+    private fun populatePIChart() {
+        pieChart = binding.appBarHome.pieChart
+
+        // Create a list of PieEntries
+
+        // Create a list of PieEntries
+        val entries = ArrayList<PieEntry>()
+        entries.add(PieEntry(25f, ""))
+        entries.add(PieEntry(25f, ""))
+        entries.add(PieEntry(25f, ""))
+        entries.add(PieEntry(25f, ""))
+
+        // Create a PieDataSet
+        val dataSet = PieDataSet(entries, "")
+        dataSet.setColors(
+            Color.TRANSPARENT,
+            Color.TRANSPARENT,
+            Color.TRANSPARENT,
+            Color.TRANSPARENT
+        )
+        dataSet.valueTextSize = 0f
+        dataSet.label = ""
+        // Create a PieData object
+        val data = PieData(dataSet)
+        // Set the data for the PieChart
+        pieChart?.data = data
+
+        // Customize the PieChart
+
+        // Customize the PieChart
+        pieChart?.holeRadius = 65f // Set the radius of the center hole (0f for no hole)
+        pieChart?.setHoleColor(Color.TRANSPARENT)
+        pieChart?.transparentCircleRadius = 35f // Set the radius of the transparent circle
+        pieChart?.legend?.isEnabled = false
+        pieChart?.description?.isEnabled = false
+        pieChart?.setDrawEntryLabels(false)
+
+
+    }
+
+
+    private fun updatePiChart(reset: Boolean = false) {
+        val colors: MutableList<Int>? = pieChart?.data?.getDataSetByIndex(0)?.colors
+        val newColor: Int = if (reset) {
+            Color.TRANSPARENT
+        } else {
+            resources.getColor(R.color.white_a50)
+        }
+        colors?.set(circleIndex, newColor) // replace the color at the specified index
+        pieChart?.invalidate()
+
+    }
 
     override fun onSupportNavigateUp(): Boolean {
         return false
@@ -126,7 +221,6 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
         windowManager.defaultDisplay.getMetrics(displayMetrics)
 
         var width = displayMetrics.widthPixels
-        var height = displayMetrics.heightPixels
         binding.appBarHome.outerWheel.layoutParams.height = (0.9 * width).toInt()
         binding.appBarHome.outerWheel.layoutParams.width = (0.9 * width).toInt()
         binding.appBarHome.middleWheelLayout.layoutParams.height = (0.7 * width).toInt()
@@ -136,16 +230,25 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
 
         binding.appBarHome.meetingIv.setOnClickListener {
             rotateOuterCircle(false, 1)
+            circleIndex = 0
+            updatePiChart()
+
         }
 
         binding.appBarHome.walletIv.setOnClickListener {
             rotateOuterCircle(false, 2)
+            circleIndex = 1
+            updatePiChart()
         }
         binding.appBarHome.callIv.setOnClickListener {
             rotateOuterCircle(true, 3)
+            circleIndex = 2
+            updatePiChart()
         }
         binding.appBarHome.chatIv.setOnClickListener {
             rotateOuterCircle(true, 4)
+            circleIndex = 3
+            updatePiChart()
         }
         binding.appBarHome.innerWheel.setOnClickListener {
             rotateOuterCircle(true, 0)
@@ -195,8 +298,10 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
 
         rotateAnimatorClockWise.addListener(onEnd = {
 
-            if (index > 0)
+            if (index > 0) {
                 goToConversationActivity(index)
+                updatePiChart(true)
+            }
         })
     }
 

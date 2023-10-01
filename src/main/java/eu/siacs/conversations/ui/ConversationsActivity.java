@@ -31,7 +31,6 @@ package eu.siacs.conversations.ui;
 
 
 import static eu.siacs.conversations.ui.ConversationFragment.REQUEST_DECRYPT_PGP;
-import static eu.siacs.conversations.ui.StartConversationActivity.getSelectedAccount;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -54,7 +53,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.IdRes;
@@ -438,7 +436,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         ImageView backButton = findViewById(R.id.toolBar_leading_View);
         backButton.setOnClickListener(v -> super.onBackPressed());
 
-        binding.toolbar.toolbarSearch.setOnClickListener(v->{
+        binding.toolbar.toolbarSearch.setOnClickListener(v -> {
             startActivity(new Intent(this, SearchActivity.class));
         });
 
@@ -993,11 +991,11 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
     }
 
     @Override
-    public void onCreateDialogPositiveClick(Spinner spinner, String name) {
+    public void onCreateDialogPositiveClick(String name) {
         if (!xmppConnectionServiceBound) {
             return;
         }
-        final Account account = getSelectedAccount(this, spinner);
+        final Account account = xmppConnectionService.getAccounts().get(0);
         if (account == null) {
             return;
         }

@@ -157,11 +157,11 @@ public class Contact implements ListItem, Blockable {
                 return displayName;
             }
         }
+
         if (Config.X509_VERIFICATION && !TextUtils.isEmpty(this.commonName)) {
             return this.commonName;
         } else if (!TextUtils.isEmpty(this.systemName)) {
             Log.d(TABLENAME, "SYSTEM_NAME " + this.systemName);
-
             return this.systemName;
         } else if (!TextUtils.isEmpty(this.serverName)) {
             Log.d(TABLENAME, "SERVER_NAME " + this.serverName);
@@ -171,7 +171,6 @@ public class Contact implements ListItem, Blockable {
             return this.presenceName;
         } else if (jid.getLocal() != null) {
             Log.d(TABLENAME, "getLocal() " +JidHelper.localPartOrFallback(jid));
-
             return JidHelper.localPartOrFallback(jid);
         } else {
             Log.d(TABLENAME, "getDomain() " + this.systemName);

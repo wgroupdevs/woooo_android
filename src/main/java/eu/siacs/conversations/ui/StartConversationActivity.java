@@ -1043,11 +1043,11 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
     }
 
     @Override
-    public void onCreateDialogPositiveClick(Spinner spinner, String name) {
+    public void onCreateDialogPositiveClick(String name) {
         if (!xmppConnectionServiceBound) {
             return;
         }
-        final Account account = getSelectedAccount(this, spinner);
+        final Account account = xmppConnectionService.getAccounts().get(0);
         if (account == null) {
             return;
         }
