@@ -11,6 +11,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,6 +30,7 @@ import com.woooapp.meeting.impl.views.adapters.MeetingGridAdapter;
 import com.woooapp.meeting.impl.views.adapters.ScreenPagerAdapter;
 import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
 import com.woooapp.meeting.impl.views.models.GridPeer;
+import com.woooapp.meeting.impl.views.popups.MeetingMorePopup;
 import com.woooapp.meeting.impl.vm.EdiasProps;
 import com.woooapp.meeting.impl.vm.RoomProps;
 import com.woooapp.meeting.lib.MeetingClient;
@@ -49,6 +51,7 @@ import java.util.List;
 
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.databinding.ActivityMeetingBinding;
+import eu.siacs.conversations.ui.MainActivity;
 import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel;
 
 /**
@@ -94,7 +97,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private int deviceWidthDp;
     private int deviceHeightDp;
     private RelativeLayout drawerContainer;
-    private boolean sideMenuOpened = true;
+    private boolean mSideMenuOpened = true;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -123,13 +126,39 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             onBackPressed();
         });
 
-        // Drawer
-        createDrawer();
         mBinding.drawerButton.setOnClickListener(view -> {
-            if (sideMenuOpened) {
+            if (mSideMenuOpened) {
                 closeDrawer();
             } else {
                 openDrawer();
+            }
+        });
+
+        mBinding.meetingButtonMoreMenu.setOnClickListener(view -> {
+            // More Button
+            MeetingMorePopup morePopup = new MeetingMorePopup(this, mBinding.meetingMainContainer);
+            morePopup.show();
+        });
+
+        mBinding.meetingButtonAI.setOnClickListener(view -> {
+            // AI
+        });
+
+        mBinding.meetingButtonMic.setOnClickListener(view -> {
+            // Mic
+            if (mMeetingClient.isMicOn()) {
+                mMeetingClient.setMicOn(false);
+            } else {
+                mMeetingClient.setMicOn(true);
+            }
+        });
+
+        mBinding.meetingButtonCam.setOnClickListener(view -> {
+            // Cam
+            if (mMeetingClient.isCamOn()) {
+                mMeetingClient.setCamOn(false);
+            } else {
+                mMeetingClient.setCamOn(true);
             }
         });
     }
@@ -195,22 +224,23 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
      * Custom Drawer Layout
      */
     private void createDrawer() {
-        if (sideMenuOpened) {
-            closeDrawer();
+        if (mSideMenuOpened) {
+            WooAnimationUtil.setLeftMenuClosed(mBinding.drawerContainer, mBinding.drawerLayout.getWidth());
+            mSideMenuOpened = false;
         }
     }
 
     private void closeDrawer() {
-        if (sideMenuOpened) {
-            WooAnimationUtil.closeLeftMenu(mBinding.drawerContainer, Display.pxToDp(this, 375));
-            sideMenuOpened = false;
+        if (mSideMenuOpened) {
+            WooAnimationUtil.closeLeftMenu(mBinding.drawerContainer, mBinding.drawerLayout.getWidth());
+            mSideMenuOpened = false;
         }
     }
 
     private void openDrawer() {
-        if (!sideMenuOpened) {
-            WooAnimationUtil.openLeftMenu(mBinding.drawerContainer, Display.pxToDp(this, 375));
-            sideMenuOpened = true;
+        if (!mSideMenuOpened) {
+            WooAnimationUtil.openLeftMenu(mBinding.drawerContainer, mBinding.drawerLayout.getWidth());
+            mSideMenuOpened = true;
         }
     }
 
@@ -320,6 +350,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
         // PeerView
         peerGridAdapter = new MeetingGridAdapter(this, this, mRoomStore, mMeetingClient);
+        peerGridAdapter.setTabBarHeight(mBinding.bottomBarMeeting.getHeight());
         mBinding.gridViewMeeting.setAdapter(peerGridAdapter);
         mBinding.gridViewMeeting.setEnabled(false);
 
@@ -421,6 +452,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         switch (msg.what) {
             case WooEvents.EVENT_TYPE_SOCKET_ID:
                 Log.d(TAG, "<< Handler Event SOCKET_ID Received >> " + msg.obj);
+                runOnUiThread(() -> {
+                    // Drawer
+                    createDrawer();
+                });
                 return true;
             case WooEvents.EVENT_TYPE_PRODUCER_CREATED:
                 Log.d(TAG, "<< Handler Event PRODUCER CREATED [" + msg.obj + "]");
@@ -456,6 +491,41 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     // Destroy and finish()
                     onBackPressed();
                 }
+                return true;
+            case WooEvents.EVENT_RECEIVED_MESSAGE:
+                Log.d(TAG, "<< Handler Event : Chat Message Received in handler");
+                com.woooapp.meeting.net.models.Message message = (com.woooapp.meeting.net.models.Message) msg.obj;
+                if (message != null) {
+                    runOnUiThread(() -> {
+                        Toast.makeText(this, message.getMessage(), Toast.LENGTH_LONG).show();
+                    });
+                }
+                return true;
+            case WooEvents.EVENT_SENT_MESSAGE:
+                Log.d(TAG, "Message " + msg.obj + " Sent successfully");
+                return true;
+            case WooEvents.EVENT_FAILURE_MESSAGE:
+                Log.w(TAG, "Failed to send chat message " + msg.obj);
+                return true;
+            case WooEvents.EVENT_MIC_TURNED_ON:
+                runOnUiThread(() -> {
+                    mBinding.meetingButtonMic.setImageResource(R.drawable.ic_mic_off_gray);
+                });
+                return true;
+            case WooEvents.EVENT_MIC_TURNED_OFF:
+                runOnUiThread(() -> {
+                    mBinding.meetingButtonMic.setImageResource(R.drawable.baseline_mic_34);
+                });
+                return true;
+            case WooEvents.EVENT_CAM_TURNED_ON:
+                runOnUiThread(() -> {
+                    mBinding.meetingButtonCam.setImageResource(R.drawable.ic_video_camera_white);
+                });
+                return true;
+            case WooEvents.EVENT_CAM_TURNED_OFF:
+                runOnUiThread(() -> {
+                    mBinding.meetingButtonCam.setImageResource(R.drawable.ic_camera_off_gray);
+                });
                 return true;
             default:
                 return false;

@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi;
 import androidx.annotation.WorkerThread;
 
 import com.android.volley.VolleyError;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.woooapp.meeting.impl.utils.WooDirector;
 import com.woooapp.meeting.impl.utils.WooEvents;
 import com.woooapp.meeting.lib.Async;
@@ -19,6 +20,7 @@ import com.woooapp.meeting.lib.PeerConnectionUtils;
 import com.woooapp.meeting.lib.lv.RoomStore;
 import com.woooapp.meeting.net.ApiManager;
 import com.woooapp.meeting.net.models.CreateMeetingResponse;
+import com.woooapp.meeting.net.models.Message;
 import com.woooapp.meeting.net.models.RoomData;
 
 import org.json.JSONArray;
@@ -686,6 +688,18 @@ public class WooSocket {
                 }
             }
         });
+
+        mSocket.on("messageSent", args -> {
+            if (args != null) {
+                Log.d(TAG, "<< EVENT Message Sent " + args[0]);
+                try {
+                    Message message = Message.fromJson(String.valueOf(args[0]));
+                    WooEvents.getInstance().notify(WooEvents.EVENT_RECEIVED_MESSAGE, message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     // Emitters
@@ -824,6 +838,31 @@ public class WooSocket {
 
     /**
      *
+     * @param message
+     */
+    public void emitSendMessage(@NonNull Message message) {
+        mWorkHandler.post(() -> {
+            try {
+                JSONObject obj = new JSONObject();
+                obj.put("meetingId", message.getMeetingId());
+                obj.put("name", message.getName());
+                obj.put("socketId", message.getSocketId());
+                obj.put("message", message.getMessage());
+                obj.put("profileImage", message.getProfileImage());
+                Log.d(TAG, "Emitting Message >> " + obj);
+                mSocket.emit("messageSent", obj);
+                WooEvents.getInstance().notify(WooEvents.EVENT_SENT_MESSAGE, obj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                WooEvents.getInstance().notify(WooEvents.EVENT_FAILURE_MESSAGE, message.getMessage());
+            }
+        });
+    }
+
+    // End Emitters
+
+    /**
+     *
      * @param rtpCaps
      */
     private void createMediaSoupDevice(String rtpCaps) {
@@ -855,7 +894,7 @@ public class WooSocket {
         }
     }
 
-    // NOT CALLED AS IT REQUIRES MIN SDK TO BE 24
+    // NOT CALLED, AS IT REQUIRES MIN SDK TO BE 24
     @Deprecated
     @RequiresApi(api = Build.VERSION_CODES.N)
     private String getProducerId(@NonNull String kind, @NonNull String rtpParameters) throws JSONException, ExecutionException, InterruptedException {
@@ -1102,12 +1141,14 @@ public class WooSocket {
     private void muteMicImpl() {
         Logger.d(TAG, "muteMicImpl()");
         mMicProducer.pause();
+        WooEvents.getInstance().notify(WooEvents.EVENT_MIC_TURNED_OFF, true);
     }
 
     @WorkerThread
     private void unmuteMicImpl() {
         Logger.d(TAG, "unmuteMicImpl()");
         mMicProducer.resume();
+        WooEvents.getInstance().notify(WooEvents.EVENT_MIC_TURNED_ON, true);
     }
 
     @WorkerThread
@@ -1150,6 +1191,7 @@ public class WooSocket {
                             null,
                             null);
             mStore.addProducer(mCamProducer);
+            WooEvents.getInstance().notify(WooEvents.EVENT_CAM_TURNED_ON, true);
         } catch (MediasoupException e) {
             e.printStackTrace();
             mStore.addNotify("error", "Error enabling webcam: " + e.getMessage());
@@ -1170,6 +1212,8 @@ public class WooSocket {
 
         mCamProducer = null;
         mCamEnabled = false;
+
+        WooEvents.getInstance().notify(WooEvents.EVENT_CAM_TURNED_OFF, true);
     }
 
     /**

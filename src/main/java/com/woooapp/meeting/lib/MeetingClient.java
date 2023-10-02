@@ -3,12 +3,14 @@ package com.woooapp.meeting.lib;
 import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.woooapp.meeting.lib.lv.RoomStore;
 import com.woooapp.meeting.lib.socket.WooSocket;
 import com.woooapp.meeting.net.models.CreateMeetingResponse;
+import com.woooapp.meeting.net.models.Message;
 
 import org.mediasoup.droid.Consumer;
 import org.mediasoup.droid.DataConsumer;
@@ -24,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created on 16/09/2023 at 1:21 am
  */
 public class MeetingClient {
-    private static final String TAG = MeetingClient.class.getCanonicalName().toUpperCase(Locale.ROOT);
+    private static final String TAG = MeetingClient.class.getSimpleName() + ".java";
     private final Context mContext;
     private final Handler mWorkerHandler;
     private WooSocket mSocket;
@@ -37,6 +39,8 @@ public class MeetingClient {
     private String email;
     private String accountUniqueId;
     private String picture;
+    private boolean micOn = true;
+    private boolean camOn = true;
     public enum ConnectionState {
         // initial state.
         NEW,
@@ -70,6 +74,7 @@ public class MeetingClient {
         HandlerThread handlerThread = new HandlerThread("WooWorker");
         handlerThread.start();
         this.mWorkerHandler = new Handler(handlerThread.getLooper());
+        Log.d(TAG, "MeetingClient Initialized ...");
     }
 
     /**
@@ -134,6 +139,44 @@ public class MeetingClient {
         this.picture = picture;
     }
 
+    public boolean isMicOn() {
+        return micOn;
+    }
+
+    public void setMicOn(boolean micOn) {
+        if (micOn && !this.micOn) {
+            mSocket.unmuteMic();
+        } else {
+            mSocket.muteMic();
+        }
+        this.micOn = micOn;
+    }
+
+    public boolean isCamOn() {
+        return camOn;
+    }
+
+    public void setCamOn(boolean camOn) {
+        if (camOn && !this.camOn) {
+            mSocket.enableCam();
+        } else {
+            mSocket.disableCam();
+        }
+        this.camOn = camOn;
+    }
+
+    /**
+     * Send chat message
+     *
+     * @param message {@link Message}
+     */
+    public void sendMessage(@NonNull final Message message) {
+        if (mSocket != null) {
+            if (mSocket.isConnected()) {
+                mSocket.emitSendMessage(message);
+            }
+        }
+    }
     /**
      *
      * @return

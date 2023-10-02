@@ -41,6 +41,7 @@ public class MeetingGridAdapter extends BaseAdapter {
     private RoomStore mStore;
     private MeetingClient mMeetingClient;
     private final LifecycleOwner mLifecycleOwner;
+    private int tabBarHeight;
 
     /**
      *
@@ -137,8 +138,8 @@ public class MeetingGridAdapter extends BaseAdapter {
      * @return
      */
     private boolean setViewHeight(@NonNull final View view) {
-        int height = Display.getDisplayHeight(mContext) - 250;
-        if (mPeers.size() > 1 && mPeers.size() < 3) {
+        int height = Display.getDisplayHeight(mContext) - (tabBarHeight + 200);
+        if (mPeers.size() == 2) {
             height = height / 2 - 50;
         } else if (mPeers.size() > 2 && mPeers.size() < 5) {
             height = height / 2 - 50;
@@ -159,6 +160,14 @@ public class MeetingGridAdapter extends BaseAdapter {
     public void replacePeers(List<GridPeer> peers) {
         this.mPeers = peers;
         notifyDataSetChanged();
+    }
+
+    /**
+     *
+     * @param height
+     */
+    public void setTabBarHeight(int height) {
+        this.tabBarHeight = tabBarHeight;
     }
 
     static class MeViewHolder {

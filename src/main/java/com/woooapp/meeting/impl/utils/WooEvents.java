@@ -28,6 +28,13 @@ public final class WooEvents {
     public static final int EVENT_TYPE_CONSUMER_CREATED           = 0x08;
     public static final int EVENT_TYPE_CONSUME_BACK_CREATED       = 0x09;
     public static final int EVENT_TYPE_FETCH_ROOM_DATA            = 0xa;
+    public static final int EVENT_RECEIVED_MESSAGE                = 0xb;
+    public static final int EVENT_SENT_MESSAGE                    = 0xc;
+    public static final int EVENT_FAILURE_MESSAGE                 = 0xd;
+    public static final int EVENT_MIC_TURNED_ON                   = 0xe;
+    public static final int EVENT_MIC_TURNED_OFF                  = 0xf;
+    public static final int EVENT_CAM_TURNED_ON                   = 0x11;
+    public static final int EVENT_CAM_TURNED_OFF                  = 0x12;
 
     private WooEvents() {
         Log.d(TAG, "WooEvents Initialized ...");
