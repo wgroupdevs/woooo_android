@@ -15,21 +15,39 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <GridView
-            android:id="@+id/gridViewMeeting"
+<!--        <GridView-->
+<!--            android:id="@+id/gridViewMeeting"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_marginLeft="10sp"-->
+<!--            android:layout_marginTop="5sp"-->
+<!--            android:layout_marginRight="10sp"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            android:columnWidth="120dp"-->
+<!--            android:gravity="center"-->
+<!--            android:horizontalSpacing="5dp"-->
+<!--            android:numColumns="2"-->
+<!--            android:stretchMode="columnWidth"-->
+<!--            android:verticalSpacing="10sp" />-->
+        <!-- TODO add layout animation -->
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/meetingViewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginLeft="10sp"
-            android:layout_marginTop="5sp"
-            android:layout_marginRight="10sp"
             android:background="@android:color/transparent"
-            android:columnWidth="120dp"
-            android:gravity="center"
-            android:horizontalSpacing="5dp"
-            android:numColumns="2"
-            android:stretchMode="columnWidth"
-            android:verticalSpacing="10sp" />
-        <!-- TODO add layout animation -->
+            android:layout_marginBottom="70sp"
+            />
+
+<!--        <FrameLayout-->
+<!--            android:id="@+id/meetingFrameLayout"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_marginBottom="70sp"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            >-->
+<!--            &lt;!&ndash; Meeting Peers Layout &ndash;&gt;-->
+<!--        </FrameLayout>-->
 
         <TextView
             android:id="@+id/tvMeetingId"
@@ -105,6 +123,15 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/meetingBackground"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="#88000000"
+            android:visibility="gone"
+            />
+
         <!-- Custom Drawer -->
         <RelativeLayout
             android:id="@+id/drawerContainer"
@@ -116,7 +143,7 @@
                 android:id="@+id/drawerLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginRight="50sp"
+                android:layout_marginRight="40sp"
                 android:background="@drawable/bg_meeting_drawer"
                 android:elevation="10sp">
 
@@ -176,7 +203,7 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="45sp"
                 android:orientation="vertical"
                 android:background="@drawable/bg_meeting_drawer_button"
                 android:layout_alignParentEnd="true"
@@ -186,7 +213,7 @@
 
                 <ImageView
                     android:id="@+id/drawerButton"
-                    android:layout_width="50sp"
+                    android:layout_width="40sp"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_side_menu_meeting" />
 

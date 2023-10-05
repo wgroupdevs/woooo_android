@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         bind:cardBackgroundColor="@color/bg"
         bind:cardCornerRadius="15dp"
-        bind:cardUseCompatPadding="true"
+        bind:cardUseCompatPadding="false"
         android:clipChildren="true"
         >
 

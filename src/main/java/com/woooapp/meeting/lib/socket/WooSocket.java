@@ -10,8 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.WorkerThread;
 
-import com.android.volley.VolleyError;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.woooapp.meeting.impl.utils.WooDirector;
 import com.woooapp.meeting.impl.utils.WooEvents;
 import com.woooapp.meeting.lib.Async;
@@ -19,7 +17,6 @@ import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.PeerConnectionUtils;
 import com.woooapp.meeting.lib.lv.RoomStore;
 import com.woooapp.meeting.net.ApiManager;
-import com.woooapp.meeting.net.models.CreateMeetingResponse;
 import com.woooapp.meeting.net.models.Message;
 import com.woooapp.meeting.net.models.RoomData;
 
@@ -50,10 +47,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
-import eu.siacs.conversations.xmpp.jingle.Media;
 import io.reactivex.disposables.CompositeDisposable;
 import io.socket.client.IO;
 import io.socket.client.Socket;
+
+import okhttp3.Call;
+import okhttp3.Response;
 
 /**
  * @author Muneeb Ahmad (ahmadgallian@yahoo.com)
@@ -574,62 +573,65 @@ public class WooSocket {
                     String producerSockId = obj.getString("producerSockId");
                     String storageId = obj.getString("storageId");
 
-                    ApiManager.build(mContext).fetchRoomData(mMeetingClient.getMeetingId(), new ApiManager.ApiResult() {
+                    ApiManager.build(mContext).fetchRoomData2(mMeetingClient.getMeetingId(), new ApiManager.ApiResult2() {
                         @Override
-                        public void onResult(Object response) {
+                        public void onResult(Call call, Response response) {
                             if (response != null) {
-                                Log.d(TAG, "<< Room Data >> " + response);
-                                try {
-                                    final RoomData roomData = RoomData.fromJson(String.valueOf(response));
-                                    if (roomData.getMembers() != null) {
-                                        for (final RoomData.Member member : roomData.getMembers()) {
-                                            if (member.getSocketId().equals(producerSockId)) {
-                                                Log.d(TAG, "<< Members has producerSocketId >> " + producerSockId);
-                                                final String username = member.getUsername();
-                                                final String email = member.getEmail();
-                                                final String finalUsername = username != null ? username : email;
-                                                // TODO Mark Check
-                                                try {
-                                                    JSONObject peer = new JSONObject();
-                                                    peer.put("id", producerSockId);
-                                                    peer.put("displayName", finalUsername.isEmpty() ? email : finalUsername);
-                                                    peer.put("device", null);
-                                                    mStore.addPeer(producerSockId, peer);
-                                                    Log.d(TAG, "<< Created Peer >> " + peer);
+                                if (response.body() != null) {
+                                    try {
+                                        String resp = response.body().string();
+                                        Log.d(TAG, "<< Room Data Response >> " + resp);
+                                        final RoomData roomData = RoomData.fromJson(resp);
+                                        if (roomData.getMembers() != null) {
+                                            for (final RoomData.Member member : roomData.getMembers()) {
+                                                if (member.getSocketId().equals(producerSockId)) {
+                                                    Log.d(TAG, "<< Members has producerSocketId >> " + producerSockId);
+                                                    final String username = member.getUsername();
+                                                    final String email = member.getEmail();
+                                                    final String finalUsername = username != null ? username : email;
+                                                    // TODO Mark Check
+                                                    try {
+                                                        JSONObject peer = new JSONObject();
+                                                        peer.put("id", producerSockId);
+                                                        peer.put("displayName", finalUsername.isEmpty() ? email : finalUsername);
+                                                        peer.put("device", null);
+                                                        mStore.addPeer(producerSockId, peer);
+                                                        Log.d(TAG, "<< Created Peer >> " + peer);
 
-                                                    // Peer id sent update peer form there.
+                                                        // Peer id sent update peer form there.
 //                                                    WooEvents.getInstance().notify(WooEvents.EVENT_TYPE_FETCH_ROOM_DATA, producerSockId);
-                                                } catch (JSONException e) {
-                                                    e.printStackTrace();
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                    // TODO End Mark
+
+                                                    RecvTransport recvTransport = mRecvTransports.get(storageId);
+                                                    Consumer consumer = recvTransport
+                                                            .consume(
+                                                                    consumer1 -> mMeetingClient.getConsumers().remove(consumer1.getId()),
+                                                                    id,
+                                                                    producerId,
+                                                                    kind,
+                                                                    rtpParams.toString(),
+                                                                    "{}");
+
+                                                    mMeetingClient.getConsumers().put(consumer.getId(),
+                                                            new MeetingClient.ConsumerHolder(producerSockId, consumer));
+                                                    mStore.addConsumer(producerSockId, type, consumer, producerPaused);
+                                                    WooEvents.getInstance().notify(WooEvents.EVENT_TYPE_CONSUME_BACK_CREATED, obj);
                                                 }
-                                                // TODO End Mark
-
-                                                RecvTransport recvTransport = mRecvTransports.get(storageId);
-                                                Consumer consumer = recvTransport
-                                                        .consume(
-                                                                consumer1 -> mMeetingClient.getConsumers().remove(consumer1.getId()),
-                                                                id,
-                                                                producerId,
-                                                                kind,
-                                                                rtpParams.toString(),
-                                                                "{}");
-
-                                                mMeetingClient.getConsumers().put(consumer.getId(),
-                                                        new MeetingClient.ConsumerHolder(producerSockId, consumer));
-                                                mStore.addConsumer(producerSockId, type, consumer, producerPaused);
-                                                WooEvents.getInstance().notify(WooEvents.EVENT_TYPE_CONSUME_BACK_CREATED, obj);
                                             }
                                         }
+                                    } catch (IOException | MediasoupException e) {
+                                        e.printStackTrace();
                                     }
-                                } catch (IOException | MediasoupException e) {
-                                    e.printStackTrace();
                                 }
                             }
                         }
 
                         @Override
-                        public void onFailure(VolleyError error) {
-
+                        public void onFailure(Call call, Object error) {
+                            Log.d(TAG, "Error while fetching room data " + error);
                         }
                     });
 

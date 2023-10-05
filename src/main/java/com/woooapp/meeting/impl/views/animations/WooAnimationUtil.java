@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * @author Muneeb Ahmad
@@ -25,10 +26,14 @@ public final class WooAnimationUtil {
      *
      * @param v
      * @param width
+     * @param adapter
      */
-    public static void openLeftMenu(@NonNull View v, float width) {
+    public static void openLeftMenu(@NonNull View v, float width, @Nullable AnimatorListenerAdapter adapter) {
         ValueAnimator anim = ObjectAnimator.ofFloat(v, View.TRANSLATION_X, 0);
         anim.setDuration(300);
+        if (adapter != null) {
+            anim.addListener(adapter);
+        }
         anim.start();
     }
 
@@ -36,10 +41,14 @@ public final class WooAnimationUtil {
      *
      * @param v
      * @param width
+     * @param adapter
      */
-    public static void closeLeftMenu(@NonNull final View v, float width) {
+    public static void closeLeftMenu(@NonNull final View v, float width, AnimatorListenerAdapter adapter) {
         ValueAnimator anim = ObjectAnimator.ofFloat(v, View.TRANSLATION_X, -width);
         anim.setDuration(300);
+        if (adapter != null) {
+            anim.addListener(adapter);
+        }
         anim.start();
     }
 
@@ -48,13 +57,21 @@ public final class WooAnimationUtil {
      * @param view
      * @param width
      */
-    public static void setLeftMenuClosed(@NonNull final View view, float width) {
+    public static void setLeftMenuClosed(@NonNull final View view, float width, @Nullable AnimatorListenerAdapter adapter) {
         ValueAnimator anim = ObjectAnimator.ofFloat(view, View.TRANSLATION_X, -width);
         anim.setDuration(10);
+        if (adapter != null) {
+            anim.addListener(adapter);
+        }
         anim.start();
     }
 
-    public static void showView(@NonNull View view) {
+    /**
+     *
+     * @param view
+     * @param adapter
+     */
+    public static void showView(@NonNull View view, @Nullable AnimatorListenerAdapter adapter) {
         ValueAnimator scaleX = ObjectAnimator.ofFloat(view, View.SCALE_X, 0f, 1f);
         scaleX.setDuration(200);
         ValueAnimator scaleY = ObjectAnimator.ofFloat(view, View.SCALE_Y, 0f, 1f);
@@ -62,11 +79,14 @@ public final class WooAnimationUtil {
         ValueAnimator alpha = ObjectAnimator.ofFloat(view, View.ALPHA, 0f, 1f);
         alpha.setDuration(200);
         AnimatorSet set = new AnimatorSet();
+        if (adapter != null) {
+            set.addListener(adapter);
+        }
         set.play(scaleX).with(scaleY).with(alpha);
         set.start();
     }
 
-    public static void hideView(@NonNull View view, @NonNull AnimatorListenerAdapter adapter) {
+    public static void hideView(@NonNull View view, @Nullable AnimatorListenerAdapter adapter) {
         ValueAnimator scaleX = ObjectAnimator.ofFloat(view, View.SCALE_X, 1f, 0f);
         scaleX.setDuration(200);
         ValueAnimator scaleY = ObjectAnimator.ofFloat(view, View.SCALE_Y, 1f, 0f);
@@ -74,7 +94,9 @@ public final class WooAnimationUtil {
         ValueAnimator alpha = ObjectAnimator.ofFloat(view, View.ALPHA, 1f, 0f);
         alpha.setDuration(200);
         AnimatorSet set = new AnimatorSet();
-        set.addListener(adapter);
+        if (adapter != null) {
+            set.addListener(adapter);
+        }
         set.play(scaleX).with(scaleY).with(alpha);
         set.start();
     }

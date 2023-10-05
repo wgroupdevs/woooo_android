@@ -15,7 +15,7 @@
         android:clipChildren="true"
         bind:cardBackgroundColor="@color/trans_bg"
         bind:cardCornerRadius="15dp"
-        bind:cardUseCompatPadding="true">
+        bind:cardUseCompatPadding="false">
 
         <include
             android:id="@+id/wooPeerView"
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
             android:gravity="center_vertical"
-            android:padding="10dp"
+            android:padding="2dp"
             android:orientation="horizontal"
             android:layout_margin="10sp"
             >

@@ -39,6 +39,7 @@
 	<color name="blue_primary200">#ff2675AE</color>
 	<color name="blue_primary300">#ff22689B</color>
 	<color name="blue_primary_transparent">#8022689B</color>
+	<color name="dark_primary_transparent">#80000000</color>
 	<color name="cyan">#ff00FFFF</color>
 
 	<color name="green700_desaturated">#ff4d8e50</color> <!-- desaturated by 15 -->

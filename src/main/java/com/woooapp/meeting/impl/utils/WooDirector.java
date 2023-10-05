@@ -7,7 +7,6 @@ import android.telephony.TelephonyManager;
 
 import androidx.annotation.NonNull;
 
-import com.android.volley.VolleyError;
 import com.woogroup.woooo_app.woooo.di.WooApplication;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.net.ApiManager;
@@ -37,43 +36,6 @@ public final class WooDirector {
         UUID devUUID = new UUID(androidId.hashCode(), (long) System.currentTimeMillis() << 32 | System.nanoTime());
         String uuid = devUUID.toString();
         return uuid;
-    }
-
-    /**
-     *
-     * @param meetingId
-     * @param callback
-     */
-    public void fetchRoomData(
-            @NonNull String meetingId,
-            @Nullable ApiManager.ApiResult callback) {
-       ApiManager.build(WooApplication.Companion.getSharedInstance())
-               .fetchRoomData(meetingId,
-                       callback != null ? callback : new ApiManager.ApiResult() {
-                           @Override
-                           public void onResult(Object response) {
-
-                           }
-
-                           @Override
-                           public void onFailure(VolleyError error) {
-
-                           }
-                       });
-    }
-
-    /**
-     *
-     * @param socketId
-     * @param meetingClient
-     */
-    public void addMember(@NonNull final String socketId, @NonNull MeetingClient meetingClient) {
-        PutMembersDataBody body = new PutMembersDataBody();
-        body.setEmail(meetingClient.getEmail());
-        body.setAccountUniqueId(meetingClient.getAccountUniqueId());
-        body.setUsername(meetingClient.getUsername());
-        body.setPicture(meetingClient.getPicture());
-        body.setSocketId(socketId);
     }
 
     /**

@@ -1,24 +1,17 @@
 package com.woooapp.meeting.net;
 
 import android.content.Context;
-
 import androidx.annotation.NonNull;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
 
 import eu.siacs.conversations.BuildConfig;
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * @author Muneeb Ahmad
@@ -29,16 +22,14 @@ import okhttp3.RequestBody;
  */
 public final class ApiManager {
 
+    private static final String TAG = ApiManager.class.getSimpleName() + ".java";
     private Context mContext;
-    private final RequestQueue requestQueue;
 
     /**
-     *
      * @param context
      */
     private ApiManager(Context context) {
         this.mContext = context;
-        this.requestQueue = Volley.newRequestQueue(mContext);
     }
 
     public static final String BASE_URL = "https://wmediasoup.watchblock.net";
@@ -53,36 +44,30 @@ public final class ApiManager {
             BuildConfig.APP_NAME, BuildConfig.BUILD_TYPE, BuildConfig.VERSION_NAME);
 
     /**
-     *
      * @param jsonBody
      * @param apiResultCallback
      */
-    public void fetchCreatePreMeeting(@NonNull String jsonBody, @NonNull ApiResult apiResultCallback) {
-        StringRequest strRequest = new StringRequest(
-                Request.Method.POST,
-                BASE_URL + EP_CREATE,
-                apiResultCallback::onResult,
-                apiResultCallback::onFailure) {
+    public void fetchCreatePreMeeting(@NonNull String jsonBody, @NonNull ApiResult2 apiResultCallback) {
+        OkHttpClient client = new OkHttpClient.Builder().build();
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(jsonBody, mediaType);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(BASE_URL + EP_CREATE)
+                .method("POST", body)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("User-Agent", USER_AGENT)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                apiResultCallback.onFailure(call, e.getMessage());
             }
 
             @Override
-            public byte[] getBody() throws AuthFailureError {
-                return jsonBody.getBytes(StandardCharsets.UTF_8);
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                apiResultCallback.onResult(call, response);
             }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                headers.put("User-Agent", USER_AGENT);
-                return headers;
-            }
-        };
-
-        requestQueue.add(strRequest);
+        });
     }
 
     /**
@@ -90,76 +75,57 @@ public final class ApiManager {
      * @param meetingId
      * @param apiResultCallback
      */
-    public void fetchRoomData(@NonNull String meetingId, @NonNull ApiResult apiResultCallback) {
-        StringRequest strRequest = new StringRequest(
-                Request.Method.GET,
-                BASE_URL + EP_GET_ROOM_DATA + meetingId,
-                apiResultCallback::onResult,
-                apiResultCallback::onFailure
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("User-Agent", USER_AGENT);
-                return headers;
-            }
-        };
-
-        requestQueue.add(strRequest);
+    public void fetchRoomData2(@NonNull String meetingId, @NonNull ApiResult2 apiResultCallback) {
+        OkHttpClient client = new OkHttpClient.Builder().build();
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(BASE_URL + EP_GET_ROOM_DATA + meetingId)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("User-Agent", USER_AGENT)
+                .build();
+        try {
+            Response response = client.newCall(request).execute();
+            apiResultCallback.onResult(null, response);
+        } catch (IOException e) {
+            e.printStackTrace();
+            apiResultCallback.onFailure(null, e.getMessage());
+        }
     }
 
     /**
-     *  Also Make Put Request To Server
-     * {@link ApiManager#BASE_URL}/meeting/[meetingID] To Add Our Own Member Data. Sent Data
-     * Should Look Like:
-     * <p>
-     * {
-     *      accountUniqueId:data?.accountUniqueId,
-     *      email:data?.email,
-     *      username:data?.userName,
-     *      picture:data?.imageURL,
-     *      socketId:socket.id
-     * }
-     * </p>
-     *
      * @param jsonBody
      * @param meetingId
      * @param apiResultCallback
      */
-    public void putMembersData(@NonNull String jsonBody, @NonNull String meetingId, @NonNull ApiResult apiResultCallback) {
-        StringRequest strRequest = new StringRequest(
-                Request.Method.PUT,
-                String.format("%s/meeting/%s", BASE_URL, meetingId),
-                apiResultCallback::onResult,
-                apiResultCallback::onFailure) {
+    public void putMembersData(@NonNull String jsonBody, @NonNull String meetingId, @NonNull ApiResult2 apiResultCallback) {
+        OkHttpClient client = new OkHttpClient.Builder().build();
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(jsonBody, mediaType);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(String.format("%s/meeting/%s", BASE_URL, meetingId))
+                .method("PUT", body)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("User-Agent", USER_AGENT)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                apiResultCallback.onFailure(call, e.getMessage());
             }
 
             @Override
-            public byte[] getBody() throws AuthFailureError {
-                return jsonBody.getBytes(StandardCharsets.UTF_8);
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                apiResultCallback.onResult(call, response);
             }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                headers.put("User-Agent", USER_AGENT);
-                return headers;
-            }
-        };
-        requestQueue.add(strRequest);
+        });
     }
 
-    public interface ApiResult {
-        void onResult(Object response);
-        void onFailure(VolleyError error);
+    public interface ApiResult2 {
+        void onResult(Call call, Response response);
+
+        void onFailure(Call call, Object e);
     }
 
     /**
-     *
      * @param context
      * @return
      */
