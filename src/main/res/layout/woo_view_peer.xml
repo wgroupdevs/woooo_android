@@ -37,7 +37,18 @@
             >
             <!--            android:visibility="@{wooMeProps.connected ? View.VISIBLE : View.GONE}" -->
 
-
+            <TextView
+                android:id="@+id/tvPeerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:padding="5sp"
+                android:text="Me"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                android:ellipsize="end"
+                />
 
         </LinearLayout>
 

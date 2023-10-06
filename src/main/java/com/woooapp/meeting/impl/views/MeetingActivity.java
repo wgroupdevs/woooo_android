@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -32,11 +33,13 @@ import com.google.android.material.snackbar.Snackbar;
 import com.woogroup.woooo_app.woooo.di.WooApplication;
 import com.woooapp.meeting.device.Display;
 import com.woooapp.meeting.impl.utils.WooEvents;
+import com.woooapp.meeting.impl.views.adapters.MeetingChatAdapter;
 import com.woooapp.meeting.impl.views.adapters.MeetingGridAdapter;
 import com.woooapp.meeting.impl.views.adapters.MeetingPeersAdapter;
 import com.woooapp.meeting.impl.views.adapters.ScreenPagerAdapter;
 import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
 import com.woooapp.meeting.impl.views.containers.PeersFragment;
+import com.woooapp.meeting.impl.views.models.Chat;
 import com.woooapp.meeting.impl.views.models.GridPeer;
 import com.woooapp.meeting.impl.views.models.MeetingPage;
 import com.woooapp.meeting.impl.views.popups.MeetingMorePopup;
@@ -108,6 +111,9 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private UIManager uiManager;
     private FrameLayout mPeerContainer;
     private NavigationLayout mNavigationLayout;
+    private MeetingChatAdapter chatAdapter;
+    private List<Chat> chatList = new LinkedList<>();
+    private boolean chatSelected = true;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -181,6 +187,18 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 mMeetingClient.setCamOn(true);
             }
         });
+
+        mBinding.buttonMeetingChatSend.setOnClickListener(view -> {
+            com.woooapp.meeting.net.models.Message message = new com.woooapp.meeting.net.models.Message();
+            message.setSocketId(mMeetingClient.getSocketId());
+            message.setProfileImage(this.picture);
+            message.setName(this.username);
+            message.setMeetingId(mMeetingId);
+            message.setMessage(mBinding.etMeetingChat.getText().toString());
+            mMeetingClient.sendMessage(message);
+
+            mBinding.etMeetingChat.setText("");
+        });
     }
 
     private void setup() {
@@ -247,6 +265,41 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         if (mSideMenuOpened) {
             WooAnimationUtil.setLeftMenuClosed(mBinding.drawerContainer, mBinding.drawerLayout.getWidth(), null);
             mSideMenuOpened = false;
+        }
+        this.chatAdapter = new MeetingChatAdapter(this, chatList);
+        mBinding.listViewMeetingChat.setAdapter(chatAdapter);
+
+        mBinding.tabChat.setOnClickListener(view -> {
+            switchChatTabs();
+        });
+
+        mBinding.tabTranscript.setOnClickListener(view -> {
+            switchChatTabs();
+        });
+    }
+
+    private void switchChatTabs() {
+        if (chatSelected) {
+            mBinding.tabTranscript.setBackgroundResource(R.drawable.bg_meeting_menu_tab);
+            mBinding.tabChat.setBackgroundResource(R.drawable.bg_meeting_menu_tab_disabled);
+            mBinding.layoutEtChat.setVisibility(View.GONE);
+            WooAnimationUtil.hideView(mBinding.listViewMeetingChat, new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    mBinding.listViewMeetingChat.setVisibility(View.GONE);
+                }
+            });
+
+            chatSelected = false;
+        } else {
+            mBinding.tabTranscript.setBackgroundResource(R.drawable.bg_meeting_menu_tab_disabled);
+            mBinding.tabChat.setBackgroundResource(R.drawable.bg_meeting_menu_tab);
+            mBinding.layoutEtChat.setVisibility(View.VISIBLE);
+            mBinding.listViewMeetingChat.setVisibility(View.VISIBLE);
+            WooAnimationUtil.showView(mBinding.listViewMeetingChat, null);
+
+            chatSelected = true;
         }
     }
 
@@ -424,7 +477,8 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 //        peerGridAdapter.setTabBarHeight(mBinding.bottomBarMeeting.getHeight());
 //        mBinding.gridViewMeeting.setAdapter(peerGridAdapter);
 //        mBinding.gridViewMeeting.setEnabled(false);
-        this.peersPagerAdapter = new MeetingPeersAdapter(this, this, mRoomStore, mMeetingClient);
+        this.peersPagerAdapter = new MeetingPeersAdapter(this,
+                this, mRoomStore, mMeetingClient);
         mBinding.meetingViewPager.setAdapter(peersPagerAdapter);
 
         mRoomStore
@@ -610,23 +664,33 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 if (message != null) {
                     runOnUiThread(() -> {
                         Toast.makeText(this, message.getMessage(), Toast.LENGTH_LONG).show();
+                        chatList.add(new Chat(Chat.MESSAGE_TYPE_RECV, message));
+                        chatAdapter.notifyDataSetChanged();
                     });
                 }
                 return true;
             case WooEvents.EVENT_SENT_MESSAGE:
                 Log.d(TAG, "Message " + msg.obj + " Sent successfully");
+                com.woooapp.meeting.net.models.Message message1 = (com.woooapp.meeting.net.models.Message) msg.obj;
+                if (message1 != null) {
+                    runOnUiThread(() -> {
+                        chatList.add(new Chat(Chat.MESSAGE_TYPE_SENT, message1));
+                        chatAdapter.notifyDataSetChanged();
+                    });
+                }
                 return true;
             case WooEvents.EVENT_FAILURE_MESSAGE:
                 Log.w(TAG, "Failed to send chat message " + msg.obj);
+
                 return true;
             case WooEvents.EVENT_MIC_TURNED_ON:
                 runOnUiThread(() -> {
-                    mBinding.meetingButtonMic.setImageResource(R.drawable.ic_mic_off_gray);
+                    mBinding.meetingButtonMic.setImageResource(R.drawable.baseline_mic_34);
                 });
                 return true;
             case WooEvents.EVENT_MIC_TURNED_OFF:
                 runOnUiThread(() -> {
-                    mBinding.meetingButtonMic.setImageResource(R.drawable.baseline_mic_34);
+                    mBinding.meetingButtonMic.setImageResource(R.drawable.ic_mic_off_gray);
                 });
                 return true;
             case WooEvents.EVENT_CAM_TURNED_ON:
@@ -646,8 +710,9 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         destroyMeeting();
+        chatList.clear();
+        super.onDestroy();
     }
 
     @Override
@@ -655,6 +720,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         new Handler().postDelayed(() -> {
             WooEvents.getInstance().removeHandler(callbackHandler);
             destroyMeeting();
+            chatList.clear();
             super.onBackPressed();
             finish();
         }, 5000);

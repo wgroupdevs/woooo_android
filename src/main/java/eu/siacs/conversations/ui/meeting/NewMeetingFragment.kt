@@ -88,7 +88,7 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
         var intent: Intent? = null
 
         if (account != null) {
-            meetingId = Utils.getRandomString(8)
+            meetingId = Utils.getNumericString(9);
             mBinding?.meetingUrlEt?.text = Editable.Factory.getInstance()
                 .newEditable("https://cc.watchblock.net/meeting/$meetingId")
             val email = account!!.userEmail
@@ -176,7 +176,7 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
 
     override fun handleMessage(msg: Message): Boolean {
         if (msg.what == WooEvents.EVENT_TYPE_SOCKET_DISCONNECTED) {
-            meetingId = Utils.getRandomString(8)
+            meetingId = Utils.getNumericString(9);
             mBinding?.meetingUrlEt?.text = Editable.Factory.getInstance()
                 .newEditable("https://cc.watchblock.net/meeting/$meetingId")
             return true

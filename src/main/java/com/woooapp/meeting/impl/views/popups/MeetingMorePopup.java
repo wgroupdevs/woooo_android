@@ -86,30 +86,30 @@ public final class MeetingMorePopup extends RelativeLayout {
 
         this.mMainLayout = mContentView.findViewById(R.id.morePopupContainer);
 
-        final ImageView ivThumb = mContentView.findViewById(R.id.morePopupIvThumb);
-        TextView tvName = mContentView.findViewById(R.id.morePopupTvName);
-
-        if (mClient.getPicture() != null) {
-            Log.d(TAG, "Loading image >> " + mClient.getPicture());
-            Http.build().getImage(mContext, true, mClient.getPicture(), new HttpImageAdapter() {
-                @Override
-                public void connected(String resource) {}
-
-                @Override
-                public void failed(String resource, String reasonPhrase) {}
-
-                @Override
-                public void done(String resource, final Bitmap bitmap) {
-                    if (bitmap != null) {
-                        new Handler(Looper.getMainLooper()).post(() -> {
-                            CircleDrawable cd = new CircleDrawable(bitmap);
-                            ivThumb.setImageDrawable(cd);
-                        });
-                    }
-                }
-            });
-        }
-        tvName.setText(mClient.getUsername());
+//        final ImageView ivThumb = mContentView.findViewById(R.id.morePopupIvThumb);
+//        TextView tvName = mContentView.findViewById(R.id.morePopupTvName);
+//
+//        if (mClient.getPicture() != null) {
+//            Log.d(TAG, "Loading image >> " + mClient.getPicture());
+//            Http.build().getImage(mContext, true, mClient.getPicture(), new HttpImageAdapter() {
+//                @Override
+//                public void connected(String resource) {}
+//
+//                @Override
+//                public void failed(String resource, String reasonPhrase) {}
+//
+//                @Override
+//                public void done(String resource, final Bitmap bitmap) {
+//                    if (bitmap != null) {
+//                        new Handler(Looper.getMainLooper()).post(() -> {
+//                            CircleDrawable cd = new CircleDrawable(bitmap);
+//                            ivThumb.setImageDrawable(cd);
+//                        });
+//                    }
+//                }
+//            });
+//        }
+//        tvName.setText(mClient.getUsername());
     }
 
     public void show() {

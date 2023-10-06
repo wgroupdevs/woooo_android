@@ -6,34 +6,34 @@
     android:background="@drawable/bg_rounded_dark_transulecent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="15sp">
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:gravity="center_vertical"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:padding="15sp">-->
 
-        <ImageView
-            android:id="@+id/morePopupIvThumb"
-            android:layout_width="40sp"
-            android:layout_height="40sp"
-            android:src="@drawable/person" />
+<!--        <ImageView-->
+<!--            android:id="@+id/morePopupIvThumb"-->
+<!--            android:layout_width="40sp"-->
+<!--            android:layout_height="40sp"-->
+<!--            android:src="@drawable/woooo_logo" />-->
 
-        <TextView
-            android:id="@+id/morePopupTvName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10sp"
-            android:text="John Smith"
-            android:textColor="@android:color/white"
-            android:textSize="15sp" />
+<!--        <TextView-->
+<!--            android:id="@+id/morePopupTvName"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="10sp"-->
+<!--            android:text="John Smith"-->
+<!--            android:textColor="@android:color/white"-->
+<!--            android:textSize="15sp" />-->
 
-    </LinearLayout>
+<!--    </LinearLayout>-->
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2sp"
-        android:background="@android:color/white" />
+<!--    <View-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="2sp"-->
+<!--        android:background="@android:color/white" />-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -63,7 +63,7 @@
                     android:id="@+id/morePopupIvMeetingId"
                     android:layout_width="32sp"
                     android:layout_height="32sp"
-                    android:src="@drawable/person" />
+                    android:src="@drawable/ic_meeting_new" />
 
                 <TextView
                     android:id="@+id/morePopupTvMeetingId"
@@ -76,55 +76,55 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/morePopupButtonVideoQuality"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5sp"
-                android:foreground="?attr/selectableItemBackground"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/morePopupButtonVideoQuality"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="5sp"-->
+<!--                android:foreground="?attr/selectableItemBackground"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:orientation="horizontal">-->
 
-                <ImageView
-                    android:id="@+id/morePopupIvVideoQuality"
-                    android:layout_width="32sp"
-                    android:layout_height="32sp"
-                    android:src="@drawable/person" />
+<!--                <ImageView-->
+<!--                    android:id="@+id/morePopupIvVideoQuality"-->
+<!--                    android:layout_width="32sp"-->
+<!--                    android:layout_height="32sp"-->
+<!--                    android:src="@drawable/person" />-->
 
-                <TextView
-                    android:id="@+id/morePopupTvVideoQuality"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5sp"
-                    android:text="Manage Video Quality"
-                    android:textColor="@android:color/white"
-                    android:textSize="12sp" />
+<!--                <TextView-->
+<!--                    android:id="@+id/morePopupTvVideoQuality"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginLeft="5sp"-->
+<!--                    android:text="Manage Video Quality"-->
+<!--                    android:textColor="@android:color/white"-->
+<!--                    android:textSize="12sp" />-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
-            <LinearLayout
-                android:id="@+id/morePopupButtonFullscreen"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5sp"
-                android:foreground="?attr/selectableItemBackground"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/morePopupButtonFullscreen"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="5sp"-->
+<!--                android:foreground="?attr/selectableItemBackground"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:orientation="horizontal">-->
 
-                <ImageView
-                    android:layout_width="32sp"
-                    android:layout_height="32sp"
-                    android:src="@drawable/person" />
+<!--                <ImageView-->
+<!--                    android:layout_width="32sp"-->
+<!--                    android:layout_height="32sp"-->
+<!--                    android:src="@drawable/person" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5sp"
-                    android:text="View full screen"
-                    android:textColor="@android:color/white"
-                    android:textSize="12sp" />
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginLeft="5sp"-->
+<!--                    android:text="View full screen"-->
+<!--                    android:textColor="@android:color/white"-->
+<!--                    android:textSize="12sp" />-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
             <LinearLayout
                 android:id="@+id/morePopupButtonMuteEveryone"
@@ -138,7 +138,7 @@
                 <ImageView
                     android:layout_width="32sp"
                     android:layout_height="32sp"
-                    android:src="@drawable/person" />
+                    android:src="@drawable/ic_speaker_off" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -162,7 +162,7 @@
                 <ImageView
                     android:layout_width="32sp"
                     android:layout_height="32sp"
-                    android:src="@drawable/person" />
+                    android:src="@drawable/ic_camera_off_gray" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -174,29 +174,29 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/morePopupButtonLiveStream"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5sp"
-                android:foreground="?attr/selectableItemBackground"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/morePopupButtonLiveStream"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="5sp"-->
+<!--                android:foreground="?attr/selectableItemBackground"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:orientation="horizontal">-->
 
-                <ImageView
-                    android:layout_width="32sp"
-                    android:layout_height="32sp"
-                    android:src="@drawable/person" />
+<!--                <ImageView-->
+<!--                    android:layout_width="32sp"-->
+<!--                    android:layout_height="32sp"-->
+<!--                    android:src="@drawable/person" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5sp"
-                    android:text="Start live stream"
-                    android:textColor="@android:color/white"
-                    android:textSize="12sp" />
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginLeft="5sp"-->
+<!--                    android:text="Start live stream"-->
+<!--                    android:textColor="@android:color/white"-->
+<!--                    android:textSize="12sp" />-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
         </LinearLayout>
 
@@ -209,29 +209,29 @@
 
             <!-- Second Column -->
 
-            <LinearLayout
-                android:id="@+id/morePopupButtonShareYoutubeVideo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5sp"
-                android:foreground="?attr/selectableItemBackground"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/morePopupButtonShareYoutubeVideo"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="5sp"-->
+<!--                android:foreground="?attr/selectableItemBackground"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:orientation="horizontal">-->
 
-                <ImageView
-                    android:layout_width="32sp"
-                    android:layout_height="32sp"
-                    android:src="@drawable/person" />
+<!--                <ImageView-->
+<!--                    android:layout_width="32sp"-->
+<!--                    android:layout_height="32sp"-->
+<!--                    android:src="@drawable/person" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5sp"
-                    android:text="Share YouTube Video"
-                    android:textColor="@android:color/white"
-                    android:textSize="12sp" />
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginLeft="5sp"-->
+<!--                    android:text="Share YouTube Video"-->
+<!--                    android:textColor="@android:color/white"-->
+<!--                    android:textSize="12sp" />-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
             <LinearLayout
                 android:id="@+id/morePopupButtonSelectBackground"
@@ -245,7 +245,7 @@
                 <ImageView
                     android:layout_width="32sp"
                     android:layout_height="32sp"
-                    android:src="@drawable/person" />
+                    android:src="@drawable/ic_wallpaper" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -257,34 +257,34 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/morePopupButtonSpeakerStats"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5sp"
-                android:foreground="?attr/selectableItemBackground"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/morePopupButtonSpeakerStats"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="5sp"-->
+<!--                android:foreground="?attr/selectableItemBackground"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:orientation="horizontal">-->
 
-                <ImageView
-                    android:layout_width="32sp"
-                    android:layout_height="32sp"
-                    android:src="@drawable/person" />
+<!--                <ImageView-->
+<!--                    android:layout_width="32sp"-->
+<!--                    android:layout_height="32sp"-->
+<!--                    android:src="@drawable/person" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5sp"
-                    android:text="Speaker Stats"
-                    android:textColor="@android:color/white"
-                    android:textSize="12sp" />
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginLeft="5sp"-->
+<!--                    android:text="Speaker Stats"-->
+<!--                    android:textColor="@android:color/white"-->
+<!--                    android:textSize="12sp" />-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="38sp"
-                android:background="@android:color/transparent" />
+<!--            <View-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="38sp"-->
+<!--                android:background="@android:color/transparent" />-->
 
             <LinearLayout
                 android:id="@+id/morePopupButtonSettings"
@@ -298,7 +298,7 @@
                 <ImageView
                     android:layout_width="32sp"
                     android:layout_height="32sp"
-                    android:src="@drawable/person" />
+                    android:src="@drawable/ic_settings_new" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -310,53 +310,53 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/morePopupButtonViewShortcuts"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5sp"
-                android:foreground="?attr/selectableItemBackground"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/morePopupButtonViewShortcuts"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="5sp"-->
+<!--                android:foreground="?attr/selectableItemBackground"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:orientation="horizontal">-->
 
-                <ImageView
-                    android:layout_width="32sp"
-                    android:layout_height="32sp"
-                    android:src="@drawable/person" />
+<!--                <ImageView-->
+<!--                    android:layout_width="32sp"-->
+<!--                    android:layout_height="32sp"-->
+<!--                    android:src="@drawable/person" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5sp"
-                    android:text="View shortcuts"
-                    android:textColor="@android:color/white"
-                    android:textSize="12sp" />
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginLeft="5sp"-->
+<!--                    android:text="View shortcuts"-->
+<!--                    android:textColor="@android:color/white"-->
+<!--                    android:textSize="12sp" />-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
-            <LinearLayout
-                android:id="@+id/morePopupButtonEmbedMeeting"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5sp"
-                android:foreground="?attr/selectableItemBackground"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/morePopupButtonEmbedMeeting"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_margin="5sp"-->
+<!--                android:foreground="?attr/selectableItemBackground"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:orientation="horizontal">-->
 
-                <ImageView
-                    android:layout_width="32sp"
-                    android:layout_height="32sp"
-                    android:src="@drawable/person" />
+<!--                <ImageView-->
+<!--                    android:layout_width="32sp"-->
+<!--                    android:layout_height="32sp"-->
+<!--                    android:src="@drawable/person" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="5sp"
-                    android:text="Embed meeting"
-                    android:textColor="@android:color/white"
-                    android:textSize="12sp" />
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginLeft="5sp"-->
+<!--                    android:text="Embed meeting"-->
+<!--                    android:textColor="@android:color/white"-->
+<!--                    android:textSize="12sp" />-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
         </LinearLayout>
 

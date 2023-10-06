@@ -593,7 +593,7 @@ public class WooSocket {
                                                     try {
                                                         JSONObject peer = new JSONObject();
                                                         peer.put("id", producerSockId);
-                                                        peer.put("displayName", finalUsername.isEmpty() ? email : finalUsername);
+                                                        peer.put("displayName", finalUsername.isEmpty() ? "" : finalUsername);
                                                         peer.put("device", null);
                                                         mStore.addPeer(producerSockId, peer);
                                                         Log.d(TAG, "<< Created Peer >> " + peer);
@@ -853,7 +853,7 @@ public class WooSocket {
                 obj.put("profileImage", message.getProfileImage());
                 Log.d(TAG, "Emitting Message >> " + obj);
                 mSocket.emit("messageSent", obj);
-                WooEvents.getInstance().notify(WooEvents.EVENT_SENT_MESSAGE, obj);
+                WooEvents.getInstance().notify(WooEvents.EVENT_SENT_MESSAGE, message);
             } catch (JSONException e) {
                 e.printStackTrace();
                 WooEvents.getInstance().notify(WooEvents.EVENT_FAILURE_MESSAGE, message.getMessage());

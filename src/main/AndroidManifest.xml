@@ -390,6 +390,7 @@
             android:label="Meeting"
             android:screenOrientation="portrait"
             android:launchMode="singleInstance"
+            android:turnScreenOn="true"
             />
     </application>
 

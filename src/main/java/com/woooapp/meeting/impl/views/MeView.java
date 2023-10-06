@@ -58,11 +58,12 @@ public class MeView extends RelativeLayout {
 
         // set view model.
         mBinding.wooPeerView.setWooPeerViewProps(props);
-        if (meetingClient.getUsername() != null) {
-            mBinding.tvMeName.setText(meetingClient.getUsername().isEmpty() ? meetingClient.getEmail() : meetingClient.getUsername());
-        } else {
-            mBinding.tvMeName.setText(meetingClient.getEmail());
-        }
+        mBinding.tvMeName.setText("Me");
+//        if (meetingClient.getUsername() != null) {
+//            mBinding.tvMeName.setText(meetingClient.getUsername().isEmpty() ? meetingClient.getEmail() : meetingClient.getUsername());
+//        } else {
+//            mBinding.tvMeName.setText(meetingClient.getEmail());
+//        }
 
         // register click listener.
 //        mBinding.peerView.info.setOnClickListener(

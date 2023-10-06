@@ -43,7 +43,8 @@
                 android:maxLines="1"
                 android:padding="5sp"
                 android:text="Me"
-                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textSize="12sp"
                 android:textColor="@color/white"
                 android:ellipsize="end"
                 />

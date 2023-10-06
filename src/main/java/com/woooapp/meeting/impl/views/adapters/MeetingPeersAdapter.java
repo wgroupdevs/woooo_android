@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.compose.ui.unit.Dp;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.viewpager.widget.PagerAdapter;
 
@@ -44,6 +45,7 @@ public final class MeetingPeersAdapter extends PagerAdapter {
     private ViewGroup mContainer;
     private final int mDeviceWidth;
     private final int mDeviceHeight;
+    private final int mBottomBarHeight = 90;
 
     /**
      * @param mContext
@@ -62,12 +64,11 @@ public final class MeetingPeersAdapter extends PagerAdapter {
         this.mMeetingClient = mMeetingClient;
 
         this.mDeviceWidth = Display.getDisplayWidth(mContext) - 40;
-        this.mDeviceHeight = Display.getDisplayHeight(mContext) - 90;
+        this.mDeviceHeight = Display.getDisplayHeight(mContext) - mBottomBarHeight;
     }
 
     @Override
     public int getCount() {
-        Log.d(TAG, "PAGES SIZE >> " + mPages.size());
         return mPages.size();
     }
 
@@ -97,6 +98,7 @@ public final class MeetingPeersAdapter extends PagerAdapter {
         row3.setWeightSum(3);
 
         MeView meView = contentView.findViewById(R.id.meNewView);
+        PeerView peer0 = contentView.findViewById(R.id.peerView0);
         PeerView peer1 = contentView.findViewById(R.id.peerView1);
         PeerView peer2 = contentView.findViewById(R.id.peerView2);
         PeerView peer3 = contentView.findViewById(R.id.peerView3);
@@ -238,16 +240,22 @@ public final class MeetingPeersAdapter extends PagerAdapter {
                 Peer p = peer.getPeer();
                 PeerProps props = new PeerProps(((AppCompatActivity) mContext).getApplication(), mStore);
                 props.connect(mLifecycleOwner, p.getId());
+                String name = peer.getPeer().getDisplayName();
                 if (i == 1) {
                     peer1.setProps(props, mMeetingClient);
+                    peer1.setName(name);
                 } else if (i == 2) {
                     peer2.setProps(props, mMeetingClient);
+                    peer2.setName(name);
                 } else if (i == 3) {
                     peer3.setProps(props, mMeetingClient);
+                    peer3.setName(name);
                 } else if (i == 4) {
                     peer4.setProps(props, mMeetingClient);
+                    peer4.setName(name);
                 } else if (i == 5) {
                     peer5.setProps(props, mMeetingClient);
+                    peer5.setName(name);
                 }
                 Log.d(TAG, "<< Added Peer Props at index [" + i + "]");
             }
@@ -281,11 +289,11 @@ public final class MeetingPeersAdapter extends PagerAdapter {
     private int getRowHeight(int rowCount) {
         switch (rowCount) {
             case 2:
-                return mDeviceHeight / 2;
+                return (mDeviceHeight / 2) - 50;
             case 3:
-                return mDeviceHeight / 3;
+                return mDeviceHeight / 3 - 50;
             default:
-                return mDeviceHeight;
+                return mDeviceHeight - 50;
         }
     }
 
@@ -303,7 +311,6 @@ public final class MeetingPeersAdapter extends PagerAdapter {
 
     @Override
     public void notifyDataSetChanged() {
-        super.notifyDataSetChanged();
         if (mContainer != null) {
             View contentView = mContainer.findViewWithTag(TAG);
             int position = 0;
@@ -318,6 +325,7 @@ public final class MeetingPeersAdapter extends PagerAdapter {
                 update(contentView, position);
             }
         }
+        super.notifyDataSetChanged();
     }
 
     /**
