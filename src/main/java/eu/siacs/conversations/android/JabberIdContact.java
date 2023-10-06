@@ -17,6 +17,11 @@ import eu.siacs.conversations.xmpp.Jid;
 
 public class JabberIdContact extends AbstractPhoneContact {
 
+    private static final String TAG = "JabberIdContact_TAG";
+
+
+    private static final String XMPP_DOMAIN = "@ejabberd.watchblock.net";
+
     private static final String[] PROJECTION = new String[]{ContactsContract.Data._ID,
             ContactsContract.Data.DISPLAY_NAME,
             ContactsContract.Data.PHOTO_URI,
@@ -29,7 +34,7 @@ public class JabberIdContact extends AbstractPhoneContact {
             ContactsContract.CommonDataKinds.Im.CONTENT_ITEM_TYPE,
             String.valueOf(ContactsContract.CommonDataKinds.Im.PROTOCOL_JABBER),
             String.valueOf(ContactsContract.CommonDataKinds.Im.PROTOCOL_CUSTOM),
-            "xmpp"
+            "xmpp",
     };
 
     private final Jid jid;
@@ -37,7 +42,11 @@ public class JabberIdContact extends AbstractPhoneContact {
     private JabberIdContact(Cursor cursor) throws IllegalArgumentException {
         super(cursor);
         try {
-            this.jid = Jid.of(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA)));
+
+            String idPrefix = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA));
+            String contactJid = idPrefix.concat(XMPP_DOMAIN);
+            Log.d(TAG, "JabberIdContact : " + contactJid);
+            this.jid = Jid.of(contactJid);
         } catch (IllegalArgumentException | NullPointerException e) {
             throw new IllegalArgumentException(e);
         }
@@ -51,12 +60,23 @@ public class JabberIdContact extends AbstractPhoneContact {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context.checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             return Collections.emptyMap();
         }
+
+
+        Log.d(TAG, "Cursor ContentResolver : " + ContactsContract.Data.CONTENT_URI);
+        Log.d(TAG, "Cursor ContentResolver : " + PROJECTION);
+        Log.d(TAG, "Cursor ContentResolver : " + SELECTION);
+        Log.d(TAG, "Cursor ContentResolver : " + SELECTION_ARGS);
+
         try (final Cursor cursor = context.getContentResolver().query(ContactsContract.Data.CONTENT_URI, PROJECTION, SELECTION, SELECTION_ARGS, null)) {
             if (cursor == null) {
                 return Collections.emptyMap();
             }
+            Log.d(Config.LOGTAG, "Cursor ContentResolver COUNT: " + cursor.getCount());
+
             final HashMap<Jid, JabberIdContact> contacts = new HashMap<>();
             while (cursor.moveToNext()) {
+                Log.d(Config.LOGTAG, "Cursor ContentResolver : " + cursor.getColumnIndex(ContactsContract.CommonDataKinds.Im.DATA));
+
                 try {
                     final JabberIdContact contact = new JabberIdContact(cursor);
                     final JabberIdContact preexisting = contacts.put(contact.getJid(), contact);

@@ -90,7 +90,6 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:label"
         tools:targetApi="q" >
-
         <activity
             android:name=".ui.HomeActivity"
             android:exported="false"

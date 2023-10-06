@@ -185,6 +185,7 @@ dependencies {
     implementation 'com.github.furkankaplan:fk-blur-view-android:1.0.1'
 
     implementation 'com.intuit.sdp:sdp-android:1.1.0'
+
     implementation 'org.protoojs.droid:protoo-client:4.0.3'
     implementation "androidx.preference:preference:1.2.1"
 
@@ -192,6 +193,12 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-core:2.8.3"
     implementation "com.fasterxml.jackson.core:jackson-databind:2.8.3"
     implementation "com.fasterxml.jackson.core:jackson-annotations:2.8.3"
+//
+//    //wallet
+//    implementation(platform("com.walletconnect:android-bom:3.3.1"))
+//    implementation("com.walletconnect:android-core")
+//    implementation("com.walletconnect:web3modal")
+//    implementation "com.walletconnect:push"
 }
 
 ext {

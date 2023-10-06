@@ -17,7 +17,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.spec.Route
-import com.woooapp.meeting.lib.socket.WooSocket
 import dagger.hilt.android.AndroidEntryPoint
 import eu.siacs.conversations.entities.Account
 import eu.siacs.conversations.http.model.UserBasicInfo
@@ -45,12 +44,9 @@ import woooo_app.woooo.utils.USER_TOKEN_KEY_INTENT
 @AndroidEntryPoint
 class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRosterUpdate {
     val TAG = "MainActivityLOGS"
-
+    private var mAccount: Account? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val model: HomeViewModel by viewModels()
-        homeViewModel = model
-
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -172,10 +168,11 @@ class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRo
     }
 
 
-    private fun goToHomeActivity(): Unit {
+    private fun goToHomeActivity() {
 
         val intent = Intent(this, HomeActivity::class.java)
-
+        intent.flags =
+            Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION
         startActivity(intent)
     }
 
@@ -227,10 +224,5 @@ class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRo
 
     }
 
-    companion object {
-        var mAccount: Account? = null
-        var homeViewModel: HomeViewModel? = null
-
-    }
 
 }

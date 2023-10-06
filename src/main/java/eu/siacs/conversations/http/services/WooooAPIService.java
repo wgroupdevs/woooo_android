@@ -111,6 +111,34 @@ public class WooooAPIService {
         });
     }
 
+    public void getAccountByJidAccount(String jID, OnGetAccountByJidAPiResult listener) {
+        final Call<SearchAccountAPIResponse> searchResultCall = wooooService.getAccountByJidAccount(jID);
+        searchResultCall.enqueue(new Callback<SearchAccountAPIResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<SearchAccountAPIResponse> call, @NonNull Response<SearchAccountAPIResponse> response) {
+                final SearchAccountAPIResponse body = response.body();
+                if (body == null) {
+                    assert response.errorBody() != null;
+                    try {
+                        String errorBodyFound = response.errorBody().byteString().utf8();
+                        listener.onGetAccountByJidResultFound(parseErrorBody(errorBodyFound));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    listener.onGetAccountByJidResultFound(body);
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<SearchAccountAPIResponse> call, @NonNull Throwable throwable) {
+                Log.d(Config.LOGTAG, "Unable to query WoooService on " + Config.WOOOO_BASE_URL, throwable);
+//                        listener.);
+            }
+        });
+    }
+
     public void getWooContact(GetWooContactsRequestParams params, OnGetWooContactAPiResult listener) {
         final Call<GetWooContactsModel> searchResultCall = wooooService.getWooContacts(params);
         searchResultCall.enqueue(new Callback<GetWooContactsModel>() {
@@ -226,6 +254,10 @@ public class WooooAPIService {
 
     public interface OnSearchAccountAPiResult {
         <T> void onSearchAccountApiResultFound(T result);
+    }
+
+    public interface OnGetAccountByJidAPiResult {
+        <T> void onGetAccountByJidResultFound(T result);
     }
 
     public interface OnGetWooContactAPiResult {

@@ -2,56 +2,66 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?selectableItemBackground"
-        android:paddingLeft="8dp"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp">
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="@dimen/_10sdp">
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/account_image"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentLeft="true"
+            android:layout_width="@dimen/_100sdp"
+            android:layout_height="@dimen/_100sdp"
+            android:background="@drawable/woooo_logo"
             android:contentDescription="@string/account_image_description"
-            app:riv_corner_radius="6dp" />
+            app:riv_corner_radius="@dimen/_15sdp" />
 
-        <LinearLayout
-            android:layout_width="fill_parent"
+
+        <TextView
+            android:id="@+id/displayName"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/account_image"
-            android:orientation="vertical"
-            android:paddingLeft="@dimen/avatar_item_distance"
-            android:layout_toLeftOf="@+id/tgl_account_status"
-            android:layout_toStartOf="@+id/tgl_account_status">
+            android:layout_marginTop="@dimen/_10sdp"
+            android:scrollHorizontally="false"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.Conversations.Title" />
 
-            <TextView
-                android:id="@+id/account_jid"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scrollHorizontally="false"
-                android:singleLine="true"
-                android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
-
-            <TextView
-                android:id="@+id/account_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/account_status_unknown"
-                android:textAppearance="@style/TextAppearance.Conversations.Body2" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/account_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:text="@string/account_status_unknown"
+            android:textAppearance="@style/TextAppearance.Conversations.Body2" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/tgl_account_status"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:padding="16dp"
-            android:focusable="false" />
+            android:layout_marginTop="@dimen/_15sdp"
+            android:background="@drawable/bg_border"
+            android:focusable="false"
+            android:padding="@dimen/_12sdp"
+            android:text="Switch account status"
+            android:textAppearance="@style/TextAppearance.Conversations.Subhead"
+            android:textColor="@color/white" />
 
-    </RelativeLayout>
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="@dimen/_10sdp"-->
+<!--            android:background="@drawable/bg_border">-->
+
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:padding="@dimen/_12sdp"-->
+<!--                android:text="Delete account"-->
+<!--                android:textAppearance="@style/TextAppearance.Conversations.Subhead"-->
+<!--                android:textColor="@color/white" />-->
+<!--        </LinearLayout>-->
+
+
+    </LinearLayout>
 </layout>

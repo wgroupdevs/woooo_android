@@ -117,7 +117,7 @@ fun HomePage(navigator: DestinationsNavigator) {
                         VerticalSpacer()
                         //Name Text
                         Text(
-                            text = "Hi, ${MainActivity.homeViewModel?.displayname?.value}",
+                            text = "Hi,",
                             modifier = Modifier
                                 .align(
                                     alignment = Alignment.Start

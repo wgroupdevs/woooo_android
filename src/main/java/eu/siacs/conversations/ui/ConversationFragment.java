@@ -51,7 +51,6 @@ import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
@@ -111,7 +110,7 @@ import eu.siacs.conversations.entities.ReadByMarker;
 import eu.siacs.conversations.entities.Transferable;
 import eu.siacs.conversations.entities.TransferablePlaceholder;
 import eu.siacs.conversations.http.HttpDownloadConnection;
-import eu.siacs.conversations.http.model.Language;
+import eu.siacs.conversations.http.model.LanguageModel;
 import eu.siacs.conversations.http.model.TextTranslateApiResponse;
 import eu.siacs.conversations.http.model.TextTranslateModel;
 import eu.siacs.conversations.http.model.UpdateUserLanguageModel;
@@ -121,6 +120,7 @@ import eu.siacs.conversations.persistance.FileBackend;
 import eu.siacs.conversations.services.MessageArchiveService;
 import eu.siacs.conversations.services.QuickConversationsService;
 import eu.siacs.conversations.services.XmppConnectionService;
+import eu.siacs.conversations.ui.adapter.LanguageAdapter;
 import eu.siacs.conversations.ui.adapter.MediaPreviewAdapter;
 import eu.siacs.conversations.ui.adapter.MessageAdapter;
 import eu.siacs.conversations.ui.util.ActivityResult;
@@ -211,7 +211,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     private ProgressDialog progressDialog;
 
 
-    Language currentChatLanguage;
+    LanguageModel currentChatLanguage;
 
     List langaugeList = Arrays.asList("Urdu", "English", "Japanies");
 
@@ -323,16 +323,16 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
                         @Override
                         public void informUser(final int resId) {
 
-                            runOnUiThread(() -> {
-                                if (messageLoaderToast != null) {
-                                    messageLoaderToast.cancel();
-                                }
-                                if (ConversationFragment.this.conversation != conversation) {
-                                    return;
-                                }
-                                messageLoaderToast = Toast.makeText(view.getContext(), resId, Toast.LENGTH_LONG);
-                                messageLoaderToast.show();
-                            });
+//                            runOnUiThread(() -> {
+//                                if (messageLoaderToast != null) {
+//                                    messageLoaderToast.cancel();
+//                                }
+//                                if (ConversationFragment.this.conversation != conversation) {
+//                                    return;
+//                                }
+//                                messageLoaderToast = Toast.makeText(view.getContext(), resId, Toast.LENGTH_LONG);
+//                                messageLoaderToast.show();
+//                            });
                         }
                     });
                 }
@@ -1113,6 +1113,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
                 menuMucDetails.setVisible(false);
                 menuInviteContact.setVisible(service != null && service.findConferenceServer(conversation.getAccount()) != null);
             }
+
             if (conversation.isMuted()) {
                 menuMute.setVisible(false);
             } else {
@@ -1136,10 +1137,12 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 
         activity.binding.speedDial.setVisibility(View.INVISIBLE);
 
-        binding.textinput.addTextChangedListener(new StylingHelper.MessageEditorStyler(binding.textinput));
+        binding.textinput.addTextChangedListener(new StylingHelper.MessageEditorStyler(binding.textinput, binding.attachmentsIv));
+
 
         binding.textinput.setOnEditorActionListener(mEditorActionListener);
         binding.textinput.setRichContentListener(new String[]{"image/*"}, mEditorContentListener);
+
 
         binding.textSendButton.setOnClickListener(this.mSendButtonListener);
 
@@ -1181,14 +1184,18 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         final Contact contact = conversation == null ? null : conversation.getContact();
 
         if (contact != null) {
-
-
             AvatarWorkerTask.loadAvatar(contact, this.activity.binding.toolbar.toolbarProfilePhoto, R.dimen.avatar);
             TextView toolbar_contact_name = this.activity.binding.toolbar.toolbarContactName;
             toolbar_contact_name.setVisibility(View.VISIBLE);
-            toolbar_contact_name.setText(contact.getDisplayName());
-        }
 
+            CharSequence name = conversation.getName();
+            if (name instanceof Jid) {
+                toolbar_contact_name.setText(
+                        ((Jid) name).getLocal());
+            } else {
+                toolbar_contact_name.setText(name);
+            }
+        }
 
         binding.cancelReplyBtn.setOnClickListener(v -> {
             reply = false;
@@ -1198,6 +1205,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 
         return binding.getRoot();
     }
+
 
     @Override
     public void onDestroyView() {
@@ -1521,15 +1529,20 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     }
 
     private void showLanguageChangeDialog(Context context) {
-        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context,R.style.popup_dialog_theme);
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context, R.style.popup_dialog_theme);
         // Inflate the custom layout
         LayoutInflater inflater = LayoutInflater.from(context);
         View customView = inflater.inflate(R.layout.language_dialog, null);
+        ArrayList<LanguageModel> languageList = parseJSON(context);
+
         ListView languagesListView;
         languagesListView = customView.findViewById(R.id.languagesListView);
-        ArrayList<Language> languageList = parseJSON(context);
-        ArrayAdapter<Language> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, languageList);
-        languagesListView.setAdapter(adapter);
+        LanguageAdapter languageAdapter = new LanguageAdapter(getActivity(), languageList, conversation.getAccount());
+
+//        ArrayAdapter<Language> adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, languageList);
+
+
+        languagesListView.setAdapter(languageAdapter);
         // Set the custom layout to the dialog
         alertDialogBuilder.setView(customView);
 
@@ -1547,7 +1560,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         languagesListView.setOnItemClickListener((parent, view, position, id) -> {
             try {
 
-                currentChatLanguage = new Language(languageList.get(position).code, languageList.get(position).name);
+                currentChatLanguage = new LanguageModel(languageList.get(position).code, languageList.get(position).name);
                 updateUserLanguage(languageList.get(position).name, languageList.get(position).code);
                 alertDialog.hide();
             } catch (Exception e) {
@@ -1557,7 +1570,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     }
 
     private void showEncrptionDialog(Context context) {
-        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context,R.style.popup_dialog_theme);
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context, R.style.popup_dialog_theme);
         // Inflate the custom layout
         LayoutInflater inflater = LayoutInflater.from(context);
         View customView = inflater.inflate(R.layout.encryption_dialog, null);
@@ -1576,8 +1589,9 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 
         alertDialog.show();
     }
+
     private void showStealthNetDialog(Context context) {
-        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context,R.style.popup_dialog_theme);
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(context, R.style.popup_dialog_theme);
         // Inflate the custom layout
         LayoutInflater inflater = LayoutInflater.from(context);
         View customView = inflater.inflate(R.layout.stealth_net_dialog, null);
@@ -1598,8 +1612,8 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     }
 
 
-    private static ArrayList<Language> parseJSON(Context context) {
-        ArrayList<Language> languageList = new ArrayList<>();
+    private static ArrayList<LanguageModel> parseJSON(Context context) {
+        ArrayList<LanguageModel> languageList = new ArrayList<>();
         try {
             AssetManager assetManager = context.getAssets();
             InputStream inputStream = assetManager.open("languages.json");
@@ -1616,7 +1630,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
                 JSONObject languageObject = languagesArray.getJSONObject(i);
                 String code = languageObject.getString("code");
                 String name = languageObject.getString("name");
-                Language language = new Language(code, name);
+                LanguageModel language = new LanguageModel(code, name);
                 languageList.add(language);
                 Log.d(String.valueOf(+languageList.size()), "qwdqwdqwdqw");
             }
@@ -2668,9 +2682,11 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         } else if (conversation.isBlocked()) {
             showSnackbar(R.string.contact_blocked, R.string.unblock, this.mUnblockClickListener);
         } else if (contact != null && !contact.showInRoster() && contact.getOption(Contact.Options.PENDING_SUBSCRIPTION_REQUEST)) {
-            showSnackbar(R.string.contact_added_you, R.string.add_back, this.mAddBackClickListener, this.mLongPressBlockListener);
+            activity.xmppConnectionService.createContact(contact, true);
+//            showSnackbar(R.string.contact_added_you, R.string.add_back, this.mAddBackClickListener, this.mLongPressBlockListener);
         } else if (contact != null && contact.getOption(Contact.Options.PENDING_SUBSCRIPTION_REQUEST)) {
-            showSnackbar(R.string.contact_asks_for_presence_subscription, R.string.allow, this.mAllowPresenceSubscription, this.mLongPressBlockListener);
+            activity.xmppConnectionService.sendPresencePacket(contact.getAccount(), activity.xmppConnectionService.getPresenceGenerator().sendPresenceUpdatesTo(contact));
+//            showSnackbar(R.string.contact_asks_for_presence_subscription, R.string.allow, this.mAllowPresenceSubscription, this.mLongPressBlockListener);
         } else if (mode == Conversation.MODE_MULTI && !conversation.getMucOptions().online() && account.getStatus() == Account.State.ONLINE) {
             switch (conversation.getMucOptions().getError()) {
                 case NICK_IN_USE:

@@ -460,7 +460,7 @@ public class AvatarService implements OnAdvancedStreamFeaturesLoaded {
 			if (QuickConversationsService.isQuicksy() && !TextUtils.isEmpty(displayName)) {
 				avatar = get(displayName, jid, size, false);
 			} else {
-				avatar = get(jid, null, size, false);
+				avatar = get(displayName, null, size, false);
 			}
 		}
 		mXmppConnectionService.getBitmapCache().put(KEY, avatar);

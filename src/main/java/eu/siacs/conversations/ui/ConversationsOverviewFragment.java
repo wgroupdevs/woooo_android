@@ -81,7 +81,6 @@ import eu.siacs.conversations.ui.util.ScrollState;
 import eu.siacs.conversations.ui.util.StyledAttributes;
 import eu.siacs.conversations.utils.AccountUtils;
 import eu.siacs.conversations.utils.EasyOnboardingInvite;
-import eu.siacs.conversations.utils.ThemeHelper;
 
 public class ConversationsOverviewFragment extends XmppFragment {
 
@@ -201,8 +200,8 @@ public class ConversationsOverviewFragment extends XmppFragment {
                 }
             });
 
-            ThemeHelper.fix(snackbar);
-            snackbar.show();
+//            ThemeHelper.fix(snackbar);
+//            snackbar.show();
         }
     };
 

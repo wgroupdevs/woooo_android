@@ -132,16 +132,14 @@
 
                                     </LinearLayout>
 
-                                    <ImageButton
+                                    <Button
                                         android:id="@+id/edit_muc_name_button"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_alignParentEnd="true"
                                         android:layout_alignParentTop="true"
-                                        android:alpha="?attr/icon_alpha"
-                                        android:background="?attr/selectableItemBackgroundBorderless"
-                                        android:padding="@dimen/image_button_padding"
-                                        android:src="?attr/icon_edit_body"
+                                        android:text="Edit"
+                                        android:background="@drawable/bg_border"
                                         android:layout_alignParentRight="true" />
                                 </RelativeLayout>
                             </LinearLayout>
@@ -210,13 +208,14 @@
 
                         </TableLayout>
 
-                        <TextView
-                            android:id="@+id/jid"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end"
-                            android:layout_marginTop="32dp"
-                            android:textAppearance="@style/TextAppearance.Conversations.Caption"/>
+<!--                        <TextView-->
+<!--                            android:id="@+id/jid"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_gravity="end"-->
+<!--                            android:layout_marginTop="32dp"-->
+<!--                            android:textAppearance="@style/TextAppearance.Conversations.Caption"/>-->
+<!--                  -->
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
@@ -370,14 +369,15 @@
                                 android:layout_alignParentRight="true" />
                         </RelativeLayout>
 
-                        <TextView
-                            android:id="@+id/details_account"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end"
-                            android:layout_marginTop="32dp"
-                            android:text="@string/using_account"
-                            android:textAppearance="@style/TextAppearance.Conversations.Caption"/>
+<!--                        <TextView-->
+<!--                            android:id="@+id/details_account"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_gravity="end"-->
+<!--                            android:layout_marginTop="32dp"-->
+<!--                            android:text="@string/using_account"-->
+<!--                            android:textAppearance="@style/TextAppearance.Conversations.Caption"/>-->
+<!--                  -->
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
                 <androidx.cardview.widget.CardView

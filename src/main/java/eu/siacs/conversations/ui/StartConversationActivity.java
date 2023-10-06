@@ -267,6 +267,7 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.binding = DataBindingUtil.setContentView(this, R.layout.activity_start_conversation);
+        binding.toolbar.toolbar.setTitle("");
         setSupportActionBar(binding.toolbar.toolbar);
         configureActionBar(getSupportActionBar());
         inflateFab(binding.speedDial, R.menu.conversation_overview_fab_menu);
@@ -1042,11 +1043,11 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
     }
 
     @Override
-    public void onCreateDialogPositiveClick(Spinner spinner, String name) {
+    public void onCreateDialogPositiveClick(String name) {
         if (!xmppConnectionServiceBound) {
             return;
         }
-        final Account account = getSelectedAccount(this, spinner);
+        final Account account = xmppConnectionService.getAccounts().get(0);
         if (account == null) {
             return;
         }

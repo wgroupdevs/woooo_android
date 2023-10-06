@@ -129,10 +129,8 @@ public class ManageAccountActivity extends XmppActivity implements OnAccountUpda
         this.selectedAccount = accountList.get(acmi.position);
         if (this.selectedAccount.isEnabled()) {
             menu.findItem(R.id.mgmt_account_enable).setVisible(false);
-            menu.findItem(R.id.mgmt_account_announce_pgp).setVisible(Config.supportOpenPgp());
         } else {
             menu.findItem(R.id.mgmt_account_disable).setVisible(false);
-            menu.findItem(R.id.mgmt_account_announce_pgp).setVisible(false);
             menu.findItem(R.id.mgmt_account_publish_avatar).setVisible(false);
         }
 //        menu.setHeaderTitle(this.selectedAccount.getJid().asBareJid().toEscapedString());
@@ -190,9 +188,6 @@ public class ManageAccountActivity extends XmppActivity implements OnAccountUpda
                 return true;
             case R.id.mgmt_account_delete:
                 deleteAccount(selectedAccount);
-                return true;
-            case R.id.mgmt_account_announce_pgp:
-                publishOpenPGPPublicKey(selectedAccount);
                 return true;
             default:
                 return super.onContextItemSelected(item);

@@ -2,7 +2,7 @@
 <resources>
     <string name="action_settings">Settings</string>
     <string name="action_add">New conversation</string>
-    <string name="action_accounts">Manage accounts</string>
+    <string name="action_accounts">Manage account</string>
     <string name="action_account">Manage account</string>
     <string name="action_end_conversation">Close conversation</string>
     <string name="action_contact_details">Contact details</string>
@@ -590,7 +590,7 @@
     <string name="payment_required">Payment required</string>
     <string name="missing_internet_permission">Grant permission to use the Internet</string>
     <string name="me">Me</string>
-    <string name="contact_asks_for_presence_subscription">Contact asks for presence subscription</string>
+    <string name="contact_asks_for_presence_subscription">Add this person to your contacts</string>
     <string name="allow">Allow</string>
     <string name="no_permission_to_access_x">No permission to access %s</string>
     <string name="remote_server_not_found">Remote server not found</string>
@@ -1054,7 +1054,7 @@
     <string name="audio_producer_copied">Copy audio producer id to clipboard</string>
     <string name="audio_consumer_copied">Copy audio consumer id to clipboard</string>
     <string name="video_producer_copied">Copy video producer id to clipboard</string>
-    <string name="video_consumer_copied">Copy video consumer id to clipboard</string> 
+    <string name="video_consumer_copied">Copy video consumer id to clipboard</string>
 
     <string-array name="Currency">
         <item>USD</item>

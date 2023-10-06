@@ -14,7 +14,6 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import eu.siacs.conversations.R
-import eu.siacs.conversations.ui.wallet.WalletMainViewModel
 
 
 class WalletMainFragment : XmppFragment() {
@@ -25,12 +24,12 @@ class WalletMainFragment : XmppFragment() {
 
     private var activity: XmppActivity? = null
 
-    private lateinit var viewModel: WalletMainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         return inflater.inflate(R.layout.fragment_wallet_main, container, false)
     }
 

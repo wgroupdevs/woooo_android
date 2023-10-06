@@ -10,7 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract.CommonDataKinds;
+import android.provider.ContactsContract;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Intents;
 import android.text.Spannable;
@@ -46,6 +46,10 @@ import eu.siacs.conversations.databinding.ActivityContactDetailsBinding;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.ListItem;
+import eu.siacs.conversations.http.model.SearchAccountAPIResponse;
+import eu.siacs.conversations.http.model.UserBasicInfo;
+import eu.siacs.conversations.http.services.BaseModelAPIResponse;
+import eu.siacs.conversations.http.services.WooooAPIService;
 import eu.siacs.conversations.services.AbstractQuickConversationsService;
 import eu.siacs.conversations.services.XmppConnectionService.OnAccountUpdate;
 import eu.siacs.conversations.services.XmppConnectionService.OnRosterUpdate;
@@ -59,7 +63,6 @@ import eu.siacs.conversations.ui.util.MenuDoubleTabUtil;
 import eu.siacs.conversations.utils.AccountUtils;
 import eu.siacs.conversations.utils.Compatibility;
 import eu.siacs.conversations.utils.Emoticons;
-import eu.siacs.conversations.utils.PhoneNumberUtilWrapper;
 import eu.siacs.conversations.utils.UIHelper;
 import eu.siacs.conversations.utils.XmppUri;
 import eu.siacs.conversations.xml.Namespace;
@@ -68,8 +71,9 @@ import eu.siacs.conversations.xmpp.OnKeyStatusUpdated;
 import eu.siacs.conversations.xmpp.OnUpdateBlocklist;
 import eu.siacs.conversations.xmpp.XmppConnection;
 
-public class ContactDetailsActivity extends OmemoActivity implements OnAccountUpdate, OnRosterUpdate, OnUpdateBlocklist, OnKeyStatusUpdated, OnMediaLoaded {
+public class ContactDetailsActivity extends OmemoActivity implements OnAccountUpdate, OnRosterUpdate, OnUpdateBlocklist, OnKeyStatusUpdated, OnMediaLoaded, WooooAPIService.OnGetAccountByJidAPiResult {
     public static final String ACTION_VIEW_CONTACT = "view_contact";
+    public static final String TAG = "ContactDetailsActivity";
     private final int REQUEST_SYNC_CONTACTS = 0x28cf;
     ActivityContactDetailsBinding binding;
     private MediaAdapter mMediaAdapter;
@@ -135,12 +139,8 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
     private void showAddToPhoneBookDialog() {
         final Jid jid = contact.getJid();
         final boolean quicksyContact = AbstractQuickConversationsService.isQuicksy() && Config.QUICKSY_DOMAIN.equals(jid.getDomain()) && jid.getLocal() != null;
-        final String value;
-        if (quicksyContact) {
-            value = PhoneNumberUtilWrapper.toFormattedPhoneNumber(this, jid);
-        } else {
-            value = jid.toEscapedString();
-        }
+        String value;
+        value = jid.toEscapedString().toString().split("@")[0];
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.action_add_phone_book));
         builder.setMessage(getString(R.string.add_phone_book_text, value));
@@ -152,7 +152,7 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
                 intent.putExtra(Intents.Insert.PHONE, value);
             } else {
                 intent.putExtra(Intents.Insert.IM_HANDLE, value);
-                intent.putExtra(Intents.Insert.IM_PROTOCOL, CommonDataKinds.Im.PROTOCOL_JABBER);
+                intent.putExtra(Intents.Insert.IM_PROTOCOL, ContactsContract.CommonDataKinds.Im.PROTOCOL_JABBER);
                 //TODO for modern use we want PROTOCOL_CUSTOM and an extra field with a value of 'XMPP'
                 // however we don’t have such a field and thus have to use the legacy PROTOCOL_JABBER
             }
@@ -211,6 +211,8 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
             }
             try {
                 this.contactJid = Jid.ofEscaped(getIntent().getExtras().getString("contact"));
+
+
             } catch (final IllegalArgumentException ignored) {
             }
         }
@@ -258,6 +260,7 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
         }
         binding.mediaWrapper.setVisibility(Compatibility.hasStoragePermission(this) ? View.VISIBLE : View.GONE);
         mMediaAdapter.setAttachments(Collections.emptyList());
+
     }
 
     @Override
@@ -486,8 +489,6 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
             }
 
 
-
-
 //            if (showsInactive || skippedInactive) {
 //                binding.showInactiveDevices.setText(showsInactive ? R.string.hide_inactive_devices : R.string.show_inactive_devices);
 //                binding.showInactiveDevices.setVisibility(View.VISIBLE);
@@ -570,6 +571,12 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
                 xmppConnectionService.getAttachments(account, contact.getJid().asBareJid(), limit, this);
                 this.binding.showMedia.setOnClickListener((v) -> MediaBrowserActivity.launch(this, contact));
             }
+
+//            String jId = this.contactJid.asBareJid().toString();
+//            Log.d(TAG,"J_I_D : " +jId);
+//            xmppConnectionService.getAccountByJid(jId, ContactDetailsActivity.this);
+
+
             populateView();
         }
     }
@@ -596,6 +603,49 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
             int limit = GridManager.getCurrentColumnCount(binding.media);
             mMediaAdapter.setAttachments(attachments.subList(0, Math.min(limit, attachments.size())));
             binding.mediaWrapper.setVisibility(attachments.size() > 0 ? View.VISIBLE : View.GONE);
+        });
+
+    }
+
+    @Override
+    public <T> void onGetAccountByJidResultFound(T searchAccount) {
+
+        runOnUiThread(() -> {
+
+            if (searchAccount != null) {
+
+                if (searchAccount instanceof SearchAccountAPIResponse) {
+
+                    try {
+                        SearchAccountAPIResponse apiResponse = ((SearchAccountAPIResponse) searchAccount);
+
+                        UserBasicInfo user = apiResponse.Data;
+
+
+                        this.contact.setEmail(user.email);
+                        this.contact.setPhoneNumber(user.phoneNumber);
+
+
+                        Log.d("SEARCH_ACCOUNT_API ", " SearchAccountAPIResponse Called in EditActivity " + apiResponse.Message);
+                        Log.d("SEARCH_ACCOUNT_API ", " SearchAccountAPIResponse Called in EditActivity " + user.jid);
+                        Log.d("SEARCH_ACCOUNT_API ", " SearchAccountAPIResponse Called in EditActivity " + user.email);
+                        Log.d("SEARCH_ACCOUNT_API ", " SearchAccountAPIResponse Called in EditActivity " + user.phoneNumber);
+
+                    } catch (Exception e) {
+                    }
+                    Log.d("ENTER_DIALOG", "mesg");
+
+
+                } else if (searchAccount instanceof BaseModelAPIResponse) {
+                    Log.d("SEARCH_ACCOUNT_API ", " BaseModelAPIResponse Called in EditActivity " + ((BaseModelAPIResponse) searchAccount).Message);
+                }
+
+            } else {
+                Log.d("onLoginApiResultFound", "ECEPTION FOUND... " + searchAccount);
+
+            }
+
+
         });
 
     }

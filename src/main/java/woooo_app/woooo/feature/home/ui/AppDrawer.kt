@@ -169,7 +169,7 @@ fun DrawerHeader(
         ) {
 
             Text(
-                text = "${MainActivity.homeViewModel?.displayname?.value}",
+                text = "",
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onPrimary,

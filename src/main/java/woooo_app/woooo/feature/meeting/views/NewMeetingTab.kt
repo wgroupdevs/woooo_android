@@ -1,12 +1,9 @@
 package woooo_app.woooo.feature.meeting.views
 
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
-import android.util.Log
-import android.widget.Button
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,8 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Mic
@@ -29,7 +24,6 @@ import androidx.compose.material.icons.outlined.Videocam
 import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -51,13 +45,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.DialogProperties
-import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupProperties
 import androidx.hilt.navigation.compose.hiltViewModel
-import woooo_app.woooo.shared.components.CustomButton
 import com.wgroup.woooo_app.woooo.shared.components.HorizontalSpacer
-import woooo_app.woooo.shared.components.TextLabel
 import com.wgroup.woooo_app.woooo.shared.components.VerticalSpacer
 import com.wgroup.woooo_app.woooo.shared.components.WooTextField
 import com.wgroup.woooo_app.woooo.theme.WooColor
@@ -65,7 +54,9 @@ import com.wgroup.woooo_app.woooo.utils.Strings
 import com.woooapp.meeting.impl.views.MeetingActivity
 import eu.siacs.conversations.R
 import kotlinx.coroutines.runBlocking
+import woooo_app.woooo.shared.components.CustomButton
 import woooo_app.woooo.shared.components.CustomIcon
+import woooo_app.woooo.shared.components.TextLabel
 import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel
 import woooo_app.woooo.utils.Dimension
 
@@ -80,7 +71,7 @@ fun Context.findActivity(): Activity {
 
 @Composable
 fun NewMeetingTabView() {
-    val context = LocalContext.current;6
+    val context = LocalContext.current;
 
     val userPreferences: UserPreferencesViewModel = hiltViewModel()
     var meetingId by remember { mutableStateOf("") }

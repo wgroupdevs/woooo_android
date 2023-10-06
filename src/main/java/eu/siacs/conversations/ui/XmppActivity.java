@@ -35,6 +35,7 @@ import android.os.PowerManager;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.text.Html;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -779,6 +780,7 @@ public abstract class XmppActivity extends ActionBarActivity {
             binding.inputLayout.setHint(getString(hint));
         }
         binding.inputEditText.requestFocus();
+        binding.inputEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(25)});
         if (previousValue != null) {
             binding.inputEditText.getText().append(previousValue);
         }

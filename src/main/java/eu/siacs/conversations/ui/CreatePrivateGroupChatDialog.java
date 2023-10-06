@@ -3,7 +3,6 @@ package eu.siacs.conversations.ui;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -43,21 +42,21 @@ public class CreatePrivateGroupChatDialog extends DialogFragment {
         builder.setTitle(R.string.create_private_group_chat);
         CreateConferenceDialogBinding binding = DataBindingUtil.inflate(getActivity().getLayoutInflater(), R.layout.create_conference_dialog, null, false);
         ArrayList<String> mActivatedAccounts = getArguments().getStringArrayList(ACCOUNTS_LIST_KEY);
-        StartConversationActivity.populateAccountSpinner(getActivity(), mActivatedAccounts, binding.account);
+//        StartConversationActivity.populateAccountSpinner(getActivity(), mActivatedAccounts, binding.account);
         builder.setView(binding.getRoot());
-        builder.setPositiveButton(R.string.choose_participants, (dialog, which) -> mListener.onCreateDialogPositiveClick(binding.account, binding.groupChatName.getText().toString().trim()));
+        builder.setPositiveButton(R.string.choose_participants, (dialog, which) -> mListener.onCreateDialogPositiveClick(binding.groupChatName.getText().toString().trim()));
         builder.setNegativeButton(R.string.cancel, null);
         DelayedHintHelper.setHint(R.string.providing_a_name_is_optional, binding.groupChatName);
-        binding.groupChatName.setOnEditorActionListener((v, actionId, event) -> {
-            mListener.onCreateDialogPositiveClick(binding.account, binding.groupChatName.getText().toString().trim());
-            return true;
-        });
+//        binding.groupChatName.setOnEditorActionListener((v, actionId, event) -> {
+//            mListener.onCreateDialogPositiveClick(binding.account, binding.groupChatName.getText().toString().trim());
+//            return true;
+//        });
         return builder.create();
     }
 
 
     public interface CreateConferenceDialogListener {
-        void onCreateDialogPositiveClick(Spinner spinner, String subject);
+        void onCreateDialogPositiveClick(String subject);
     }
 
     @Override

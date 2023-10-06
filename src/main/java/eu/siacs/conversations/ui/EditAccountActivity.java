@@ -23,6 +23,7 @@ import android.provider.Settings;
 import android.security.KeyChain;
 import android.security.KeyChainAliasCallback;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -41,6 +42,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 
@@ -48,6 +50,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.hbb20.CountryCodePicker;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -64,6 +67,7 @@ import eu.siacs.conversations.crypto.axolotl.XmppAxolotlSession;
 import eu.siacs.conversations.databinding.ActivityEditAccountBinding;
 import eu.siacs.conversations.databinding.DialogPresenceBinding;
 import eu.siacs.conversations.entities.Account;
+import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.Presence;
 import eu.siacs.conversations.entities.PresenceTemplate;
 import eu.siacs.conversations.http.model.GetWooContactsModel;
@@ -109,6 +113,8 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     private String[] contactsFromPhoneBook = {""};
     String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
     private static final int REQUEST = 112;
+
+    private static final int REQUEST_CODE_READ_CONTACTS = 1;
 
 
     public static final String EXTRA_OPENED_FROM_NOTIFICATION = "opened_from_notification";
@@ -335,15 +341,16 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
         final String password = binding.accountPassword.getText().toString();
         final String email = binding.accountJid.getText().toString();
-        final String phoneNumber = binding.phoneNumberField.getText().toString();
+        String phoneNumber = binding.phoneNumberField.getText().toString();
         final String countryCode = binding.countryCodetv.getText().toString();
+        if (!phoneNumber.isEmpty()) {
+            String validNumber = String.valueOf(phoneNumber.charAt(0));
+            if (validNumber.equals("0")) {
+                phoneNumber = phoneNumber.substring(1);
+            }
+            phoneNumber = countryCode + phoneNumber;
 
-        Log.d(TAG, "CountryCode : " + countryCode);
-        Log.d(TAG, "Phone : " + phoneNumber);
-
-        String mobileNumber = countryCode + phoneNumber;
-        Log.d(TAG, "Mobile Number : " + mobileNumber);
-        Log.d(TAG, "isLoginWithEmail : " + isLoginWithEmail);
+        }
         if (mUsernameMode && email.contains("@")) {
             binding.accountJidLayout.setError(getString(R.string.invalid_username));
             removeErrorsOnAllBut(binding.accountJidLayout);
@@ -391,9 +398,9 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         }
 
         showProgressDialog(this);
-
+        Log.d(phoneNumber, "cnasdjcnsadns");
         //Login User with credentials
-        xmppConnectionService.loginUserOnWoooo(isLoginWithEmail, email, mobileNumber, password, EditAccountActivity.this);
+        xmppConnectionService.loginUserOnWoooo(isLoginWithEmail, email, phoneNumber, password, EditAccountActivity.this);
 
 //        final boolean wasDisabled = mAccount != null && mAccount.getStatus() == Account.State.DISABLED;
 //        final boolean accountInfoEdited = accountInfoEdited();
@@ -570,9 +577,13 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         mAccount.setFirstName(user.firstName);
         mAccount.setLastName(user.lastName);
         mAccount.setDateOfBirth(user.dateOfBirth);
+        mAccount.setCountry(user.country);
+        mAccount.setState(user.state);
+        mAccount.setCity(user.city);
+        mAccount.setAddress(user.address);
         mAccount.setPostalCode(user.postalCode);
+        mAccount.setLanguage(user.language);
         xmppConnectionService.createAccount(mAccount);
-
 
     }
 
@@ -581,6 +592,18 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             SoftKeyboardUtils.hideSoftKeyboard(EditAccountActivity.this);
             final Intent intent;
             final XmppConnection connection = mAccount.getXmppConnection();
+            if (mInitMode) {
+                // get Woaa Contacts Api
+                getContactsFromServer();
+            }
+            String displayName = mAccount.getFirstName().concat(" " + mAccount.getLastName());
+
+            updateDisplayName(displayName);
+            mAccount.setDisplayName(displayName);
+            xmppConnectionService.publishDisplayName(mAccount);
+            refreshAvatar();
+
+
             final boolean wasFirstAccount = xmppConnectionService != null && xmppConnectionService.getAccounts().size() == 1;
             if (avatar != null || (connection != null && !connection.getFeatures().pep())) {
                 Log.d(TAG, "finishInitialSetup Called");
@@ -781,8 +804,6 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 //        }
         this.binding.actionEditYourName.setOnClickListener(this::onEditYourNameClicked);
 
-//        keyboard visibility checker
-//        keyboardVisibilityChecker();
         // button state
         loginWithEmailState();
 
@@ -817,6 +838,10 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 //            }
 //        });
 
+        if (!hasPermissions(PERMISSIONS)) {
+            ActivityCompat.requestPermissions((Activity) context, PERMISSIONS, REQUEST_CODE_READ_CONTACTS);
+        }
+
     }
 
 
@@ -834,9 +859,14 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             binding.accountPassword.setVisibility(View.VISIBLE);
             binding.accountPasswordLayout.setVisibility(View.VISIBLE);
             binding.lgnwithEmailBtn.setVisibility(View.VISIBLE);
+            keyboardVisibilityChecker();
         } else {
             binding.editProfileLayout.setVisibility(View.VISIBLE);
-            binding.savveBtn.setOnClickListener(v -> {
+            binding.menuButton.setVisibility(View.VISIBLE);
+            binding.menuButton.setOnClickListener(v -> {
+                showEditProfileMenu();
+            });
+            binding.editProfileSaveBtn.setOnClickListener(v -> {
                 if (validateProfileFormData()) {
                     updateAccountInfo();
                 }
@@ -845,7 +875,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
             if (mAccount != null) {
 
-                Log.d(TAG,"AVATAR URL : "+mAccount.getAvatar());
+                Log.d(TAG, "AVATAR URL : " + mAccount.getAvatar());
                 binding.aboutEt.setText(mAccount.getDescription());
                 binding.firstNameEt.setText(mAccount.getFirstName());
                 binding.lastNameEt.setText(mAccount.getLastName());
@@ -857,11 +887,42 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                 binding.cityEt.setText(mAccount.getCity());
                 binding.addressEt.setText(mAccount.getAddress());
                 binding.postalCodeEt.setText(mAccount.getPostalCode());
+
+                binding.firstNameEt.setFilters(new InputFilter[]{new InputFilter.LengthFilter(25)});
+                binding.lastNameEt.setFilters(new InputFilter[]{new InputFilter.LengthFilter(25)});
+
+
             }
 
         }
 
 
+    }
+
+    void showEditProfileMenu() {
+
+        PopupMenu popupMenu = new PopupMenu(EditAccountActivity.this, binding.menuButton);
+        popupMenu.getMenuInflater().inflate(R.menu.edit_profile_menu, popupMenu.getMenu());
+
+        popupMenu.setOnMenuItemClickListener(menuItem -> {
+            // Handle menu item clicks here
+            switch (menuItem.getItemId()) {
+                case R.id.edit_profile_update_photo:
+                    // Handle Menu Item 1 click
+                    return true;
+                case R.id.edit_profile_disable_account:
+                    // Handle Menu Item 2 click
+                    return true;
+                case R.id.edit_profile_delete_account:
+                    // Handle Menu Item 2 click
+                    return true;
+                // Add cases for other menu items if needed
+                default:
+                    return false;
+            }
+        });
+
+        popupMenu.show();
     }
 
     @SuppressLint("Range")
@@ -875,20 +936,18 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                 contactsFromPhoneBook[i] = number;
                 i++;
             }
+            Log.d(TAG, "Phone Book Contacts Count : " + contactsFromPhoneBook.length);
         }
-        GetWooContactsRequestParams getWooContactsRequestParams = new GetWooContactsRequestParams();
-        getWooContactsRequestParams.number = contactsFromPhoneBook;
-        String uId = "";
-        if (GV.INSTANCE.getUniqueId().isEmpty()) {
-            uId = "";
-        } else {
-            uId = GV.INSTANCE.getUniqueId();
-        }
-        getWooContactsRequestParams.accountId = uId;
-        xmppConnectionService.getWooContacts(getWooContactsRequestParams, EditAccountActivity.this);
-        Log.d(TAG, "iwejfpiscpsaomcpSC" + uId);
     }
 
+
+    void getContactsFromServer() {
+        getContactListFromPhoneBook();
+        GetWooContactsRequestParams getWooContactsRequestParams = new GetWooContactsRequestParams();
+        getWooContactsRequestParams.number = contactsFromPhoneBook;
+        getWooContactsRequestParams.accountId = mAccount.getAccountId();
+        xmppConnectionService.getWooContacts(getWooContactsRequestParams, EditAccountActivity.this);
+    }
 
     private Cursor getContactsCursor() {
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
@@ -910,10 +969,6 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         }
     }
 
-    public String[] getNumbers() {
-        return contactsFromPhoneBook;
-    }
-
 
     private boolean validateProfileFormData() {
 
@@ -929,32 +984,11 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         String address = binding.addressEt.getText().toString();
         String postalCode = binding.postalCodeEt.getText().toString();
 
-        if (description.trim().isEmpty()) {
-            binding.aboutEt.setError("Please enter something about yourself.");
-            return false;
-        } else if (firstName.trim().isEmpty()) {
+        if (firstName.trim().isEmpty()) {
             binding.firstNameEt.setError("Please enter first name.");
             return false;
         } else if (lastName.trim().isEmpty()) {
             binding.lastNameEt.setError("Please enter last name.");
-            return false;
-        } else if (dateOfBirth.trim().isEmpty()) {
-            binding.dobEt.setError("Please enter date of birth.");
-            return false;
-        } else if (country.trim().isEmpty()) {
-            binding.countryEt.setError("Please enter country.");
-            return false;
-        } else if (state.trim().isEmpty()) {
-            binding.stateEt.setError("Please enter state.");
-            return false;
-        } else if (city.trim().isEmpty()) {
-            binding.cityEt.setError("Please enter city.");
-            return false;
-        } else if (address.trim().isEmpty()) {
-            binding.addressEt.setError("Please enter address.");
-            return false;
-        } else if (postalCode.trim().isEmpty()) {
-            binding.postalCodeEt.setError("Please enter postal code.");
             return false;
         }
 
@@ -990,14 +1024,13 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         user.setPostalCode(mAccount.getPostalCode());
         user.setImageURL(mAccount.getAvatar());
 
-        Log.d(TAG,user.getAccountId());
-        Log.d(TAG,user.getDescription());
-        Log.d(TAG,user.getFirstName());
-        Log.d(TAG,user.getLastName());
+        Log.d(TAG, user.getAccountId());
+        Log.d(TAG, user.getDescription());
+        Log.d(TAG, user.getFirstName());
+        Log.d(TAG, user.getLastName());
 
         showProgressDialog(EditAccountActivity.this);
-        xmppConnectionService.updateProfile(user,EditAccountActivity.this);
-
+        xmppConnectionService.updateProfile(user, EditAccountActivity.this);
 
 
     }
@@ -1065,7 +1098,6 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
             for (String permission : permissions) {
                 if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-
                     return false;
                 }
             }
@@ -1851,15 +1883,11 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                     languageCode = "en";
                 }
 
-                // get Woaa Contacts Api
-                getContactPermission();
+
                 performXMPPLoginAttempt(userBasicInfo, jid, password, 5222, null, languageCode);
 
             } else if (result instanceof BaseModelAPIResponse) {
                 Toast.makeText(context, ((BaseModelAPIResponse) result).Message, Toast.LENGTH_LONG).show();
-                // get Woaa Contacts Api
-                getContactPermission();
-
 
                 hideProgressDialog();
                 Log.d("onLoginApiResultFound", " BaseModelAPIResponse Called in EditActivity " + ((BaseModelAPIResponse) result).Message);
@@ -1876,7 +1904,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
 //        if (Build.VERSION.SDK_INT >= 23) {
         if (!hasPermissions(PERMISSIONS)) {
-            ActivityCompat.requestPermissions((Activity) context, PERMISSIONS, REQUEST);
+            ActivityCompat.requestPermissions((Activity) context, PERMISSIONS, REQUEST_CODE_READ_CONTACTS);
         } else {
 
             getContactListFromPhoneBook();
@@ -1902,12 +1930,47 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == REQUEST_CODE_READ_CONTACTS) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                getContactListFromPhoneBook();
+
+
+            } else {
+                // The user denied the permission.
+                // ...
+            }
+        }
+    }
+
+    @Override
     public <T> void OnGetWooContactAPiResultFound(T result) {
         runOnUiThread(() -> {
             if (result instanceof GetWooContactsModel) {
-                Log.d("WoContactResultFound", " OnGetWooContactAPiResultFoundResponseJAVA Called in EditActivity " + ((GetWooContactsModel) result).Data);
 
+                ArrayList<String> jIds = ((GetWooContactsModel) result).Data;
+
+                Log.d("WoContactResultFound", " OnGetWooContactAPiResultFoundResponseJAVA Called in EditActivity " + ((GetWooContactsModel) result).Data);
                 Log.d("response Contact", String.valueOf(((GetWooContactsModel) result).Data.size()));
+
+                if (!jIds.isEmpty()) {
+
+                    for (String id : jIds) {
+                        Jid jid = Jid.ofEscaped(id);
+                        Contact contact = new Contact(jid);
+                        contact.setAccount(mAccount);
+                        xmppConnectionService.createContact(contact, true);
+                        Log.d("CREATE_CONTACT", "CREATING CONTACT WITH : " + id);
+
+                    }
+
+
+                }
+
+
             } else if (result instanceof BaseModelAPIResponse) {
 //                Toast.makeText(context, ((BaseModelAPIResponse) result).Message, Toast.LENGTH_LONG).show();
                 hideProgressDialog();
@@ -1936,6 +1999,10 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                 Log.d(TAG, "ECEPTION FOUND... " + result);
 
             }
+
+            finish();
+
+
         });
     }
 }

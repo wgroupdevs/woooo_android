@@ -1,9 +1,9 @@
 package eu.siacs.conversations.http.model;
-public class Language {
+public class LanguageModel {
     public String code;
     public String name;
 
-    public Language(String code, String name) {
+    public LanguageModel(String code, String name) {
         this.code = code;
         this.name = name;
     }
