@@ -969,10 +969,6 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         }
     }
 
-    public String[] getNumbers() {
-        return contactsFromPhoneBook;
-    }
-
 
     private boolean validateProfileFormData() {
 
@@ -988,32 +984,11 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         String address = binding.addressEt.getText().toString();
         String postalCode = binding.postalCodeEt.getText().toString();
 
-        if (description.trim().isEmpty()) {
-            binding.aboutEt.setError("Please enter something about yourself.");
-            return false;
-        } else if (firstName.trim().isEmpty()) {
+        if (firstName.trim().isEmpty()) {
             binding.firstNameEt.setError("Please enter first name.");
             return false;
         } else if (lastName.trim().isEmpty()) {
             binding.lastNameEt.setError("Please enter last name.");
-            return false;
-        } else if (dateOfBirth.trim().isEmpty()) {
-            binding.dobEt.setError("Please enter date of birth.");
-            return false;
-        } else if (country.trim().isEmpty()) {
-            binding.countryEt.setError("Please enter country.");
-            return false;
-        } else if (state.trim().isEmpty()) {
-            binding.stateEt.setError("Please enter state.");
-            return false;
-        } else if (city.trim().isEmpty()) {
-            binding.cityEt.setError("Please enter city.");
-            return false;
-        } else if (address.trim().isEmpty()) {
-            binding.addressEt.setError("Please enter address.");
-            return false;
-        } else if (postalCode.trim().isEmpty()) {
-            binding.postalCodeEt.setError("Please enter postal code.");
             return false;
         }
 

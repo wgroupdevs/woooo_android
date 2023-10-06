@@ -26,7 +26,6 @@ import eu.siacs.conversations.ui.ConversationFragment;
 import eu.siacs.conversations.ui.XmppActivity;
 import eu.siacs.conversations.ui.util.AvatarWorkerTask;
 import eu.siacs.conversations.ui.util.StyledAttributes;
-import eu.siacs.conversations.utils.IrregularUnicodeDetector;
 import eu.siacs.conversations.utils.MimeUtils;
 import eu.siacs.conversations.utils.UIHelper;
 import eu.siacs.conversations.xmpp.Jid;
@@ -39,7 +38,8 @@ public class ConversationAdapter
     private final List<Conversation> conversations;
     private OnConversationClickListener listener;
 
-    private final  String TAG="ConversationAdapter";
+    private final String TAG = "ConversationAdapter";
+
     public ConversationAdapter(XmppActivity activity, List<Conversation> conversations) {
         this.activity = activity;
         this.conversations = conversations;
@@ -68,8 +68,9 @@ public class ConversationAdapter
         Log.d(TAG, "CONVERSATIONS NAME : " + name);
 
         if (name instanceof Jid) {
+
             viewHolder.binding.conversationName.setText(
-                    IrregularUnicodeDetector.style(activity, (Jid) name));
+                    ((Jid) name).getLocal());
         } else {
             viewHolder.binding.conversationName.setText(name);
         }
@@ -111,8 +112,8 @@ public class ConversationAdapter
             final boolean showPreviewText;
             if (fileAvailable
                     && (message.isFileOrImage()
-                            || message.treatAsDownloadable()
-                            || message.isGeoUri())) {
+                    || message.treatAsDownloadable()
+                    || message.isGeoUri())) {
                 final int imageResource;
                 if (message.isGeoUri()) {
                     imageResource =

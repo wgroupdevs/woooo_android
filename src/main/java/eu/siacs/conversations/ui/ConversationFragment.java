@@ -1187,7 +1187,14 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             AvatarWorkerTask.loadAvatar(contact, this.activity.binding.toolbar.toolbarProfilePhoto, R.dimen.avatar);
             TextView toolbar_contact_name = this.activity.binding.toolbar.toolbarContactName;
             toolbar_contact_name.setVisibility(View.VISIBLE);
-            toolbar_contact_name.setText(conversation.getName());
+
+            CharSequence name = conversation.getName();
+            if (name instanceof Jid) {
+                toolbar_contact_name.setText(
+                        ((Jid) name).getLocal());
+            } else {
+                toolbar_contact_name.setText(name);
+            }
         }
 
         binding.cancelReplyBtn.setOnClickListener(v -> {
@@ -2677,9 +2684,9 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         } else if (contact != null && !contact.showInRoster() && contact.getOption(Contact.Options.PENDING_SUBSCRIPTION_REQUEST)) {
             activity.xmppConnectionService.createContact(contact, true);
 //            showSnackbar(R.string.contact_added_you, R.string.add_back, this.mAddBackClickListener, this.mLongPressBlockListener);
-
         } else if (contact != null && contact.getOption(Contact.Options.PENDING_SUBSCRIPTION_REQUEST)) {
-            showSnackbar(R.string.contact_asks_for_presence_subscription, R.string.allow, this.mAllowPresenceSubscription, this.mLongPressBlockListener);
+            activity.xmppConnectionService.sendPresencePacket(contact.getAccount(), activity.xmppConnectionService.getPresenceGenerator().sendPresenceUpdatesTo(contact));
+//            showSnackbar(R.string.contact_asks_for_presence_subscription, R.string.allow, this.mAllowPresenceSubscription, this.mLongPressBlockListener);
         } else if (mode == Conversation.MODE_MULTI && !conversation.getMucOptions().online() && account.getStatus() == Account.State.ONLINE) {
             switch (conversation.getMucOptions().getError()) {
                 case NICK_IN_USE:

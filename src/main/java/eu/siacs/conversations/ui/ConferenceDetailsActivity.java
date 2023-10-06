@@ -232,24 +232,12 @@ public class ConferenceDetailsActivity extends XmppActivity implements OnConvers
         int itemId = menuItem.getItemId();
         if (itemId == android.R.id.home) {
             finish();
-        } else if (itemId == R.id.action_share_http) {
-            shareLink(true);
-        } else if (itemId == R.id.action_share_uri) {
-            shareLink(false);
         } else if (itemId == R.id.action_save_as_bookmark) {
             saveAsBookmark();
         } else if (itemId == R.id.action_delete_bookmark) {
             deleteBookmark();
         } else if (itemId == R.id.action_destroy_room) {
             destroyRoom();
-        } else if (itemId == R.id.action_advanced_mode) {
-            this.mAdvancedMode = !menuItem.isChecked();
-            menuItem.setChecked(this.mAdvancedMode);
-            getPreferences().edit().putBoolean("advanced_muc_mode", mAdvancedMode).apply();
-            final boolean online = mConversation != null && mConversation.getMucOptions().online();
-            this.binding.mucInfoMore.setVisibility(this.mAdvancedMode && online ? View.VISIBLE : View.GONE);
-            invalidateOptionsMenu();
-            updateView();
         }
         return super.onOptionsItemSelected(menuItem);
     }
@@ -340,9 +328,7 @@ public class ConferenceDetailsActivity extends XmppActivity implements OnConvers
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem menuItemSaveBookmark = menu.findItem(R.id.action_save_as_bookmark);
         MenuItem menuItemDeleteBookmark = menu.findItem(R.id.action_delete_bookmark);
-        MenuItem menuItemAdvancedMode = menu.findItem(R.id.action_advanced_mode);
         MenuItem menuItemDestroyRoom = menu.findItem(R.id.action_destroy_room);
-        menuItemAdvancedMode.setChecked(mAdvancedMode);
         if (mConversation == null) {
             return true;
         }
@@ -361,8 +347,6 @@ public class ConferenceDetailsActivity extends XmppActivity implements OnConvers
     public boolean onCreateOptionsMenu(Menu menu) {
         final boolean groupChat = mConversation != null && mConversation.isPrivateAndNonAnonymous();
         getMenuInflater().inflate(R.menu.muc_details, menu);
-        final MenuItem share = menu.findItem(R.id.action_share);
-        share.setVisible(!groupChat);
         final MenuItem destroy = menu.findItem(R.id.action_destroy_room);
         destroy.setTitle(groupChat ? R.string.destroy_room : R.string.destroy_channel);
         AccountUtils.showHideMenuItems(menu);

@@ -61,7 +61,6 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
 
 
     private fun initBottomSheet() {
-        1
         bottomSheetBehavior.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
 
@@ -130,14 +129,18 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
 
     private fun updatePiChart(reset: Boolean = false) {
         val colors: MutableList<Int>? = pieChart?.data?.getDataSetByIndex(0)?.colors
-        val newColor: Int = if (reset) {
-            Color.TRANSPARENT
+        if (reset) {
+            colors?.set(0, Color.TRANSPARENT)
+            colors?.set(1, Color.TRANSPARENT)
+            colors?.set(2, Color.TRANSPARENT)
+            colors?.set(3, Color.TRANSPARENT)
         } else {
-            resources.getColor(R.color.white_a50)
+            colors?.set(
+                circleIndex,
+                resources.getColor(R.color.white_a50)
+            )
         }
-        colors?.set(circleIndex, newColor) // replace the color at the specified index
         pieChart?.invalidate()
-
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -172,7 +175,7 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
                 startActivity(Intent(this, SearchActivity::class.java))
             }
 
-            binding.appBarHome.displayName.setText("Hi, ${getDisplayName()}")
+            binding.appBarHome.displayName.text = "Hi, ${getDisplayName()}"
 
             val headerLayout: View = binding.navView.getHeaderView(0) // 0-index header
             val nameTextView = headerLayout.findViewById<TextView>(R.id.header_displayName_tv)
@@ -236,6 +239,12 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
         }
 
         binding.appBarHome.walletIv.setOnClickListener {
+
+
+//            val intent = Intent(this, WalletHomeActivity::class.java)
+//            startActivity(intent)
+
+
             rotateOuterCircle(false, 2)
             circleIndex = 1
             updatePiChart()
@@ -297,10 +306,9 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
         rotateAnimatorClockWise.start()
 
         rotateAnimatorClockWise.addListener(onEnd = {
-
+            updatePiChart(true)
             if (index > 0) {
                 goToConversationActivity(index)
-                updatePiChart(true)
             }
         })
     }
@@ -325,6 +333,7 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
             populateView()
         }
     }
+
 
     companion object {
         var mAccount: Account? = null
