@@ -7,24 +7,26 @@ import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
@@ -34,11 +36,8 @@ import com.woogroup.woooo_app.woooo.di.WooApplication;
 import com.woooapp.meeting.device.Display;
 import com.woooapp.meeting.impl.utils.WooEvents;
 import com.woooapp.meeting.impl.views.adapters.MeetingChatAdapter;
-import com.woooapp.meeting.impl.views.adapters.MeetingGridAdapter;
 import com.woooapp.meeting.impl.views.adapters.MeetingPeersAdapter;
-import com.woooapp.meeting.impl.views.adapters.ScreenPagerAdapter;
 import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
-import com.woooapp.meeting.impl.views.containers.PeersFragment;
 import com.woooapp.meeting.impl.views.models.Chat;
 import com.woooapp.meeting.impl.views.models.GridPeer;
 import com.woooapp.meeting.impl.views.models.MeetingPage;
@@ -62,11 +61,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import eu.siacs.conversations.R;
-import eu.siacs.conversations.databinding.ActivityMeetingBinding;
 import okhttp3.Call;
 import okhttp3.Response;
-import pk.muneebahmad.lib.views.containers.NavigationLayout;
-import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel;
 
 /**
  * @author muneebahmad (ahmadgallian@yahoo.com)
@@ -77,15 +73,12 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
     private static final String TAG = MeetingActivity.class.getSimpleName() + ".java";
     private static final int PERMISSIONS_REQ_CODE = 0x7b;
-    private UserPreferencesViewModel userPreferences;
     private final String[] permissions = new String[]{
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.CAMERA,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
-    private ViewPager mViewPager;
-    private ActivityMeetingBinding mBinding;
-    private ScreenPagerAdapter mPeerScreenAdapter;
+//    private ActivityMeetingBinding mBinding;
     private MeetingClient mMeetingClient;
     private ProgressDialog pd;
     private CreateMeetingResponse createMeetingResponse;
@@ -99,41 +92,55 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private String picture;
     private String mMeetingId;
     private String meetingName;
-    private MeetingGridAdapter peerGridAdapter;
     private MeetingPeersAdapter peersPagerAdapter;
     private List<Peer> peersList = new ArrayList<>();
     private List<GridPeer> gridPeerList = new ArrayList<>();
     private final Handler callbackHandler = new Handler(this);
     private int deviceWidthDp;
     private int deviceHeightDp;
-    private RelativeLayout drawerContainer;
     private boolean mSideMenuOpened = true;
     private UIManager uiManager;
-    private FrameLayout mPeerContainer;
-    private NavigationLayout mNavigationLayout;
     private MeetingChatAdapter chatAdapter;
     private List<Chat> chatList = new LinkedList<>();
     private boolean chatSelected = true;
+    private MeetingMorePopup morePopup;
+    private LinearLayout bottomBarMeeting;
+    private ImageView buttonEnd;
+    private ImageView buttonCam;
+    private ImageView buttonMic;
+    private ImageView buttonAI;
+    private ImageView buttonMoreMenu;
+    private LinearLayout drawerButton;
+    private ImageView buttonChatSend;
+    private EditText etChatInput;
+    private LinearLayout layoutEtChat;
+    private ListView listViewMeetingChat;
+    private LinearLayout tabChat;
+    private LinearLayout tabTranscript;
+    private LinearLayout tabHost;
+    private RelativeLayout drawerContainer;
+    private RelativeLayout drawerLayout;
+    private LinearLayout meetingBackground;
+    private TextView tvMeetingId;
+    private ViewPager viewPager;
+    private RelativeLayout mainContainer;
 
     @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_meeting);
-
+        setContentView(R.layout.activity_meeting);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+//        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_meeting);
         this.uiManager = UIManager.getUIManager(this);
-
         WooEvents.getInstance().addHandler(callbackHandler);
-
         deviceWidthDp = Display.getDisplayWidth(this) - 50;
         deviceHeightDp = Display.getDisplayHeight(this);
-
-        FrameLayout.LayoutParams frameParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-        frameParams.setMargins(0, 0, 0, 70);
-        mNavigationLayout = new NavigationLayout(this);
 //        mBinding.meetingFrameLayout.addView(mNavigationLayout, frameParams);
+        this.initComponents();
+        this.bottomBarMeeting.setVisibility(View.GONE);
 
-        mBinding.bottomBarMeeting.setVisibility(View.GONE);
+        createDrawer();
 
         pd = new ProgressDialog(this);
         pd.setMessage("Setting up ...");
@@ -145,11 +152,11 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             setup();
         }
 
-        mBinding.meetingButtonEnd.setOnClickListener(view -> {
+        this.buttonEnd.setOnClickListener(view -> {
             onBackPressed();
         });
 
-        mBinding.drawerButton.setOnClickListener(view -> {
+        this.drawerButton.setOnClickListener(view -> {
             if (mSideMenuOpened) {
                 closeDrawer();
             } else {
@@ -157,20 +164,20 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             }
         });
 
-        mBinding.meetingButtonMoreMenu.setOnClickListener(view -> {
+        this.buttonMoreMenu.setOnClickListener(view -> {
             // More Button
-            MeetingMorePopup morePopup = new MeetingMorePopup(
-                    this, mBinding.meetingMainContainer,
-                    mBinding.bottomBarMeeting.getHeight(),
+            this.morePopup = new MeetingMorePopup(
+                    this, this.mainContainer,
+                    this.bottomBarMeeting.getHeight(),
                     mMeetingClient);
             morePopup.show();
         });
 
-        mBinding.meetingButtonAI.setOnClickListener(view -> {
+        this.buttonAI.setOnClickListener(view -> {
             // AI
         });
 
-        mBinding.meetingButtonMic.setOnClickListener(view -> {
+        this.buttonMic.setOnClickListener(view -> {
             // Mic
             if (mMeetingClient.isMicOn()) {
                 mMeetingClient.setMicOn(false);
@@ -179,7 +186,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             }
         });
 
-        mBinding.meetingButtonCam.setOnClickListener(view -> {
+        this.buttonCam.setOnClickListener(view -> {
             // Cam
             if (mMeetingClient.isCamOn()) {
                 mMeetingClient.setCamOn(false);
@@ -188,17 +195,49 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             }
         });
 
-        mBinding.buttonMeetingChatSend.setOnClickListener(view -> {
-            com.woooapp.meeting.net.models.Message message = new com.woooapp.meeting.net.models.Message();
-            message.setSocketId(mMeetingClient.getSocketId());
-            message.setProfileImage(this.picture);
-            message.setName(this.username);
-            message.setMeetingId(mMeetingId);
-            message.setMessage(mBinding.etMeetingChat.getText().toString());
-            mMeetingClient.sendMessage(message);
+        this.buttonChatSend.setOnClickListener(view -> {
+            if (!this.etChatInput.getText().toString().isEmpty()) {
+                com.woooapp.meeting.net.models.Message message = new com.woooapp.meeting.net.models.Message();
+                message.setSocketId(mMeetingClient.getSocketId());
+                message.setProfileImage(this.picture);
+                message.setName(this.username);
+                message.setMeetingId(mMeetingId);
+                message.setMessage(this.etChatInput.getText().toString());
+                mMeetingClient.sendMessage(message);
 
-            mBinding.etMeetingChat.setText("");
+                this.etChatInput.setText("");
+            } else {
+                etChatInput.setHint("Empty Message");
+                etChatInput.setHintTextColor(Color.RED);
+            }
         });
+    }
+
+    private void initComponents() {
+        this.mainContainer = findViewById(R.id.meetingMainContainer);
+        this.bottomBarMeeting = findViewById(R.id.bottomBarMeeting);
+        this.buttonMoreMenu = findViewById(R.id.meetingButtonMoreMenu);
+        this.buttonAI = findViewById(R.id.meetingButtonAI);
+        this.buttonMic = findViewById(R.id.meetingButtonMic);
+        this.buttonCam = findViewById(R.id.meetingButtonCam);
+        this.buttonEnd = findViewById(R.id.meetingButtonEnd);
+        this.drawerButton = findViewById(R.id.drawerButton);
+
+        this.buttonChatSend = findViewById(R.id.buttonMeetingChatSend);
+        this.etChatInput = findViewById(R.id.etMeetingChat);
+        this.layoutEtChat = findViewById(R.id.layoutEtChat);
+        this.listViewMeetingChat = findViewById(R.id.listViewMeetingChat);
+        this.tabChat = findViewById(R.id.tabChat);
+        this.tabTranscript = findViewById(R.id.tabTranscript);
+        this.tabHost = findViewById(R.id.tabHost);
+        this.drawerLayout = findViewById(R.id.drawerLayout);
+        this.drawerContainer = findViewById(R.id.drawerContainer);
+        this.meetingBackground = findViewById(R.id.meetingBackground);
+
+        this.tvMeetingId = findViewById(R.id.tvMeetingId);
+        this.viewPager = findViewById(R.id.meetingViewPager);
+
+        this.meetingBackground.setOnTouchListener((view, motionEvent) -> true);
     }
 
     private void setup() {
@@ -263,41 +302,41 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
      */
     private void createDrawer() {
         if (mSideMenuOpened) {
-            WooAnimationUtil.setLeftMenuClosed(mBinding.drawerContainer, mBinding.drawerLayout.getWidth(), null);
+            WooAnimationUtil.setLeftMenuClosed(this.drawerContainer, this.drawerLayout.getLayoutParams().width, null);
             mSideMenuOpened = false;
         }
         this.chatAdapter = new MeetingChatAdapter(this, chatList);
-        mBinding.listViewMeetingChat.setAdapter(chatAdapter);
+        this.listViewMeetingChat.setAdapter(chatAdapter);
 
-        mBinding.tabChat.setOnClickListener(view -> {
-            switchChatTabs();
+        this.tabChat.setOnClickListener(view -> {
+            switchChatTabs(true);
         });
 
-        mBinding.tabTranscript.setOnClickListener(view -> {
-            switchChatTabs();
+        this.tabTranscript.setOnClickListener(view -> {
+            switchChatTabs(false);
         });
     }
 
-    private void switchChatTabs() {
-        if (chatSelected) {
-            mBinding.tabTranscript.setBackgroundResource(R.drawable.bg_meeting_menu_tab);
-            mBinding.tabChat.setBackgroundResource(R.drawable.bg_meeting_menu_tab_disabled);
-            mBinding.layoutEtChat.setVisibility(View.GONE);
-            WooAnimationUtil.hideView(mBinding.listViewMeetingChat, new AnimatorListenerAdapter() {
+    private void switchChatTabs(boolean chat) {
+        if (chatSelected && !chat) {
+            this.tabTranscript.setBackgroundResource(R.drawable.bg_meeting_menu_tab);
+            this.tabChat.setBackgroundResource(R.drawable.bg_meeting_menu_tab_disabled);
+            this.layoutEtChat.setVisibility(View.GONE);
+            WooAnimationUtil.hideView(this.listViewMeetingChat, new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
-                    mBinding.listViewMeetingChat.setVisibility(View.GONE);
+                    listViewMeetingChat.setVisibility(View.GONE);
                 }
             });
 
             chatSelected = false;
-        } else {
-            mBinding.tabTranscript.setBackgroundResource(R.drawable.bg_meeting_menu_tab_disabled);
-            mBinding.tabChat.setBackgroundResource(R.drawable.bg_meeting_menu_tab);
-            mBinding.layoutEtChat.setVisibility(View.VISIBLE);
-            mBinding.listViewMeetingChat.setVisibility(View.VISIBLE);
-            WooAnimationUtil.showView(mBinding.listViewMeetingChat, null);
+        } else if(!chatSelected && chat) {
+            this.tabTranscript.setBackgroundResource(R.drawable.bg_meeting_menu_tab_disabled);
+            this.tabChat.setBackgroundResource(R.drawable.bg_meeting_menu_tab);
+            this.layoutEtChat.setVisibility(View.VISIBLE);
+            this.listViewMeetingChat.setVisibility(View.VISIBLE);
+            WooAnimationUtil.showView(this.listViewMeetingChat, null);
 
             chatSelected = true;
         }
@@ -305,11 +344,11 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
     private void closeDrawer() {
         if (mSideMenuOpened) {
-            WooAnimationUtil.closeLeftMenu(mBinding.drawerContainer, mBinding.drawerLayout.getWidth(), new AnimatorListenerAdapter() {
+            WooAnimationUtil.closeLeftMenu(this.drawerContainer, this.drawerLayout.getWidth(), new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
                     super.onAnimationStart(animation);
-                    mBinding.meetingBackground.setVisibility(View.GONE);
+                    meetingBackground.setVisibility(View.GONE);
                 }
             });
             mSideMenuOpened = false;
@@ -318,13 +357,13 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
     private void openDrawer() {
         if (!mSideMenuOpened) {
-            WooAnimationUtil.openLeftMenu(mBinding.drawerContainer, mBinding.drawerLayout.getWidth(), new AnimatorListenerAdapter() {
+            WooAnimationUtil.openLeftMenu(drawerContainer, drawerLayout.getWidth(), new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
-                    Bitmap blurredBg = uiManager.blur(MeetingActivity.this, uiManager.createBitmap(mBinding.meetingMainContainer));
-                    mBinding.meetingBackground.setBackground(new BitmapDrawable(blurredBg));
-                    mBinding.meetingBackground.setVisibility(View.VISIBLE);
+                    Bitmap blurredBg = uiManager.blur(MeetingActivity.this, uiManager.createBitmap(mainContainer));
+                    meetingBackground.setBackground(new BitmapDrawable(blurredBg));
+                    meetingBackground.setVisibility(View.VISIBLE);
                 }
             });
             mSideMenuOpened = true;
@@ -467,10 +506,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         RoomProps roomProps = new ViewModelProvider(this, factory).get(RoomProps.class);
         roomProps.connect(this);
 
-        mBinding.setMeetProps(roomProps);
+//        mBinding.setMeetProps(roomProps);
 
         // Set Meeting ID Link
-        mBinding.tvMeetingId.setText(mMeetingId);
+        this.tvMeetingId.setText(mMeetingId);
 
         // PeerView
 //        peerGridAdapter = new MeetingGridAdapter(this, this, mRoomStore, mMeetingClient);
@@ -479,7 +518,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 //        mBinding.gridViewMeeting.setEnabled(false);
         this.peersPagerAdapter = new MeetingPeersAdapter(this,
                 this, mRoomStore, mMeetingClient);
-        mBinding.meetingViewPager.setAdapter(peersPagerAdapter);
+        this.viewPager.setAdapter(peersPagerAdapter);
 
         mRoomStore
                 .getPeers()
@@ -607,7 +646,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             case WooEvents.EVENT_TYPE_SOCKET_ID:
                 Log.d(TAG, "<< Handler Event SOCKET_ID Received >> " + msg.obj);
                 // Drawer
-                runOnUiThread(this::createDrawer);
+//                runOnUiThread(() -> {
+//                    drawerContainer.setVisibility(View.VISIBLE);
+//                    createDrawer();
+//                });
                 return true;
             case WooEvents.EVENT_TYPE_PRODUCER_CREATED:
                 Log.d(TAG, "<< Handler Event PRODUCER CREATED [" + msg.obj + "]");
@@ -623,19 +665,19 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     if (joining) {
                         txt = "Joined Meeting ";
                     }
-                    Snackbar.make(mBinding.meetingButtonEnd, txt + mMeetingClient.getMeetingId(), Snackbar.LENGTH_LONG).show();
-                    WooAnimationUtil.hideView(mBinding.tvMeetingId, new AnimatorListenerAdapter() {
+                    Snackbar.make(buttonEnd, txt + mMeetingClient.getMeetingId(), Snackbar.LENGTH_LONG).show();
+                    WooAnimationUtil.hideView(tvMeetingId, new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
-                            mBinding.tvMeetingId.setVisibility(View.GONE);
+                            tvMeetingId.setVisibility(View.GONE);
                         }
                     });
-                    WooAnimationUtil.showView(mBinding.bottomBarMeeting, new AnimatorListenerAdapter() {
+                    WooAnimationUtil.showView(bottomBarMeeting, new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
-                            mBinding.bottomBarMeeting.setVisibility(View.VISIBLE);
+                            bottomBarMeeting.setVisibility(View.VISIBLE);
                         }
                     });
 //                    mBinding.tvMeetingId.setVisibility(View.GONE);
@@ -685,22 +727,22 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 return true;
             case WooEvents.EVENT_MIC_TURNED_ON:
                 runOnUiThread(() -> {
-                    mBinding.meetingButtonMic.setImageResource(R.drawable.baseline_mic_34);
+                    buttonMic.setImageResource(R.drawable.baseline_mic_34);
                 });
                 return true;
             case WooEvents.EVENT_MIC_TURNED_OFF:
                 runOnUiThread(() -> {
-                    mBinding.meetingButtonMic.setImageResource(R.drawable.ic_mic_off_gray);
+                    buttonMic.setImageResource(R.drawable.ic_mic_off_gray);
                 });
                 return true;
             case WooEvents.EVENT_CAM_TURNED_ON:
                 runOnUiThread(() -> {
-                    mBinding.meetingButtonCam.setImageResource(R.drawable.ic_video_camera_white);
+                    buttonCam.setImageResource(R.drawable.ic_video_camera_white);
                 });
                 return true;
             case WooEvents.EVENT_CAM_TURNED_OFF:
                 runOnUiThread(() -> {
-                    mBinding.meetingButtonCam.setImageResource(R.drawable.ic_camera_off_gray);
+                    buttonCam.setImageResource(R.drawable.ic_camera_off_gray);
                 });
                 return true;
             default:
@@ -721,6 +763,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             WooEvents.getInstance().removeHandler(callbackHandler);
             destroyMeeting();
             chatList.clear();
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             super.onBackPressed();
             finish();
         }, 5000);

@@ -1,5 +1,6 @@
 package com.woooapp.meeting.impl.views.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -16,7 +17,6 @@ import com.woooapp.meeting.impl.views.models.Chat;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,6 +24,7 @@ import eu.siacs.conversations.R;
 import pk.muneebahmad.lib.graphics.CircleDrawable;
 import pk.muneebahmad.lib.net.Http;
 import pk.muneebahmad.lib.net.HttpImageAdapter;
+import pk.muneebahmad.lib.util.DateUtils;
 
 /**
  * @author muneebahmad (ahmadgallian@yahoo.com)
@@ -32,7 +33,7 @@ import pk.muneebahmad.lib.net.HttpImageAdapter;
  */
 public class MeetingChatAdapter extends BaseAdapter {
 
-    private final Context mContext;
+    private final Activity mContext;
     private List<Chat> chatList = new LinkedList<>();
 
     /**
@@ -40,7 +41,7 @@ public class MeetingChatAdapter extends BaseAdapter {
      * @param mContext
      * @param chatList
      */
-    public MeetingChatAdapter(@NonNull Context mContext, @NonNull List<Chat> chatList) {
+    public MeetingChatAdapter(@NonNull Activity mContext, @NonNull List<Chat> chatList) {
         this.mContext = mContext;
         this.chatList = chatList;
     }
@@ -66,6 +67,11 @@ public class MeetingChatAdapter extends BaseAdapter {
     }
 
     @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         if (getItemViewType(i) == Chat.MESSAGE_TYPE_SENT) {
             SentViewHolder svh = null;
@@ -81,52 +87,58 @@ public class MeetingChatAdapter extends BaseAdapter {
             svh.tvMessage.setMaxWidth(250);
             svh.tvMessage.setText(chatList.get(i).getMessage().getMessage());
             svh.tvTime = view.findViewById(R.id.meetingChatTimeTv);
-            svh.tvTime.setText("02:30 pm");
+            svh.tvTime.setText(DateUtils.getCurrentTime());
             WooAnimationUtil.showView(view, null);
 
             return view;
-        }
-        RecvViewHolder rvh = null;
-        if (view == null) {
-            rvh = new RecvViewHolder();
-            view = LayoutInflater.from(mContext).inflate(R.layout.meeting_chat_meesage_recv, null);
-            view.setTag(rvh);
-        } else {
-            rvh = (RecvViewHolder) view.getTag();
-        }
-
-        rvh.tvMessage = view.findViewById(R.id.meetingMsgRecvTvMsg);
-        rvh.tvMessage.setMaxWidth(250);
-        rvh.tvMessage.setText(chatList.get(i).getMessage().getMessage());
-        rvh.tvTime = view.findViewById(R.id.meetingChatRecvTimeTv);
-        rvh.tvTime.setText("2:30 pm");
-        rvh.ivThumb = view.findViewById(R.id.meetingMsgRecvIvThumb);
-        String u = chatList.get(i).getMessage().getProfileImage();
-        if (u != null) {
-            try {
-                URL url = new URL(u);
-                RecvViewHolder finalRvh = rvh;
-                Http.build().getImage(mContext, true, url.toString(), new HttpImageAdapter() {
-                    @Override
-                    public void connected(String resource) {}
-
-                    @Override
-                    public void failed(String resource, String reasonPhrase) {}
-
-                    @Override
-                    public void done(String resource, Bitmap bitmap) {
-                        if (bitmap != null) {
-                            CircleDrawable cd = new CircleDrawable(bitmap);
-                            finalRvh.ivThumb.setImageDrawable(cd);
-                        }
-                    }
-                });
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
+        } else if (getItemViewType(i) == Chat.MESSAGE_TYPE_RECV) {
+            RecvViewHolder rvh = null;
+            if (view == null) {
+                rvh = new RecvViewHolder();
+                view = LayoutInflater.from(mContext).inflate(R.layout.meeting_chat_meesage_recv, null);
+                view.setTag(rvh);
+            } else {
+                rvh = (RecvViewHolder) view.getTag();
             }
+
+            rvh.tvMessage = view.findViewById(R.id.meetingMsgRecvTvMsg);
+            rvh.tvMessage.setMaxWidth(250);
+            rvh.tvMessage.setText(chatList.get(i).getMessage().getMessage());
+            rvh.tvTime = view.findViewById(R.id.meetingChatRecvTimeTv);
+            rvh.tvTime.setText(DateUtils.getCurrentTime());
+            rvh.ivThumb = view.findViewById(R.id.meetingMsgRecvIvThumb);
+            String u = chatList.get(i).getMessage().getProfileImage();
+            if (u != null) {
+                try {
+                    URL url = new URL(u);
+                    RecvViewHolder finalRvh = rvh;
+                    Http.build().getImage(mContext, true, url.toString(), new HttpImageAdapter() {
+                        @Override
+                        public void connected(String resource) {
+                        }
+
+                        @Override
+                        public void failed(String resource, String reasonPhrase) {
+                        }
+
+                        @Override
+                        public void done(String resource, Bitmap bitmap) {
+                            if (bitmap != null) {
+                                mContext.runOnUiThread(() -> {
+                                    CircleDrawable cd = new CircleDrawable(bitmap);
+                                    finalRvh.ivThumb.setImageDrawable(cd);
+                                });
+                            }
+                        }
+                    });
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+            WooAnimationUtil.showView(view, null);
+            return view;
         }
-        WooAnimationUtil.showView(view, null);
-        return view;
+        return null;
     }
 
     static class SentViewHolder {

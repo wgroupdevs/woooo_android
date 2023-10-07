@@ -51,6 +51,8 @@
             android:text="02:30 am"
             android:layout_gravity="right"
             android:layout_marginRight="10sp"
+            android:textSize="9sp"
+            android:textColor="#cccccc"
             />
 
     </LinearLayout>

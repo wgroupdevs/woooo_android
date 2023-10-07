@@ -17,10 +17,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.woooapp.meeting.impl.utils.ClipboardCopy;
 import com.woooapp.meeting.impl.views.UIManager;
 import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
 import com.woooapp.meeting.lib.MeetingClient;
@@ -79,6 +81,9 @@ public final class MeetingMorePopup extends RelativeLayout {
     }
 
     private void setContentView() {
+        // Blurred bg
+        blurredBg = uiManager.blur(mContext, uiManager.createBitmap(mParent));
+
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
@@ -86,6 +91,35 @@ public final class MeetingMorePopup extends RelativeLayout {
 
         this.mMainLayout = mContentView.findViewById(R.id.morePopupContainer);
 
+        TextView tvMeetingId = mContentView.findViewById(R.id.morePopupTvMeetingId);
+        tvMeetingId.setText(mClient.getMeetingId());
+
+        View buttonMeetingId = mContentView.findViewById(R.id.morePopupButtonMeetingId);
+        buttonMeetingId.setOnClickListener(view -> {
+            ClipboardCopy.clipboardCopy(mContext, mClient.getMeetingId());
+            Toast.makeText(mContext, "Meeting id " + mClient.getMeetingId() + " copied to clipboard", Toast.LENGTH_LONG).show();
+            dismiss();
+        });
+
+        View buttonMuteEveryone = mContentView.findViewById(R.id.morePopupButtonMuteEveryone);
+        buttonMuteEveryone.setOnClickListener(view -> {
+            dismiss();
+        });
+
+        View buttonDisableCam = mContentView.findViewById(R.id.morePopupButtonDisableCam);
+        buttonDisableCam.setOnClickListener(view -> {
+            dismiss();
+        });
+
+        View buttonBackground = mContentView.findViewById(R.id.morePopupButtonSelectBackground);
+        buttonBackground.setOnClickListener(view -> {
+            dismiss();
+        });
+
+        View buttonSettings = mContentView.findViewById(R.id.morePopupButtonSettings);
+        buttonSettings.setOnClickListener(view -> {
+            dismiss();
+        });
 //        final ImageView ivThumb = mContentView.findViewById(R.id.morePopupIvThumb);
 //        TextView tvName = mContentView.findViewById(R.id.morePopupTvName);
 //
@@ -113,6 +147,11 @@ public final class MeetingMorePopup extends RelativeLayout {
     }
 
     public void show() {
+        final ImageView ivBg = new ImageView(mContext);
+        ivBg.setImageBitmap(blurredBg);
+        RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        ivBg.setOnTouchListener((view, motionEvent) -> true);
+
         // Add to parent
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT,
@@ -122,16 +161,12 @@ public final class MeetingMorePopup extends RelativeLayout {
         this.addView(this.mMainLayout, params);
         mParent.addView(this, getLayoutParams());
 
-        WooAnimationUtil.showView(this.mMainLayout, new AnimatorListenerAdapter() {
+        WooAnimationUtil.showView(this.mMainLayout, 100, 300,
+                new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                blurredBg = uiManager.blur(mContext, uiManager.createBitmap(mParent));
-                ImageView ivBg = new ImageView(mContext);
-                ivBg.setImageBitmap(blurredBg);
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-                ivBg.setOnTouchListener((view, motionEvent) -> true);
-                addView(ivBg, 0, params);
+                addView(ivBg, 0, params1);
             }
         });
     }

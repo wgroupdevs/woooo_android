@@ -7,6 +7,8 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -58,12 +60,26 @@ public final class WooAnimationUtil {
      * @param width
      */
     public static void setLeftMenuClosed(@NonNull final View view, float width, @Nullable AnimatorListenerAdapter adapter) {
-        ValueAnimator anim = ObjectAnimator.ofFloat(view, View.TRANSLATION_X, -width);
-        anim.setDuration(10);
-        if (adapter != null) {
-            anim.addListener(adapter);
-        }
-        anim.start();
+        TranslateAnimation ta = new TranslateAnimation(0f, -width, 0f, 0f);
+        ta.setDuration(10);
+        ta.setRepeatCount(0);
+        ta.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                view.setTranslationX(-width);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        view.startAnimation(ta);
     }
 
     /**
@@ -86,6 +102,23 @@ public final class WooAnimationUtil {
         set.start();
     }
 
+    /**
+     *
+     * @param view
+     * @param pivotX
+     * @param pivotY
+     * @param adapter
+     */
+    public static void showView(@NonNull View view, int pivotX, int pivotY, @Nullable AnimatorListenerAdapter adapter) {
+        if (pivotX > -1) {
+            view.setPivotX(pivotX);
+        }
+        if (pivotY > -1) {
+            view.setPivotY(pivotY);
+        }
+        showView(view, adapter);
+    }
+
     public static void hideView(@NonNull View view, @Nullable AnimatorListenerAdapter adapter) {
         ValueAnimator scaleX = ObjectAnimator.ofFloat(view, View.SCALE_X, 1f, 0f);
         scaleX.setDuration(200);
@@ -99,6 +132,23 @@ public final class WooAnimationUtil {
         }
         set.play(scaleX).with(scaleY).with(alpha);
         set.start();
+    }
+
+    /**
+     *
+     * @param view
+     * @param pivotX
+     * @param pivotY
+     * @param adapter
+     */
+    public static void hideView(@NonNull View view, int pivotX, int pivotY, @Nullable AnimatorListenerAdapter adapter) {
+        if (pivotX > -1) {
+            view.setPivotX(pivotX);
+        }
+        if (pivotY > -1) {
+            view.setPivotY(pivotY);
+        }
+        hideView(view, adapter);
     }
 
 } /** end class [WooAnimationUtil] */

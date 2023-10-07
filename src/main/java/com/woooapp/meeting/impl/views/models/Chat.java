@@ -11,7 +11,7 @@ public class Chat {
 
     public static final int MESSAGE_TYPE_SENT = 0x00;
     public static final int MESSAGE_TYPE_RECV = 0x01;
-    private int messageType = MESSAGE_TYPE_RECV;
+    private int messageType = -1;
     private Message message;
 
     /**

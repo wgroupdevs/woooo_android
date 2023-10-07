@@ -45,8 +45,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="02:30 am"
-            android:layout_gravity="right"
-            android:layout_marginRight="10sp"
+            android:layout_gravity="left"
+            android:layout_marginLeft="10sp"
+            android:textSize="9sp"
+            android:textColor="#cccccc"
             />
 
     </LinearLayout>

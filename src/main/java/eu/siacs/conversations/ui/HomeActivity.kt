@@ -196,10 +196,7 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
 
 
             editProfileButton.setOnClickListener {
-<<<<<<< HEAD
-=======
                 binding.drawerLayout.close()
->>>>>>> chat
                 val intent = Intent(this, EditAccountActivity::class.java)
                 intent.putExtra("jid", mAccount?.jid?.asBareJid().toString())
                 intent.putExtra("init", false)

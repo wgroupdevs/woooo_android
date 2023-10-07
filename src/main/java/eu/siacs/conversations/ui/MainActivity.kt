@@ -76,7 +76,7 @@ class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRo
 
     @Composable
     fun MainScreen() {
-        Log.d(TAG, "homeViewModel : ${homeViewModel.hashCode()}")
+//        Log.d(TAG, "homeViewModel : ${homeViewModel.hashCode()}")
 
         val context = LocalContext.current
         val navController = rememberNavController()

@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <data>
+<!--    <data>-->
 
-        <variable
-            name="meetProps"
-            type="com.woooapp.meeting.impl.vm.RoomProps" />
-    </data>
+<!--        <variable-->
+<!--            name="meetProps"-->
+<!--            type="com.woooapp.meeting.impl.vm.RoomProps" />-->
+<!--    </data>-->
 
     <RelativeLayout
         android:id="@+id/meetingMainContainer"
@@ -38,16 +40,6 @@
             android:background="@android:color/transparent"
             android:layout_marginBottom="70sp"
             />
-
-<!--        <FrameLayout-->
-<!--            android:id="@+id/meetingFrameLayout"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_marginBottom="70sp"-->
-<!--            android:background="@android:color/transparent"-->
-<!--            >-->
-<!--            &lt;!&ndash; Meeting Peers Layout &ndash;&gt;-->
-<!--        </FrameLayout>-->
 
         <TextView
             android:id="@+id/tvMeetingId"
@@ -141,7 +133,7 @@
 
             <RelativeLayout
                 android:id="@+id/drawerLayout"
-                android:layout_width="match_parent"
+                android:layout_width="310sp"
                 android:layout_height="match_parent"
                 android:layout_marginRight="40sp"
                 android:background="@drawable/bg_meeting_drawer"
@@ -210,7 +202,7 @@
                     android:layout_below="@+id/tabHost"
                     android:dividerHeight="4sp"
                     android:divider="@android:color/transparent"
-                    android:layout_marginBottom="50sp"
+                    android:layout_marginBottom="60sp"
                     />
 
                 <LinearLayout
@@ -220,7 +212,9 @@
                     android:orientation="horizontal"
                     android:layout_alignParentBottom="true"
                     android:background="@drawable/bg_meeting_chat_et"
-                    android:layout_margin="5sp"
+                    android:layout_marginLeft="5sp"
+                    android:layout_marginRight="5sp"
+                    android:layout_marginBottom="15sp"
                     android:weightSum="5"
                     >
 
@@ -254,6 +248,7 @@
             </RelativeLayout>
 
             <LinearLayout
+                android:id="@+id/drawerButton"
                 android:layout_width="wrap_content"
                 android:layout_height="45sp"
                 android:orientation="vertical"
@@ -264,7 +259,6 @@
                 >
 
                 <ImageView
-                    android:id="@+id/drawerButton"
                     android:layout_width="40sp"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_side_menu_meeting" />
@@ -275,4 +269,4 @@
 
     </RelativeLayout>
 
-</layout>
+</RelativeLayout>

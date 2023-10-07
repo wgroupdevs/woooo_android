@@ -200,18 +200,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-<<<<<<< HEAD
-                    android:text="Your daily progress"
-                    android:textAppearance="@style/TextAppearance.Conversations.Title" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0% to complete"
-=======
                     android:layout_marginStart="@dimen/_2sdp"
                     android:text="12 hrs"
->>>>>>> chat
                     android:textAppearance="@style/TextAppearance.Conversations.Caption" />
 
 
