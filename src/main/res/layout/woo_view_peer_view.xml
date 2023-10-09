@@ -14,7 +14,9 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        >
 
         <org.webrtc.SurfaceViewRenderer
             android:id="@+id/wooVideoRenderer"
@@ -30,6 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
+            android:gravity="center"
             bind:edias_render_empty="@{wooPeerViewProps.videoTrack}">
 
 <!--            <View-->
@@ -38,11 +41,11 @@
 <!--                android:layout_weight="1" />-->
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="5"
+                android:id="@+id/wooPeerThumbIv"
+                android:layout_width="100sp"
+                android:layout_height="100sp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/buddy" />
+                android:src="@drawable/buddy2" />
 
         </LinearLayout>
 
