@@ -13,8 +13,6 @@
     <string name="create_new_account">Krijoni llogari të re</string>
     <string name="pick_a_server">Zgjidhni shërbimin tuaj XMPP</string>
     <string name="use_conversations.im">Përdor conversations.im</string>
-    <string name="do_you_have_an_account">Keni tashmë një llogari XMPP\? Mund të jetë kështu nëse përdorni tashmë një klient tjetër XMPP, ose e keni përdorur Conversations më parë. Nëse jo, mund të krijoni një llogari të re XMPP që tani.
-\nNdihmëz: Disa shërbime email-i ofrojnë gjithashtu llogari XMPP.</string>
     <string name="your_server_invitation">Ftesë nga shërbyesi juaj</string>
     <string name="improperly_formatted_provisioning">Kod i formatuar jo saktësisht</string>
 </resources>

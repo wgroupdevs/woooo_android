@@ -2,6 +2,5 @@
 <resources>
     <bool name="show_qr_code_scan">false</bool>
     <bool name="show_individual_search_options">false</bool>
-    <bool name="show_combined_search_options">true</bool>
 </resources>
 

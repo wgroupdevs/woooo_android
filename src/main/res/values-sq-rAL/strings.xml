@@ -3,7 +3,6 @@
     <string name="action_add">Bisedë e re</string>
     <string name="action_accounts">Administroni llogari</string>
     <string name="action_account">Administroni llogari</string>
-    <string name="action_end_conversation">Mbylle bisedën</string>
     <string name="action_contact_details">Hollësi kontakti</string>
     <string name="action_muc_details">Hollësi fjalosjeje grupi</string>
     <string name="channel_details">Hollësi kanali</string>
@@ -40,7 +39,6 @@
     <string name="unblock_domain_text">Të zhbllokohen krejt kontaktet prej %s\?</string>
     <string name="contact_blocked">Kontakti u bllokua</string>
     <string name="blocked">Bllokuar</string>
-    <string name="register_account">Regjistroni llogari të re në shërbyes</string>
     <string name="change_password_on_server">Ndryshoni fjalëkalim te shërbyesi</string>
     <string name="share_with">Ndajeni me…</string>
     <string name="start_conversation">Nisni bisedë</string>
@@ -54,7 +52,6 @@
     <string name="delete">Fshije</string>
     <string name="block">Bllokoje</string>
     <string name="unblock">Zhbllokoje</string>
-    <string name="save">Ruaje</string>
     <string name="ok">OK</string>
     <string name="crash_report_title">%1$s u vithis</string>
     <string name="send_now">Dërgoje tani</string>
@@ -62,14 +59,10 @@
     <string name="problem_connecting_to_account">S’u lidh dot te llogaria</string>
     <string name="problem_connecting_to_accounts">S’u lidh dot te llogari të shumta</string>
     <string name="touch_to_fix">Prekeni, që të administroni llogaritë tuaja</string>
-    <string name="attach_file">Bashkëngjitni kartelë</string>
     <string name="not_in_roster">Të shtohet te lista juaj e kontakteve ky kontakt që mungon\?</string>
     <string name="add_contact">Shtoni kontakt</string>
     <string name="send_failed">dërgimi dështoi</string>
     <string name="preparing_image">Po bëhet gati për dërgim figure</string>
-    <string name="preparing_images">Po bëhet gati për dërgim figurash</string>
-    <string name="sharing_files_please_wait">Po jepen kartela. Ju lutemi, prisni…</string>
-    <string name="action_clear_history">Spastro historikun</string>
     <string name="clear_conversation_history">Spastoni Historik Bisedash</string>
     <string name="delete_file_dialog">Fshije kartelën</string>
     <string name="also_end_conversation">Mbylle këtë bisedë më pas</string>
@@ -77,13 +70,9 @@
     <string name="send_unencrypted_message">Dërgoni mesazh të pafshehtëzuar</string>
     <string name="send_message">Dërgoni mesazh</string>
     <string name="send_message_to_x">Dërgoje mesazhin për %s</string>
-    <string name="send_omemo_message">Dërgoni një mesazh të fshehtëzuar me OMEMO</string>
-    <string name="send_omemo_x509_message">Dërgoni një mesazh të fshehtëzuar me v\\OMEMO</string>
-    <string name="send_pgp_message">Dërgoni një mesazh të fshehtëzuar me OpenPGP</string>
     <string name="your_nick_has_been_changed">Nofkë e re në përdorim</string>
     <string name="send_unencrypted">Dërgoje të pafshehtëzuar</string>
     <string name="install">Instaloje</string>
-    <string name="openkeychain_not_installed">Ju lutemi, instaloni OpenKeychain</string>
     <string name="offering">po ofrohet…</string>
     <string name="waiting">po pritet…</string>
     <string name="no_pgp_key">S’u gjet Kyç OpenPGP</string>
@@ -108,7 +97,6 @@
     <string name="bad_key_for_encryption">Kyç i pavlefshëm për fshehtëzim.</string>
     <string name="accept">Pranoje</string>
     <string name="error">Ndodhi një gabim</string>
-    <string name="recording_error">Gabim</string>
     <string name="your_account">Llogaria juaj</string>
     <string name="send_presence_updates">Dërgo përditësime pranie</string>
     <string name="receive_presence_updates">Merr përditësime pranie</string>
@@ -142,9 +130,7 @@
     <string name="encryption_choice_pgp">OpenPGP</string>
     <string name="encryption_choice_omemo">OMEMO</string>
     <string name="mgmt_account_delete">Fshije llogarinë</string>
-    <string name="mgmt_account_disable">Çaktivizoje përkohësisht</string>
     <string name="mgmt_account_publish_avatar">Publikoje avatarin</string>
-    <string name="mgmt_account_publish_pgp">Publikoni kyçin publik OpenPGP</string>
     <string name="unpublish_pgp">Hiq kyç publik OpenPGP</string>
     <string name="openpgp_has_been_published">Kyçi publik OpenPGP u bë publik.</string>
     <string name="mgmt_account_enable">Aktivizoje llogarinë</string>
@@ -170,12 +156,9 @@
     <string name="last_seen_day">parë së fundi një ditë më parë</string>
     <string name="last_seen_days">parë së fundi %d ditë më parë</string>
     <string name="openpgp_messages_found">U gjetën mesazhe të rinj të fshehtëzuar me OpenPGP</string>
-    <string name="openpgp_key_id">ID Kyçi OpenPGP</string>
     <string name="omemo_fingerprint">Shenja gishtash OMEMO</string>
     <string name="omemo_fingerprint_x509">Shenja gishtash v\\OMEMO</string>
-    <string name="other_devices">Pajisje të tjera</string>
     <string name="trust_omemo_fingerprints">Beso Shenja Gishtash OMEMO</string>
-    <string name="fetching_keys">Po sillen kyçe…</string>
     <string name="done">U bë</string>
     <string name="decrypt">Shfshehtëzoje</string>
     <string name="search">Kërko</string>
@@ -195,11 +178,8 @@
     <string name="destroy_channel">Asgjësoje kanalin</string>
     <string name="could_not_destroy_room">S’u asgjësua dot fjalosje në grup</string>
     <string name="could_not_destroy_channel">S’u asgjësua dot kanali</string>
-    <string name="action_edit_subject">Përpunoni subjekt fjalosjeje në grup</string>
     <string name="joining_conference">Po hyhet në fjalosje grupi…</string>
     <string name="leave">Dil</string>
-    <string name="contact_added_you">Kontakti u shtua te listë kontaktesh</string>
-    <string name="add_back">Rishtoje</string>
     <string name="contact_has_read_up_to_this_point">%s ka lexuar deri në këtë pikë</string>
     <string name="contacts_have_read_up_to_this_point">%s ka lexuar deri në këtë pikë</string>
     <string name="publishing">Po publikohet…</string>
@@ -210,7 +190,6 @@
     <string name="private_message">pëshpëriti</string>
     <string name="private_message_to">për %s</string>
     <string name="send_private_message_to">Dërgo mesazh privat te %s</string>
-    <string name="connect">Lidhe</string>
     <string name="account_already_exists">Ka tashmë një llogari të tillë</string>
     <string name="next">Pasuesi</string>
     <string name="server_info_session_established">U vendos sesion</string>
@@ -230,8 +209,6 @@
     <string name="title_pref_quiet_hours_start_time">Kohë fillimi</string>
     <string name="title_pref_quiet_hours_end_time">Kohë përfundimi</string>
     <string name="title_pref_enable_quiet_hours">Aktivizoni orë të qeta</string>
-    <string name="pref_expert_options_other">Tjetër</string>
-    <string name="pref_autojoin">Njëkohëso faqerojtës</string>
     <string name="toast_message_omemo_fingerprint">U kopjuan në të papastër shenja gishtash OMEMO</string>
     <string name="conference_banned">Jeni dëbuar nga kjo fjalosje në grup</string>
     <string name="conference_members_only">Kjo fjalosje në grup është vetëm për anëtarë</string>
@@ -240,12 +217,10 @@
     <string name="conference_shutdown">Fjalosje në grup qe mbyllur</string>
     <string name="conference_unknown_error">S’jeni më te kjo fjalosje grupi</string>
     <string name="using_account">duke përdorur llogari %s</string>
-    <string name="hosted_on">strehuar në %s</string>
     <string name="checking_x">Po kontrollohet %s te strehë HTTP</string>
     <string name="not_connected_try_again">S’jeni i lidhur. Riprovoni më vonë</string>
     <string name="check_x_filesize">Kontrolloni madhësi %s</string>
     <string name="check_x_filesize_on_host">Kontrolloni madhësinë e %1$s në %2$s</string>
-    <string name="message_options">Mundësi mesazhi</string>
     <string name="paste_as_quote">Ngjite si citim</string>
     <string name="copy_original_url">Kopjoji URL-në origjinale</string>
     <string name="send_again">Ridërgoje</string>
@@ -268,7 +243,6 @@
     <string name="restoring_backup">Po rikthehet kopjeruajtje</string>
     <string name="notification_restored_backup_title">Kopjeruajtja juaj u rikthye</string>
     <string name="notification_restored_backup_subtitle">Mos harroni të aktivizoni llogarinë.</string>
-    <string name="choose_file">Zgjidhni kartelë</string>
     <string name="receiving_x_file">Po merret %1$s (plotësuar %2$d%%)</string>
     <string name="download_x_file">Shkarkoni %s</string>
     <string name="delete_x_file">Fshije %s</string>
@@ -288,8 +262,6 @@
     <string name="no_conference_server_found">S’u gjet shërbyes fjalosjeje grupi</string>
     <string name="conference_creation_failed">S’u krijua dot fjalosje grupi</string>
     <string name="account_image_description">Avatar llogarie</string>
-    <string name="copy_omemo_clipboard_description">Kopjoje shenja gishtash OMEMO në të papastër</string>
-    <string name="regenerate_omemo_key">Riprodho kyç OMEMO</string>
     <string name="clear_other_devices">Spastro pajisje</string>
     <string name="error_trustkeys_title">Diç shkoi ters</string>
     <string name="fetching_history_from_server">Po sillet historik prej shërbyesi</string>
@@ -307,7 +279,6 @@
     <string name="no_affiliation">Pa përshoqërim</string>
     <string name="no_role">I shkëputur</string>
     <string name="member">Anëtar</string>
-    <string name="advanced_mode">Mënyrë e thelluar</string>
     <string name="grant_membership">Akordojini privilegje anëtari</string>
     <string name="remove_membership">Shfuqizoni privilegje anëtari</string>
     <string name="grant_admin_privileges">Akordoni privilegje përgjegjësi</string>
@@ -320,10 +291,8 @@
     <string name="ban_from_conference">Dëboje nga fjalosje në grup</string>
     <string name="ban_from_channel">Dëboje nga kanali</string>
     <string name="ban_now">Dëboje tani</string>
-    <string name="could_not_change_role">S’u ndryshua dot roli i %s</string>
     <string name="conference_options">Formësim fjalosje private në grup</string>
     <string name="channel_options">Formësim kanali publik</string>
-    <string name="members_only">Private, vetëm për anëtarë</string>
     <string name="you_are_not_participating">S’po merrni pjesë</string>
     <string name="modified_conference_options">U ndryshuan mundësi fjalosjeje në grup!</string>
     <string name="never">Kurrë</string>
@@ -331,8 +300,6 @@
     <string name="reply">Përgjigjuni</string>
     <string name="mark_as_read">Vëri shenjë si të lexuar</string>
     <string name="pref_enter_is_send">Tasti Enter bën dërgimin</string>
-    <string name="pref_display_enter_key">Shfaq tastin Enter</string>
-    <string name="pref_display_enter_key_summary">Ndryshoje tastin e emotikoneve si tast Enter</string>
     <string name="audio">audio</string>
     <string name="video">video</string>
     <string name="image">figurë</string>
@@ -355,9 +322,6 @@
     <string name="title_undo_swipe_out_conversation">Biseda u mbyll</string>
     <string name="title_undo_swipe_out_group_chat">Braktisi fjalosje private në grup</string>
     <string name="title_undo_swipe_out_channel">Braktisi kanal majtas</string>
-    <string name="pref_dont_trust_system_cas_summary">Krejt dëshmitë duhet të miratohen dorazi</string>
-    <string name="pref_remove_trusted_certificates_title">Hiqni dëshmi</string>
-    <string name="pref_remove_trusted_certificates_summary">Fshi dëshmi të miratuara dorazi</string>
     <string name="toast_no_trusted_certs">S’u dhanë dëshmi dorazi</string>
     <string name="dialog_manage_certs_title">Hiqi dëshmitë</string>
     <string name="dialog_manage_certs_positivebutton">Fshije përzgjedhjen</string>
@@ -384,7 +348,6 @@
     <string name="pref_away_when_screen_off">“I larguar”, kur pajisja është e kyçur</string>
     <string name="pref_away_when_screen_off_summary">Shfaqmë si “I lraguar”, kur pajisja është e kyçur</string>
     <string name="pref_treat_vibrate_as_dnd_summary">Shfaqmë si “I zënë”, kur pajisja është në dridhje</string>
-    <string name="pref_show_connection_options">Rregullime të zgjeruara lidhjeje</string>
     <string name="action_add_account_with_certificate">Hyni me dëshmi</string>
     <string name="unable_to_parse_certificate">S’u analizua dot dëshmi</string>
     <string name="mam_prefs">Parapëlqime arkivimi</string>
@@ -395,14 +358,8 @@
     <string name="certificate_chain_is_not_trusted">Varg jo i besuar dëshmish</string>
     <string name="jid_does_not_match_certificate">Adresa XMPP s’përputhet me dëshminë</string>
     <string name="action_renew_certificate">Rinovoni dëshminë</string>
-    <string name="error_fetching_omemo_key">Gabim në sjellje kyçi OMEMO!</string>
-    <string name="verified_omemo_key_with_certificate">U verifikua kyç OMEMO me dëshmi!</string>
     <string name="pref_connection_options">Lidhje</string>
     <string name="pref_use_tor">Lidhu përmes Tor-i</string>
-    <string name="account_settings_hostname">Strehëemër</string>
-    <string name="account_settings_port">Portë</string>
-    <string name="not_a_valid_port">Ky s’është numër i vlefshëm porte</string>
-    <string name="not_valid_hostname">Ky s’është një strehëemër i vlefshëm</string>
     <string name="sync_with_contacts">Njëkohësoje me kontaktet</string>
     <string name="notify_on_all_messages">Njofto për krejt mesazhet</string>
     <string name="notify_only_when_highlighted">Njoftomë vetëm kur përmendem</string>
@@ -413,13 +370,11 @@
     <string name="large_images_only">Vetëm figura të mëdha</string>
     <string name="battery_optimizations_enabled">Me optimizime baterie të aktivizuara</string>
     <string name="disable">Çaktivizoje</string>
-    <string name="selection_too_large">Zona e përzgjedhur është shumë e madhe</string>
     <string name="no_accounts">(Pa llogari të aktivizuara)</string>
     <string name="this_field_is_required">Kjo fushë është e domosdoshme</string>
     <string name="correct_message">Ndreqe mesazhin</string>
     <string name="send_corrected_message">Dërgo mesazhin e saktësuar</string>
     <string name="this_account_is_disabled">E keni çaktivizuar këtë llogari</string>
-    <string name="security_error_invalid_file_access">Gabim sigurie: Hyrje e pavlefshme te kartelë!</string>
     <string name="no_application_to_share_uri">S’u gjet aplikacion për të dhënë URI</string>
     <string name="share_uri_with">Jepjani URI-n…</string>
     <string name="agree_and_continue">Pajtohuni dhe vazhdoni</string>
@@ -445,12 +400,6 @@
     <string name="gp_long">E gjatë</string>
     <string name="pref_broadcast_last_activity">Përdorim transmetimi</string>
     <string name="pref_privacy">Privatësi</string>
-    <string name="pref_theme_options">Temë</string>
-    <string name="pref_theme_options_summary">Përzgjidhni paletën e ngjyrave</string>
-    <string name="pref_theme_automatic">Automatike</string>
-    <string name="pref_theme_light">E çelët</string>
-    <string name="pref_theme_dark">E errët</string>
-    <string name="pref_use_green_background">Sfond i gjelbër</string>
     <string name="unable_to_connect_to_keychain">S’u lidh dot te OpenKeychain</string>
     <string name="this_device_is_no_longer_in_use">Kjo pajisje s’është më në përdorim</string>
     <string name="type_pc">Kompjuter</string>
@@ -461,7 +410,6 @@
     <string name="payment_required">Lypset pagesë</string>
     <string name="missing_internet_permission">Akordo leje për përdorim të Internetit</string>
     <string name="me">Unë</string>
-    <string name="contact_asks_for_presence_subscription">Kontakti kërkon pajtim pranie</string>
     <string name="allow">Lejoje</string>
     <string name="no_permission_to_access_x">S’ka leje për përdorim të %s</string>
     <string name="remote_server_not_found">S’u gjet shërbyes i largët</string>
@@ -485,7 +433,6 @@
     <string name="pref_clean_private_storage">Spastro depozitë private</string>
     <string name="continue_btn">Vazhdoni</string>
     <string name="verify_omemo_keys">Verifikoni kyçe OMEMO</string>
-    <string name="show_inactive_devices">Shfaq joaktive</string>
     <string name="distrust_omemo_key">Mos e beso pajisjen</string>
     <plurals name="minutes">
         <item quantity="one">%d minutë</item>
@@ -504,7 +451,6 @@
         <item quantity="other">%d javë</item>
     </plurals>
     <string name="pref_automatically_delete_messages">Fshirje e automatizuar mesazhesh</string>
-    <string name="encrypting_message">Po fshehtëzohet meszhi</string>
     <string name="transcoding_video">Po ngjishet video</string>
     <string name="corresponding_conversations_closed">Biseda përkatëse u mbyll.</string>
     <string name="contact_blocked_past_tense">Kontakti u bllokua.</string>
@@ -516,21 +462,16 @@
     <string name="retry_decryption">Riprovo shfshehtëzimin</string>
     <string name="session_failure">Dështim sesioni</string>
     <string name="account_status_regis_web">Shërbyesi kërkon doemos regjistrim përmes një sajti</string>
-    <string name="open_website">Hap sajtin</string>
-    <string name="application_found_to_open_website">S’u gjetën aplikacione për hapjen e sajtit</string>
     <string name="today">Sot</string>
     <string name="yesterday">Dje</string>
-    <string name="pref_validate_hostname">Vlerësoj strehemër me DNSSEC</string>
     <string name="server_info_partial">të pjesshme</string>
     <string name="attach_record_video">Regjistroni video</string>
     <string name="copy_to_clipboard">Kopjoje në të papastër</string>
     <string name="message_copied_to_clipboard">Mesazhi u kopjua në të papastër</string>
     <string name="message">Mesazh</string>
-    <string name="private_messages_are_disabled">Mesazhet private janë të çaktivizuara</string>
     <string name="huawei_protected_apps">Aplikacione të Mbrojtur</string>
     <string name="mtm_accept_cert">Të pranohet Dëshmi e Panjohur\?</string>
     <string name="mtm_trust_anchor">Dëshmia e shërbyesit s’është nënshkruar prej një Autoriteti të njohur Dëshmish.</string>
-    <string name="mtm_accept_servername">Të Pranohet Emër Shërbyesi i Ngatërruar\?</string>
     <string name="mtm_connect_anyway">Doni të lidheni, sido qoftë\?</string>
     <string name="mtm_cert_details">Hollësi dëshmie:</string>
     <string name="once">Një herë</string>
@@ -558,7 +499,6 @@
     <string name="action_unfix_from_location">Shfiksoje pozicionin</string>
     <string name="action_copy_location">Kopjo Vendndodhjen</string>
     <string name="action_share_location">Jepe Vendndodhjen</string>
-    <string name="action_directions">Drejtime</string>
     <string name="title_activity_share_location">Jepe vendndodhjen</string>
     <string name="title_activity_show_location">Shfaq vendndodhje</string>
     <string name="share">Ndajeni me të tjerë</string>
@@ -571,14 +511,11 @@
     <string name="pref_use_share_location_plugin">Shtojcë Tregimi Vendndodhjeje</string>
     <string name="copy_link">Kopjo adresë web</string>
     <string name="copy_jabber_id">Kopjo adresë XMPP</string>
-    <string name="p1_s3_filetransfer">Dhënie Kartelash HTTP për S3</string>
-    <string name="pref_start_search">Kërkim i Drejtpërdrejtë</string>
     <string name="group_chat_avatar">Avatar fjalosjeje në grup</string>
     <string name="contact_name">Emër kontakti</string>
     <string name="nickname">Nofkë</string>
     <string name="group_chat_name">Emër</string>
     <string name="providing_a_name_is_optional">Jepni një emër, nëse doni</string>
-    <string name="create_dialog_group_chat_name">Emër fjalosjeje në grup</string>
     <string name="conference_destroyed">Kjo fjalosje në grup është asgjësuar</string>
     <string name="unable_to_save_recording">S’u ruajt dot regjistrim</string>
     <string name="foreground_service_channel_name">Shërbim në pjesën e dukshme</string>
@@ -593,7 +530,6 @@
     <string name="silent_messages_channel_name">Mesazhe heshtazi</string>
     <string name="delivery_failed_channel_name">Dërgime të dështuar</string>
     <string name="pref_message_notification_settings">Rregullime njoftimesh mesazhesh</string>
-    <string name="pref_incoming_call_notification_settings">Rregullime njoftimesh për thirrje ardhëse</string>
     <string name="pref_more_notification_settings_summary">Rëndësi, Tingull, Dridhje</string>
     <string name="video_compression_channel_name">Ngjeshje videoje</string>
     <string name="view_media">Shihni media</string>
@@ -605,36 +541,8 @@
     <string name="cancelled">anuluar</string>
     <string name="already_drafting_message">Po skiconi tashmë një mesazh.</string>
     <string name="feature_not_implemented">Veçori e pasendërtuar</string>
-    <string name="invalid_country_code">Kod i pavlefshëm vendi</string>
-    <string name="choose_a_country">Zgjidhni vend</string>
-    <string name="phone_number">numër telefoni</string>
-    <string name="verify_your_phone_number">Verifikoni numrin tuaj të telefonit</string>
-    <string name="not_a_valid_phone_number">%s s’është numër telefoni i vlefshëm.</string>
-    <string name="please_enter_your_phone_number">Ju lutemi, jepni numrin e telefonit tuaj.</string>
-    <string name="search_countries">Kërko te vendet</string>
-    <string name="verify_x">Verifikoni %s</string>
-    <string name="resend_sms">Ridërgo SMS</string>
-    <string name="resend_sms_in">Ridërgo SMS (%s)</string>
-    <string name="wait_x">Ju lutemi, pritni (%s)</string>
     <string name="back">mbrapsht</string>
-    <string name="abort_registration_procedure">Jeni i sigurt se doni të ndëpritet procedura e regjistrimit\?</string>
-    <string name="yes">Po</string>
-    <string name="verifying">Po verifikohet…</string>
-    <string name="incorrect_pin">PIN-i që dhatë është i pasaktë.</string>
-    <string name="unknown_api_error_network">Gabim i panjohur rrjeti.</string>
-    <string name="unknown_api_error_response">Përgjigje e panjohur nga shërbyesi.</string>
-    <string name="unable_to_connect_to_server">S’u lidh dot te shërbyesi.</string>
-    <string name="unable_to_establish_secure_connection">S’u vendos dot një lidhje të sigurt.</string>
-    <string name="unable_to_find_server">S’u gjet dot shërbyes.</string>
-    <string name="something_went_wrong_processing_your_request">Diç shkoi ters gjatë përpunimit të kërkesës tuaj.</string>
-    <string name="invalid_user_input">Dhënie e pavlefshme nga përdoruesi</string>
-    <string name="temporarily_unavailable">Përkohësisht i pakapshëm. Riprovoni më vonë.</string>
-    <string name="no_network_connection">S’ka lidhje rrjeti.</string>
-    <string name="try_again_in_x">Ju lutemi, riprovoni pas %s</string>
-    <string name="too_many_attempts">Shumë përpjekje</string>
-    <string name="update">Përditësoje</string>
     <string name="your_name">Emri juaj</string>
-    <string name="enter_your_name">Jepni emrin tuaj</string>
     <string name="reject_request">Hidhe poshtë kërkesën</string>
     <string name="install_orbot">Instaloni Orbot-in</string>
     <string name="start_orbot">Nisni Orbot-in</string>
@@ -648,8 +556,6 @@
     <string name="unable_to_restore_backup">S’u rikthye dot kopjeruajtje.</string>
     <string name="unable_to_decrypt_backup">S’u shfehtëzua dot kopjeruajtje. A është i saktë fjalëkalimi\?</string>
     <string name="backup_channel_name">Kopjeruani &amp; Riktheni</string>
-    <string name="enter_jabber_id">Jepni adresë XMPP</string>
-    <string name="create_group_chat">Krijoni fjalosje grupi</string>
     <string name="join_public_channel">Hyni në kanal publik</string>
     <string name="create_private_group_chat">Krijoni fjalosje private në grup</string>
     <string name="create_public_channel">Krijoni kanal publik</string>
@@ -679,11 +585,8 @@
     <string name="discover_channels">Zbuloni kanale</string>
     <string name="search_channels">Kërko te kanale</string>
     <string name="channel_discovery_opt_in_title">Cenim potencial privatësie!</string>
-    <string name="i_already_have_an_account">Kam tashmë një llogari</string>
     <string name="add_existing_account">Shtoni llogari ekzistuese</string>
     <string name="register_new_account">Regjistroni llogari të re</string>
-    <string name="this_looks_like_a_domain">Kjo duket si adresë përkatësie</string>
-    <string name="add_anway">Shtoje sido qoftë</string>
     <string name="share_backup_files">Ndani me të tjerë kartela kopjeruajtjesh</string>
     <string name="conversations_backup">Kopjeruajtje bisede</string>
     <string name="event">Akt</string>
@@ -692,9 +595,6 @@
     <string name="account_already_setup">Kjo llogari është ujdisur tashmë</string>
     <string name="please_enter_password">Ju lutemi, jepni fjalëkalimin për këtë llogari</string>
     <string name="unable_to_perform_this_action">S’u krye dot ky veprim</string>
-    <string name="group_chats_and_channels">Fjalosje në Grup &amp; Kanale</string>
-    <string name="local_server">Shërbyes vendor</string>
-    <string name="pref_channel_discovery">Metodë zbulimi kanalesh</string>
     <string name="backup">Kopjeruajtje</string>
     <string name="category_about">Mbi</string>
     <string name="please_enable_an_account">Ju lutemi, aktivizoni një llogari</string>
@@ -742,13 +642,9 @@
     <string name="remove_from_favorites">Shfiksoje prej kreut</string>
     <string name="gpx_track">Gjurmë GPX</string>
     <string name="could_not_correct_message">S’u ndreq dot mesazhi</string>
-    <string name="search_all_conversations">Krejt bisedat</string>
-    <string name="search_this_conversation">Këtë bisedë</string>
     <string name="your_avatar">Avatari juaj</string>
     <string name="avatar_for_x">Avatar për %s</string>
     <string name="encrypted_with_omemo">Fshehtëzuar me OMEMO</string>
-    <string name="encrypted_with_openpgp">Fshehtëzuar me OpenPGP</string>
-    <string name="not_encrypted">Jo e fshehtëzuar</string>
     <string name="exit">Dalje</string>
     <string name="record_voice_mail">Incizo postë zanore</string>
     <string name="play_audio">Luaje audion</string>
@@ -762,7 +658,6 @@
         <item quantity="other">S’u dhanë dot disa mesazhe</item>
     </plurals>
     <string name="failed_deliveries">Dërgime të dështuara</string>
-    <string name="more_options">Më tepër mundësi</string>
     <string name="no_application_found">S’u gjet aplikacion</string>
     <string name="invite_to_app">Ftojeni te Conversations</string>
     <string name="unable_to_parse_invite">S’arrihet të analizohet ftesë</string>
@@ -795,7 +690,6 @@
     <string name="restart">Rinise</string>
     <string name="pref_never_send_crash_summary">Duke dërguar “stack traces” ndihmoni në zhvillimin</string>
     <string name="moderated">Bëje kanalin të moderuar</string>
-    <string name="connected_accounts">U lidhën %1$d nga %2$d e llogarive</string>
     <string name="load_more_messages">Ngarko më tepër mesazhe</string>
     <string name="no_camera_permission">Akordoni hyrje %1$s për kamerën</string>
     <string name="show_error_message">Shfaq mesazh gabimi</string>
@@ -803,7 +697,6 @@
     <string name="error_unable_to_create_temporary_file">S’u krijua dot kartelë e përkohshme</string>
     <string name="this_device_has_been_verified">Kjo pajisje u verifikua</string>
     <string name="huawei_protected_apps_summary">Që të vazhdoni të merrni njoftime, edhe kur ekrani juaj është i fikur, duhet të shtoni Conversations te lista e aplikacioneve të mbrojtur.</string>
-    <string name="this_looks_like_channel">Kjo duket si adresë kanali</string>
     <string name="audio_call">Thirrje audio</string>
     <string name="video_call">Thirrje video</string>
     <string name="help">Ndihmë</string>
@@ -813,20 +706,13 @@
         <item quantity="one">%d mesazh</item>
         <item quantity="other">%d mesazhe</item>
     </plurals>
-    <string name="pref_up_push_account_title">Llogari XMPP</string>
     <string name="no_account_deactivated">Asnjë (e çaktivizuar)</string>
     <plurals name="seconds">
         <item quantity="one">%d sekondë</item>
         <item quantity="other">%d sekonda</item>
     </plurals>
-    <string name="no">Jo</string>
-    <string name="pin_expired">PIN-i që keni dërguar, ka skaduar.</string>
-    <string name="the_app_is_out_of_date">Po përdorni një version të vjetruar të këtij aplikacioni.</string>
-    <string name="logged_in_with_another_device">Prej këtij numri telefoni është bërë hyrja me një tjetër pajisje.</string>
-    <string name="enter_your_name_instructions">Ju lutemi, jepni emrin tuaj, për t’u bërë të ditur se cili jeni, personave që s’ju kanë në librat e tyre të adresave.</string>
     <string name="no_name_set_instructions">Që të caktoni emrin tuaj, përdorni butonin e përpunimeve.</string>
     <string name="group_chat_will_make_your_jabber_id_public">Ky kanal do ta bëjë publike adresën tuaj XMPP</string>
-    <string name="requesting_sms">Po kërkohet SMS…</string>
     <string name="battery_optimizations_enabled_dialog">Pajisja juaj përdor optimizime shumë të thella baterie për %1$s, çka mund të shpjerë në vonesa njoftimesh, ose madje edhe humbje mesazhesh.
 \n
 \nTani do t’ju kërkohet t’i çaktivizoni ato.</string>
@@ -889,7 +775,6 @@
 \n<small>Kjo do të përdoret për të përcaktuar cilin aplikacion fjalosjeje po përdor kontakti juaj</small>.</string>
     <string name="pref_allow_message_correction_summary">Lejojuni kontakteve tuaja të përpunojnë mesazhet e tyre edhe më pas</string>
     <string name="pref_quiet_hours_summary">Gjatë orëve të qetësisë, njoftimet do të heshtohen</string>
-    <string name="pref_autojoin_summary">Kalo në “autojoin”, kur hyhet ose dilet nga një MUC dhe reago te ndryshime të bëra nga klientë të tjerë.</string>
     <string name="without_mutual_presence_updates"><b>Kujdes:</b> Dërgimi i kësaj, pa përditësime të dyanshme pranie, mund të shkaktojë probleme të papritura.
 \n
 \n<small>Kaloni te “Hollësi kontakti”, që të verifikoni pajtime tuajat pranie.</small></string>
@@ -910,20 +795,13 @@
     <string name="sending_x_file">Po dërgohet %s</string>
     <string name="hide_offline">Fshih të shkëputurat</string>
     <string name="pref_chat_states_summary">Bëjuni të ditur kontakteve tuaj, kur shkruani mesazhe për ta</string>
-    <string name="pref_dont_trust_system_cas_title">Mos beso DA sistemi</string>
     <string name="pref_quick_action_summary">Zëvendëso butonin “Dërgoje” me veprim të shpejtë</string>
     <string name="pref_dnd_on_silent_mode">“I zënë” nën mënyrën e heshtur</string>
     <string name="pref_dnd_on_silent_mode_summary">Shfaqe si “I zënë”, kur pajisja gjendet nën mënyrën e heshtur</string>
     <string name="pref_treat_vibrate_as_silent">Trajtoje dridhjen si mënyrë heshturazi</string>
-    <string name="pref_show_connection_options_summary">Kur ujdiset një llogari, shfaq rregullime strehëemri dhe porte</string>
-    <string name="hostname_example">xmpp.example.com</string>
     <string name="fetching_mam_prefs">Po sillen parapëlqime arkivimi. Ju lutemi, pritni…</string>
     <string name="device_does_not_support_certificates">Pajisja juaj nuk mbulon përzgjedhjen e dëshmive të klientëve!</string>
     <string name="pref_use_tor_summary">Kaloji krejt lidhjet përmes rrjetit Tor. Lyp Orbot</string>
-    <string name="shared_file_with_x">Kartela iu dha %s</string>
-    <string name="shared_image_with_x">Figura iu dha %s</string>
-    <string name="shared_images_with_x">Figurat iu dhanë %s</string>
-    <string name="shared_text_with_x">Teksti iu dha %s</string>
     <string name="no_storage_permission">Akordoji %1$s hyrje te depozitë e jashtme</string>
     <string name="sync_with_contacts_long">%1$s dëshiron leje të përdorë librin tuaj të adresave, për përkim me listën tuaj të kontakteve XMPP.
 \nKjo do të sjellë shfaqjen e emrave të plotë dhe avatarëve të kontakteve tuaj.
@@ -934,8 +812,6 @@
 \nRekomandohet të çaktivizohen ato.</string>
     <string name="device_does_not_support_battery_op">Pajisja juaj nuk mbulon zgjedhjen e lënies jashtë nga optimizim baterie</string>
     <string name="pref_broadcast_last_activity_summary">Bëjuni të ditur kontakteve tuaj, kur përdorni Conversations</string>
-    <string name="pref_use_green_background_summary">Për mesazhe të marrë përdor sfond të gjelbër</string>
-    <string name="pref_delete_omemo_identities_summary">Riprodhoni kyçet tuaj OMEMO. Krejt kontakteve tuaj do t’ju duhet t’ju verifikojnë sërish. Këtë përdoreni si zgjidhjen e fundit.</string>
     <string name="error_publish_avatar_offline">Që të bëni publik avatarin tuaj, duhet të jeni i lidhur.</string>
     <string name="data_saver_enabled">Kursyesi i të dhënave u aktivizua</string>
     <string name="data_saver_enabled_explained">Sistemi juaj operativ po e kufizon hyrjen e %1$s në Internet, kur gjendet në sfond. Që të merrni njoftime për mesazhe të rinj, duhet t’i lejoni %1$s hyrje të pakufizuar , kur “Ruajtësi i të dhënave” është aktiv.
@@ -947,11 +823,8 @@
     <string name="pref_clean_private_storage_summary">Spastro depozitë private ku mbahen kartelat (Ato mund të rishkarkohen prej shërbyesit)</string>
     <string name="i_followed_this_link_from_a_trusted_source">E ndoqa këtë lidhje prej një burimi të besuar</string>
     <string name="verifying_omemo_keys_trusted_source">Ju ndan një hap nga verifikimi i kyçeve OMEMO të %1$s, pas klikimit të një lidhjeje. Kjo është e sigurt vetëm nëse e ndoqët këtë lidhje prej një burimi të besuar, ku vetëm %2$s do të mund ta kishte publikuar këtë lidhje.</string>
-    <string name="hide_inactive_devices">Fshih jo aktivet</string>
     <string name="pref_notifications_from_strangers_summary">Njofto për mesazhe dhe thirrje të mara prej të huajish.</string>
-    <string name="pref_validate_hostname_summary">Dëshmi shërbyesi që përmbajnë strehëemrin e vlerësuar, konsiderohen të verifikuara</string>
     <string name="certificate_does_not_contain_jid">Dëshmia s’përmban adresë XMPP</string>
-    <string name="mtm_hostname_mismatch">Shërbyesi s’bëri dot mirëfilltësimin si “%s”. Dëshmia është e vlefshme vetëm për:</string>
     <string name="pref_scroll_to_bottom_summary">Pas dërgimit të një mesazhi, rrëshqit poshtë</string>
     <string name="error_trustkey_general">%1$s s’është në gjendje të fshehtëzojë mesazhe te %2$s. Kjo mund të vijë për shkak se kontakti juaj përdor një shërbyes, ose klient të vjetruar, që s’mund të përdorë OMEMO.</string>
     <string name="error_trustkey_hint_mutual">Ndihmëz: Në disa raste, kjo mund të ndreqet duke shtuar listat e kontakteve të njëri-tjetrit.</string>
@@ -961,7 +834,6 @@
     <string name="pref_omemo_setting_summary_default_on">OMEMO do të përdoret për biseda të reja, si parazgjedhje.</string>
     <string name="pref_omemo_setting_summary_default_off">OMEMO do të duhet të aktivizohet shprehimisht për biseda të reja.</string>
     <string name="pref_font_size_summary">Madhësia relative e shkronjave të përdorura brenda aplikacionit.</string>
-    <string name="pref_start_search_summary">Te skena “Nisni Bisedë” hapni tastierën dhe vendoseni kursorin te fusha e kërkimeve</string>
     <string name="host_does_not_support_group_chat_avatars">Streha nuk mbulon avatarë fjalosjeje në grup</string>
     <string name="only_the_owner_can_change_group_chat_avatar">Vetëm i zoti mund të ndryshyjë avatarin e një fjalosje në grup</string>
     <string name="pref_use_share_location_plugin_summary">Përdor Shtojcën Për Tregim Vendndodhjeje, në vend se hartën e brendshme</string>
@@ -969,24 +841,14 @@
     <string name="error_channel_description">Kjo kategori njoftimesh përdoret për të shfaqur njoftim në rast se ka problem me lidhjen me një llogari.</string>
     <string name="silent_messages_channel_description">Ky grup njoftimesh përdoret për të shfaqur njoftime që s’duhet të shkaktojnë ndonjë tingull. Për shembull, kur është aktiv në një tjetër pajisje (Grace Period).</string>
     <string name="pref_video_compression_summary">Cilësi më e ulët do të thotë kartela më të vogla</string>
-    <string name="enter_country_code_and_phone_number">Quicksy do të dërgojë një mesazh SMS (mund të aplikohen tarifa shërbimi) për të verifikuar numrin tuaj të telefonit. Jepni kodin e vendit tuaj dhe numrin e telefonit:</string>
-    <string name="we_have_sent_you_another_sms">Ju kemi dërguar një tjetër SMS me një kod prej 6 shifrash.</string>
-    <string name="please_enter_pin_below">Ju lutemi, jepni më poshtë PIN-in tuaj prej 6 shifrash.</string>
-    <string name="please_enter_pin">Ju lutemi, jepni PIN-in tuaj prej 6 shifrash.</string>
     <string name="security_violation_not_attaching_file">Kartelë e shpërfillur, për shkak cenimi sigurie.</string>
-    <string name="we_will_be_verifying">Do të verifikojmë numrin e telefonit<br/><br/><b>%s</b><br/><br/>Dakord, apo do të donit të përpunonit numrin\?</string>
-    <string name="we_have_sent_you_an_sms_to_x">Ju kemi dërguar një SMS te <b>%s</b>.</string>
     <string name="enter_password_to_restore">Që të rikthehet kopjeruajtja, jepni fjalëkalimin tuaj për llogarinë %s.</string>
     <string name="restore_warning">Mos përdorni veçorinë e rikthimit të një kopjeruajtje në një përpjekje për të klonuar (xhiruar në të njëjtën kohë) një instalim. Rikthimi i një kopjeruajtje është menduar vetëm për migrime, ose në rast se humbët pajisjen origjinale.</string>
     <string name="no_users_hint_channel">Ky kanal publik s’ka pjesëmarrës. Ftoni kontaktet tuaj, ose përdorni butonin e ndarjes me të tjerët për të dhënë adresën XMPP të tij.</string>
     <string name="sharing_application_not_grant_permission">Aplikacioni dhënës nuk akordoi leje për hyrje në këtë kartelë.</string>
-    <string name="pref_channel_discovery_summary">Shumica e përdoruesve duhet të zgjedhin ‘jabber.network’ për sugjerime më të mira nga krejt ekosistemi publik XMPP.</string>
     <string name="add_contact_or_create_or_join_group_chat">Shtoni kontakt, krijoni ose hyni në një fjalosje në grup, ose zbuloni kanale</string>
     <string name="backup_started_message">Kopjeruajtja u nis. Do të merrni një njoftim, sapo të jetë plotësuar.</string>
     <string name="audio_video_disabled_tor">Thirrjet janë të çaktivizuara, kur përdoret Tor-i</string>
-    <string name="pref_up_push_account_summary">Llogaria përmes së cilës do të merren mesazhet push.</string>
-    <string name="pref_up_push_server_title">Shërbyes Push</string>
-    <string name="pref_up_push_server_summary">Një shërbyes push i zgjedhur nga përdoruesi, përmes të cilit të kalohen te pajisja juaj mesazhet push përmes XMPP-je.</string>
     <string name="magic_create_text">Ka të hartuar një udhërrëfyes mbi krijim llogarish te conversations.im.
 \nKu zgjidhet conversations.im si shërbim, do të jeni në gjendje të komunikoni me përdorues prej shërbimesh të tjera duke u dhënë atyre adresën tuaj të plotë XMPP.</string>
     <plurals name="n_missed_calls_from_m_contacts">

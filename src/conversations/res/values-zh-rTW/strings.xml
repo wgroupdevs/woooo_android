@@ -3,8 +3,6 @@
     <string name="pick_a_server">挑選您的 XMPP 提供者</string>
     <string name="use_conversations.im">使用 conversations.im</string>
     <string name="create_new_account">建立新帳戶</string>
-    <string name="do_you_have_an_account">您已經擁有一個 XMPP 帳戶了嗎？如果您之前使用過其他 XMPP 用戶端或 Conversations 的話，那麼您已經擁有 XMPP 帳戶了。若沒有，您現在就建立一個新的 XMPP 帳戶。
-\n提示：部分電子郵件提供者也會提供 XMPP 帳戶。</string>
     <string name="server_select_text">XMPP 是提供者無關的即時訊息網路。任何您選擇的 XMPP 伺服器都可在此用戶端上使用。
 \n不過，我們令它在 Coversations.im 中建立帳戶變得更方便；conversations.im 是特別適合 Conversations 的提供者。</string>
     <string name="magic_create_text_on_x">你已受邀參加 %1$s 。我們將指引您完成建立帳戶的過程。

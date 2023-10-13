@@ -31,17 +31,6 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="TextAppearance.Conversations.Subhead.Bold" parent="TextAppearance.Conversations.Subhead">
-        <item name="android:textStyle">bold</item>
-        <item name="android:fontFamily">@font/nasalization</item>
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-    <style name="TextAppearance.Conversations.Subhead.Bold.Secondary" parent="TextAppearance.Conversations.Subhead.Bold">
-        <item name="android:fontFamily">@font/nasalization</item>
-        <item name="android:textColor">@color/white</item>
-    </style>
-
     <style name="TextAppearance.Conversations.Body2" parent="TextAppearance.AppCompat.Body2">
         <item name="android:textSize">?TextSizeBody2</item>
         <item name="android:fontFamily">@font/nasalization</item>
@@ -94,12 +83,6 @@
 
     <style name="Widget.Conversations.Button.Borderless" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:textSize">?TextSizeBody2</item>
-
-    </style>
-
-    <style name="Widget.Conversations.Button.Borderless.Primary" parent="Widget.Conversations.Button.Borderless">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:fontFamily">@font/nasalization</item>
 
     </style>
 
@@ -188,20 +171,6 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="TextAppearance.Conversations.Body1.Emoji.OnDark" parent="TextAppearance.Conversations.Body1">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:fontFamily">@font/nasalization</item>
-    </style>
-
-    <style name="TextAppearance.Conversations.Body1.Emoji" parent="TextAppearance.Conversations.Body1">
-        <item name="android:textColor">?EmojiColor</item>
-    </style>
-
-    <style name="TextAppearance.Conversations.Body1.Secondary.OnDark" parent="TextAppearance.Conversations.Body1">
-        <item name="android:fontFamily">@font/nasalization</item>
-        <item name="android:textColor">#FFFFFF</item>
-    </style>
-
     <style name="Divider">
         <item name="android:background">?android:attr/listDivider</item> //you can give your color here. that will change all divider color in your app.
     </style>
@@ -210,11 +179,6 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item> // You can change thickness here.
 
-    </style>
-
-    <style name="Divider.Vertical" parent="Divider">
-        <item name="android:layout_width">1dp</item>
-        <item name="android:layout_height">match_parent</item>
     </style>
 
     <style name="spinnerItemStyle" parent="android:Widget.TextView.SpinnerItem">

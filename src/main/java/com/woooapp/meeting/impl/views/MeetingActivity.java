@@ -1,7 +1,5 @@
 package com.woooapp.meeting.impl.views;
 
-import static com.woooapp.meeting.lib.Utils.getRandomString;
-
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
@@ -23,7 +21,6 @@ import androidx.viewpager.widget.ViewPager;
 import com.android.volley.VolleyError;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.android.material.snackbar.Snackbar;
-import com.woogroup.woooo_app.woooo.di.WooApplication;
 import com.woooapp.meeting.impl.utils.WooEvents;
 import com.woooapp.meeting.impl.views.adapters.ScreenPagerAdapter;
 import com.woooapp.meeting.impl.vm.EdiasProps;
@@ -49,7 +46,7 @@ import java.util.Locale;
 
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.databinding.ActivityMeetBinding;
-import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel;
+import eu.siacs.conversations.WooApplication;
 
 /**
  * @author muneebahmad (ahmadgallian@yahoo.com)
@@ -61,8 +58,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private static final String TAG = MeetingActivity.class.getSimpleName().toUpperCase(Locale.ROOT);
 
     private static final int PERMISSIONS_REQ_CODE = 0x7b;
-
-    private UserPreferencesViewModel userPreferences;
 
     private final String[] permissions = new String[]{
             Manifest.permission.RECORD_AUDIO,

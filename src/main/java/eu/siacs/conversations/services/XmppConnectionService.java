@@ -117,7 +117,8 @@ import eu.siacs.conversations.generator.PresenceGenerator;
 import eu.siacs.conversations.http.HttpConnectionManager;
 import eu.siacs.conversations.http.model.TextTranslateModel;
 import eu.siacs.conversations.http.model.UserBasicInfo;
-import eu.siacs.conversations.http.services.WooooAPIService;
+import eu.siacs.conversations.http.model.requestmodels.GetWooContactsRequestParams;
+import eu.siacs.conversations.http.services.WooAPIService;
 import eu.siacs.conversations.parser.AbstractParser;
 import eu.siacs.conversations.parser.IqParser;
 import eu.siacs.conversations.parser.MessageParser;
@@ -176,7 +177,6 @@ import eu.siacs.conversations.xmpp.stanzas.IqPacket;
 import eu.siacs.conversations.xmpp.stanzas.MessagePacket;
 import eu.siacs.conversations.xmpp.stanzas.PresencePacket;
 import me.leolin.shortcutbadger.ShortcutBadger;
-import woooo_app.woooo.data.models.auth.requestmodels.GetWooContactsRequestParams;
 
 public class XmppConnectionService extends Service {
 
@@ -230,7 +230,7 @@ public class XmppConnectionService extends Service {
     private final NotificationService mNotificationService = new NotificationService(this);
     private final UnifiedPushBroker unifiedPushBroker = new UnifiedPushBroker(this);
     private final ChannelDiscoveryService mChannelDiscoveryService = new ChannelDiscoveryService(this);
-    private WooooAPIService wooooAuthService;
+    private WooAPIService wooooAuthService;
     private final ShortcutService mShortcutService = new ShortcutService(this);
     private final AtomicBoolean mInitialAddressbookSyncCompleted = new AtomicBoolean(false);
     private final AtomicBoolean mForceForegroundService = new AtomicBoolean(false);
@@ -971,47 +971,46 @@ public class XmppConnectionService extends Service {
     }
 
 
-    public void loginUserOnWoooo(boolean isLoginWithEmail, String email, String phone, String password, WooooAPIService.OnLoginAPiResult onLoginAPiResult) {
+    public void loginUserOnWoooo(boolean isLoginWithEmail, String email, String phone, String password, WooAPIService.OnLoginAPiResult onLoginAPiResult) {
         if (wooooAuthService == null) {
-            wooooAuthService = WooooAPIService.getInstance();
+            wooooAuthService = WooAPIService.getInstance();
         }
-
         wooooAuthService.login(isLoginWithEmail, email, phone, password, onLoginAPiResult);
     }
 
-    public void updateProfile(UserBasicInfo user, WooooAPIService.OnUpdateAccountApiResult listener) {
+    public void updateProfile(UserBasicInfo user, WooAPIService.OnUpdateAccountApiResult listener) {
 
         if (wooooAuthService == null) {
-            wooooAuthService = WooooAPIService.getInstance();
+            wooooAuthService = WooAPIService.getInstance();
         }
         wooooAuthService.updateProfile(user, listener);
     }
 
-    public void getAccountByJid(String jId, WooooAPIService.OnGetAccountByJidAPiResult onGetAccountByJidAPiResult) {
+    public void getAccountByJid(String jId, WooAPIService.OnGetAccountByJidAPiResult onGetAccountByJidAPiResult) {
         wooooAuthService.getAccountByJidAccount(jId, onGetAccountByJidAPiResult);
     }
 
-    public void getWooContacts(GetWooContactsRequestParams params, WooooAPIService.OnGetWooContactAPiResult onGetWooContactAPiResult) {
+    public void getWooContacts(GetWooContactsRequestParams params, WooAPIService.OnGetWooContactAPiResult onGetWooContactAPiResult) {
         Log.d(TAG, "getWooContacts" + wooooAuthService);
         if (wooooAuthService == null) {
-            wooooAuthService = WooooAPIService.getInstance();
+            wooooAuthService = WooAPIService.getInstance();
         }
         wooooAuthService.getWooContact(params, onGetWooContactAPiResult);
 
     }
 
-    public void updateUserLanguage(String accountId, String language, String languageCode, WooooAPIService.OnUpdateUserLanguageApiResult onUpdateUserLanguageApiResult) {
+    public void updateUserLanguage(String accountId, String language, String languageCode, WooAPIService.OnUpdateUserLanguageApiResult onUpdateUserLanguageApiResult) {
         Log.d(TAG, "getWooContacts" + wooooAuthService);
         if (wooooAuthService == null) {
-            wooooAuthService = WooooAPIService.getInstance();
+            wooooAuthService = WooAPIService.getInstance();
         }
         wooooAuthService.updateUserLanguage(accountId, language, languageCode, onUpdateUserLanguageApiResult);
     }
 
-    public void translateText(TextTranslateModel translateModel, WooooAPIService.OnTextTranslateAPiResult listener) {
+    public void translateText(TextTranslateModel translateModel, WooAPIService.OnTextTranslateAPiResult listener) {
 
         if (wooooAuthService == null) {
-            wooooAuthService = WooooAPIService.getInstance();
+            wooooAuthService = WooAPIService.getInstance();
         }
         wooooAuthService.translateText(translateModel, listener);
     }
@@ -1204,7 +1203,7 @@ public class XmppConnectionService extends Service {
             mNotificationService.initializeChannels();
         }
         mChannelDiscoveryService.initializeMuclumbusService();
-        wooooAuthService = WooooAPIService.getInstance();
+        wooooAuthService = WooAPIService.getInstance();
         mForceDuringOnCreate.set(Compatibility.runsAndTargetsTwentySix(this));
         toggleForegroundService();
         this.destroyed = false;

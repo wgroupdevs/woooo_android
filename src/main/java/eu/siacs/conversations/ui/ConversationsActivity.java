@@ -75,7 +75,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import dagger.hilt.android.AndroidEntryPoint;
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.crypto.OmemoSetting;
@@ -101,9 +100,6 @@ import eu.siacs.conversations.utils.SignupUtils;
 import eu.siacs.conversations.utils.XmppUri;
 import eu.siacs.conversations.xmpp.Jid;
 import eu.siacs.conversations.xmpp.OnUpdateBlocklist;
-import woooo_app.woooo.shared.components.view_models.UserPreferencesViewModel;
-
-@AndroidEntryPoint
 public class ConversationsActivity extends XmppActivity implements OnConversationSelected, OnConversationArchived, OnConversationsListItemUpdated, OnConversationRead, XmppConnectionService.OnAccountUpdate, XmppConnectionService.OnConversationUpdate, XmppConnectionService.OnRosterUpdate, OnUpdateBlocklist, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnAffiliationChanged, CreatePrivateGroupChatDialog.CreateConferenceDialogListener {
 
     public static final String ACTION_VIEW_CONVERSATION = "eu.siacs.conversations.action.VIEW";
@@ -120,7 +116,6 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
     public static final String TAG = "ConversationsActivity";
     private final int REQUEST_CREATE_CONFERENCE = 0x39da;
 
-    private UserPreferencesViewModel userPreferencesViewModel;
 
     private static final List<String> VIEW_AND_SHARE_ACTIONS = Arrays.asList(
             ACTION_VIEW_CONVERSATION,
@@ -747,18 +742,18 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
             case R.id.action_scan_qr_code:
                 UriHandlerActivity.scan(this);
                 return true;
-            case R.id.action_search_all_conversations:
-                startActivity(new Intent(this, SearchActivity.class));
-                return true;
-            case R.id.action_search_this_conversation:
-                final Conversation conversation = ConversationFragment.getConversation(this);
-                if (conversation == null) {
-                    return true;
-                }
-                final Intent intent = new Intent(this, SearchActivity.class);
-                intent.putExtra(SearchActivity.EXTRA_CONVERSATION_UUID, conversation.getUuid());
-                startActivity(intent);
-                return true;
+//            case R.id.action_search_all_conversations:
+//                startActivity(new Intent(this, SearchActivity.class));
+//                return true;
+//            case R.id.action_search_this_conversation:
+//                final Conversation conversation = ConversationFragment.getConversation(this);
+//                if (conversation == null) {
+//                    return true;
+//                }
+//                final Intent intent = new Intent(this, SearchActivity.class);
+//                intent.putExtra(SearchActivity.EXTRA_CONVERSATION_UUID, conversation.getUuid());
+//                startActivity(intent);
+//                return true;
         }
         return super.onOptionsItemSelected(item);
     }

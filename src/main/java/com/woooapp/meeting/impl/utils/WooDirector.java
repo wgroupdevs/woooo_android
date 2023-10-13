@@ -1,14 +1,11 @@
 package com.woooapp.meeting.impl.utils;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.provider.Settings;
-import android.telephony.TelephonyManager;
 
 import androidx.annotation.NonNull;
 
 import com.android.volley.VolleyError;
-import com.woogroup.woooo_app.woooo.di.WooApplication;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.net.ApiManager;
 import com.woooapp.meeting.net.models.PutMembersDataBody;
@@ -16,6 +13,8 @@ import com.woooapp.meeting.net.models.PutMembersDataBody;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
+
+import eu.siacs.conversations.WooApplication;
 
 /**
  * @author muneebahmad (ahmadgallian@yahoo.com)
@@ -30,7 +29,7 @@ public final class WooDirector {
     @SuppressLint("HardwareIds")
     public String getDeviceUUID() {
 //        TelephonyManager tm = (TelephonyManager)
-//        WooApplication.Companion.getSharedInstance().getSystemService(Context.TELEPHONY_SERVICE);
+//        eu.siacs.conversations.WooApplication.Companion.getSharedInstance().getSystemService(Context.TELEPHONY_SERVICE);
 //        String devId = tm.getImei();
 //        String devSerial = tm.getSimSerialNumber();
         String androidId = Settings.Secure.getString(WooApplication.Companion.getSharedInstance().getContentResolver(), Settings.Secure.ANDROID_ID);

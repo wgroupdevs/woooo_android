@@ -17,7 +17,6 @@ import com.woooapp.meeting.lib.PeerConnectionUtils;
 import com.woooapp.meeting.lib.RoomClient;
 
 import eu.siacs.conversations.R;
-import eu.siacs.conversations.databinding.ViewPeerBinding;
 import eu.siacs.conversations.databinding.WooViewPeerBinding;
 
 /**

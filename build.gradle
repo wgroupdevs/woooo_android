@@ -2,16 +2,19 @@
 // sub-projects/modules.
 buildscript {
     ext {
-        compose_bom = '2023.05.01'
-        nav_version = '2.5.3'
-        kotlin_bom = '1.8.20'
-        coroutine_android = '1.6.1'
-        coroutine_core = '1.6.4'
-//        moshi = '1.13.0'
-        hilt_version = '2.45'
-        retrofit = '2.9.0'
-        lifecycle_version = "2.6.1"
-        kotlin_gradle = '1.8.20'
+        kotlinVersion = "1.8.21"
+        coroutinesVersion = "1.7.1"
+        composeCompilerVersion = "1.4.7"
+        composeBomVersion = "2023.05.01"
+        composeNavigationVersion = "2.5.3"
+        composeViewModelVersion = "2.6.1"
+        lifecycleVersion = "2.6.1"
+        navVersion = "2.5.3"
+        retrofitVersion = "2.9.0"
+        okhttpVersion = "4.11.0"
+        appCompatVersion = "1.6.1"
+        materialVersion = "1.9.0"
+        coilVersion = "2.3.0"
     }
 
     repositories {
@@ -23,22 +26,24 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.4.2'
-        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_gradle"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath 'com.google.dagger:hilt-android-gradle-plugin:2.48.1'
     }
 }
 
 plugins {
-    id 'com.google.devtools.ksp' version '1.8.20-1.0.11'
-    id 'org.jetbrains.kotlin.android' version '1.8.20' apply false// Depends on your kotlin version
+    id 'com.google.devtools.ksp' version '1.8.21-1.0.11'
+    id 'org.jetbrains.kotlin.android' version '1.8.21' apply false// Depends on your kotlin version
+    id 'com.google.dagger.hilt.android' version '2.48.1' apply false
+
 }
 
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.dagger.hilt.android'
-
 repositories {
     google()
     jcenter()
@@ -47,30 +52,17 @@ repositories {
 }
 
 configurations {
-//    playstoreImplementation
     freeImplementation
     conversationsFreeImplementation
     conversationsPlaystorImplementation
-//    conversationsPlaystoreImplementation
-//    quicksyPlaystoreImplementation
-//    quicksyPlaystoreImplementation
     quicksyFreeImplementation
     quicksyImplementation
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
     implementation 'androidx.viewpager:viewpager:1.0.0'
 
-//    playstoreImplementation('com.google.firebase:firebase-messaging:23.1.2') {
-//        exclude group: 'com.google.firebase', module: 'firebase-core'
-//        exclude group: 'com.google.firebase', module: 'firebase-analytics'
-//        exclude group: 'com.google.firebase', module: 'firebase-measurement-connector'
-//    }
-//    conversationsPlaystoreImplementation("com.android.installreferrer:installreferrer:2.2")
-//    quicksyPlaystoreImplementation 'com.google.android.gms:play-services-auth-api-phone:18.0.1'
-    implementation 'com.google.firebase:firebase-messaging:23.1.2'
     implementation 'com.github.open-keychain.open-keychain:openpgp-api:v5.7.1'
     implementation("com.github.CanHub:Android-Image-Cropper:2.0.0")
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -82,9 +74,6 @@ dependencies {
     implementation "androidx.emoji2:emoji2:1.2.0"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.3'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.7.3'
     freeImplementation "androidx.emoji2:emoji2-bundled:1.2.0"
 
     implementation 'org.bouncycastle:bcmail-jdk15on:1.64'
@@ -110,62 +99,51 @@ dependencies {
     implementation 'me.drakeet.support:toastcompat:1.1.0'
     implementation "com.leinardi.android:speed-dial:3.2.0"
 
+    //Retrofit & okHttp
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
     implementation "com.squareup.retrofit2:converter-gson:2.9.0"
     implementation "com.squareup.okhttp3:okhttp:4.10.0"
+    implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.10.0'
     implementation "com.squareup.okhttp3:logging-interceptor:4.10.0"
-
     implementation 'com.google.guava:guava:31.1-android'
     quicksyImplementation 'io.michaelrocks:libphonenumber-android:8.12.49'
 //     implementation 'im.conversations.webrtc:webrtc-android:104.0.0'
 
     /// New dependencies
-    implementation platform("org.jetbrains.kotlin:kotlin-bom:$kotlin_bom")
-    implementation 'androidx.core:core-ktx'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android"
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx'
-    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
-    implementation 'androidx.activity:activity-compose'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
 
-    //compose-bom
-    implementation platform("androidx.compose:compose-bom:$compose_bom")
+    implementation("androidx.appcompat:appcompat:1.5.1")
+    implementation("androidx.core:core-ktx:1.9.0")
+    implementation("androidx.palette:palette:1.0.0")
+    implementation("io.coil-kt:coil-compose:2.3.0")
+
+//    COMPOSE-DEPENDENCY
+    implementation platform("androidx.compose:compose-bom:$composeBomVersion")
     implementation 'androidx.compose.ui:ui'
-    implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation 'androidx.compose.material3:material3'
+    implementation("androidx.compose.material:material:1.5.0-alpha04")
+    implementation("androidx.activity:activity-compose:1.6.1")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
 
-    implementation("io.github.raamcosta.compose-destinations:core:1.9.42-beta")
-    implementation 'androidx.core:core-ktx:1.10.1'
-    ksp("io.github.raamcosta.compose-destinations:ksp:1.9.42-beta")
+//    LIFE-CYCLE
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
+    implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
 
-    // ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
-    runtimeOnly("androidx.lifecycle:lifecycle-runtime-compose:$lifecycle_version")
-    // Saved state module for ViewModel
-    implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version")
+//   NAVIGATION
+    implementation("androidx.navigation:navigation-compose:2.5.3")
+    implementation 'androidx.navigation:navigation-runtime-ktx:2.6.0'
 
-    //hilt-view-model
-    implementation "com.google.dagger:hilt-android:$hilt_version"
-    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
-    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
-    //retrofit
-    implementation "com.squareup.retrofit2:retrofit:$retrofit"
     // country picker
     implementation 'com.hbb20:ccp:2.5.3'
-    //okHttp
-    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
-    implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.10.0'
-    //coil
-    implementation("io.coil-kt:coil-compose:2.3.0")
+    implementation 'com.intuit.sdp:sdp-android:1.1.0'
+
     //multidex
     implementation 'androidx.multidex:multidex:2.0.1'
-    //SDP-SSP
-    implementation 'com.github.Kaaveh:sdp-compose:1.1.0'
-    //Material Icon
-    implementation "androidx.compose.material:material-icons-extended"
-    // date time picker
-    implementation("com.marosseleng.android:compose-material3-datetime-pickers:0.7.2")
     //DataStore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
     // socket
@@ -175,16 +153,14 @@ dependencies {
 
     // media-soup
 //   implementation 'io.github.haiyangwu:mediasoup-client:3.4.0'
-   implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
-   implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
 
     // charts
-   implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     //Blur
-   implementation 'com.github.furkankaplan:fk-blur-view-android:1.0.1'
-
-    implementation 'com.intuit.sdp:sdp-android:1.1.0'
+    implementation 'com.github.furkankaplan:fk-blur-view-android:1.0.1'
 
     implementation 'com.nabinbhandari.android:permissions:3.8'
     implementation 'org.protoojs.droid:protoo-client:4.0.3'
@@ -198,12 +174,14 @@ dependencies {
 
     // Volley
     implementation "com.android.volley:volley:1.2.1"
-//
-//    //wallet
-//    implementation(platform("com.walletconnect:android-bom:3.3.1"))
-//    implementation("com.walletconnect:android-core")
-//    implementation("com.walletconnect:web3modal")
-//    implementation "com.walletconnect:push"
+
+//    HILT
+    implementation 'com.google.dagger:hilt-android:2.48.1'
+    kapt 'com.google.dagger:hilt-compiler:2.48.1'
+
+//    META_MASK
+//    implementation 'io.metamask.androidsdk:metamask-android-sdk:0.1.2'
+
 }
 
 ext {
@@ -213,11 +191,11 @@ ext {
 
 android {
     namespace 'eu.siacs.conversations'
-    compileSdkVersion 34
+    compileSdkVersion 33
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 34
+        minSdkVersion 23
+        targetSdkVersion 33
         versionCode 30
         versionName "1.3.0"
         archivesBaseName += "-$versionName"
@@ -226,6 +204,7 @@ android {
         def appName = "Woooo"
         resValue "string", "app_name", appName
         buildConfigField "String", "APP_NAME", "\"$appName\""
+        multiDexEnabled true
     }
 
     splits {
@@ -244,19 +223,24 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
-    buildFeatures {
-        buildConfig = true
+    kotlinOptions {
+        tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+            kotlinOptions.jvmTarget = "11"
+        }
     }
+    kapt { correctErrorTypes = true }
+
+
     buildFeatures {
         compose true
         viewBinding true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.6"
+        kotlinCompilerExtensionVersion = "1.4.7"
     }
 
     applicationVariants.all { variant ->
@@ -363,9 +347,6 @@ android {
     }
     lint {
         disable 'MissingTranslation', 'InvalidPackage', 'AppCompatResource', 'ExtraTranslation'
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
     }
 
 //    android.applicationVariants.all { variant ->

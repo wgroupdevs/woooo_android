@@ -22,7 +22,6 @@ import eu.siacs.conversations.entities.Account
 import eu.siacs.conversations.services.XmppConnectionService
 import eu.siacs.conversations.ui.util.AvatarWorkerTask
 
-
 class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
 
     private lateinit var binding: ActivityHomeBinding
@@ -39,7 +38,6 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
         binding.appBarHome.toolbar.toolBarLeadingView.visibility = View.GONE
         binding.appBarHome.toolbar.toolbarProfilePhoto.visibility = View.VISIBLE
         binding.appBarHome.toolbar.toolbarNotification.visibility = View.VISIBLE
-
 
         binding.appBarHome.toolbar.toolbarProfilePhoto.setOnClickListener {
             binding.drawerLayout.open()
@@ -194,7 +192,6 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
                 R.dimen.avatar
             )
 
-
             editProfileButton.setOnClickListener {
                 binding.drawerLayout.close()
                 val intent = Intent(this, EditAccountActivity::class.java)
@@ -239,11 +236,6 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
         }
 
         binding.appBarHome.walletIv.setOnClickListener {
-
-
-//            val intent = Intent(this, WalletHomeActivity::class.java)
-//            startActivity(intent)
-
 
             rotateOuterCircle(false, 2)
             circleIndex = 1
@@ -308,14 +300,17 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
         rotateAnimatorClockWise.addListener(onEnd = {
             updatePiChart(true)
             if (index > 0) {
-                goToConversationActivity(index)
+                goToActivity(index)
             }
         })
     }
 
 
-    private fun goToConversationActivity(index: Int) {
-        val newIntent = Intent(this, ConversationActivity::class.java);
+    private fun goToActivity(index: Int) {
+        var newIntent = Intent(this, ConversationActivity::class.java);
+        if (index == 2) {
+//            newIntent = Intent(this, DappSampleActivity::class.java)
+        }
         newIntent.putExtra(ConversationsActivity.EXTRA_CIRCLE_MENU_INDEX, index)
         startActivity(newIntent)
     }
