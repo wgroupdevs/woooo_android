@@ -1,6 +1,7 @@
 package eu.siacs.conversations.ui
 
 import android.app.Activity
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,12 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.ImageView
 import android.widget.Spinner
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import eu.siacs.conversations.R
+import eu.siacs.conversations.ui.wallet.SendReceiveCurrencyActivity
+import eu.siacs.conversations.ui.wallet.WalletTransactionActivity
 
 
 class WalletMainFragment : XmppFragment() {
@@ -52,8 +57,16 @@ class WalletMainFragment : XmppFragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Get a reference to the PieChart view from your XML layout
-        // Get a reference to the PieChart view from your XML layout
+        view?.findViewById<Button>(R.id.transaction_btn)?.setOnClickListener {
+            val transactionIntent = Intent(getActivity(), WalletTransactionActivity::class.java)
+            startActivity(transactionIntent)
+
+        }
+        view?.findViewById<ImageView>(R.id.chain_detail)?.setOnClickListener {
+            val transactionIntent = Intent(getActivity(), SendReceiveCurrencyActivity::class.java)
+            startActivity(transactionIntent)
+        }
+
         val pieChart: PieChart? = view?.findViewById(R.id.pieChart)
 
         // Create a list of PieEntries

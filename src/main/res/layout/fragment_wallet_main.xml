@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -11,8 +12,7 @@
         android:id="@+id/pieChart"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_190sdp"
-        android:layout_marginTop="@dimen/_5sdp"
-        />
+        android:layout_marginTop="@dimen/_5sdp" />
 
 
     <!--    Currency Spinner START -->
@@ -59,24 +59,103 @@
             android:id="@+id/transaction_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/_1sdp"
             android:layout_weight="1"
             android:background="@drawable/button"
             android:enabled="true"
-            android:text="Transaction"
-            android:layout_marginEnd="@dimen/_1sdp"
-            />
+            android:text="Transaction" />
 
         <Button
             android:id="@+id/wallet_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_5sdp"
             android:layout_weight="1"
             android:background="@drawable/button"
             android:enabled="true"
-            android:layout_marginStart="@dimen/_5sdp"
             android:text="Wallet" />
 
     </LinearLayout>
+
+
+    <!--    Chains-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/bg_border"
+        android:padding="@dimen/_5sdp">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/chain_ic"
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_35sdp"
+            android:background="@drawable/ic_ethereum" />
+
+        <TextView
+            android:id="@+id/chain_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_toRightOf="@id/chain_ic"
+            android:singleLine="true"
+            android:text="Ethereum"
+            android:textAppearance="@style/TextAppearance.Conversations.Title" />
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:src="@drawable/baseline_arrow_forward_24"
+
+            />
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/bg_border"
+        android:padding="@dimen/_5sdp">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/chain_ic_1"
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_35sdp"
+            android:background="@drawable/ic_polygon" />
+
+        <TextView
+            android:id="@+id/chain_name_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_5sdp"
+            android:layout_toRightOf="@id/chain_ic_1"
+            android:singleLine="true"
+            android:text="Polygon"
+            android:textAppearance="@style/TextAppearance.Conversations.Title" />
+
+
+        <ImageView
+            android:id="@+id/chain_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:src="@drawable/baseline_arrow_forward_24"
+
+            />
+
+
+    </RelativeLayout>
 
 
 </LinearLayout>

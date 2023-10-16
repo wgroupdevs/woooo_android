@@ -90,6 +90,12 @@
         tools:replace="android:label"
         tools:targetApi="q">
         <activity
+            android:name=".ui.wallet.SendReceiveCurrencyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.wallet.WalletTransactionActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.auth.OTPVerificationActivity"
             android:exported="false" />
         <activity
@@ -155,25 +161,19 @@
         </activity>
         <activity
             android:name=".ui.ShareLocationActivity"
-            android:label="@string/title_activity_share_location" />
-
-<!--        <activity-->
-<!--            android:name=".web3.dapp.ui.DappSampleActivity"-->
-<!--            android:exported="true"-->
-<!--            android:label="DappSampleActivity"-->
-<!--            android:theme="@style/ConversationsTheme">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.VIEW" />-->
-
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-
-<!--                <data-->
-<!--                    android:host="request"-->
-<!--                    android:scheme="com.wgroup.woooo_app" />-->
-<!--            </intent-filter>-->
-<!--        </activity>-->
-
-
+            android:label="@string/title_activity_share_location" /> <!-- <activity -->
+        <!-- android:name=".web3.dapp.ui.DappSampleActivity" -->
+        <!-- android:exported="true" -->
+        <!-- android:label="DappSampleActivity" -->
+        <!-- android:theme="@style/ConversationsTheme"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.VIEW" /> -->
+        <!-- <category android:name="android.intent.category.DEFAULT" /> -->
+        <!-- <data -->
+        <!-- android:host="request" -->
+        <!-- android:scheme="com.wgroup.woooo_app" /> -->
+        <!-- </intent-filter> -->
+        <!-- </activity> -->
         <activity
             android:name=".ui.SearchActivity"
             android:label="@string/search_messages" />
