@@ -12,6 +12,7 @@ import com.woooapp.meeting.lib.socket.WooSocket;
 import com.woooapp.meeting.net.models.CreateMeetingResponse;
 import com.woooapp.meeting.net.models.Message;
 
+import org.json.JSONException;
 import org.mediasoup.droid.Consumer;
 import org.mediasoup.droid.DataConsumer;
 
@@ -25,15 +26,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * Class MeetingClient.java
  * Created on 16/09/2023 at 1:21 am
  */
-public class MeetingClient {
+public final class MeetingClient extends RoomMessageHandler {
     private static final String TAG = MeetingClient.class.getSimpleName() + ".java";
     private final Context mContext;
     private final Handler mWorkerHandler;
     private WooSocket mSocket;
     private boolean mStarted = false;
     private final RoomStore mRoomStore;
-    @NonNull final Map<String, ConsumerHolder> mConsumers;
-    @NonNull final Map<String, DataConsumerHolder> mDataConsumers;
     private final String mMeetingId;
     private String username;
     private String email;
@@ -41,6 +40,12 @@ public class MeetingClient {
     private String picture;
     private boolean micOn = true;
     private boolean camOn = true;
+    private boolean everyoneCamOn = true;
+    private boolean audioMuted = false;
+    private boolean textTranslationOn = false;
+    private boolean voiceTranslationOn = false;
+    private String selectedLanguage = "English";
+    private String selectedLanguageCode = "en";
     public enum ConnectionState {
         // initial state.
         NEW,
@@ -62,11 +67,9 @@ public class MeetingClient {
             @NonNull Context context,
             @NonNull RoomStore roomStore,
             @NonNull String meetingId) {
+        super(roomStore);
         this.mContext = context;
         this.mMeetingId = meetingId;
-
-        this.mConsumers = new ConcurrentHashMap<>();
-        this.mDataConsumers = new ConcurrentHashMap<>();
 
         this.mRoomStore = roomStore;
 
@@ -139,6 +142,87 @@ public class MeetingClient {
         this.picture = picture;
     }
 
+    public String getSelectedLanguage() {
+        return selectedLanguage;
+    }
+
+    public void setSelectedLanguage(String selectedLanguage) {
+        this.selectedLanguage = selectedLanguage;
+    }
+
+    public String getSelectedLanguageCode() {
+        return selectedLanguageCode;
+    }
+
+    public void setSelectedLanguageCode(String selectedLanguageCode) {
+        this.selectedLanguageCode = selectedLanguageCode;
+    }
+
+    public boolean isEveryoneCamOn() {
+        return everyoneCamOn;
+    }
+
+    public void setEveryoneCamOn(boolean everyoneCamOn) {
+        if (everyoneCamOn && !this.everyoneCamOn) {
+            mSocket.disableAudioOnly();
+        } else {
+            mSocket.enableAudioOnly();
+        }
+        this.everyoneCamOn = everyoneCamOn;
+    }
+
+    public boolean isAudioMuted() {
+        return audioMuted;
+    }
+
+    /**
+     *
+     * @param mute
+     */
+    public void setAudioMuted(boolean mute) {
+        if (mute && !this.audioMuted) {
+            mSocket.muteAudio();
+        } else {
+            mSocket.unmuteAudio();
+        }
+        this.audioMuted = mute;
+    }
+
+    /**
+     *
+     * @param on
+     */
+    public void setTextTranslation(boolean on) {
+        if (mSocket.isConnected()) {
+            try {
+                mSocket.emitTextTranslation(on);
+                textTranslationOn = on;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void setVoiceTranslation(boolean on) {
+        // TODO
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isTextTranslationOn() {
+        return textTranslationOn;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isVoiceTranslationOn() {
+        return voiceTranslationOn;
+    }
+
     public boolean isMicOn() {
         return micOn;
     }
@@ -195,37 +279,5 @@ public class MeetingClient {
             });
         }
     }
-
-    public static class ConsumerHolder {
-
-        @NonNull final String peerId;
-        @NonNull final Consumer mConsumer;
-
-        /**
-         *
-         * @param peerId
-         * @param consumer
-         */
-        public ConsumerHolder(@NonNull String peerId, @NonNull Consumer consumer) {
-            this.peerId = peerId;
-            this.mConsumer = consumer;
-        }
-    } // end class
-
-    static class DataConsumerHolder {
-        @NonNull final String peerId;
-        @NonNull final DataConsumer mDataConsumer;
-
-        /**
-         *
-         * @param peerId
-         * @param dataConsumer
-         */
-        public DataConsumerHolder(@NonNull String peerId, @NonNull DataConsumer dataConsumer) {
-            this.peerId = peerId;
-            this.mDataConsumer = dataConsumer;
-        }
-
-    } // end class
 
 } /** end class. */

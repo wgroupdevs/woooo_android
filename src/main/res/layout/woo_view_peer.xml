@@ -31,9 +31,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
             android:gravity="center_vertical"
-            android:padding="10dp"
+            android:padding="2dp"
             android:orientation="horizontal"
-            android:layout_margin="10sp"
+            android:layout_margin="3sp"
+            android:background="@drawable/bg_rounded_blue"
             >
             <!--            android:visibility="@{wooMeProps.connected ? View.VISIBLE : View.GONE}" -->
 
@@ -42,10 +43,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:padding="5sp"
+                android:padding="1sp"
                 android:text="Me"
                 android:textStyle="bold"
-                android:textSize="12sp"
+                android:textSize="10sp"
                 android:textColor="@color/white"
                 android:ellipsize="end"
                 />

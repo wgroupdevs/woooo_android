@@ -1,5 +1,7 @@
 package com.woooapp.meeting.lib.model;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import org.json.JSONObject;
@@ -45,6 +47,20 @@ public class Peers {
             return;
         }
         peer.setDisplayName(displayName);
+    }
+
+    /**
+     *
+     * @param peerId
+     * @return
+     */
+    public String getPeerDisplayName(@NonNull String peerId) {
+        Peer peer = mPeersInfo.get(peerId);
+        if (peer == null) {
+            Log.d(TAG, "No peer found with id [" + peerId + "]");
+            return null;
+        }
+        return peer.getDisplayName();
     }
 
     public void addConsumer(String peerId, Consumer consumer) {

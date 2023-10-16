@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.woooapp.meeting.impl.utils.ClipboardCopy;
+import com.woooapp.meeting.impl.utils.WooEvents;
 import com.woooapp.meeting.impl.views.UIManager;
 import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
 import com.woooapp.meeting.lib.MeetingClient;
@@ -86,7 +87,7 @@ public final class MeetingMorePopup extends RelativeLayout {
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
+                RelativeLayout.LayoutParams.MATCH_PARENT);
         this.setLayoutParams(params);
 
         this.mMainLayout = mContentView.findViewById(R.id.morePopupContainer);
@@ -102,12 +103,32 @@ public final class MeetingMorePopup extends RelativeLayout {
         });
 
         View buttonMuteEveryone = mContentView.findViewById(R.id.morePopupButtonMuteEveryone);
+        ImageView ivMute = mContentView.findViewById(R.id.morePopupIvMute);
+        TextView tvMute = mContentView.findViewById(R.id.morePopupTvMute);
+        if (mClient.isAudioMuted()) {
+            ivMute.setImageResource(R.drawable.ic_speaker_white_34);
+            tvMute.setText("Un Mute Everyone");
+        } else {
+            ivMute.setImageResource(R.drawable.ic_speaker_off);
+            tvMute.setText("Mute Everyone");
+        }
         buttonMuteEveryone.setOnClickListener(view -> {
+            mClient.setAudioMuted(!mClient.isAudioMuted());
             dismiss();
         });
 
         View buttonDisableCam = mContentView.findViewById(R.id.morePopupButtonDisableCam);
+        ImageView ivCam = mContentView.findViewById(R.id.morePopupIvCam);
+        TextView tvCam = mContentView.findViewById(R.id.morePopupTvCam);
+        if (mClient.isEveryoneCamOn()) {
+            ivCam.setImageResource(R.drawable.ic_camera_off_gray);
+            tvCam.setText("Disable Everyone's Camera");
+        } else {
+            ivCam.setImageResource(R.drawable.ic_video_camera_white);
+            tvCam.setText("Enable Everyone's Camera");
+        }
         buttonDisableCam.setOnClickListener(view -> {
+            mClient.setEveryoneCamOn(!mClient.isEveryoneCamOn());
             dismiss();
         });
 
@@ -118,6 +139,12 @@ public final class MeetingMorePopup extends RelativeLayout {
 
         View buttonSettings = mContentView.findViewById(R.id.morePopupButtonSettings);
         buttonSettings.setOnClickListener(view -> {
+            dismiss();
+        });
+
+        View buttonLanguage = mContentView.findViewById(R.id.morePopupButtonSelectLang);
+        buttonLanguage.setOnClickListener(v -> {
+            WooEvents.getInstance().notify(WooEvents.EVENT_CLICKED_LANGUAGE_SELECT, null);
             dismiss();
         });
 //        final ImageView ivThumb = mContentView.findViewById(R.id.morePopupIvThumb);

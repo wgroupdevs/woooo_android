@@ -7,7 +7,9 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 
 import androidx.annotation.NonNull;
@@ -25,7 +27,6 @@ public final class WooAnimationUtil {
     private static final String TAG = WooAnimationUtil.class.getSimpleName() + ".java";
 
     /**
-     *
      * @param v
      * @param width
      * @param adapter
@@ -40,7 +41,6 @@ public final class WooAnimationUtil {
     }
 
     /**
-     *
      * @param v
      * @param width
      * @param adapter
@@ -55,7 +55,6 @@ public final class WooAnimationUtil {
     }
 
     /**
-     *
      * @param view
      * @param width
      */
@@ -83,7 +82,6 @@ public final class WooAnimationUtil {
     }
 
     /**
-     *
      * @param view
      * @param adapter
      */
@@ -103,7 +101,6 @@ public final class WooAnimationUtil {
     }
 
     /**
-     *
      * @param view
      * @param pivotX
      * @param pivotY
@@ -135,7 +132,6 @@ public final class WooAnimationUtil {
     }
 
     /**
-     *
      * @param view
      * @param pivotX
      * @param pivotY
@@ -151,4 +147,105 @@ public final class WooAnimationUtil {
         hideView(view, adapter);
     }
 
-} /** end class [WooAnimationUtil] */
+    /**
+     * @param view
+     * @param pivotX
+     * @param fromX
+     * @param toX
+     * @param adapter
+     */
+    public static void scaleX(@NonNull View view, int pivotX, float fromX, float toX, @Nullable AnimatorListenerAdapter adapter) {
+        view.setPivotX(pivotX);
+        ValueAnimator scaleX = ObjectAnimator.ofFloat(view, View.SCALE_X, fromX, toX);
+        scaleX.setDuration(200);
+        if (adapter != null) scaleX.addListener(adapter);
+        scaleX.start();
+    }
+
+    /**
+     * @param view
+     * @param adapter
+     */
+    public static void slideFromLeft(@NonNull View view, @Nullable Animation.AnimationListener listener) {
+        view.clearAnimation();
+        TranslateAnimation anim = new TranslateAnimation(-2000, 0, 0, 0);
+        anim.setDuration(400);
+        anim.setInterpolator(new DecelerateInterpolator());
+        anim.setRepeatCount(0);
+        if (listener != null) anim.setAnimationListener(listener);
+        view.startAnimation(anim);
+    }
+
+    /**
+     * @param view
+     * @param adapter
+     */
+    public static void slideToLeft(@NonNull View view, @Nullable Animation.AnimationListener listener) {
+        view.clearAnimation();
+        TranslateAnimation anim = new TranslateAnimation(0, -2000, 0, 0);
+        anim.setDuration(400);
+        anim.setInterpolator(new DecelerateInterpolator());
+        anim.setRepeatCount(0);
+        if (listener != null) anim.setAnimationListener(listener);
+        view.startAnimation(anim);
+    }
+
+    /**
+     * @param view
+     * @param adapter
+     */
+    public static void slideFromTop(@NonNull View view, @Nullable Animation.AnimationListener listener) {
+        view.clearAnimation();
+        TranslateAnimation anim = new TranslateAnimation(0, 0, -2000, 0);
+        anim.setDuration(400);
+        anim.setInterpolator(new DecelerateInterpolator());
+        anim.setRepeatCount(0);
+        if (listener != null) anim.setAnimationListener(listener);
+        view.startAnimation(anim);
+    }
+
+    /**
+     * @param view
+     * @param adapter
+     */
+    public static void slideToTop(@NonNull View view, @Nullable Animation.AnimationListener listener) {
+        view.clearAnimation();
+        TranslateAnimation anim = new TranslateAnimation(0, 0, 0, -2000);
+        anim.setDuration(400);
+        anim.setInterpolator(new DecelerateInterpolator());
+        anim.setRepeatCount(0);
+        if (listener != null) anim.setAnimationListener(listener);
+        view.startAnimation(anim);
+    }
+
+    /**
+     * @param view
+     * @param adapter
+     */
+    public static void slideFromBottom(@NonNull View view, @Nullable Animation.AnimationListener listener) {
+        view.clearAnimation();
+        TranslateAnimation anim = new TranslateAnimation(0, 0, 4000, 0);
+        anim.setDuration(400);
+        anim.setInterpolator(new DecelerateInterpolator());
+        anim.setRepeatCount(0);
+        if (listener != null) anim.setAnimationListener(listener);
+        view.startAnimation(anim);
+    }
+
+    /**
+     * @param view
+     * @param adapter
+     */
+    public static void slideToBottom(@NonNull View view, @Nullable Animation.AnimationListener listener) {
+        view.clearAnimation();
+        TranslateAnimation anim = new TranslateAnimation(0, 0, 0, 4000);
+        anim.setDuration(400);
+        anim.setInterpolator(new DecelerateInterpolator());
+        anim.setRepeatCount(0);
+        if (listener != null) anim.setAnimationListener(listener);
+        view.startAnimation(anim);
+    }
+
+} /**
+ * end class [WooAnimationUtil]
+ */

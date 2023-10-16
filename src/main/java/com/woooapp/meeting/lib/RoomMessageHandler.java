@@ -25,35 +25,35 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RoomMessageHandler {
 
-    static final String TAG = "RoomClient";
+    private static final String TAG = RoomMessageHandler.class.getSimpleName() + ".java";
 
     // Stored Room States.
     @NonNull final RoomStore mStore;
     // mediasoup Consumers.
-    @NonNull final Map<String, ConsumerHolder> mConsumers;
-    @NonNull final Map<String, DataConsumerHolder> mDataConsumers;
+    @NonNull public final Map<String, ConsumerHolder> mConsumers;
+    @NonNull public final Map<String, DataConsumerHolder> mDataConsumers;
 
-    static class ConsumerHolder {
-        @NonNull final String peerId;
-        @NonNull final Consumer mConsumer;
+    public static class ConsumerHolder {
+        @NonNull public final String peerId;
+        @NonNull public final Consumer mConsumer;
 
-        ConsumerHolder(@NonNull String peerId, @NonNull Consumer consumer) {
+        public ConsumerHolder(@NonNull String peerId, @NonNull Consumer consumer) {
             this.peerId = peerId;
             mConsumer = consumer;
         }
     }
 
-    static class DataConsumerHolder {
-        @NonNull final String peerId;
-        @NonNull final DataConsumer mDataConsumer;
+    public static class DataConsumerHolder {
+        @NonNull public final String peerId;
+        @NonNull public final DataConsumer mDataConsumer;
 
-        DataConsumerHolder(@NonNull String peerId, @NonNull DataConsumer dataConsumer) {
+        public DataConsumerHolder(@NonNull String peerId, @NonNull DataConsumer dataConsumer) {
             this.peerId = peerId;
             mDataConsumer = dataConsumer;
         }
     }
 
-    RoomMessageHandler(@NonNull RoomStore store) {
+    public RoomMessageHandler(@NonNull RoomStore store) {
         this.mStore = store;
         this.mConsumers = new ConcurrentHashMap<>();
         this.mDataConsumers = new ConcurrentHashMap<>();
@@ -104,6 +104,7 @@ public class RoomMessageHandler {
                 holder.mConsumer.close();
                 mConsumers.remove(consumerId);
                 mStore.removeConsumer(holder.peerId, holder.mConsumer.getId());
+
                 break;
             }
             case "consumerPaused":

@@ -35,6 +35,13 @@ public final class WooEvents {
     public static final int EVENT_MIC_TURNED_OFF                  = 0xf;
     public static final int EVENT_CAM_TURNED_ON                   = 0x11;
     public static final int EVENT_CAM_TURNED_OFF                  = 0x12;
+    public static final int EVENT_ENABLE_TEXT_TRANSLATION         = 0x13;
+    public static final int EVENT_ON_TEXT_TRANSLATION_RECV        = 0x14;
+    public static final int EVENT_CLICKED_LANGUAGE_SELECT         = 0x15;
+    public static final int EVENT_DISABLE_EVERYONE_CAM            = 0x16;
+    public static final int EVENT_ENABLE_EVERYONE_CAM             = 0x17;
+    public static final int EVENT_NEW_PEER_JOINED                 = 0x18;
+    public static final int EVENT_PEER_EXITED                     = 0x19;
 
     private WooEvents() {
         Log.d(TAG, "WooEvents Initialized ...");

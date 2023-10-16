@@ -1,6 +1,7 @@
 package com.woooapp.meeting.lib.lv;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -20,6 +21,8 @@ import org.mediasoup.droid.Consumer;
 import org.mediasoup.droid.DataConsumer;
 import org.mediasoup.droid.DataProducer;
 import org.mediasoup.droid.Producer;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Muneeb Ahmad
@@ -171,6 +174,15 @@ public class RoomStore {
 
     public void setPeerDisplayName(String peerId, String displayName) {
         peers.postValue(peersInfo -> peersInfo.setPeerDisplayName(peerId, displayName));
+    }
+
+    public String getPeerDisplayName(String peerId) {
+        AtomicReference<String> peerDisplayName = new AtomicReference<>("");
+        peers.postValue(peerInfo -> {
+            peerDisplayName.set(peerInfo.getPeerDisplayName(peerId));
+            Log.d(TAG, "<< Peer Display Name: " + peerDisplayName.get());
+        });
+        return peerDisplayName.get();
     }
 
     public void removePeer(String peerId) {

@@ -101,6 +101,8 @@ public class MeetingChatAdapter extends BaseAdapter {
                 rvh = (RecvViewHolder) view.getTag();
             }
 
+            rvh.tvName = view.findViewById(R.id.meetingMsgRecvTvName);
+            rvh.tvName.setText(chatList.get(i).getMessage().getName());
             rvh.tvMessage = view.findViewById(R.id.meetingMsgRecvTvMsg);
             rvh.tvMessage.setMaxWidth(250);
             rvh.tvMessage.setText(chatList.get(i).getMessage().getMessage());
@@ -147,6 +149,7 @@ public class MeetingChatAdapter extends BaseAdapter {
     }
 
     static class RecvViewHolder {
+        TextView tvName;
         TextView tvMessage;
         TextView tvTime;
         ImageView ivThumb;

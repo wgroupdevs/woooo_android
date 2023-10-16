@@ -175,7 +175,7 @@
                         android:id="@+id/tabChat"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
+                        android:orientation="horizontal"
                         android:background="@drawable/bg_meeting_menu_tab"
                         android:gravity="center"
                         android:padding="5sp"
@@ -194,6 +194,28 @@
 
                 </LinearLayout>
 
+                <ImageView
+                    android:id="@+id/drawerButtonLang"
+                    android:layout_width="30sp"
+                    android:layout_height="30sp"
+                    android:src="@drawable/ic_lang_disable"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="10sp"
+                    android:layout_marginTop="30sp"/>
+
+                <ListView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/listViewTranscript"
+                    android:background="@android:color/transparent"
+                    android:layout_below="@+id/tabHost"
+                    android:dividerHeight="4sp"
+                    android:divider="@android:color/transparent"
+                    android:layout_marginBottom="0sp"
+                    android:visibility="gone"
+                    android:padding="10sp"
+                    />
+
                 <ListView
                     android:id="@+id/listViewMeetingChat"
                     android:layout_width="match_parent"
@@ -202,8 +224,10 @@
                     android:layout_below="@+id/tabHost"
                     android:dividerHeight="4sp"
                     android:divider="@android:color/transparent"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginBottom="60sp"
-                    />
+                    android:stackFromBottom="true"
+                    android:transcriptMode="alwaysScroll"/>
 
                 <LinearLayout
                     android:id="@+id/layoutEtChat"

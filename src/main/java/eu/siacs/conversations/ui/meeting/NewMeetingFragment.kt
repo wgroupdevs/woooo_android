@@ -71,7 +71,6 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
             if (accounts?.size!! > 0)
                 this.account = accounts?.get(0)
         }
-        Log.d(TAG, "<< Accounts Size >> " + accounts?.size)
     }
 
     override fun onCreateView(
@@ -86,7 +85,6 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
         super.onViewCreated(view, savedInstanceState)
 
         var intent: Intent? = null
-
         if (account != null) {
             meetingId = Utils.getNumericString(9);
             mBinding?.meetingUrlEt?.text = Editable.Factory.getInstance()
@@ -112,6 +110,7 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
                         intent.putExtra("meetingName", mBinding?.meetingNameEt?.text.toString())
                         intent.putExtra("meetingId", meetingId)
                         startActivity(intent)
+                        mBinding?.meetingNameEt?.text = Editable.Factory.getInstance().newEditable("")
                     }
                 } else {
                     meetingEtEmptyError()

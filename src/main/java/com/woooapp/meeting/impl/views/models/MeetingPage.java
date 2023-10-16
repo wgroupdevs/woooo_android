@@ -1,5 +1,7 @@
 package com.woooapp.meeting.impl.views.models;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
 /**
@@ -10,14 +12,14 @@ import java.util.List;
 public final class MeetingPage {
 
     private int pageNo;
-    private final List<GridPeer> mPeers;
+    private List<ListGridPeer> mPeers;
 
     /**
      *
      * @param pageNo
      * @param mPeers
      */
-    public MeetingPage(int pageNo, List<GridPeer> mPeers) {
+    public MeetingPage(int pageNo, @NonNull List<ListGridPeer> mPeers) {
         this.pageNo = pageNo;
         this.mPeers = mPeers;
     }
@@ -30,7 +32,11 @@ public final class MeetingPage {
         this.pageNo = pageNo;
     }
 
-    public List<GridPeer> getmPeers() {
+    public List<ListGridPeer> getmPeers() {
         return mPeers;
+    }
+
+    public void setPeers(List<ListGridPeer> mPeers) {
+        this.mPeers = mPeers;
     }
 } /** end class. */

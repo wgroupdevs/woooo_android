@@ -61,8 +61,8 @@
 
                 <ImageView
                     android:id="@+id/morePopupIvMeetingId"
-                    android:layout_width="32sp"
-                    android:layout_height="32sp"
+                    android:layout_width="40sp"
+                    android:layout_height="40sp"
                     android:src="@drawable/ic_meeting_new" />
 
                 <TextView
@@ -72,7 +72,8 @@
                     android:layout_marginLeft="5sp"
                     android:text="Meeting ID"
                     android:textColor="@android:color/white"
-                    android:textSize="12sp" />
+                    android:textSize="15sp"
+                    android:textStyle="bold"/>
 
             </LinearLayout>
 
@@ -136,17 +137,20 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="32sp"
-                    android:layout_height="32sp"
+                    android:id="@+id/morePopupIvMute"
+                    android:layout_width="40sp"
+                    android:layout_height="40sp"
                     android:src="@drawable/ic_speaker_off" />
 
                 <TextView
+                    android:id="@+id/morePopupTvMute"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5sp"
                     android:text="Mute Everyone"
                     android:textColor="@android:color/white"
-                    android:textSize="12sp" />
+                    android:textSize="15sp"
+                    android:textStyle="bold"/>
 
             </LinearLayout>
 
@@ -160,17 +164,20 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="32sp"
-                    android:layout_height="32sp"
-                    android:src="@drawable/ic_camera_off_gray" />
+                    android:id="@+id/morePopupIvCam"
+                    android:layout_width="40sp"
+                    android:layout_height="40sp"
+                    android:src="@drawable/ic_video_camera_white" />
 
                 <TextView
+                    android:id="@+id/morePopupTvCam"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5sp"
                     android:text="Disable Everyone's camera"
                     android:textColor="@android:color/white"
-                    android:textSize="12sp" />
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
@@ -243,8 +250,8 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="32sp"
-                    android:layout_height="32sp"
+                    android:layout_width="40sp"
+                    android:layout_height="40sp"
                     android:src="@drawable/ic_wallpaper" />
 
                 <TextView
@@ -253,7 +260,8 @@
                     android:layout_marginLeft="5sp"
                     android:text="Select background"
                     android:textColor="@android:color/white"
-                    android:textSize="12sp" />
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
@@ -296,8 +304,8 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_width="32sp"
-                    android:layout_height="32sp"
+                    android:layout_width="40sp"
+                    android:layout_height="40sp"
                     android:src="@drawable/ic_settings_new" />
 
                 <TextView
@@ -306,33 +314,35 @@
                     android:layout_marginLeft="5sp"
                     android:text="Settings"
                     android:textColor="@android:color/white"
-                    android:textSize="12sp" />
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
             </LinearLayout>
 
-<!--            <LinearLayout-->
-<!--                android:id="@+id/morePopupButtonViewShortcuts"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_margin="5sp"-->
-<!--                android:foreground="?attr/selectableItemBackground"-->
-<!--                android:gravity="center_vertical"-->
-<!--                android:orientation="horizontal">-->
+            <LinearLayout
+                android:id="@+id/morePopupButtonSelectLang"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5sp"
+                android:foreground="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-<!--                <ImageView-->
-<!--                    android:layout_width="32sp"-->
-<!--                    android:layout_height="32sp"-->
-<!--                    android:src="@drawable/person" />-->
+                <ImageView
+                    android:layout_width="40sp"
+                    android:layout_height="40sp"
+                    android:src="@drawable/ic_lang_disable" />
 
-<!--                <TextView-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_marginLeft="5sp"-->
-<!--                    android:text="View shortcuts"-->
-<!--                    android:textColor="@android:color/white"-->
-<!--                    android:textSize="12sp" />-->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5sp"
+                    android:text="Select Language"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
-<!--            </LinearLayout>-->
+            </LinearLayout>
 
 <!--            <LinearLayout-->
 <!--                android:id="@+id/morePopupButtonEmbedMeeting"-->
