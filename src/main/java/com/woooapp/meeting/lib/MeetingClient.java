@@ -7,6 +7,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.woooapp.meeting.impl.utils.WooEvents;
 import com.woooapp.meeting.lib.lv.RoomStore;
 import com.woooapp.meeting.lib.socket.WooSocket;
 import com.woooapp.meeting.net.models.CreateMeetingResponse;
@@ -171,6 +172,14 @@ public final class MeetingClient extends RoomMessageHandler {
         this.everyoneCamOn = everyoneCamOn;
     }
 
+    public void updateTranslationLanguage(@NonNull String langCode) {
+        try {
+            mSocket.emitUpdateLanguage(langCode);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean isAudioMuted() {
         return audioMuted;
     }
@@ -230,8 +239,18 @@ public final class MeetingClient extends RoomMessageHandler {
     public void setMicOn(boolean micOn) {
         if (micOn && !this.micOn) {
             mSocket.unmuteMic();
+            try {
+                mSocket.emitMicOpen();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         } else {
             mSocket.muteMic();
+            try {
+                mSocket.emitMicClosed();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
         this.micOn = micOn;
     }
@@ -242,11 +261,44 @@ public final class MeetingClient extends RoomMessageHandler {
 
     public void setCamOn(boolean camOn) {
         if (camOn && !this.camOn) {
-            mSocket.enableCam();
-        } else {
             mSocket.disableCam();
+            try {
+                mSocket.emitVideoOpen();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        } else {
+            mSocket.enableCam();
+            try {
+                mSocket.emitVideoClose();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
         this.camOn = camOn;
+    }
+
+    /**
+     *
+     * @param raised
+     */
+    public void setMeHandRaised(boolean raised) {
+        mStore.getMe().postValue(me -> {
+            me.setHandShaking(raised);
+        });
+        if (raised) {
+            WooEvents.getInstance().notify(WooEvents.EVENT_ME_HAND_RAISED, true);
+        } else {
+            WooEvents.getInstance().notify(WooEvents.EVENT_ME_HAND_LOWERED, true);
+        }
+    }
+
+    public void emitHandRaisedState(boolean raised) throws JSONException {
+        if (raised) {
+            mSocket.emitHandRaised();
+        } else {
+            mSocket.emitHandLowered();
+        }
     }
 
     /**

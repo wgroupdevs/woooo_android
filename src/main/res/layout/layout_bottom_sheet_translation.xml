@@ -18,8 +18,9 @@
             android:layout_height="wrap_content"
             android:background="@color/blue_primary_transparent"
             android:foreground="?attr/selectableItemBackground"
+            android:src="@drawable/ic_check_circle_34"
             android:text="Text Translation"
-            android:textColor="@color/white" />
+            android:textColor="@color/black" />
 
         <View
             android:layout_width="match_parent"
@@ -33,7 +34,7 @@
             android:background="@color/blue_primary_transparent"
             android:foreground="?attr/selectableItemBackground"
             android:text="Voice Translation"
-            android:textColor="@color/white" />
+            android:textColor="@color/black" />
 
         <View
             android:layout_width="match_parent"

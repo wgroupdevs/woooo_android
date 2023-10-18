@@ -26,6 +26,42 @@
             />
 
         <LinearLayout
+            android:id="@+id/peerInfoPanel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5sp"
+            android:layout_gravity="top|right"
+            android:layout_margin="3sp"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/meInfoHand"
+                android:layout_width="18sp"
+                android:layout_height="18sp"
+                android:layout_marginLeft="5sp"
+                android:layout_marginRight="5sp"
+                android:src="@drawable/ic_front_hand_white_34"/>
+
+            <ImageView
+                android:id="@+id/meInfoMic"
+                android:layout_width="22sp"
+                android:layout_height="22sp"
+                android:layout_marginLeft="5sp"
+                android:layout_marginRight="5sp"
+                android:src="@drawable/ic_mic_white_48dp"/>
+
+            <ImageView
+                android:id="@+id/meInfoCam"
+                android:layout_width="22sp"
+                android:layout_height="22sp"
+                android:layout_marginLeft="5sp"
+                android:layout_marginRight="5sp"
+                android:src="@drawable/ic_video_camera_white"/>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/controls"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

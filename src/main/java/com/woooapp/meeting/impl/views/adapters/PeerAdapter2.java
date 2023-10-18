@@ -45,6 +45,7 @@ public class PeerAdapter2 extends BaseAdapter {
     private int mDeviceWidth;
     private int mDeviceHeight;
     private int mBottomBarHeight = 90;
+    private boolean translationEnabled = false;
 
     /**
      *
@@ -111,6 +112,11 @@ public class PeerAdapter2 extends BaseAdapter {
             MeProps meProps = new MeProps(((AppCompatActivity) mContext).getApplication(), mStore);
             meProps.connect(mLifecycleOwner);
             vhm.meView.setProps(meProps, mMeetingClient);
+//            if (position == 0) {
+//                vhm.meView.setCameraState(peerList.get(position).isPeer1CamOn());
+//                vhm.meView.setMicState(peerList.get(position).isPeer1MicOn());
+//                vhm.meView.setHandState(peerList.get(position).isPeer1HandRaised());
+//            }
 
             vhm.peerView = convertView.findViewById(R.id.cellPeerView2);
             Peer p3 = peerList.get(position).getPeer2();
@@ -120,6 +126,9 @@ public class PeerAdapter2 extends BaseAdapter {
                 peerProps.connect(mLifecycleOwner, p3.getId());
                 vhm.peerView.setProps(peerProps, mMeetingClient);
                 vhm.peerView.setName(p3.getDisplayName());
+//                vhm.peerView.setCameraState(peerList.get(position).isPeer2CamOn());
+//                vhm.peerView.setMicState(peerList.get(position).isPeer2MicOn());
+//                vhm.peerView.setHandState(peerList.get(position).isPeer2HandRaised());
 
                 vhm.peerView.getLayoutParams().width = getColumnWidth(2);
                 vhm.peerView.getLayoutParams().height = getRowHeight();
@@ -148,6 +157,10 @@ public class PeerAdapter2 extends BaseAdapter {
         vhpp.peerView1.setProps(props1, mMeetingClient);
         vhpp.peerView1.setName(p1.getDisplayName());
 
+//        vhpp.peerView1.setCameraState(peerList.get(position).isPeer1CamOn());
+//        vhpp.peerView1.setMicState(peerList.get(position).isPeer1MicOn());
+//        vhpp.peerView1.setHandState(peerList.get(position).isPeer1HandRaised());
+
         vhpp.peerView2 = convertView.findViewById(R.id.cellPeerView3);
         Peer p2 = peerList.get(position).getPeer2();
         if (p2 != null) {
@@ -156,6 +169,9 @@ public class PeerAdapter2 extends BaseAdapter {
             props2.connect(mLifecycleOwner, p2.getId());
             vhpp.peerView2.setProps(props2, mMeetingClient);
             vhpp.peerView2.setName(p2.getDisplayName());
+//            vhpp.peerView2.setCameraState(peerList.get(position).isPeer2CamOn());
+//            vhpp.peerView2.setMicState(peerList.get(position).isPeer2MicOn());
+//            vhpp.peerView2.setHandState(peerList.get(position).isPeer2HandRaised());
 
             vhpp.peerView1.getLayoutParams().width = getColumnWidth(2);
             vhpp.peerView1.getLayoutParams().height = getRowHeight();
@@ -183,12 +199,16 @@ public class PeerAdapter2 extends BaseAdapter {
      * @return
      */
     private int getRowHeight(int rowCount) {
+
         switch (rowCount) {
             case 2:
+                if (translationEnabled) return  (mDeviceHeight / 2) - 150;
                 return (mDeviceHeight / 2) - 40;
             case 3:
+                if (translationEnabled) return (mDeviceHeight / 3) - 100;
                 return (mDeviceHeight / 3) - 40;
             default:
+                if (translationEnabled) return mDeviceHeight - 250;
                 return mDeviceHeight - 50;
         }
     }
@@ -210,6 +230,15 @@ public class PeerAdapter2 extends BaseAdapter {
      */
     public void setBottomBarHeight(int bottomBarHeight) {
         this.mBottomBarHeight = bottomBarHeight;
+    }
+
+    /**
+     *
+     * @param enabled
+     */
+    public void setTranslation(boolean enabled) {
+        this.translationEnabled = enabled;
+        this.notifyDataSetChanged();
     }
 
     /**

@@ -16,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,18 +23,15 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager.widget.ViewPager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.snackbar.Snackbar;
 import com.woogroup.woooo_app.woooo.di.WooApplication;
 import com.woooapp.meeting.device.Display;
 import com.woooapp.meeting.impl.utils.WooDirector;
@@ -44,7 +40,6 @@ import com.woooapp.meeting.impl.utils.WooMediaPlayer;
 import com.woooapp.meeting.impl.views.adapters.LangSelectionAdapter;
 import com.woooapp.meeting.impl.views.adapters.MeetingChatAdapter;
 import com.woooapp.meeting.impl.views.adapters.MeetingPagerAdapter;
-import com.woooapp.meeting.impl.views.adapters.MeetingPeersAdapter;
 import com.woooapp.meeting.impl.views.adapters.MeetingTranscriptAdapter;
 import com.woooapp.meeting.impl.views.adapters.PeerAdapter2;
 import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
@@ -54,7 +49,6 @@ import com.woooapp.meeting.impl.views.models.GridPeer;
 import com.woooapp.meeting.impl.views.models.Languages;
 import com.woooapp.meeting.impl.views.models.ListGridPeer;
 import com.woooapp.meeting.impl.views.models.MeetingPage;
-import com.woooapp.meeting.impl.views.models.MeetingPage2;
 import com.woooapp.meeting.impl.views.models.Transcript;
 import com.woooapp.meeting.impl.views.popups.MeetingMorePopup;
 import com.woooapp.meeting.impl.views.popups.WooCommonPopup;
@@ -77,10 +71,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.entities.Account;
@@ -161,6 +153,12 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private WooProgressDialog progressDialog;
     private List<MeetingPageFragment> pageFragments = new LinkedList<>();
     private WooMediaPlayer notificationSound;
+    private LinearLayout pageControlLayout;
+    private LinearLayout translationLayout;
+    private TextView tvTransOriginal;
+    private TextView tvTransTrans;
+    private boolean isCamEnabled;
+    private boolean isMicEnabled;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -216,6 +214,11 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         this.buttonAI.setOnClickListener(view -> {
             View contentView = LayoutInflater.from(this).inflate(R.layout.layout_bottom_sheet_translation, null);
             Button buttonTextTrans = contentView.findViewById(R.id.buttonTransSheetText);
+            if (mMeetingClient.isTextTranslationOn()) {
+                buttonTextTrans.setTextColor(Color.WHITE);
+            } else {
+                buttonTextTrans.setTextColor(Color.BLACK);
+            }
             Button buttonVoiceTrans = contentView.findViewById(R.id.buttonTransSheetVoice);
             Button buttonCancel = contentView.findViewById(R.id.buttonTransSheetCancel);
 
@@ -224,13 +227,20 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             dialog.show();
 
             buttonTextTrans.setOnClickListener(v -> {
-                if (mMeetingClient != null)
+                buttonTextTrans.setTextColor(Color.WHITE);
+                if (mMeetingClient != null) {
                     mMeetingClient.setTextTranslation(!mMeetingClient.isTextTranslationOn());
+                    if (mMeetingClient.isTextTranslationOn()) {
+                        WooEvents.getInstance().notify(WooEvents.EVENT_TRANSLATION_ENABLED, null);
+                    } else {
+                        WooEvents.getInstance().notify(WooEvents.EVENT_TRANSLATION_DISABLED, null);
+                    }
+                }
                 dialog.dismiss();
             });
 
             buttonVoiceTrans.setOnClickListener(v -> {
-                if (mMeetingClient != null) mMeetingClient.setVoiceTranslation(true);
+                if (mMeetingClient != null) mMeetingClient.setVoiceTranslation(!mMeetingClient.isVoiceTranslationOn());
                 dialog.dismiss();
             });
 
@@ -301,6 +311,11 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         this.tvMeetingId = findViewById(R.id.tvMeetingId);
         this.viewPager = findViewById(R.id.meetingViewPager);
 
+        this.pageControlLayout = findViewById(R.id.page_control);
+        this.translationLayout = findViewById(R.id.translationLayout);
+        this.tvTransOriginal = findViewById(R.id.tvTranslationOriginal);
+        this.tvTransTrans = findViewById(R.id.tvTranslationTranslation);
+
         this.meetingBackground.setOnTouchListener((view, motionEvent) -> true);
 
         this.notificationSound = new WooMediaPlayer(getResources().openRawResourceFd(R.raw.meet_sound));
@@ -328,12 +343,15 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             account.setLanguageCode(selectedLanguageCode);
             DatabaseBackend db = DatabaseBackend.getInstance(this);
             db.updateAccount(account);
+
+            mMeetingClient.updateTranslationLanguage(selectedLanguageCode);
         }
     }
 
     private void setup() {
 //        pd.show();
-
+        this.isCamEnabled = getIntent().getBooleanExtra("camOn", true);
+        this.isMicEnabled = getIntent().getBooleanExtra("micOn", true);
         this.email = getIntent().getStringExtra("email");
         this.accountUniqueId = getIntent().getStringExtra("accountUniqueId");
         this.username = getIntent().getStringExtra("username");
@@ -652,6 +670,22 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         this.peersPagerAdapter = new MeetingPagerAdapter(getSupportFragmentManager(), this, mRoomStore, mMeetingClient, this);
         this.peersPagerAdapter.setBottomBarHeight(bottomBarMeeting.getLayoutParams().height);
         this.viewPager.setAdapter(peersPagerAdapter);
+        this.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                updatePageControl(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         final MeetingPageFragment f1 = new MeetingPageFragment(1, this, mRoomStore, mMeetingClient, this);
         pageFragments.add(f1);
@@ -673,7 +707,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                                 pageFragments.get(0).replacePage(page1);
                             } else if (peersList.size() > 5 && peersList.size() <= 12) {
                                 List<ListGridPeer> pl2 = createListGridPeers(peersList.subList(0, 2), false);
-                                List<ListGridPeer> pl3 = createListGridPeers(peersList.subList(3, listGridPeer.size() - 1), false);
+                                List<ListGridPeer> pl3 = createListGridPeers(peersList.subList(3, peersList.size() - 1), false);
                                 MeetingPage page1 = new MeetingPage(1, pl2);
                                 MeetingPage page2 = new MeetingPage(2, pl3);
                                 pageList.add(page1);
@@ -688,7 +722,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                             } else if (peersList.size() > 12 && peersList.size() <= 18) {
                                 List<ListGridPeer> pl4 = createListGridPeers(peersList.subList(0, 2), false);
                                 List<ListGridPeer> pl5 = createListGridPeers(peersList.subList(3, 5), false);
-                                List<ListGridPeer> pl6 = createListGridPeers(peersList.subList(6, listGridPeer.size() - 1), false);
+                                List<ListGridPeer> pl6 = createListGridPeers(peersList.subList(6, peersList.size() - 1), false);
                                 MeetingPage page1 = new MeetingPage(1, pl4);
                                 MeetingPage page2 = new MeetingPage(2, pl5);
                                 MeetingPage page3 = new MeetingPage(3, pl6);
@@ -707,6 +741,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                             Log.d(TAG, "Peer list size[" + peersList.size() + "]");
                             Log.d(TAG, "Pages Size >>> " + pageList.size());
                             peersPagerAdapter.replaceFragments(pageFragments, pageList);
+                            updatePageControl(0);
 
 //                            if (mBinding.meetingViewPager.findViewWithTag(pageList.get(0).getPageNo()) != null) {
 //                                peersPagerAdapter.notifyDataSetChanged();
@@ -857,6 +892,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
     @Override
     public boolean handleMessage(@NonNull Message msg) {
+        Log.d(TAG, "<< Handler Event >>> " + msg.what);
         switch (msg.what) {
             case WooEvents.EVENT_TYPE_SOCKET_ID:
                 Log.d(TAG, "<< Handler Event SOCKET_ID Received >> " + msg.obj);
@@ -954,24 +990,66 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 Log.w(TAG, "Failed to send chat message " + msg.obj);
 
                 return true;
-            case WooEvents.EVENT_MIC_TURNED_ON:
+            case WooEvents.EVENT_ME_MIC_TURNED_ON:
                 runOnUiThread(() -> {
                     buttonMic.setImageResource(R.drawable.baseline_mic_34);
+                    for (MeetingPageFragment f : pageFragments) {
+                        f.notifyUpdate();
+                    }
+                });
+                ApiManager.build(this).putStates(ApiManager.URL_MIC_UN_MUTED, mMeetingId, mMeetingClient.getSocketId(), new ApiManager.ApiResult2() {
+                    @Override
+                    public void onResult(Call call, Response response) {
+                        try {
+                            Log.d(TAG, "<< MIC UN MUTED RESPONSE >>> " + response.body().string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Object e) {
+
+                    }
                 });
                 return true;
-            case WooEvents.EVENT_MIC_TURNED_OFF:
+            case WooEvents.EVENT_ME_MIC_TURNED_OFF:
                 runOnUiThread(() -> {
                     buttonMic.setImageResource(R.drawable.ic_mic_off_gray);
+                    for (MeetingPageFragment f : pageFragments) {
+                        f.notifyUpdate();
+                    }
+                });
+                ApiManager.build(this).putStates(ApiManager.URL_MIC_MUTED, mMeetingId, mMeetingClient.getSocketId(), new ApiManager.ApiResult2() {
+                    @Override
+                    public void onResult(Call call, Response response) {
+                        try {
+                            Log.d(TAG, "<< MIC MUTED RESPONSE >>> " + response.body().string());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Object e) {
+
+                    }
                 });
                 return true;
-            case WooEvents.EVENT_CAM_TURNED_ON:
+            case WooEvents.EVENT_ME_CAM_TURNED_ON:
                 runOnUiThread(() -> {
                     buttonCam.setImageResource(R.drawable.ic_video_camera_white);
+                    for (MeetingPageFragment f : pageFragments) {
+                        f.notifyUpdate();
+                    }
                 });
                 return true;
-            case WooEvents.EVENT_CAM_TURNED_OFF:
+            case WooEvents.EVENT_ME_CAM_TURNED_OFF:
                 runOnUiThread(() -> {
                     buttonCam.setImageResource(R.drawable.ic_camera_off_gray);
+                    for (MeetingPageFragment f : pageFragments) {
+                        f.notifyUpdate();
+                    }
                 });
                 return true;
             case WooEvents.EVENT_ON_TEXT_TRANSLATION_RECV:
@@ -986,6 +1064,9 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                         transcriptList.add(transcript);
                         if (transcriptAdapter != null)
                             transcriptAdapter.replaceList(transcriptList);
+                        if (mMeetingClient.isTextTranslationOn()) {
+                            onTranslation(original, translation);
+                        }
                     } catch (JSONException ex) {
                         ex.printStackTrace();
                     }
@@ -1018,9 +1099,252 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     });
                 }
                 return true;
+            case WooEvents.EVENT_ME_HAND_RAISED:
+                ApiManager.build(this).putStates(ApiManager.URL_HAND_RAISED, mMeetingId, mMeetingClient.getSocketId(), new ApiManager.ApiResult2() {
+                    @Override
+                    public void onResult(Call call, Response response) {
+                        try {
+                            Log.d(TAG, "<< ME HAND RAISED RESPONSE >>> " + response.body().string());
+                            mMeetingClient.emitHandRaisedState(true);
+                        } catch (IOException | JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Object e) {
+
+                    }
+                });
+                return true;
+            case WooEvents.EVENT_ME_HAND_LOWERED:
+                ApiManager.build(this).putStates(ApiManager.URL_HAND_LOWERED, mMeetingId, mMeetingClient.getSocketId(), new ApiManager.ApiResult2() {
+                    @Override
+                    public void onResult(Call call, Response response) {
+                        try {
+                            Log.d(TAG, "<< ME HAND LOWERED RESPONSE >>> " + response.body().string());
+                            mMeetingClient.emitHandRaisedState(false);
+                        } catch (IOException | JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Object e) {
+
+                    }
+                });
+                return true;
+            case WooEvents.EVENT_TRANSLATION_ENABLED:
+                enableTranslations();
+                return true;
+            case WooEvents.EVENT_TRANSLATION_DISABLED:
+                disableTranslation();
+                return true;
+            case WooEvents.EVENT_PEER_HAND_LOWERED:
+                JSONObject handLowered = (JSONObject) msg.obj;
+                if (handLowered != null) {
+                    mRoomStore.getPeers().postValue(peers -> {
+                        try {
+                            Peer p = peers.getPeer(handLowered.getString("socketId"));
+                            if (p != null) {
+                                p.setHandRaised(false);
+                                for (MeetingPageFragment f : pageFragments) {
+                                    f.notifyUpdate();
+                                }
+                                showCommonPopup(p.getDisplayName() + " Lowered Hand", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+                return true;
+            case WooEvents.EVENT_PEER_HAND_RAISED:
+                JSONObject handRaised = (JSONObject) msg.obj;
+                if (handRaised != null) {
+                    mRoomStore.getPeers().postValue(peers -> {
+                        try {
+                            Peer p = peers.getPeer(handRaised.getString("socketId"));
+                            if (p != null) {
+                                p.setHandRaised(true);
+                                for (MeetingPageFragment f : pageFragments) {
+                                    f.notifyUpdate();
+                                }
+                                showCommonPopup(p.getDisplayName() + " Raised Hand", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+                return true;
+            case WooEvents.EVENT_PEER_MIC_MUTED:
+                JSONObject muted = (JSONObject) msg.obj;
+                if (muted != null) {
+                    mRoomStore.getPeers().postValue(peers -> {
+                        try {
+                            Peer p = peers.getPeer(muted.getString("socketId"));
+                            if (p != null) {
+                                p.setMicOn(false);
+                                for (MeetingPageFragment f : pageFragments) {
+                                    f.notifyUpdate();
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+                return true;
+            case WooEvents.EVENT_PEER_MIC_UNMUTED:
+                JSONObject unMuted = (JSONObject) msg.obj;
+                if (unMuted != null) {
+                    mRoomStore.getPeers().postValue(peers -> {
+                        try {
+                            Peer p = peers.getPeer(unMuted.getString("socketId"));
+                            if (p != null) {
+                                p.setMicOn(true);
+                                for (MeetingPageFragment f : pageFragments) {
+                                    f.notifyUpdate();
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+                return true;
+            case WooEvents.EVENT_PEER_CAM_TURNED_ON:
+                JSONObject camOn = (JSONObject) msg.obj;
+                if (camOn != null) {
+                    mRoomStore.getPeers().postValue(peers -> {
+                        try {
+                            Peer p = peers.getPeer(camOn.getString("socketId"));
+                            if (p != null) {
+                                p.setCamOn(true);
+                                for (MeetingPageFragment f : pageFragments) {
+                                    f.notifyUpdate();
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+                return true;
+            case WooEvents.EVENT_PEER_CAM_TURNED_OFF:
+                JSONObject camOff = (JSONObject) msg.obj;
+                if (camOff != null) {
+                    mRoomStore.getPeers().postValue(peers -> {
+                        try {
+                            Peer p = peers.getPeer(camOff.getString("socketId"));
+                            if (p != null) {
+                                p.setCamOn(false);
+                                for (MeetingPageFragment f : pageFragments) {
+                                    f.notifyUpdate();
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                }
+                return true;
             default:
                 return false;
         }
+    }
+
+    /**
+     *
+     * @param original
+     * @param translation
+     */
+    private void onTranslation(@NonNull String original, @NonNull String translation) {
+       if (this.translationLayout.getVisibility() == View.VISIBLE) {
+           tvTransOriginal.setText(original);
+           tvTransOriginal.setBackgroundResource(R.drawable.bg_rounded_default);
+           tvTransTrans.setText(translation);
+           tvTransTrans.setBackgroundResource(R.drawable.bg_rounded_default);
+       }
+    }
+
+    private void enableTranslations() {
+        if (translationLayout.getVisibility() == View.GONE) {
+            translationLayout.setVisibility(View.VISIBLE);
+            for (MeetingPageFragment fragment : pageFragments) {
+                fragment.enableTranslation();
+            }
+            showCommonPopup("Translation turned on", true, WooCommonPopup.VERTICAL_POSITION_CENTER);
+        }
+    }
+
+    private void disableTranslation() {
+        if (translationLayout.getVisibility() == View.VISIBLE) {
+            tvTransOriginal.setText("");
+            tvTransTrans.setText("");
+            tvTransTrans.setBackgroundResource(android.R.color.transparent);
+            tvTransOriginal.setBackgroundResource(android.R.color.transparent);;
+            translationLayout.setVisibility(View.GONE);
+            for (MeetingPageFragment fragment : pageFragments) {
+                fragment.disableTranslation();
+            }
+            showCommonPopup("Translation turned off", true, WooCommonPopup.VERTICAL_POSITION_CENTER);
+        }
+    }
+
+    /**
+     *
+     * @param selectedPosition
+     */
+    private void updatePageControl(int selectedPosition) {
+        pageControlLayout.removeAllViews();
+       if (pageFragments.size() > 1) {
+           for (int i = 0; i < pageFragments.size(); i++) {
+                pageControlLayout.addView(createNewPageControl(i == selectedPosition, i + 1),
+                        (i == selectedPosition) ? getSelectedPageControlParams() : getUnSelectedPageControlParams());
+           }
+        }
+    }
+
+    /**
+     *
+     * @param selected
+     * @param pageNo
+     * @return
+     */
+    private View createNewPageControl(boolean selected, int pageNo) {
+        View v = LayoutInflater.from(this).inflate(R.layout.page_control, null);
+        TextView tv = v.findViewById(R.id.pageControlTv);
+        tv.setTextColor(Color.BLACK);
+        tv.setText(String.valueOf(pageNo));
+        if (selected) {
+            v.setAlpha(1f);
+        } else {
+            v.setAlpha(0.6f);
+        }
+        return v;
+    }
+
+    /**
+     *
+     * @return
+     */
+    private LinearLayout.LayoutParams getSelectedPageControlParams() {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(Display.dpToPx(this, 20), Display.dpToPx(this, 20));
+        params.setMargins(3, 3, 3, 3);
+        return params;
+    }
+
+    /**
+     *
+     * @return
+     */
+    private LinearLayout.LayoutParams getUnSelectedPageControlParams() {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(Display.dpToPx(this, 20), Display.dpToPx(this, 20));
+        params.setMargins(1, 1, 1, 1);
+        return params;
     }
 
     /**

@@ -52,6 +52,8 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
 
     private var vibrator: Vibrator? = null
     private val handler: Handler = Handler(this)
+    private var camEnabled = true
+    private var micEnabled = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,6 +86,8 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        this.initComponents()
+
         var intent: Intent? = null
         if (account != null) {
             meetingId = Utils.getNumericString(9);
@@ -100,6 +104,8 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
             intent.putExtra("accountUniqueId", accountUniqueId)
             intent.putExtra("picture", picture)
             intent.putExtra("username", username.toString().toLowerCase(Locale.current))
+            intent.putExtra("camOn", camEnabled)
+            intent.putExtra("micOn", micEnabled)
         }
 
         // Start Meeting
@@ -162,6 +168,50 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
                     mBinding?.startMeetingBtn!!,
                     "Meeting Link $link copied to clipboard",
                     Snackbar.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    private fun initComponents() {
+        if (micEnabled) {
+            mBinding?.buttonMic?.setImageResource(R.drawable.ic_mic_white_48dp)
+            mBinding?.tvMic?.text = "Mic is On"
+        } else {
+            mBinding?.buttonMic?.setImageResource(R.drawable.ic_mic_off_gray)
+            mBinding?.tvMic?.text = "Mic is Off"
+        }
+        if (camEnabled) {
+            mBinding?.buttonCam?.setImageResource(R.drawable.ic_video_camera_white)
+            mBinding?.tvCam?.text = "Camera is On"
+        } else {
+            mBinding?.buttonCam?.setImageResource(R.drawable.ic_camera_off_gray)
+            mBinding?.tvCam?.text = "Camera is Off"
+        }
+
+        mBinding?.buttonMic?.setOnClickListener {
+            micEnabled = if (micEnabled) {
+                mBinding?.buttonMic?.setImageResource(R.drawable.ic_mic_off_gray)
+                mBinding?.tvMic?.text = "Mic is Off"
+                false
+            } else {
+                mBinding?.buttonMic?.setImageResource(R.drawable.ic_mic_white_48dp)
+                mBinding?.tvMic?.text = "Mic is On"
+                true
+            }
+        }
+
+        mBinding?.buttonCam?.setOnClickListener {
+            camEnabled = if (camEnabled) {
+                mBinding?.buttonCam?.setImageResource(R.drawable.ic_camera_off_gray)
+                mBinding?.tvCam?.text = "Cam is Off"
+                false
+            } else {
+                mBinding?.buttonCam?.setImageResource(R.drawable.ic_video_camera_white)
+                mBinding?.tvCam?.text = "Cam is On"
+                true
             }
         }
     }

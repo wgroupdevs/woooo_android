@@ -2,7 +2,6 @@ package com.woooapp.meeting.impl.views.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,8 +69,8 @@ public class MeetingPageFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.v(TAG, "<< ONVIEWCREATED >>");
         this.listView = view.findViewById(R.id.peersListView);
+        this.listView.setEnabled(false);
         this.listView.setAdapter(adapter);
     }
 
@@ -94,6 +93,18 @@ public class MeetingPageFragment extends Fragment {
             Log.w(TAG, "<< PeerAdapter2 is null >>");
         }
 
+    }
+
+    public void enableTranslation() {
+        if (adapter != null) adapter.setTranslation(true);
+    }
+
+    public void disableTranslation() {
+        if (adapter != null) adapter.setTranslation(false);
+    }
+
+    public void notifyUpdate() {
+        if (this.adapter != null) this.adapter.notifyDataSetChanged();
     }
 
 } /**

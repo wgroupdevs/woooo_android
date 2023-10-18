@@ -26,16 +26,18 @@
                 android:padding="@dimen/_30sdp">
 
                 <TextView
+                    android:id="@+id/tv_cam"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Camera is On"
+                    android:text="Camera is Off"
                     android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
 
                 <TextView
+                    android:id="@+id/tv_mic"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_5sdp"
-                    android:text="Mic is OFF"
+                    android:text="Mic is Off"
                     android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
 
 
@@ -46,16 +48,18 @@
                     android:orientation="horizontal">
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/baseline_mic_34" />
+                        android:id="@+id/button_mic"
+                        android:layout_width="34sp"
+                        android:layout_height="34sp"
+                        android:src="@drawable/ic_mic_off_gray" />
 
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:id="@+id/button_cam"
+                        android:layout_width="34sp"
+                        android:layout_height="34sp"
                         android:layout_marginStart="@dimen/_15sdp"
-                        android:src="@drawable/baseline_videocam_34" />
+                        android:src="@drawable/ic_camera_off_gray" />
 
                 </LinearLayout>
 

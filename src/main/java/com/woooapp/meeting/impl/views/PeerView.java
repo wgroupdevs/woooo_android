@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
@@ -16,6 +18,7 @@ import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.PeerConnectionUtils;
 import com.woooapp.meeting.lib.RoomClient;
 import com.woooapp.meeting.lib.model.Info;
+import com.woooapp.meeting.lib.model.Peer;
 
 import java.util.Objects;
 
@@ -71,9 +74,34 @@ public class PeerView extends RelativeLayout {
         }
     }
 
+    private void setCameraState(boolean on) {
+        if (on) {
+            mBinding.peerInfoCam.setImageResource(R.drawable.ic_video_camera_white);
+        } else {
+            mBinding.peerInfoCam.setImageResource(R.drawable.ic_camera_off_gray);
+        }
+    }
+
+    private void setMicState(boolean on) {
+        if (on) {
+            mBinding.peerInfoMic.setImageResource(R.drawable.ic_mic_white_48dp);
+        } else {
+            mBinding.peerInfoMic.setImageResource(R.drawable.ic_mic_off_gray);
+        }
+    }
+
     public void setProps(PeerProps props, MeetingClient meetingClient) {
         // set view model into included layout
         mBinding.wooPeerView.setWooPeerViewProps(props);
+
+        if (props.getPeer() != null) {
+            Peer p = (Peer) props.getPeer().get();
+            if (p != null) {
+                setHandRaisedState(p.isHandRaised());
+                setCameraState(p.isCamOn());
+                setMicState(p.isMicOn());
+            }
+        }
 //        Info info = props.getPeer().get();
 //        if (info != null) {
 //            String name = info.getDisplayName();
@@ -104,12 +132,32 @@ public class PeerView extends RelativeLayout {
         mBinding.setWooPeerProps(props);
     }
 
+    /**
+     *
+     * @param raised
+     */
+    private void setHandRaisedState(boolean raised) {
+        if (raised) {
+            mBinding.peerInfoHand.clearAnimation();
+            mBinding.peerInfoHand.setImageResource(R.drawable.ic_front_hand_red_34);
+            Animation anim = AnimationUtils.loadAnimation(getContext(), R.anim.hand_shake);
+            mBinding.peerInfoHand.startAnimation(anim);
+        } else {
+            mBinding.peerInfoHand.clearAnimation();
+            mBinding.peerInfoHand.setImageResource(R.drawable.ic_front_hand_white_34);
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        dispose();
+    }
+
     public void dispose() {
         mBinding.setWooPeerProps(null);
         mBinding.wooPeerView.setWooPeerViewProps(null);
         mBinding.wooPeerView.wooVideoRenderer.release();
     }
 
-} /**
- * end class [PeerView]
- */
+} /** end class [PeerView] */

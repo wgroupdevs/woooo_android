@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@android:color/transparent"
+    android:background="@drawable/bg_rounded_default"
     android:padding="10sp"
     android:layout_gravity="center_horizontal|center_vertical"
     android:gravity="center_vertical|center_horizontal"
@@ -17,6 +17,7 @@
         >
 
         <LinearLayout
+            android:id="@+id/top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -41,6 +42,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:layout_below="@+id/top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

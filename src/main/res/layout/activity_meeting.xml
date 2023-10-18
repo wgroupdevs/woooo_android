@@ -17,22 +17,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-<!--        <GridView-->
-<!--            android:id="@+id/gridViewMeeting"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_marginLeft="10sp"-->
-<!--            android:layout_marginTop="5sp"-->
-<!--            android:layout_marginRight="10sp"-->
-<!--            android:background="@android:color/transparent"-->
-<!--            android:columnWidth="120dp"-->
-<!--            android:gravity="center"-->
-<!--            android:horizontalSpacing="5dp"-->
-<!--            android:numColumns="2"-->
-<!--            android:stretchMode="columnWidth"-->
-<!--            android:verticalSpacing="10sp" />-->
-        <!-- TODO add layout animation -->
-
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/meetingViewPager"
             android:layout_width="match_parent"
@@ -116,6 +100,16 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/page_control"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="90sp"
+            android:background="@drawable/bg_rounded_default"/>
+
+        <LinearLayout
             android:id="@+id/meetingBackground"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -123,6 +117,44 @@
             android:background="#88000000"
             android:visibility="gone"
             />
+
+        <LinearLayout
+            android:id="@+id/translationLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="90sp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvTranslationOriginal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50sp"
+                android:layout_marginRight="50sp"
+                android:layout_gravity="center"
+                android:padding="6sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:maxLines="1"
+                android:text=""/>
+
+            <TextView
+                android:id="@+id/tvTranslationTranslation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="50sp"
+                android:layout_marginRight="50sp"
+                android:layout_marginTop="5sp"
+                android:layout_gravity="center"
+                android:padding="6sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:maxLines="1"
+                android:text=""/>
+
+        </LinearLayout>
 
         <!-- Custom Drawer -->
         <RelativeLayout

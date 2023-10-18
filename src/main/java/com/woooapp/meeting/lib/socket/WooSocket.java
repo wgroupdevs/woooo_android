@@ -16,6 +16,8 @@ import com.woooapp.meeting.lib.Async;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.PeerConnectionUtils;
 import com.woooapp.meeting.lib.lv.RoomStore;
+import com.woooapp.meeting.lib.lv.SupplierMutableLiveData;
+import com.woooapp.meeting.lib.model.Me;
 import com.woooapp.meeting.net.ApiManager;
 import com.woooapp.meeting.net.models.Message;
 import com.woooapp.meeting.net.models.RoomData;
@@ -31,7 +33,6 @@ import org.mediasoup.droid.Producer;
 import org.mediasoup.droid.RecvTransport;
 import org.mediasoup.droid.SendTransport;
 import org.mediasoup.droid.Transport;
-import org.protoojs.droid.ProtooException;
 import org.webrtc.AudioTrack;
 import org.webrtc.CameraVideoCapturer;
 import org.webrtc.VideoTrack;
@@ -49,6 +50,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
+import eu.siacs.conversations.xmpp.jingle.Media;
 import io.reactivex.disposables.CompositeDisposable;
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -74,7 +76,7 @@ public class WooSocket {
     private boolean mConnected = false;
     private Device mMediaSoupDevice;
     private SendTransport mSendTransport;
-//    private RecvTransport mRecvTransport;
+    //    private RecvTransport mRecvTransport;
     private final Map<String, RecvTransport> mRecvTransports = new HashMap<>();
     private AudioTrack mLocalAudioTrack;
     private VideoTrack mLocalVideoTrack;
@@ -99,7 +101,6 @@ public class WooSocket {
     private boolean mCamEnabled = false;
 
     /**
-     *
      * @param context
      * @param roomStore
      * @param workHandler
@@ -234,7 +235,6 @@ public class WooSocket {
     }
 
     /**
-     *
      * @return
      */
     public Socket getSocket() {
@@ -242,7 +242,6 @@ public class WooSocket {
     }
 
     /**
-     *
      * @return
      */
     public String getSocketId() {
@@ -250,7 +249,6 @@ public class WooSocket {
     }
 
     /**
-     *
      * @return
      */
     public boolean isConnected() {
@@ -348,11 +346,11 @@ public class WooSocket {
             }
         });
 
-        // CONSUMER EVENTS
+        // ----> CONSUMER EVENTS
         mSocket.on("consumeProducer", args -> {
             Log.v(TAG, "<<< Event CONSUME PRODUCER >>>");
             if (args[0] != null) {
-                Log.d(TAG, "CONSUME PRODUCER >> " + String.valueOf(args[0]));
+                Log.d(TAG, "CONSUME PRODUCER >> " + args[0]);
                 try {
                     JSONObject obj = new JSONObject(String.valueOf(args[0]));
                     String producerId = obj.getString("producerId");
@@ -381,7 +379,7 @@ public class WooSocket {
                     JSONArray iceCandidates = data.getJSONArray("iceCandidates");
                     JSONObject dtlsParameters = data.getJSONObject("dtlsParameters");
                     String producerId = obj.getString("producerId");
-                    String storageId = obj.getString("storageId");
+                    final String storageId = obj.getString("storageId");
 
                     RecvTransport recvTransport = mMediaSoupDevice.createRecvTransport(
                             new RecvTransport.Listener() {
@@ -390,7 +388,7 @@ public class WooSocket {
                                     Log.d(TAG, "<<< RecvTransport.Listener#onConnect() >>>");
                                     Log.d(TAG, "RecvTransport.Listener#onConnect() dtlsParametes -> " + dtlsParameters);
                                     try {
-                                        emitConsumeTransportConnect(dtlsParameters);
+                                        emitConsumeTransportConnect(dtlsParameters, storageId);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
@@ -420,7 +418,13 @@ public class WooSocket {
                     Log.d(TAG, "Producer ID >> " + producerId);
                     Log.d(TAG, "Storage ID >> " + storageId);
 
+//                    mWorkHandler.postDelayed(() -> {
+//                        try {
                     emitStartConsuming(producerId, storageId);
+//                        } catch (JSONException | MediasoupException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }, 20000);
                 } catch (JSONException | MediasoupException e) {
                     e.printStackTrace();
                 }
@@ -526,25 +530,25 @@ public class WooSocket {
                     String producerSockId = obj.getString("producerSockId");
 
                     RecvTransport recvTransport = mMediaSoupDevice.createRecvTransport(new RecvTransport.Listener() {
-                        @Override
-                        public void onConnect(Transport transport, String dtlsParameters) {
-                            Log.d(TAG, "RecvTransport#onConnect() >> dtlsParameters > " + dtlsParameters);
-                            try {
-                                emitConsumeTransportConnectBack(dtlsParameters);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            mSocket.on("consumerTransportConnectedBack", args1 -> {
-                                Log.d(TAG, "<< Event Consumer Transport Connected Back >>");
-                                // callback()
-                            });
-                        }
+                                                                                           @Override
+                                                                                           public void onConnect(Transport transport, String dtlsParameters) {
+                                                                                               Log.d(TAG, "RecvTransport#onConnect() >> dtlsParameters > " + dtlsParameters);
+                                                                                               try {
+                                                                                                   emitConsumeTransportConnectBack(dtlsParameters);
+                                                                                               } catch (JSONException e) {
+                                                                                                   e.printStackTrace();
+                                                                                               }
+                                                                                               mSocket.on("consumerTransportConnectedBack", args1 -> {
+                                                                                                   Log.d(TAG, "<< Event Consumer Transport Connected Back >>");
+                                                                                                   // callback()
+                                                                                               });
+                                                                                           }
 
-                        @Override
-                        public void onConnectionStateChange(Transport transport, String connectionState) {
+                                                                                           @Override
+                                                                                           public void onConnectionStateChange(Transport transport, String connectionState) {
 
-                        }
-                    },
+                                                                                           }
+                                                                                       },
                             id,
                             iceParameters.toString(),
                             iceCandidates.toString(),
@@ -684,6 +688,78 @@ public class WooSocket {
                 WooEvents.getInstance().notify(WooEvents.EVENT_ON_TEXT_TRANSLATION_RECV, args[0]);
             }
         });
+
+        mSocket.on("micClosed", args -> {
+            if (args != null) {
+                Log.d(TAG, "<< ON EVENT MIC CLOSED >>> " + args[0]);
+                try {
+                    JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                    WooEvents.getInstance().notify(WooEvents.EVENT_PEER_MIC_MUTED, obj);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        mSocket.on("micOpen", args -> {
+            if (args != null) {
+                Log.d(TAG, "<< ON EVENT MIC OPEN >>> " + args[0]);
+                try {
+                    JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                    WooEvents.getInstance().notify(WooEvents.EVENT_PEER_MIC_UNMUTED, obj);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        mSocket.on("handRaised", args -> {
+            if (args != null) {
+                Log.d(TAG, "<< ON EVENT HAND RAISED >>> " + args[0]);
+                try {
+                    JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                    WooEvents.getInstance().notify(WooEvents.EVENT_PEER_HAND_RAISED, obj);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        mSocket.on("handLowered", args -> {
+            if (args != null) {
+                Log.d(TAG, "<< ON EVENT HAND LOWERED >>> " + args[0]);
+                try {
+                    JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                    WooEvents.getInstance().notify(WooEvents.EVENT_PEER_HAND_LOWERED, obj);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        mSocket.on("videoOpen", args -> {
+            if (args != null) {
+                Log.d(TAG, "<< ON EVENT VIDEO OPEN >>> " + args[0]);
+                try {
+                    JSONObject videoOn = new JSONObject(String.valueOf(args[0]));
+                    WooEvents.getInstance().notify(WooEvents.EVENT_PEER_CAM_TURNED_ON, videoOn);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        mSocket.on("videoClosed", args -> {
+            if (args != null) {
+                Log.d(TAG, "<< ON EVENT VIDEO CLOSE >>> " + args[0]);
+                try {
+                    JSONObject videoClosed = new JSONObject(String.valueOf(args[0]));
+                    WooEvents.getInstance().notify(WooEvents.EVENT_PEER_CAM_TURNED_OFF, videoClosed);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     // Emitters
@@ -703,7 +779,6 @@ public class WooSocket {
     }
 
     /**
-     *
      * @param dtlsParameters
      */
     private void emitConnectTransport(@NonNull final String dtlsParameters) throws JSONException {
@@ -716,20 +791,19 @@ public class WooSocket {
     }
 
     /**
-     *
      * @param kind
      * @param rtpParams
      */
     private void emitProduce(String kind, String rtpParams) throws JSONException {
-       JSONObject rtpParameters = new JSONObject(rtpParams);
-       JSONObject obj = new JSONObject();
-       obj.put("kind", kind);
-       obj.put("rtpParameters", rtpParameters);
-       obj.put("id", mSocketId);
-       obj.put("roomId", mMeetingClient.getMeetingId());
-       obj.put("language", mMeetingClient.getSelectedLanguageCode());
-       Log.d(TAG, "Emitting Produce >>> " + obj);
-       mSocket.emit("produce", obj);
+        JSONObject rtpParameters = new JSONObject(rtpParams);
+        JSONObject obj = new JSONObject();
+        obj.put("kind", kind);
+        obj.put("rtpParameters", rtpParameters);
+        obj.put("id", mSocketId);
+        obj.put("roomId", mMeetingClient.getMeetingId());
+        obj.put("language", mMeetingClient.getSelectedLanguageCode());
+        Log.d(TAG, "Emitting Produce >>> " + obj);
+        mSocket.emit("produce", obj);
     }
 
     private void emitCreateConsumeTransport(@NonNull String producerId, @NonNull String producerSockId) throws JSONException {
@@ -742,18 +816,17 @@ public class WooSocket {
         mSocket.emit("createConsumeTransport", obj);
     }
 
-    private void emitConsumeTransportConnect(@NonNull String dtlsParams) throws JSONException {
+    private void emitConsumeTransportConnect(@NonNull String dtlsParams, @NonNull String storageId) throws JSONException {
         JSONObject dtls = new JSONObject(dtlsParams);
         JSONObject obj = new JSONObject();
         obj.put("dtlsParameters", dtls);
         obj.put("id", mSocketId);
-        obj.put("storageId", deviceUUID);
+        obj.put("storageId", storageId);
         Log.d(TAG, "Emitting Consume Transport Connect >>> " + obj);
         mSocket.emit("consumeTransportConnect", obj);
     }
 
     /**
-     *
      * @param producerId
      * @param storageId
      * @throws MediasoupException
@@ -773,7 +846,6 @@ public class WooSocket {
     }
 
     /**
-     *
      * @param producerSockId
      * @throws JSONException
      */
@@ -834,7 +906,6 @@ public class WooSocket {
     }
 
     /**
-     *
      * @param message
      */
     public void emitSendMessage(@NonNull Message message) {
@@ -857,7 +928,6 @@ public class WooSocket {
     }
 
     /**
-     *
      * @param enableTranslation
      * @throws JSONException
      */
@@ -870,10 +940,91 @@ public class WooSocket {
         mSocket.emit("textTranslation", obj);
     }
 
-    // End Emitters
+    /**
+     * @throws JSONException
+     */
+    public void emitMicClosed() throws JSONException {
+        if (audioProducersIds.size() > 0) {
+            JSONObject obj = new JSONObject();
+            obj.put("socketId", mSocketId);
+            obj.put("roomId", mMeetingClient.getMeetingId());
+            obj.put("producerId", audioProducersIds.get(0));
+            Log.d(TAG, "Emitting micClosed >>> " + obj);
+            mSocket.emit("micClosed", obj);
+        }
+    }
+
+    /**
+     * @throws JSONException
+     */
+    public void emitMicOpen() throws JSONException {
+        if (audioProducersIds.size() > 0) {
+            JSONObject obj = new JSONObject();
+            obj.put("socketId", mSocketId);
+            obj.put("roomId", mMeetingClient.getMeetingId());
+            obj.put("producerId", audioProducersIds.get(0));
+            Log.d(TAG, "Emitting micOpen >>> " + obj);
+            mSocket.emit("micOpen", obj);
+        }
+    }
+
+    /**
+     * @throws JSONException
+     */
+    public void emitVideoOpen() throws JSONException {
+        JSONObject obj = new JSONObject();
+        obj.put("socketId", mSocketId);
+        obj.put("roomId", mMeetingClient.getMeetingId());
+        Log.d(TAG, "Emitting videoOpen >>> " + obj);
+        mSocket.emit("videoOpen", obj);
+    }
 
     /**
      *
+     * @throws JSONException
+     */
+    public void emitVideoClose() throws JSONException {
+        JSONObject obj = new JSONObject();
+        obj.put("socketId", mSocketId);
+        obj.put("roomId", mMeetingClient.getMeetingId());
+        obj.put("producerId", videoProducerId);
+        Log.d(TAG, "Emitting videoClose >>> " + obj);
+        mSocket.emit("videoClosed", obj);
+    }
+
+    /**
+     * @throws JSONException
+     */
+    public void emitHandRaised() throws JSONException {
+        JSONObject obj = new JSONObject();
+        obj.put("socketId", mSocketId);
+        obj.put("roomId", mMeetingClient.getMeetingId());
+        Log.d(TAG, "Emitting handRaised >>> " + obj);
+        mSocket.emit("handRaised", obj);
+    }
+
+    /**
+     * @throws JSONException
+     */
+    public void emitHandLowered() throws JSONException {
+        JSONObject obj = new JSONObject();
+        obj.put("socketId", mSocketId);
+        obj.put("roomId", mMeetingClient.getMeetingId());
+        Log.d(TAG, "Emitting handLowered >>> " + obj);
+        mSocket.emit("handLowered", obj);
+    }
+
+    public void emitUpdateLanguage(@NonNull String langCode) throws JSONException {
+        JSONObject obj = new JSONObject();
+        obj.put("socketId", mSocketId);
+        obj.put("language", langCode);
+        Log.d(TAG, "Emitting Update Language >>> " + obj);
+        mSocket.emit("updateLanguage", obj);
+    }
+
+    // End Emitters
+
+    /**
      * @param rtpCaps
      */
     private void createMediaSoupDevice(String rtpCaps) {
@@ -888,7 +1039,6 @@ public class WooSocket {
     }
 
     /**
-     *
      * @param audProducerId
      */
     private void addAudioProducerId(@NonNull final String audProducerId) {
@@ -900,7 +1050,7 @@ public class WooSocket {
         }
         audioProducersIds.add(audProducerId);
         Log.d(TAG, "<--------- AUDIO PRODUCERS IDs ----------->");
-        for (String ids: audioProducersIds) {
+        for (String ids : audioProducersIds) {
             Log.d(TAG, "[" + ids + "]");
         }
     }
@@ -985,7 +1135,7 @@ public class WooSocket {
                 emitConnectTransport(dtlsParameters);
 
                 mSocket.on("transportConnected", args -> {
-                    Log.d(TAG, "<<< Event > onTransportConnected >>> " );
+                    Log.d(TAG, "<<< Event > onTransportConnected >>> ");
                     // callback();
                 });
 
@@ -1146,6 +1296,38 @@ public class WooSocket {
     }
 
     @Async
+    public void pauseMyCam() {
+        Log.d(TAG, "pauseMyCam()");
+        mStore.setCamInProgress(false);
+        mWorkHandler.post(() -> {
+            mCamProducer.pause();
+            mStore.setProducerPaused(mCamProducer.getId());
+            mStore.setCamInProgress(false);
+            mCamEnabled = false;
+            mStore.getMe().postValue(me -> {
+                me.setCamInProgress(false);
+                WooEvents.getInstance().notify(WooEvents.EVENT_ME_CAM_TURNED_OFF, true);
+            });
+
+        });
+    }
+
+    public void resumeMyCam() {
+        Log.d(TAG, "resumeMyCam()");
+        mStore.setCamInProgress(true);
+        mWorkHandler.post(() -> {
+            mCamProducer.resume();
+            mStore.setProducerResumed(mCamProducer.getId());
+            mStore.setCamInProgress(true);
+            mCamEnabled = true;
+            mStore.getMe().postValue(me -> {
+                me.setCamInProgress(true);
+                WooEvents.getInstance().notify(WooEvents.EVENT_ME_CAM_TURNED_ON, true);
+            });
+        });
+    }
+
+    @Async
     public void enableCam() {
         Log.d(TAG, "enableCam()");
         mStore.setCamInProgress(true);
@@ -1166,20 +1348,20 @@ public class WooSocket {
         Log.d(TAG, "changeCam()");
         mStore.setCamInProgress(true);
         mWorkHandler.post(() ->
-            mPeerConnectionUtils.switchCam(
-                    new CameraVideoCapturer.CameraSwitchHandler() {
-                        @Override
-                        public void onCameraSwitchDone(boolean b) {
-                            mStore.setCamInProgress(false);
-                        }
+                mPeerConnectionUtils.switchCam(
+                        new CameraVideoCapturer.CameraSwitchHandler() {
+                            @Override
+                            public void onCameraSwitchDone(boolean b) {
+                                mStore.setCamInProgress(false);
+                            }
 
-                        @Override
-                        public void onCameraSwitchError(String s) {
-                            Logger.w(TAG, "changeCam() | failed: " + s);
-                            mStore.addNotify("error", "Could not change cam: " + s);
-                            mStore.setCamInProgress(false);
-                        }
-                    })
+                            @Override
+                            public void onCameraSwitchError(String s) {
+                                Logger.w(TAG, "changeCam() | failed: " + s);
+                                mStore.addNotify("error", "Could not change cam: " + s);
+                                mStore.setCamInProgress(false);
+                            }
+                        })
         );
     }
 
@@ -1243,14 +1425,22 @@ public class WooSocket {
     private void muteMicImpl() {
         Logger.d(TAG, "muteMicImpl()");
         mMicProducer.pause();
-        WooEvents.getInstance().notify(WooEvents.EVENT_MIC_TURNED_OFF, true);
+        mStore.setProducerPaused(mMicProducer.getId());
+        mStore.getMe().postValue(me -> {
+            me.setAudioMuted(true);
+            WooEvents.getInstance().notify(WooEvents.EVENT_ME_MIC_TURNED_OFF, true);
+        });
     }
 
     @WorkerThread
     private void unmuteMicImpl() {
         Logger.d(TAG, "unmuteMicImpl()");
         mMicProducer.resume();
-        WooEvents.getInstance().notify(WooEvents.EVENT_MIC_TURNED_ON, true);
+        mStore.setProducerResumed(mMicProducer.getId());
+        mStore.getMe().postValue(me -> {
+            me.setAudioMuted(false);
+            WooEvents.getInstance().notify(WooEvents.EVENT_ME_MIC_TURNED_ON, true);
+        });
     }
 
     @WorkerThread
@@ -1277,6 +1467,11 @@ public class WooSocket {
                 mLocalVideoTrack = mPeerConnectionUtils.createVideoTrack(mContext, "cam");
                 mLocalVideoTrack.setEnabled(true);
                 mCamEnabled = true;
+
+                mStore.getMe().postValue(me -> {
+                    me.setCamInProgress(true);
+                    WooEvents.getInstance().notify(WooEvents.EVENT_ME_CAM_TURNED_ON, true);
+                });
             }
             mCamProducer =
                     mSendTransport.produce(
@@ -1293,7 +1488,10 @@ public class WooSocket {
                             null,
                             null);
             mStore.addProducer(mCamProducer);
-            WooEvents.getInstance().notify(WooEvents.EVENT_CAM_TURNED_ON, true);
+            mStore.getMe().postValue(me -> {
+                me.setCamInProgress(true);
+                WooEvents.getInstance().notify(WooEvents.EVENT_ME_CAM_TURNED_ON, true);
+            });
         } catch (MediasoupException e) {
             e.printStackTrace();
             mStore.addNotify("error", "Error enabling webcam: " + e.getMessage());
@@ -1315,11 +1513,13 @@ public class WooSocket {
         mCamProducer = null;
         mCamEnabled = false;
 
-        WooEvents.getInstance().notify(WooEvents.EVENT_CAM_TURNED_OFF, true);
+        mStore.getMe().postValue(me -> {
+            me.setCamInProgress(false);
+            WooEvents.getInstance().notify(WooEvents.EVENT_ME_CAM_TURNED_OFF, true);
+        });
     }
 
     /**
-     *
      * @param roomStore
      * @param context
      * @param workHandler
@@ -1342,4 +1542,6 @@ public class WooSocket {
         }
     }
 
-} /** end class. */
+} /**
+ * end class.
+ */

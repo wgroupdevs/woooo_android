@@ -25,6 +25,7 @@ public class Me extends Info {
     private boolean mAudioOnlyInProgress;
     private boolean mAudioMuted;
     private boolean mRestartIceInProgress;
+    private boolean handShaking = false;
 
     @Override
     public String getId() {
@@ -133,6 +134,22 @@ public class Me extends Info {
         this.mRestartIceInProgress = restartIceInProgress;
     }
 
+    /**
+     *
+     * @return
+     */
+    public boolean isHandShaking() {
+        return handShaking;
+    }
+
+    /**
+     *
+     * @param handShaking
+     */
+    public void setHandShaking(boolean handShaking) {
+        this.handShaking = handShaking;
+    }
+
     public void clear() {
         mCamInProgress = false;
         mShareInProgress = false;
@@ -140,6 +157,7 @@ public class Me extends Info {
         mAudioOnlyInProgress = false;
         mAudioMuted = false;
         mRestartIceInProgress = false;
+        this.handShaking = false;
     }
 
 } /**

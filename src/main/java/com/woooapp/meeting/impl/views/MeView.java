@@ -2,7 +2,10 @@ package com.woooapp.meeting.impl.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
@@ -13,6 +16,9 @@ import com.woooapp.meeting.impl.vm.MeProps;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.PeerConnectionUtils;
 import com.woooapp.meeting.lib.RoomClient;
+import com.woooapp.meeting.lib.model.Me;
+
+import java.util.Objects;
 
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.databinding.WooViewMeBinding;
@@ -25,6 +31,8 @@ import eu.siacs.conversations.databinding.WooViewMeBinding;
  * on 08/09/2023 at 7:50 pm
  */
 public class MeView extends RelativeLayout {
+
+    private static final String TAG = MeView.class.getSimpleName() + ".java";
 
     public MeView(@NonNull Context context) {
         super(context);
@@ -59,6 +67,48 @@ public class MeView extends RelativeLayout {
         // set view model.
         mBinding.wooPeerView.setWooPeerViewProps(props);
         mBinding.tvMeName.setText("Me");
+
+//        if (MeProps.DeviceState.ON.equals(props.getCamState().get())) {
+//            Log.d(TAG, "<< Turning Camera ON >>");
+//            mBinding.meInfoCam.setImageResource(R.drawable.ic_video_camera_white);
+//        } else {
+//            Log.d(TAG, "<< Turning Camera OFF >>");
+//            mBinding.meInfoCam.setImageResource(R.drawable.ic_camera_off_gray);
+//        }
+
+        if (props.getMe() != null) {
+            Me me = props.getMe().get();
+            if (me != null) {
+                if (me.isAudioMuted()) {
+                    mBinding.meInfoMic.setImageResource(R.drawable.ic_mic_off_gray);
+                } else {
+                    mBinding.meInfoMic.setImageResource(R.drawable.ic_mic_white_48dp);
+                }
+
+                if (me.isCamInProgress()) {
+                    mBinding.meInfoCam.setImageResource(R.drawable.ic_video_camera_white);
+                } else {
+                    mBinding.meInfoCam.setImageResource(R.drawable.ic_camera_off_gray);
+                }
+
+                setHandRaisedState(me.isHandShaking(), props);
+            }
+        }
+
+        mBinding.meInfoHand.setOnClickListener(view -> {
+            if (props.getMe() != null) {
+                Me me = props.getMe().get();
+                if (me != null) {
+                    meetingClient.setMeHandRaised(!me.isHandShaking());
+                    setHandRaisedState(!me.isHandShaking(), props);
+                }
+            }
+        });
+//        if (MeProps.DeviceState.ON.equals(props.getMicState().get())) {
+//
+//        } else {
+//
+//        }
 //        if (meetingClient.getUsername() != null) {
 //            mBinding.tvMeName.setText(meetingClient.getUsername().isEmpty() ? meetingClient.getEmail() : meetingClient.getUsername());
 //        } else {
@@ -116,6 +166,25 @@ public class MeView extends RelativeLayout {
 //                        roomClient.enableShare();
 //                    }
 //                });
+    }
+
+    private void setHandRaisedState(boolean raised, MeProps props) {
+        Log.d(TAG, "<< RAISING HAND " + raised + " <<<");
+        if (raised) {
+            mBinding.meInfoHand.clearAnimation();
+            mBinding.meInfoHand.setImageResource(R.drawable.ic_front_hand_red_34);
+            Animation anim = AnimationUtils.loadAnimation(getContext(), R.anim.hand_shake);
+            mBinding.meInfoHand.startAnimation(anim);
+        } else {
+            mBinding.meInfoHand.clearAnimation();
+            mBinding.meInfoHand.setImageResource(R.drawable.ic_front_hand_white_34);
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        dispose();
     }
 
     public void dispose() {

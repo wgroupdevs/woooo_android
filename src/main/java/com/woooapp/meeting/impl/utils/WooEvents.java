@@ -31,10 +31,10 @@ public final class WooEvents {
     public static final int EVENT_RECEIVED_MESSAGE                = 0xb;
     public static final int EVENT_SENT_MESSAGE                    = 0xc;
     public static final int EVENT_FAILURE_MESSAGE                 = 0xd;
-    public static final int EVENT_MIC_TURNED_ON                   = 0xe;
-    public static final int EVENT_MIC_TURNED_OFF                  = 0xf;
-    public static final int EVENT_CAM_TURNED_ON                   = 0x11;
-    public static final int EVENT_CAM_TURNED_OFF                  = 0x12;
+    public static final int EVENT_ME_MIC_TURNED_ON                = 0xe;
+    public static final int EVENT_ME_MIC_TURNED_OFF               = 0xf;
+    public static final int EVENT_ME_CAM_TURNED_ON                = 0x11;
+    public static final int EVENT_ME_CAM_TURNED_OFF               = 0x12;
     public static final int EVENT_ENABLE_TEXT_TRANSLATION         = 0x13;
     public static final int EVENT_ON_TEXT_TRANSLATION_RECV        = 0x14;
     public static final int EVENT_CLICKED_LANGUAGE_SELECT         = 0x15;
@@ -42,6 +42,16 @@ public final class WooEvents {
     public static final int EVENT_ENABLE_EVERYONE_CAM             = 0x17;
     public static final int EVENT_NEW_PEER_JOINED                 = 0x18;
     public static final int EVENT_PEER_EXITED                     = 0x19;
+    public static final int EVENT_ME_HAND_RAISED                  = 0x20;
+    public static final int EVENT_ME_HAND_LOWERED                 = 0x21;
+    public static final int EVENT_TRANSLATION_ENABLED             = 0x22;
+    public static final int EVENT_TRANSLATION_DISABLED            = 0x23;
+    public static final int EVENT_PEER_HAND_RAISED                = 0x24;
+    public static final int EVENT_PEER_HAND_LOWERED               = 0x25;
+    public static final int EVENT_PEER_MIC_MUTED                  = 0x2a;
+    public static final int EVENT_PEER_MIC_UNMUTED                = 0x2b;
+    public static final int EVENT_PEER_CAM_TURNED_OFF             = 0x2c;
+    public static final int EVENT_PEER_CAM_TURNED_ON              = 0x2d;
 
     private WooEvents() {
         Log.d(TAG, "WooEvents Initialized ...");
