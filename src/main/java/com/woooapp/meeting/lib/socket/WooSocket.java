@@ -348,7 +348,6 @@ public class WooSocket {
 
         // ----> CONSUMER EVENTS
         mSocket.on("consumeProducer", args -> {
-            Log.v(TAG, "<<< Event CONSUME PRODUCER >>>");
             if (args[0] != null) {
                 Log.d(TAG, "CONSUME PRODUCER >> " + args[0]);
                 try {
