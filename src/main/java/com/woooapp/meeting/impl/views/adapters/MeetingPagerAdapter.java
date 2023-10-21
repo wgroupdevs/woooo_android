@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.woooapp.meeting.impl.views.fragments.MeetingPageFragment;
+import com.woooapp.meeting.impl.views.fragments.MeetingPageFragment2;
 import com.woooapp.meeting.impl.views.models.MeetingPage;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.lv.RoomStore;

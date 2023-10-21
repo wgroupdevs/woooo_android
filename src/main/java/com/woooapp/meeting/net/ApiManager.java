@@ -1,6 +1,7 @@
 package com.woooapp.meeting.net;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -82,7 +83,6 @@ public final class ApiManager {
     }
 
     /**
-     *
      * @param meetingId
      * @param apiResultCallback
      */
@@ -93,13 +93,17 @@ public final class ApiManager {
                 .addHeader("Content-Type", "application/json")
                 .addHeader("User-Agent", USER_AGENT)
                 .build();
-        try {
-            Response response = client.newCall(request).execute();
-            apiResultCallback.onResult(null, response);
-        } catch (IOException e) {
-            e.printStackTrace();
-            apiResultCallback.onFailure(null, e.getMessage());
-        }
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                apiResultCallback.onFailure(call, e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                apiResultCallback.onResult(call, response);
+            }
+        });
     }
 
     /**
@@ -131,7 +135,6 @@ public final class ApiManager {
     }
 
     /**
-     *
      * @param url
      * @param meetingId
      * @param socketId

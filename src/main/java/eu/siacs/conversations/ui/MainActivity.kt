@@ -45,6 +45,7 @@ import woooo_app.woooo.utils.USER_TOKEN_KEY_INTENT
 class MainActivity : XmppActivity(), OnAccountUpdate, OnConversationUpdate, OnRosterUpdate {
     val TAG = "MainActivityLOGS"
     private var mAccount: Account? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }

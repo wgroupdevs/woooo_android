@@ -2,6 +2,7 @@ package eu.siacs.conversations.ui.meeting
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -96,14 +97,14 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
             val email = account!!.userEmail
             val accountUniqueId = account!!.accountId
             val picture = account!!.avatar
-            val username = account!!.username
+            val username = account!!.displayName
             Log.d(TAG, "Account >> MeetingId[$meetingId], Email[$email], AccountUniqueID[$accountUniqueId], Picture[$picture], Username[$username]")
             intent = Intent(context, MeetingActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             intent.putExtra("email", email)
             intent.putExtra("accountUniqueId", accountUniqueId)
             intent.putExtra("picture", picture)
-            intent.putExtra("username", username.toString().toLowerCase(Locale.current))
+            intent.putExtra("username", username)
             intent.putExtra("camOn", camEnabled)
             intent.putExtra("micOn", micEnabled)
         }
@@ -115,6 +116,7 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
                     if (intent != null) {
                         intent.putExtra("meetingName", mBinding?.meetingNameEt?.text.toString())
                         intent.putExtra("meetingId", meetingId)
+                        intent.putExtra("joining", false)
                         startActivity(intent)
                         mBinding?.meetingNameEt?.text = Editable.Factory.getInstance().newEditable("")
                     }
@@ -195,10 +197,12 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
             micEnabled = if (micEnabled) {
                 mBinding?.buttonMic?.setImageResource(R.drawable.ic_mic_off_gray)
                 mBinding?.tvMic?.text = "Mic is Off"
+                mBinding?.tvMic?.setTextColor(Color.parseColor("#dddddd"))
                 false
             } else {
                 mBinding?.buttonMic?.setImageResource(R.drawable.ic_mic_white_48dp)
                 mBinding?.tvMic?.text = "Mic is On"
+                mBinding?.tvMic?.setTextColor(Color.parseColor("#ffffff"))
                 true
             }
         }
@@ -206,11 +210,13 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
         mBinding?.buttonCam?.setOnClickListener {
             camEnabled = if (camEnabled) {
                 mBinding?.buttonCam?.setImageResource(R.drawable.ic_camera_off_gray)
-                mBinding?.tvCam?.text = "Cam is Off"
+                mBinding?.tvCam?.text = "Camera is Off"
+                mBinding?.tvCam?.setTextColor(Color.parseColor("#dddddd"))
                 false
             } else {
                 mBinding?.buttonCam?.setImageResource(R.drawable.ic_video_camera_white)
-                mBinding?.tvCam?.text = "Cam is On"
+                mBinding?.tvCam?.text = "Camera is On"
+                mBinding?.tvCam?.setTextColor(Color.parseColor("#ffffff"))
                 true
             }
         }

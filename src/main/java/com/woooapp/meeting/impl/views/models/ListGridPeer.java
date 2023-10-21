@@ -15,11 +15,11 @@ public class ListGridPeer {
     public static final int VIEW_TYPE_PEER_PEER = 0x01;
     private final int viewType;
     private Peer peer1;
-    private boolean peer1MicOn = false;
+    private boolean peer1MicOn = true;
     private boolean peer1CamOn = false;
     private boolean peer1HandRaised = false;
     private Peer peer2;
-    private boolean peer2MicOn = false;
+    private boolean peer2MicOn = true;
     private boolean peer2CamOn = false;
     private boolean peer2HandRaised = false;
 

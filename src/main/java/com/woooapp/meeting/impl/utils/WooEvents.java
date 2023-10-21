@@ -52,6 +52,8 @@ public final class WooEvents {
     public static final int EVENT_PEER_MIC_UNMUTED                = 0x2b;
     public static final int EVENT_PEER_CAM_TURNED_OFF             = 0x2c;
     public static final int EVENT_PEER_CAM_TURNED_ON              = 0x2d;
+    public static final int EVENT_SELECT_BACKGROUND               = 0x2e;
+    public static final int EVENT_SHOW_MEMBERS                    = 0x2f;
 
     private WooEvents() {
         Log.d(TAG, "WooEvents Initialized ...");
@@ -95,6 +97,11 @@ public final class WooEvents {
             message.sendToTarget();
             Log.d(TAG, "Notifying for Event [" + eventType + "]");
         }
+    }
+
+    public void destroy() {
+        this.mHandlers.clear();
+        sInstance = null;
     }
 
     /**

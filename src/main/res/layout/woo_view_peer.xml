@@ -18,76 +18,108 @@
         android:clipChildren="true"
         >
 
-        <include
-            android:id="@+id/wooPeerView"
-            layout="@layout/woo_view_peer_view"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            bind:wooPeerViewProps="@{wooPeerProps}" />
+            android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/peerInfoPanel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="5sp"
-            android:layout_gravity="top|right"
-            android:layout_margin="3sp"
-            android:gravity="center">
+            <include
+                android:id="@+id/wooPeerView"
+                layout="@layout/woo_view_peer_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                bind:wooPeerViewProps="@{wooPeerProps}" />
 
-            <ImageView
-                android:id="@+id/peerInfoHand"
-                android:layout_width="18sp"
-                android:layout_height="18sp"
-                android:layout_marginLeft="5sp"
-                android:layout_marginRight="5sp"
-                android:src="@drawable/ic_front_hand_white_34"/>
-
-            <ImageView
-                android:id="@+id/peerInfoMic"
-                android:layout_width="22sp"
-                android:layout_height="22sp"
-                android:layout_marginLeft="5sp"
-                android:layout_marginRight="5sp"
-                android:src="@drawable/ic_mic_off_gray"/>
-
-            <ImageView
-                android:id="@+id/peerInfoCam"
-                android:layout_width="22sp"
-                android:layout_height="22sp"
-                android:layout_marginLeft="5sp"
-                android:layout_marginRight="5sp"
-                android:src="@drawable/ic_camera_off_gray"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/controls"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            android:gravity="center_vertical"
-            android:padding="2dp"
-            android:orientation="horizontal"
-            android:layout_margin="3sp"
-            android:background="@drawable/bg_rounded_blue"
-            >
-            <!--            android:visibility="@{wooMeProps.connected ? View.VISIBLE : View.GONE}" -->
-
-            <TextView
-                android:id="@+id/tvPeerName"
+            <LinearLayout
+                android:id="@+id/peerInfoPanel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="1"
-                android:padding="1sp"
-                android:text="Me"
-                android:textStyle="bold"
-                android:textSize="10sp"
-                android:textColor="@color/white"
-                android:ellipsize="end"
-                />
+                android:orientation="horizontal"
+                android:padding="5sp"
+                android:layout_alignParentRight="true"
+                android:layout_margin="3sp"
+                android:gravity="center">
 
-        </LinearLayout>
+                <ImageView
+                    android:id="@+id/peerInfoHand"
+                    android:layout_width="18sp"
+                    android:layout_height="18sp"
+                    android:layout_marginLeft="5sp"
+                    android:layout_marginRight="5sp"
+                    android:src="@drawable/ic_front_hand_white_34"/>
+
+                <ImageView
+                    android:id="@+id/peerInfoMic"
+                    android:layout_width="22sp"
+                    android:layout_height="22sp"
+                    android:layout_marginLeft="5sp"
+                    android:layout_marginRight="5sp"
+                    android:src="@drawable/baseline_mic_34"/>
+
+                <ImageView
+                    android:id="@+id/peerInfoCam"
+                    android:layout_width="22sp"
+                    android:layout_height="22sp"
+                    android:layout_marginLeft="5sp"
+                    android:layout_marginRight="5sp"
+                    android:src="@drawable/ic_camera_off_gray"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/controls"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical"
+                android:padding="2dp"
+                android:layout_margin="10sp"
+                android:background="@drawable/bg_rounded_blue"
+                >
+
+                <TextView
+                    android:id="@+id/tvPeerName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:padding="1sp"
+                    android:text="Peer"
+                    android:textStyle="bold"
+                    android:textSize="10sp"
+                    android:textColor="@color/white"
+                    android:ellipsize="end"
+                    />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/audio_peer_layout"
+                android:layout_width="25sp"
+                android:layout_height="25sp"
+                android:orientation="horizontal"
+                android:layout_margin="10sp"
+                android:gravity="center"
+                android:padding="3sp"
+                android:background="@drawable/bg_rounded_blue">
+
+                <ImageView
+                    android:id="@+id/audio_peer_gif"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_audio_giphy"/>
+
+            </LinearLayout>
+
+<!--            <ImageView-->
+<!--                android:id="@+id/peer_thumb"-->
+<!--                android:layout_width="100sp"-->
+<!--                android:layout_height="100sp"-->
+<!--                android:scaleType="fitCenter"-->
+<!--                android:layout_centerInParent="true"-->
+<!--                android:src="@drawable/buddy2" />-->
+
+        </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
 

@@ -90,7 +90,7 @@ public class WooSocket {
     private final String deviceUUID;
     private String consumeBackDeviceUUID;
     private List<String> audioProducersIds = new ArrayList<>();
-    private final List<String> producerIds = new ArrayList<>();
+    private final Set<String> producerIds = new HashSet<>();
     private String videoProducerId = null;
     private final MeetingClient mMeetingClient;
     private final Map<String, String> producerSockIds = new LinkedHashMap<>();
@@ -163,11 +163,11 @@ public class WooSocket {
                         Log.d(TAG, "Transport Disposed >>");
 
                         // dispose audio track.
-                        if (mLocalAudioTrack != null) {
-                            mLocalAudioTrack.setEnabled(false);
-                            mLocalAudioTrack.dispose();
-                            mLocalAudioTrack = null;
-                        }
+//                        if (mLocalAudioTrack != null) {
+//                            mLocalAudioTrack.setEnabled(false);
+//                            mLocalAudioTrack.dispose();
+//                            mLocalAudioTrack = null;
+//                        }
 
                         // dispose video track.
                         if (mLocalVideoTrack != null) {
@@ -360,7 +360,6 @@ public class WooSocket {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         });
 
@@ -417,13 +416,7 @@ public class WooSocket {
                     Log.d(TAG, "Producer ID >> " + producerId);
                     Log.d(TAG, "Storage ID >> " + storageId);
 
-//                    mWorkHandler.postDelayed(() -> {
-//                        try {
                     emitStartConsuming(producerId, storageId);
-//                        } catch (JSONException | MediasoupException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }, 20000);
                 } catch (JSONException | MediasoupException e) {
                     e.printStackTrace();
                 }
@@ -509,7 +502,6 @@ public class WooSocket {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
         });
 
@@ -759,6 +751,31 @@ public class WooSocket {
                 }
             }
         });
+
+        // ADMIN EVENTS
+        mSocket.on("muteEveryone", args -> {
+            if (args != null) {
+                Log.d(TAG, "<< ON EVENT Mute Everyone From Admin >>> " + args[0]);
+            }
+        });
+
+        mSocket.on("muteMember", args -> {
+            if (args != null) {
+                Log.d(TAG, "<< ON EVENT Mute Member from Admin >>> " + args[0]);
+            }
+        });
+
+        mSocket.on("CloseMemberVideo", args -> {
+            if (args != null) {
+                Log.d(TAG, "<< On EVENT Close Member Video from Admin >>> " + args[0]);
+            }
+        });
+
+        mSocket.on("kickout", args -> {
+            if (args != null) {
+                Log.d(TAG, "<< ON EVENT Kickout From Admin >>> " + args[0]);
+            }
+        });
     }
 
     // Emitters
@@ -805,16 +822,28 @@ public class WooSocket {
         mSocket.emit("produce", obj);
     }
 
+    /**
+     *
+     * @param producerId
+     * @param producerSockId
+     * @throws JSONException
+     */
     private void emitCreateConsumeTransport(@NonNull String producerId, @NonNull String producerSockId) throws JSONException {
         JSONObject obj = new JSONObject();
         obj.put("producerId", producerId);
         obj.put("storageId", deviceUUID);
         obj.put("id", mSocketId);
-        obj.put("producerSocketId", producerSockId);
+        obj.put("producerSockId", producerSockId);
         Log.d(TAG, "Emitting createConsumeTransport >>> " + obj);
         mSocket.emit("createConsumeTransport", obj);
     }
 
+    /**
+     *
+     * @param dtlsParams
+     * @param storageId
+     * @throws JSONException
+     */
     private void emitConsumeTransportConnect(@NonNull String dtlsParams, @NonNull String storageId) throws JSONException {
         JSONObject dtls = new JSONObject(dtlsParams);
         JSONObject obj = new JSONObject();
@@ -1019,6 +1048,29 @@ public class WooSocket {
         obj.put("language", langCode);
         Log.d(TAG, "Emitting Update Language >>> " + obj);
         mSocket.emit("updateLanguage", obj);
+    }
+
+    // Admin Events
+    public void emitMuteEveryone() throws JSONException {
+        JSONObject obj = new JSONObject();
+        obj.put("meetingId", mMeetingClient.getMeetingId());
+        Log.d(TAG, "Emitting Mute Everyone >>> " + obj);
+        mSocket.emit("muteEveryone", obj);
+    }
+
+    public void emitMuteMember(@NonNull String memberSocketId) {
+        Log.d(TAG, "Emitting Mute Member >>> " + memberSocketId);
+        mSocket.emit("muteMember", memberSocketId);
+    }
+
+    public void emitCloseMemberVideo(@NonNull String memberSocketId) {
+        Log.d(TAG, "Emitting Close Member Video >>> " + memberSocketId);
+        mSocket.emit("CloseMemberVideo", memberSocketId);
+    }
+
+    public void emitKickOutMember(@NonNull String memberSocketId) {
+        Log.d(TAG, "Emitting Kick Out Memeber >>> " + memberSocketId);
+        mSocket.emit("kickout", memberSocketId);
     }
 
     // End Emitters
@@ -1305,9 +1357,8 @@ public class WooSocket {
             mCamEnabled = false;
             mStore.getMe().postValue(me -> {
                 me.setCamInProgress(false);
-                WooEvents.getInstance().notify(WooEvents.EVENT_ME_CAM_TURNED_OFF, true);
             });
-
+            WooEvents.getInstance().notify(WooEvents.EVENT_ME_CAM_TURNED_OFF, true);
         });
     }
 
@@ -1321,8 +1372,8 @@ public class WooSocket {
             mCamEnabled = true;
             mStore.getMe().postValue(me -> {
                 me.setCamInProgress(true);
-                WooEvents.getInstance().notify(WooEvents.EVENT_ME_CAM_TURNED_ON, true);
             });
+            WooEvents.getInstance().notify(WooEvents.EVENT_ME_CAM_TURNED_ON, true);
         });
     }
 
@@ -1402,6 +1453,7 @@ public class WooSocket {
                     null,
                     null);
             mStore.addProducer(mMicProducer);
+            WooEvents.getInstance().notify(WooEvents.EVENT_ME_MIC_TURNED_ON, true);
         } catch (MediasoupException ex) {
             ex.printStackTrace();
         }
@@ -1427,8 +1479,8 @@ public class WooSocket {
         mStore.setProducerPaused(mMicProducer.getId());
         mStore.getMe().postValue(me -> {
             me.setAudioMuted(true);
-            WooEvents.getInstance().notify(WooEvents.EVENT_ME_MIC_TURNED_OFF, true);
         });
+        WooEvents.getInstance().notify(WooEvents.EVENT_ME_MIC_TURNED_OFF, true);
     }
 
     @WorkerThread
@@ -1438,8 +1490,8 @@ public class WooSocket {
         mStore.setProducerResumed(mMicProducer.getId());
         mStore.getMe().postValue(me -> {
             me.setAudioMuted(false);
-            WooEvents.getInstance().notify(WooEvents.EVENT_ME_MIC_TURNED_ON, true);
         });
+        WooEvents.getInstance().notify(WooEvents.EVENT_ME_MIC_TURNED_ON, true);
     }
 
     @WorkerThread
@@ -1467,10 +1519,9 @@ public class WooSocket {
                 mLocalVideoTrack.setEnabled(true);
                 mCamEnabled = true;
 
-                mStore.getMe().postValue(me -> {
-                    me.setCamInProgress(true);
-                    WooEvents.getInstance().notify(WooEvents.EVENT_ME_CAM_TURNED_ON, true);
-                });
+//                mStore.getMe().postValue(me -> {
+//                    me.setCamInProgress(true);
+//                });
             }
             mCamProducer =
                     mSendTransport.produce(
@@ -1487,10 +1538,7 @@ public class WooSocket {
                             null,
                             null);
             mStore.addProducer(mCamProducer);
-            mStore.getMe().postValue(me -> {
-                me.setCamInProgress(true);
-                WooEvents.getInstance().notify(WooEvents.EVENT_ME_CAM_TURNED_ON, true);
-            });
+            WooEvents.getInstance().notify(WooEvents.EVENT_ME_CAM_TURNED_ON, true);
         } catch (MediasoupException e) {
             e.printStackTrace();
             mStore.addNotify("error", "Error enabling webcam: " + e.getMessage());
@@ -1512,10 +1560,10 @@ public class WooSocket {
         mCamProducer = null;
         mCamEnabled = false;
 
-        mStore.getMe().postValue(me -> {
-            me.setCamInProgress(false);
-            WooEvents.getInstance().notify(WooEvents.EVENT_ME_CAM_TURNED_OFF, true);
-        });
+//        mStore.getMe().postValue(me -> {
+//            me.setCamInProgress(false);
+//        });
+        WooEvents.getInstance().notify(WooEvents.EVENT_ME_CAM_TURNED_OFF, true);
     }
 
     /**

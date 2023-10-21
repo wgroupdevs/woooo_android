@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/row1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <com.woooapp.meeting.impl.views.PeerView
+                android:id="@+id/fragmentPeerView1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2sp"
+                android:padding="0sp" />
+
+            <com.woooapp.meeting.impl.views.MeView
+                android:id="@+id/fragmentMeView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2sp"
+                android:padding="0sp" />
+
+        </RelativeLayout>
+
+        <com.woooapp.meeting.impl.views.PeerView
+            android:id="@+id/fragmentPeerView3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2sp"
+            android:padding="0sp" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/row2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+
+        <com.woooapp.meeting.impl.views.PeerView
+            android:id="@+id/fragmentPeerView2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2sp"
+            android:padding="0sp" />
+
+
+        <com.woooapp.meeting.impl.views.PeerView
+            android:id="@+id/fragmentPeerView4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2sp"
+            android:padding="0sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/row3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+
+        <com.woooapp.meeting.impl.views.PeerView
+            android:id="@+id/fragmentPeerView5"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2sp"
+            android:padding="0sp" />
+
+
+        <com.woooapp.meeting.impl.views.PeerView
+            android:id="@+id/fragmentPeerView6"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2sp"
+            android:padding="0sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

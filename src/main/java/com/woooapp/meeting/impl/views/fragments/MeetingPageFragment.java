@@ -74,6 +74,18 @@ public class MeetingPageFragment extends Fragment {
         this.listView.setAdapter(adapter);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (adapter != null) adapter.dispose();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (adapter != null) adapter.dispose();
+    }
+
     /**
      * @param bottomBarHeight
      */

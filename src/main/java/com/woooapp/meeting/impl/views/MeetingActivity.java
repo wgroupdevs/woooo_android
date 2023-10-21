@@ -4,18 +4,23 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,6 +29,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,14 +48,17 @@ import com.woooapp.meeting.impl.views.adapters.LangSelectionAdapter;
 import com.woooapp.meeting.impl.views.adapters.MeetingChatAdapter;
 import com.woooapp.meeting.impl.views.adapters.MeetingPagerAdapter;
 import com.woooapp.meeting.impl.views.adapters.MeetingTranscriptAdapter;
+import com.woooapp.meeting.impl.views.adapters.MemberAdapter;
 import com.woooapp.meeting.impl.views.adapters.PeerAdapter2;
 import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
 import com.woooapp.meeting.impl.views.fragments.MeetingPageFragment;
+import com.woooapp.meeting.impl.views.fragments.MeetingPageFragment2;
 import com.woooapp.meeting.impl.views.models.Chat;
 import com.woooapp.meeting.impl.views.models.GridPeer;
 import com.woooapp.meeting.impl.views.models.Languages;
 import com.woooapp.meeting.impl.views.models.ListGridPeer;
 import com.woooapp.meeting.impl.views.models.MeetingPage;
+import com.woooapp.meeting.impl.views.models.Member;
 import com.woooapp.meeting.impl.views.models.Transcript;
 import com.woooapp.meeting.impl.views.popups.MeetingMorePopup;
 import com.woooapp.meeting.impl.views.popups.WooCommonPopup;
@@ -65,6 +75,7 @@ import com.woooapp.meeting.net.models.CreateMeetingBody;
 import com.woooapp.meeting.net.models.CreateMeetingResponse;
 import com.woooapp.meeting.net.models.PutMembersDataBody;
 import com.woooapp.meeting.net.models.PutMembersDataResponse;
+import com.woooapp.meeting.net.models.RoomData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -98,6 +109,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private MeetingClient mMeetingClient;
     private CreateMeetingResponse createMeetingResponse;
     private PutMembersDataResponse putMembersDataResponse;
+    private RoomData roomData;
     private RoomOptions mOptions;
     private RoomStore mRoomStore;
     private boolean joining = false;
@@ -157,6 +169,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private LinearLayout translationLayout;
     private TextView tvTransOriginal;
     private TextView tvTransTrans;
+    private ImageView ivBg;
     private boolean isCamEnabled;
     private boolean isMicEnabled;
 
@@ -209,6 +222,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     this.bottomBarMeeting.getHeight(),
                     mMeetingClient);
             morePopup.show();
+            fetchRoomData2();
         });
 
         this.buttonAI.setOnClickListener(view -> {
@@ -315,6 +329,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         this.translationLayout = findViewById(R.id.translationLayout);
         this.tvTransOriginal = findViewById(R.id.tvTranslationOriginal);
         this.tvTransTrans = findViewById(R.id.tvTranslationTranslation);
+        this.ivBg = findViewById(R.id.ivBg);
 
         this.meetingBackground.setOnTouchListener((view, motionEvent) -> true);
 
@@ -355,13 +370,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         this.email = getIntent().getStringExtra("email");
         this.accountUniqueId = getIntent().getStringExtra("accountUniqueId");
         this.username = getIntent().getStringExtra("username");
-        if (username != null) {
-            if (username.isEmpty())
-                username = Utils.getRandomString(8);
-            else if (username.length() < 4) {
-                username = username + Utils.getRandomString(6);
-            }
-        }
         this.picture = getIntent().getStringExtra("picture");
         if (picture != null) {
             if (picture.isEmpty())
@@ -480,6 +488,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 }
             });
             mSideMenuOpened = false;
+            hideKeyboard();
         }
     }
 
@@ -528,7 +537,9 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 if (response != null) {
                     if (response.body() != null) {
                         try {
-                            Log.d(TAG, "ROOM DATA RESPONSE >>> " + response.body().string());
+                            String resp = response.body().string();
+                            Log.d(TAG, "ROOM DATA RESPONSE >>> " + resp);
+                            roomData = RoomData.fromJson(resp);
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
@@ -542,6 +553,25 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             @Override
             public void onFailure(Call call, Object error) {
                 Log.e(TAG, "Error while fetching room data " + error.toString());
+            }
+        });
+    }
+
+    private void fetchRoomData2() {
+        ApiManager.build(this).fetchRoomData2(mMeetingId, new ApiManager.ApiResult2() {
+            @Override
+            public void onResult(Call call, Response response) {
+                try {
+                    String json = response.body().string();
+                    roomData = RoomData.fromJson(json);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, Object e) {
+
             }
         });
     }
@@ -563,6 +593,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                                 fetchRoomData();
                             } catch (IOException e) {
                                 e.printStackTrace();
+                                showNetworkErrorDialog();
                             }
                         }
                     }
@@ -571,32 +602,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 @Override
                 public void onFailure(Call call, Object error) {
                     Log.e(TAG, "Error on createMeeting()" + error.toString());
-                    runOnUiThread(() -> {
-                        progressDialog.dismiss();
-                        UIManager.showErrorDialog(
-                                MeetingActivity.this,
-                                "Connection Error",
-                                "Failed to fetch remote data. Please try again later",
-                                "OK",
-                                R.drawable.ic_connection_error_34,
-                                new UIManager.DialogCallback() {
-                                    @Override
-                                    public void onPositiveButton(@Nullable Object sender, @Nullable Object data) {
-                                        finish();
-                                    }
-
-                                    @Override
-                                    public void onNeutralButton(@Nullable Object sender, @Nullable Object data) {
-
-                                    }
-
-                                    @Override
-                                    public void onNegativeButton(@Nullable Object sender, @Nullable Object data) {
-
-                                    }
-                                });
-                        closeDrawer();
-                    });
+                    showNetworkErrorDialog();
                 }
             });
         } catch (JsonProcessingException e) {
@@ -625,6 +631,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                                         putMembersDataResponse = PutMembersDataResponse.fromJson(resp);
                                     } catch (IOException e) {
                                         e.printStackTrace();
+                                        showNetworkErrorDialog();
                                     }
                                 }
                             }
@@ -632,6 +639,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                             @Override
                             public void onFailure(Call call, Object e) {
                                 Log.e(TAG, "Error while calling [" + call.request().url() + "] -> " + e.toString());
+                                showNetworkErrorDialog();
                             }
                         });
     }
@@ -644,6 +652,9 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         this.mMeetingClient.setUsername(username);
         this.mMeetingClient.setPicture(picture);
         this.mMeetingClient.start();
+        this.mMeetingClient.setCamOn(this.isCamEnabled);
+        this.mMeetingClient.setMicOn(this.isMicEnabled);
+        if (!joining) this.mMeetingClient.setRole(MeetingClient.Role.ADMIN);
 
         initAccount();
 
@@ -673,7 +684,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         this.viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                updatePageControl(position);
             }
 
             @Override
@@ -689,8 +700,8 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
         final MeetingPageFragment f1 = new MeetingPageFragment(1, this, mRoomStore, mMeetingClient, this);
         pageFragments.add(f1);
-        final MeetingPageFragment f2 = new MeetingPageFragment(2, this, mRoomStore, mMeetingClient, this);
-        final MeetingPageFragment f3 = new MeetingPageFragment(3, this, mRoomStore, mMeetingClient, this);
+        final MeetingPageFragment f2 = new MeetingPageFragment( 2, this, mRoomStore, mMeetingClient, this);
+        final MeetingPageFragment f3 = new MeetingPageFragment( 3, this, mRoomStore, mMeetingClient, this);
 
         mRoomStore
                 .getPeers()
@@ -713,7 +724,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                                 pageList.add(page1);
                                 pageList.add(page2);
                                 pageFragments.get(0).replacePage(page1);
-                                if (pageFragments.get(1) != null) {
+                                if (pageFragments.size() < 2) {
                                     f2.replacePage(page2);
                                     pageFragments.add(f2);
                                 } else {
@@ -731,7 +742,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                                 pageList.add(page3);
                                 pageFragments.get(0).replacePage(page1);
                                 pageFragments.get(1).replacePage(page2);
-                                if (pageFragments.get(2) != null) {
+                                if (pageFragments.size() < 3) {
                                     f3.replacePage(page3);
                                     pageFragments.add(f3);
                                 } else {
@@ -810,7 +821,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 Peer p = peersList.get(i);
                 if (i == 0 || i == 3) {
                     peers.add(new ListGridPeer(ListGridPeer.VIEW_TYPE_PEER_PEER, p, null));
-                    Log.d(TAG, "<< Added a new peer at index " + i + " >>");
                 } else if (i == 1) {
                     peers.get(0).setPeer2(p);
                 } else if (i == 2) {
@@ -993,9 +1003,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             case WooEvents.EVENT_ME_MIC_TURNED_ON:
                 runOnUiThread(() -> {
                     buttonMic.setImageResource(R.drawable.baseline_mic_34);
-                    for (MeetingPageFragment f : pageFragments) {
-                        f.notifyUpdate();
-                    }
                 });
                 ApiManager.build(this).putStates(ApiManager.URL_MIC_UN_MUTED, mMeetingId, mMeetingClient.getSocketId(), new ApiManager.ApiResult2() {
                     @Override
@@ -1016,9 +1023,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             case WooEvents.EVENT_ME_MIC_TURNED_OFF:
                 runOnUiThread(() -> {
                     buttonMic.setImageResource(R.drawable.ic_mic_off_gray);
-                    for (MeetingPageFragment f : pageFragments) {
-                        f.notifyUpdate();
-                    }
                 });
                 ApiManager.build(this).putStates(ApiManager.URL_MIC_MUTED, mMeetingId, mMeetingClient.getSocketId(), new ApiManager.ApiResult2() {
                     @Override
@@ -1039,17 +1043,11 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             case WooEvents.EVENT_ME_CAM_TURNED_ON:
                 runOnUiThread(() -> {
                     buttonCam.setImageResource(R.drawable.ic_video_camera_white);
-                    for (MeetingPageFragment f : pageFragments) {
-                        f.notifyUpdate();
-                    }
                 });
                 return true;
             case WooEvents.EVENT_ME_CAM_TURNED_OFF:
                 runOnUiThread(() -> {
                     buttonCam.setImageResource(R.drawable.ic_camera_off_gray);
-                    for (MeetingPageFragment f : pageFragments) {
-                        f.notifyUpdate();
-                    }
                 });
                 return true;
             case WooEvents.EVENT_ON_TEXT_TRANSLATION_RECV:
@@ -1148,10 +1146,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                         try {
                             Peer p = peers.getPeer(handLowered.getString("socketId"));
                             if (p != null) {
-                                p.setHandRaised(false);
-                                for (MeetingPageFragment f : pageFragments) {
-                                    f.notifyUpdate();
-                                }
                                 showCommonPopup(p.getDisplayName() + " Lowered Hand", true, WooCommonPopup.VERTICAL_POSITION_TOP);
                             }
                         } catch (JSONException e) {
@@ -1167,10 +1161,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                         try {
                             Peer p = peers.getPeer(handRaised.getString("socketId"));
                             if (p != null) {
-                                p.setHandRaised(true);
-                                for (MeetingPageFragment f : pageFragments) {
-                                    f.notifyUpdate();
-                                }
                                 showCommonPopup(p.getDisplayName() + " Raised Hand", true, WooCommonPopup.VERTICAL_POSITION_TOP);
                             }
                         } catch (JSONException e) {
@@ -1179,81 +1169,78 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     });
                 }
                 return true;
-            case WooEvents.EVENT_PEER_MIC_MUTED:
-                JSONObject muted = (JSONObject) msg.obj;
-                if (muted != null) {
-                    mRoomStore.getPeers().postValue(peers -> {
-                        try {
-                            Peer p = peers.getPeer(muted.getString("socketId"));
-                            if (p != null) {
-                                p.setMicOn(false);
-                                for (MeetingPageFragment f : pageFragments) {
-                                    f.notifyUpdate();
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    });
-                }
+            case WooEvents.EVENT_SELECT_BACKGROUND:
+                openImageChooser();
                 return true;
-            case WooEvents.EVENT_PEER_MIC_UNMUTED:
-                JSONObject unMuted = (JSONObject) msg.obj;
-                if (unMuted != null) {
-                    mRoomStore.getPeers().postValue(peers -> {
-                        try {
-                            Peer p = peers.getPeer(unMuted.getString("socketId"));
-                            if (p != null) {
-                                p.setMicOn(true);
-                                for (MeetingPageFragment f : pageFragments) {
-                                    f.notifyUpdate();
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    });
-                }
-                return true;
-            case WooEvents.EVENT_PEER_CAM_TURNED_ON:
-                JSONObject camOn = (JSONObject) msg.obj;
-                if (camOn != null) {
-                    mRoomStore.getPeers().postValue(peers -> {
-                        try {
-                            Peer p = peers.getPeer(camOn.getString("socketId"));
-                            if (p != null) {
-                                p.setCamOn(true);
-                                for (MeetingPageFragment f : pageFragments) {
-                                    f.notifyUpdate();
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    });
-                }
-                return true;
-            case WooEvents.EVENT_PEER_CAM_TURNED_OFF:
-                JSONObject camOff = (JSONObject) msg.obj;
-                if (camOff != null) {
-                    mRoomStore.getPeers().postValue(peers -> {
-                        try {
-                            Peer p = peers.getPeer(camOff.getString("socketId"));
-                            if (p != null) {
-                                p.setCamOn(false);
-                                for (MeetingPageFragment f : pageFragments) {
-                                    f.notifyUpdate();
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    });
-                }
+            case WooEvents.EVENT_SHOW_MEMBERS:
+                showMembersSheet();
                 return true;
             default:
                 return false;
         }
+    }
+
+    private void showNetworkErrorDialog() {
+        runOnUiThread(() -> {
+            progressDialog.dismiss();
+            UIManager.showErrorDialog(
+                    MeetingActivity.this,
+                    "Connection Error",
+                    "Failed to fetch remote data. Please try again later",
+                    "OK",
+                    R.drawable.ic_connection_error_34,
+                    new UIManager.DialogCallback() {
+                        @Override
+                        public void onPositiveButton(@Nullable Object sender, @Nullable Object data) {
+                            finish();
+                        }
+
+                        @Override
+                        public void onNeutralButton(@Nullable Object sender, @Nullable Object data) {
+
+                        }
+
+                        @Override
+                        public void onNegativeButton(@Nullable Object sender, @Nullable Object data) {
+
+                        }
+                    });
+            closeDrawer();
+        });
+    }
+
+    private void updatePageFragments() {
+        for (MeetingPageFragment f : pageFragments) {
+            f.notifyUpdate();
+        }
+    }
+
+    private void openImageChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        launcher.launch(intent);
+    }
+
+    private void showMembersSheet() {
+        List<Member> members = new LinkedList<>();
+        if (roomData.getAdmins() != null) {
+            for (RoomData.Admin admin : roomData.getAdmins()) {
+                members.add(new Member(null, admin.getUsername(), admin.getPicture(), MeetingClient.Role.ADMIN));
+            }
+        }
+        if (roomData.getMembers() != null) {
+            for (RoomData.Member member : roomData.getMembers()) {
+                members.add(new Member(member.getSocketId(), member.getUsername(), member.getPicture(), MeetingClient.Role.USER));
+            }
+        }
+        BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.SheetDialog);
+        View v = LayoutInflater.from(this).inflate(R.layout.layout_sheet_members, null);
+        TextView tvTitle = v.findViewById(R.id.tvTitle);
+        ListView lv = v.findViewById(R.id.listView);
+        lv.setAdapter(new MemberAdapter(this, members));
+        dialog.setContentView(v);
+        dialog.show();
     }
 
     /**
@@ -1357,6 +1344,32 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         WooCommonPopup popup = new WooCommonPopup(this, this.mainContainer, message, autoDismiss, verticalAlignment);
         popup.show();
     }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        View view = getCurrentFocus();
+        if (view == null) {
+            view = new View(this);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            Intent data = result.getData();
+            if (data != null) {
+                if (data.getData() != null) {
+                    Uri uri = data.getData();
+                    try {
+                        Bitmap selectedBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+                        ivBg.setImageBitmap(selectedBitmap);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+    });
 
     @Override
     protected void onDestroy() {

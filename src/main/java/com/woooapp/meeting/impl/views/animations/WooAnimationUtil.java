@@ -8,6 +8,7 @@ import android.animation.ValueAnimator;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
@@ -233,6 +234,22 @@ public final class WooAnimationUtil {
     }
 
     /**
+     *
+     * @param view
+     * @param durationMillis
+     * @param listener
+     */
+    public static void slideFromBottom(@NonNull View view, long durationMillis, @Nullable Animation.AnimationListener listener) {
+        view.clearAnimation();
+        TranslateAnimation anim = new TranslateAnimation(0, 0, 4000, 0);
+        anim.setDuration(durationMillis);
+        anim.setInterpolator(new DecelerateInterpolator());
+        anim.setRepeatCount(0);
+        if (listener != null) anim.setAnimationListener(listener);
+        view.startAnimation(anim);
+    }
+
+    /**
      * @param view
      * @param adapter
      */
@@ -241,6 +258,22 @@ public final class WooAnimationUtil {
         TranslateAnimation anim = new TranslateAnimation(0, 0, 0, 4000);
         anim.setDuration(400);
         anim.setInterpolator(new DecelerateInterpolator());
+        anim.setRepeatCount(0);
+        if (listener != null) anim.setAnimationListener(listener);
+        view.startAnimation(anim);
+    }
+
+    /**
+     *
+     * @param view
+     * @param durationMillis
+     * @param listener
+     */
+    public static void slideToBottom(@NonNull View view, long durationMillis, @Nullable Animation.AnimationListener listener) {
+        view.clearAnimation();
+        TranslateAnimation anim = new TranslateAnimation(0, 0, 0, 4000);
+        anim.setDuration(durationMillis);
+        anim.setInterpolator(new AccelerateInterpolator());
         anim.setRepeatCount(0);
         if (listener != null) anim.setAnimationListener(listener);
         view.startAnimation(anim);

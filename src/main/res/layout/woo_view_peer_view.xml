@@ -35,11 +35,6 @@
             android:gravity="center"
             bind:edias_render_empty="@{wooPeerViewProps.videoTrack}">
 
-<!--            <View-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="0dp"-->
-<!--                android:layout_weight="1" />-->
-
             <ImageView
                 android:id="@+id/wooPeerThumbIv"
                 android:layout_width="100sp"

@@ -10,16 +10,11 @@ import androidx.annotation.NonNull;
 import com.woooapp.meeting.impl.utils.WooEvents;
 import com.woooapp.meeting.lib.lv.RoomStore;
 import com.woooapp.meeting.lib.socket.WooSocket;
-import com.woooapp.meeting.net.models.CreateMeetingResponse;
 import com.woooapp.meeting.net.models.Message;
 
 import org.json.JSONException;
-import org.mediasoup.droid.Consumer;
-import org.mediasoup.droid.DataConsumer;
 
-import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Muneeb Ahmad (ahmadgallian@yahoo.com)
@@ -47,6 +42,8 @@ public final class MeetingClient extends RoomMessageHandler {
     private boolean voiceTranslationOn = false;
     private String selectedLanguage = "English";
     private String selectedLanguageCode = "en";
+    private Role role = Role.USER;
+
     public enum ConnectionState {
         // initial state.
         NEW,
@@ -56,6 +53,11 @@ public final class MeetingClient extends RoomMessageHandler {
         CONNECTED,
         // mClosed.
         CLOSED,
+    }
+
+    public enum Role {
+        USER,
+        ADMIN
     }
 
     /**
@@ -96,6 +98,14 @@ public final class MeetingClient extends RoomMessageHandler {
             mSocket.connect();
             mStarted = true;
         });
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public String getUsername() {
@@ -188,13 +198,19 @@ public final class MeetingClient extends RoomMessageHandler {
      *
      * @param mute
      */
-    public void setAudioMuted(boolean mute) {
-        if (mute && !this.audioMuted) {
-            mSocket.muteAudio();
+    public void setEveryonesAudioMuted(boolean mute) {
+        if (mute) {
+            try {
+                mSocket.emitMuteEveryone();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+//            mSocket.muteAudio();
         } else {
-            mSocket.unmuteAudio();
+
+//            mSocket.unmuteAudio();
         }
-        this.audioMuted = mute;
+//        this.audioMuted = mute;
     }
 
     /**
@@ -237,19 +253,21 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     public void setMicOn(boolean micOn) {
-        if (micOn && !this.micOn) {
-            mSocket.unmuteMic();
-            try {
-                mSocket.emitMicOpen();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } else {
-            mSocket.muteMic();
-            try {
-                mSocket.emitMicClosed();
-            } catch (JSONException e) {
-                e.printStackTrace();
+        if (mSocket != null) {
+            if (micOn && !this.micOn) {
+                mSocket.unmuteMic();
+                try {
+                    mSocket.emitMicOpen();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                mSocket.muteMic();
+                try {
+                    mSocket.emitMicClosed();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
         this.micOn = micOn;
@@ -260,19 +278,21 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     public void setCamOn(boolean camOn) {
-        if (camOn && !this.camOn) {
-            mSocket.disableCam();
-            try {
-                mSocket.emitVideoOpen();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } else {
-            mSocket.enableCam();
-            try {
-                mSocket.emitVideoClose();
-            } catch (JSONException e) {
-                e.printStackTrace();
+        if (mSocket != null) {
+            if (!camOn && this.camOn) {
+                mSocket.disableCam();
+                try {
+                    mSocket.emitVideoOpen();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                mSocket.enableCam();
+                try {
+                    mSocket.emitVideoClose();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }
         this.camOn = camOn;
@@ -283,10 +303,7 @@ public final class MeetingClient extends RoomMessageHandler {
      * @param raised
      */
     public void setMeHandRaised(boolean raised) {
-        mStore.getMe().postValue(me -> {
-            me.setHandShaking(raised);
-        });
-        if (raised) {
+        if (!raised) {
             WooEvents.getInstance().notify(WooEvents.EVENT_ME_HAND_RAISED, true);
         } else {
             WooEvents.getInstance().notify(WooEvents.EVENT_ME_HAND_LOWERED, true);
