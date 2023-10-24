@@ -175,9 +175,9 @@ public final class MeetingClient extends RoomMessageHandler {
 
     public void setEveryoneCamOn(boolean everyoneCamOn) {
         if (everyoneCamOn && !this.everyoneCamOn) {
-            mSocket.disableAudioOnly();
+//            mSocket.disableAudioOnly();
         } else {
-            mSocket.enableAudioOnly();
+//            mSocket.enableAudioOnly();
         }
         this.everyoneCamOn = everyoneCamOn;
     }
@@ -340,12 +340,17 @@ public final class MeetingClient extends RoomMessageHandler {
 
     public void close() {
         if (mStarted) {
-            this.mWorkerHandler.post(() -> {
-               mSocket.disconnect();
-               mSocket = null;
-               mStarted = false;
-//               mWorkerHandler.getLooper().quit();
-            });
+            try {
+                this.mWorkerHandler.post(() -> {
+                    mSocket.disconnect();
+                    mSocket = null;
+                    mStarted = false;
+                });
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+//                mWorkerHandler.getLooper().quit();
+            }
         }
     }
 

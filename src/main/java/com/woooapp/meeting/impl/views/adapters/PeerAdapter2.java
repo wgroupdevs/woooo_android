@@ -17,8 +17,6 @@ import com.woooapp.meeting.device.Display;
 import com.woooapp.meeting.impl.utils.WooEvents;
 import com.woooapp.meeting.impl.views.MeView;
 import com.woooapp.meeting.impl.views.PeerView;
-import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
-import com.woooapp.meeting.impl.views.models.GridPeer;
 import com.woooapp.meeting.impl.views.models.ListGridPeer;
 import com.woooapp.meeting.impl.vm.MeProps;
 import com.woooapp.meeting.impl.vm.PeerProps;
@@ -29,10 +27,8 @@ import com.woooapp.meeting.lib.model.Peer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import eu.siacs.conversations.R;
 import pk.muneebahmad.lib.graphics.SP;
@@ -79,7 +75,7 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
         WooEvents.getInstance().addHandler(handler);
 
         this.mDeviceWidth = Display.getDisplayWidth(mContext) - 40;
-        this.mDeviceHeight = Display.getDisplayHeight(mContext) - (int) SP.valueOf(mContext, mBottomBarHeight);
+        this.mDeviceHeight = Display.getDisplayHeight(mContext) - (int) SP.valueOf(mContext, 80);
     }
 
     @Override
@@ -216,13 +212,13 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
     private int getRowHeight(int rowCount) {
         switch (rowCount) {
             case 2:
-                if (translationEnabled) return (mDeviceHeight / 2) - (int) SP.valueOf(mContext, 150);
+                if (translationEnabled) return (mDeviceHeight / 2) - (int) SP.valueOf(mContext, 50);
                 return (mDeviceHeight / 2) - 5;
             case 3:
-                if (translationEnabled) return (mDeviceHeight / 3) - (int) SP.valueOf(mContext, 100);
+                if (translationEnabled) return (mDeviceHeight / 3) - (int) SP.valueOf(mContext, 33);
                 return (mDeviceHeight / 3) - 5;
             default:
-                if (translationEnabled) return mDeviceHeight - (int) SP.valueOf(mContext, 250);
+                if (translationEnabled) return mDeviceHeight - (int) SP.valueOf(mContext, 100);
                 return mDeviceHeight;
         }
     }
@@ -239,10 +235,12 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
     }
 
     /**
-     * @param bottomBarHeight
+     * @param viewPagerHeight
      */
-    public void setBottomBarHeight(int bottomBarHeight) {
-        this.mBottomBarHeight = bottomBarHeight;
+    public void setViewPagerHeight(int viewPagerHeight) {
+//        this.mBottomBarHeight = bottomBarHeight;
+//        this.mDeviceHeight = viewPagerHeight - 10;
+//        notifyDataSetChanged();
     }
 
     /**
@@ -257,10 +255,10 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
      * @param peerList
      */
     public void replaceList(final @NonNull List<ListGridPeer> peerList) {
-        if (shouldReplaceList(peerList)) {
+//        if (shouldReplaceList(peerList)) {
             this.peerList = peerList;
             notifyDataSetChanged();
-        }
+//        }
     }
 
     /**
@@ -278,8 +276,13 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
     public void dispose() {
         if (this.handler != null) {
             WooEvents.getInstance().removeHandler(handler);
-            this.handler = null;
+//            this.handler = null;
         }
+    }
+
+    public void resume() {
+        this.handler = new Handler(this);
+        WooEvents.getInstance().addHandler(handler);
     }
 
     @Override

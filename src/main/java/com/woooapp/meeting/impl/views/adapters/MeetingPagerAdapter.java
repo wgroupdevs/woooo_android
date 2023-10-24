@@ -58,6 +58,15 @@ public class MeetingPagerAdapter extends FragmentPagerAdapter {
         this.mContext = context;
     }
 
+    @Override
+    public void finishUpdate(@NonNull ViewGroup container) {
+        try {
+            super.finishUpdate(container);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     @NonNull
     @Override
     public Fragment getItem(int position) {

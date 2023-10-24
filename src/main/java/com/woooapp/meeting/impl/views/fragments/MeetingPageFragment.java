@@ -18,9 +18,6 @@ import com.woooapp.meeting.impl.views.models.MeetingPage;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.lv.RoomStore;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import eu.siacs.conversations.R;
 
 /**
@@ -75,6 +72,24 @@ public class MeetingPageFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (adapter != null) adapter.resume();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (adapter != null) adapter.dispose();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (adapter != null) adapter.dispose();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if (adapter != null) adapter.dispose();
@@ -90,7 +105,7 @@ public class MeetingPageFragment extends Fragment {
      * @param bottomBarHeight
      */
     public void setBottomBarHeight(int bottomBarHeight) {
-        if (this.adapter != null) this.adapter.setBottomBarHeight(bottomBarHeight);
+        if (this.adapter != null) this.adapter.setViewPagerHeight(bottomBarHeight);
     }
 
     /**

@@ -15,6 +15,7 @@ import com.woooapp.meeting.impl.utils.WooEvents;
 import com.woooapp.meeting.lib.Async;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.PeerConnectionUtils;
+import com.woooapp.meeting.lib.RoomClient;
 import com.woooapp.meeting.lib.lv.RoomStore;
 import com.woooapp.meeting.lib.lv.SupplierMutableLiveData;
 import com.woooapp.meeting.lib.model.Me;
@@ -129,6 +130,8 @@ public class WooSocket {
         this.producerSockIds.clear();
         this.consumeBackDeviceUUIDs.clear();
 
+        mStore.setRoomState(RoomClient.ConnectionState.CONNECTING);
+
         mMainHandler.post(() -> {
             Logger.setLogLevel(Logger.LogLevel.LOG_DEBUG);
             Logger.setDefaultHandler();
@@ -136,6 +139,7 @@ public class WooSocket {
     }
 
     public void connect() {
+        mStore.setRoomState(RoomClient.ConnectionState.CONNECTING);
         try {
             mSocket = IO.socket(SOCKET_URL);
             mSocket.connect();
@@ -150,6 +154,7 @@ public class WooSocket {
     @WorkerThread
     public boolean disconnect() {
         // Say Bye
+        mStore.setRoomState(RoomClient.ConnectionState.CLOSED);
         emitClose();
         if (mSocket != null && mSocket.isActive()) {
             if (disposeCamMic()) {
@@ -271,6 +276,7 @@ public class WooSocket {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                mStore.setRoomState(RoomClient.ConnectionState.CONNECTED);
                 WooEvents.getInstance().notify(WooEvents.EVENT_TYPE_SOCKET_ID, mSocketId);
             }
         });
@@ -278,7 +284,7 @@ public class WooSocket {
         this.mSocket.on("RTPCaps", args -> {
             if (args[0] != null) {
                 String jsonRTPCaps = String.valueOf(args[0]);
-                Log.d(TAG, "RTPCaps >>> " + jsonRTPCaps);
+                Log.d(TAG, "<< EVENT RTPCaps >>> " + jsonRTPCaps);
                 try {
                     JSONObject obj = new JSONObject(jsonRTPCaps);
                     JSONObject obj2 = obj.getJSONObject("capabilities");
@@ -295,9 +301,6 @@ public class WooSocket {
 
                     // Emit Create Transport
                     emitCreateTransport();
-
-                    // Api Call For Put Member
-                    WooEvents.getInstance().notify(WooEvents.EVENT_TYPE_PRODUCER_CREATED, "");
                 } catch (JSONException | MediasoupException e) {
                     e.printStackTrace();
                 }
@@ -329,18 +332,9 @@ public class WooSocket {
                             iceCandidates.toString(),
                             dtlsParameters.toString());
 
-                    // Enable mic
-                    if (!mMicEnabled) {
-                        mMainHandler.post(this::enableMic);
-                    }
-                    // Enable camera
-                    if (!mCamEnabled) {
-                        mMainHandler.post(this::enableCam);
-                    }
-
-//                    WooEvents.getInstance().notify(WooEvents.EVENT_TYPE_PRODUCER_CREATED, id);
+                    createProducers();
                 } catch (JSONException | MediasoupException e) {
-                    Log.e(TAG, e.getMessage());
+                    Log.e(TAG, e.toString());
                     e.printStackTrace();
                 }
             }
@@ -520,7 +514,8 @@ public class WooSocket {
                     String storageId = obj.getString("storageId");
                     String producerSockId = obj.getString("producerSockId");
 
-                    RecvTransport recvTransport = mMediaSoupDevice.createRecvTransport(new RecvTransport.Listener() {
+                    RecvTransport recvTransport = mMediaSoupDevice
+                            .createRecvTransport(new RecvTransport.Listener() {
                                                                                            @Override
                                                                                            public void onConnect(Transport transport, String dtlsParameters) {
                                                                                                Log.d(TAG, "RecvTransport#onConnect() >> dtlsParameters > " + dtlsParameters);
@@ -648,8 +643,8 @@ public class WooSocket {
                         for (Map.Entry<String, String> entry : producerSockIds.entrySet()) {
                             if (entry.getValue().equals(id)) {
                                 Log.d(TAG, "<<< Peer Disconnected, Disconnecting ....");
-                                mStore.removePeer(entry.getValue());
-                                producerSockIds.remove(entry.getKey());
+                                mStore.removePeer(id);
+                                producerSockIds.remove(entry.getValue());
                                 break;
                             }
                         }
@@ -782,14 +777,15 @@ public class WooSocket {
     private void emitRTPCaps() throws JSONException {
         JSONObject data = new JSONObject();
         data.put("id", this.mSocketId);
-        Log.d(TAG, "Emitting RTP Caps event with data: " + data.toString());
+        Log.d(TAG, "Emitting RTP Caps event with data: " + data);
         mSocket.emit("getRTPCaps", data);
     }
 
     private void emitCreateTransport() throws JSONException, MediasoupException {
+        JSONObject rtpCaps = new JSONObject(mMediaSoupDevice.getRtpCapabilities());
         JSONObject obj = new JSONObject();
         obj.put("id", this.mSocketId);
-        obj.put("rtpCapabilities", this.mMediaSoupDevice.getRtpCapabilities());
+        obj.put("rtpCapabilities", rtpCaps);
         Log.d(TAG, "Emitting Create Transport >>> " + obj);
         mSocket.emit("createTransport", obj);
     }
@@ -817,7 +813,7 @@ public class WooSocket {
         obj.put("rtpParameters", rtpParameters);
         obj.put("id", mSocketId);
         obj.put("roomId", mMeetingClient.getMeetingId());
-        obj.put("language", mMeetingClient.getSelectedLanguageCode());
+//        obj.put("language", mMeetingClient.getSelectedLanguageCode());
         Log.d(TAG, "Emitting Produce >>> " + obj);
         mSocket.emit("produce", obj);
     }
@@ -1082,8 +1078,6 @@ public class WooSocket {
         try {
             this.mMediaSoupDevice = new Device();
             this.mMediaSoupDevice.load(rtpCaps, null);
-            String rtpCapabilities = mMediaSoupDevice.getRtpCapabilities();
-            Log.d(TAG, "MediaSoupDevice Loaded RTP Caps >>> " + rtpCapabilities);
         } catch (MediasoupException ex) {
             ex.printStackTrace();
         }
@@ -1107,36 +1101,36 @@ public class WooSocket {
     }
 
     // NOT CALLED, AS IT REQUIRES MIN SDK TO BE 24
-    @Deprecated
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    private String getProducerId(@NonNull String kind, @NonNull String rtpParameters) throws JSONException, ExecutionException, InterruptedException {
-        emitProduce(kind, rtpParameters);
-        // CompletableFuture
-        final CompletableFuture<String> future = new CompletableFuture<>();
-        mSocket.on("producing", args -> {
-            if (args != null) {
-                try {
-                    Log.d(TAG, "<< Event Producing >>> " + args[0]);
-                    JSONObject obj = new JSONObject(String.valueOf(args[0]));
-                    String producerId = obj.getString("producerId");
-                    String kind1 = obj.getString("kind");
-                    boolean appData = obj.getBoolean("appData");
-                    Log.d(TAG, "Producer ID >>> " + producerId);
-                    future.complete(producerId);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        return future.get();
-    }
+//    @Deprecated
+//    @RequiresApi(api = Build.VERSION_CODES.N)
+//    private String getProducerId(@NonNull String kind, @NonNull String rtpParameters) throws JSONException, ExecutionException, InterruptedException {
+//        emitProduce(kind, rtpParameters);
+//        // CompletableFuture
+//        final CompletableFuture<String> future = new CompletableFuture<>();
+//        mSocket.on("producing", args -> {
+//            if (args != null) {
+//                try {
+//                    Log.d(TAG, "<< Event Producing >>> " + args[0]);
+//                    JSONObject obj = new JSONObject(String.valueOf(args[0]));
+//                    String producerId = obj.getString("producerId");
+//                    String kind1 = obj.getString("kind");
+//                    boolean appData = obj.getBoolean("appData");
+//                    Log.d(TAG, "Producer ID >>> " + producerId);
+//                    future.complete(producerId);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//        return future.get();
+//    }
 
     // Send Transport Listener
     private SendTransport.Listener sendListener = new SendTransport.Listener() {
 
         @Override
         public String onProduce(Transport transport, String kind, String rtpParameters, String appData) {
-            Log.d(TAG, "SendTransport.Listen.onProduce()");
+            Log.d(TAG, "SendTransport.Listen.onProduce(transport, kind: " + kind + ", rtpParameters, appData: " + appData +  ")");
             AtomicReference<String> producerId = new AtomicReference<>(null);
             try {
                 emitProduce(kind, rtpParameters);
@@ -1146,20 +1140,22 @@ public class WooSocket {
 
             mSocket.on("producing", args -> {
                 if (args != null) {
-                    try {
-                        Log.d(TAG, "<< Event Producing >>> " + args[0]);
-                        JSONObject obj = new JSONObject(String.valueOf(args[0]));
-                        producerId.set(obj.getString("producerId"));
-                        String kind1 = obj.getString("kind");
-                        boolean appData1 = obj.getBoolean("appData");
-                        if ("audio".equals(kind1)) {
-                            addAudioProducerId(producerId.get());
-                        } else if ("video".equals(kind1)) {
-                            videoProducerId = producerId.get();
+                    if (args.length > 0) {
+                        try {
+                            Log.d(TAG, "<< Event Producing >>> " + args[0]);
+                            JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                            producerId.set(obj.getString("producerId"));
+                            String kind1 = obj.getString("kind");
+                            boolean appData1 = obj.getBoolean("appData");
+                            if ("audio".equals(kind1)) {
+                                addAudioProducerId(producerId.get());
+                            } else if ("video".equals(kind1)) {
+                                videoProducerId = producerId.get();
+                            }
+                            producerIds.add(producerId.get());
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                        producerIds.add(producerId.get());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
                 }
             });
@@ -1176,7 +1172,7 @@ public class WooSocket {
         @Override
         public String onProduceData(Transport transport, String sctpStreamParameters, String label, String protocol, String appData) {
             Log.d(TAG, "SendTransport.Listen.onProduceData()");
-            return "";
+            return null;
         }
 
         @Override
@@ -1187,6 +1183,11 @@ public class WooSocket {
 
                 mSocket.on("transportConnected", args -> {
                     Log.d(TAG, "<<< Event > onTransportConnected >>> ");
+                    if (args != null) {
+                        if (args.length > 0) {
+                            Log.d(TAG, "Transport Connected ARGS >> " + args[0]);
+                        }
+                    }
                     // callback();
                 });
 
@@ -1197,7 +1198,7 @@ public class WooSocket {
 
         @Override
         public void onConnectionStateChange(Transport transport, String connectionState) {
-            Log.d(TAG, "SendTransport.Listen.onConnectionStateChange()");
+            Log.d(TAG, "SendTransport.Listen.onConnectionStateChange(transport, connectionState: " + connectionState + " )");
             if ("failed".equals(connectionState)) {
                 // Close transport
                 // Reload or go back.
@@ -1205,31 +1206,20 @@ public class WooSocket {
         }
     };
 
-    // Recv Transport Listener
-//    private RecvTransport.Listener recvListener = new RecvTransport.Listener() {
-//        @Override
-//        public void onConnect(Transport transport, String dtlsParameters) {
-//            Log.d(TAG, "<<< RecvTransport.Listener#onConnect() >>>");
-//            Log.d(TAG, "RecvTransport.Listener#onConnect() dtlsParametes -> " + dtlsParameters);
-//            try {
-//                emitConsumeTransportConnect(dtlsParameters);
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//            mSocket.on("consumerTransportConnected", args -> {
-//               Log.d(TAG, " << CONSUMER TRANSPORT CONNECTED >>");
-//               if (args != null) {
-//                   Log.d(TAG, "CONSUMER TRANSPORT CONNECTED >> " + args[0]);
-//               }
-//               // callback();
-//            });
-//        }
-//
-//        @Override
-//        public void onConnectionStateChange(Transport transport, String connectionState) {
-//            Log.d(TAG, "<<< RecvTransport.Listener#onConnectionStateChanged() >>>");
-//        }
-//    };
+    /**
+     * Create and enable producers.
+     *
+     * @throws MediasoupException
+     */
+    private void createProducers() throws MediasoupException {
+        Log.d(TAG, "<< Creating Mic & Camera Producers >>> ");
+        mStore.setMediaCapabilities(true, true);
+        mMainHandler.post(this::enableMic);
+        mMainHandler.post(this::enableCam);
+
+        // Api Call For Put Member
+        WooEvents.getInstance().notify(WooEvents.EVENT_TYPE_PRODUCER_CREATED, "");
+    }
 
     @WorkerThread
     private void pauseConsumer(Consumer consumer) {
@@ -1277,7 +1267,7 @@ public class WooSocket {
         mStore.setAudioOnlyInProgress(true);
 
         if (mCamProducer == null) {
-            enableCam();
+//            enableCam();
         }
         mWorkHandler.post(
                 () -> {

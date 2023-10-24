@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_rounded_dark_transulecent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:clipChildren="false">
 
     <!-- ROW 1 -->
     <LinearLayout
@@ -12,16 +13,19 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_horizontal"
-        android:layout_marginTop="10sp">
+        android:layout_marginTop="10sp"
+        android:padding="12sp"
+        android:clipChildren="false">
 
         <LinearLayout
             android:id="@+id/morePopupButtonMeetingId"
-            android:layout_width="120sp"
+            android:layout_width="90sp"
             android:layout_height="wrap_content"
             android:layout_margin="5sp"
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:clipChildren="false">
 
             <ImageView
                 android:id="@+id/morePopupIvMeetingId"
@@ -36,15 +40,15 @@
                 android:layout_marginTop="8sp"
                 android:text="Share Link"
                 android:textColor="@android:color/white"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
-                android:gravity="center_horizontal"/>
+                android:gravity="center_horizontal" />
 
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/morePopupButtonParticipants"
-            android:layout_width="120sp"
+            android:layout_width="90sp"
             android:layout_height="wrap_content"
             android:layout_margin="5sp"
             android:foreground="?attr/selectableItemBackground"
@@ -64,7 +68,7 @@
                 android:layout_marginLeft="5sp"
                 android:text="Participants"
                 android:textColor="@android:color/white"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 android:gravity="center_horizontal"/>
 
@@ -72,7 +76,7 @@
 
         <LinearLayout
             android:id="@+id/morePopupButtonSelectLang"
-            android:layout_width="120sp"
+            android:layout_width="90sp"
             android:layout_height="wrap_content"
             android:layout_margin="5sp"
             android:foreground="?attr/selectableItemBackground"
@@ -90,7 +94,7 @@
                 android:layout_marginLeft="5sp"
                 android:text="Select Language"
                 android:textColor="@android:color/white"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 android:gravity="center_horizontal"/>
 
@@ -104,11 +108,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_marginTop="15sp">
+        android:layout_marginTop="15sp"
+        android:padding="12sp"
+        android:clipChildren="false">
 
         <LinearLayout
             android:id="@+id/morePopupButtonSelectBackground"
-            android:layout_width="120sp"
+            android:layout_width="90sp"
             android:layout_height="wrap_content"
             android:layout_margin="5sp"
             android:foreground="?attr/selectableItemBackground"
@@ -126,7 +132,7 @@
                 android:layout_marginLeft="5sp"
                 android:text="Select background"
                 android:textColor="@android:color/white"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 android:gravity="center_horizontal"/>
 
@@ -134,7 +140,7 @@
 
         <LinearLayout
             android:id="@+id/morePopupButtonMuteEveryone"
-            android:layout_width="120sp"
+            android:layout_width="90sp"
             android:layout_height="wrap_content"
             android:layout_margin="5sp"
             android:foreground="?attr/selectableItemBackground"
@@ -154,7 +160,7 @@
                 android:layout_marginLeft="5sp"
                 android:text="Mute Everyone"
                 android:textColor="@android:color/white"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 android:gravity="center_horizontal"/>
 
@@ -162,7 +168,7 @@
 
         <LinearLayout
             android:id="@+id/morePopupButtonDisableCam"
-            android:layout_width="120sp"
+            android:layout_width="90sp"
             android:layout_height="wrap_content"
             android:layout_margin="5sp"
             android:foreground="?attr/selectableItemBackground"
@@ -182,7 +188,7 @@
                 android:layout_marginLeft="5sp"
                 android:text="Disable Everyone's camera"
                 android:textColor="@android:color/white"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 android:gravity="center_horizontal"/>
 
@@ -196,11 +202,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_marginTop="15sp">
+        android:layout_marginTop="15sp"
+        android:padding="12sp"
+        android:clipChildren="false">
 
         <LinearLayout
             android:id="@+id/morePopupButtonCloseMemberVideo"
-            android:layout_width="120sp"
+            android:layout_width="90sp"
             android:layout_height="wrap_content"
             android:layout_margin="5sp"
             android:foreground="?attr/selectableItemBackground"
@@ -218,7 +226,7 @@
                 android:layout_marginTop="5sp"
                 android:text="Close Member's Video"
                 android:textColor="@android:color/white"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 android:gravity="center_horizontal"/>
 
@@ -226,7 +234,7 @@
 
         <LinearLayout
             android:id="@+id/morePopupButtonMuteMember"
-            android:layout_width="wrap_content"
+            android:layout_width="90sp"
             android:layout_height="wrap_content"
             android:layout_margin="5sp"
             android:foreground="?attr/selectableItemBackground"
@@ -244,7 +252,7 @@
                 android:layout_marginTop="18sp"
                 android:text="Mute Member"
                 android:textColor="@android:color/white"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 android:gravity="center_horizontal"/>
 
@@ -252,12 +260,13 @@
 
         <LinearLayout
             android:id="@+id/morePopupButtonKickMember"
-            android:layout_width="120sp"
+            android:layout_width="90sp"
             android:layout_height="wrap_content"
             android:layout_margin="5sp"
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:clipChildren="false">
 
             <ImageView
                 android:layout_width="40sp"
@@ -270,7 +279,7 @@
                 android:layout_marginTop="8sp"
                 android:text="Kick Out Member"
                 android:textColor="@android:color/white"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 android:gravity="center_horizontal"/>
 

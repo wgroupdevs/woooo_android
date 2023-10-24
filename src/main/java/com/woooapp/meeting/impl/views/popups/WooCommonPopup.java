@@ -106,7 +106,7 @@ public class WooCommonPopup extends Popup {
         }
 
         if (autoDismiss) {
-            new Handler().postDelayed(this::dismiss, 5000);
+            new Handler().postDelayed(this::dismiss, 2000);
         }
     }
 

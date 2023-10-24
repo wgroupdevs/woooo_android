@@ -5,25 +5,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.compose.ui.unit.Dp;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.viewpager.widget.PagerAdapter;
 
 import com.woooapp.meeting.device.Display;
-import com.woooapp.meeting.impl.views.MeView;
-import com.woooapp.meeting.impl.views.PeerView;
-import com.woooapp.meeting.impl.views.models.GridPeer;
 import com.woooapp.meeting.impl.views.models.MeetingPage;
-import com.woooapp.meeting.impl.vm.MeProps;
-import com.woooapp.meeting.impl.vm.PeerProps;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.lv.RoomStore;
-import com.woooapp.meeting.lib.model.Peer;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -88,7 +79,7 @@ public final class MeetingPeersAdapter extends PagerAdapter {
         ListView peersListView = contentView1.findViewById(R.id.peersListView);
         peersListView.setEnabled(false);
         PeerAdapter2 peerAdapter2 = new PeerAdapter2(mContext, mPages.get(position).getPageNo(), mLifecycleOwner, mStore, mMeetingClient);
-        peerAdapter2.setBottomBarHeight(mBottomBarHeight);
+        peerAdapter2.setViewPagerHeight(mBottomBarHeight);
         peersListView.setAdapter(peerAdapter2);
         peerAdapters.put(mPages.get(position).getPageNo(), peerAdapter2);
         container.addView(contentView1);
@@ -114,7 +105,7 @@ public final class MeetingPeersAdapter extends PagerAdapter {
      *
      * @param bottomBarHeight
      */
-    public void setBottomBarHeight(int bottomBarHeight) {
+    public void setViewPagerHeight(int bottomBarHeight) {
         this.mBottomBarHeight = bottomBarHeight;
     }
 

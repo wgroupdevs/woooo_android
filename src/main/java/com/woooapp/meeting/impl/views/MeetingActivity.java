@@ -5,11 +5,13 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -97,7 +99,6 @@ import okhttp3.Response;
  * <code>class</code> MeetingActivity.java
  */
 public class MeetingActivity extends AppCompatActivity implements Handler.Callback {
-
     private static final String TAG = MeetingActivity.class.getSimpleName() + ".java";
     private static final int PERMISSIONS_REQ_CODE = 0x7b;
     private final String[] permissions = new String[]{
@@ -123,7 +124,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private List<Peer> peersList = new ArrayList<>();
 //    private List<GridPeer> gridPeerList = new ArrayList<>();
     private List<ListGridPeer> listGridPeer = new LinkedList<>();
-    private final Handler callbackHandler = new Handler(this);
+    private Handler callbackHandler = new Handler(this);
     private int deviceWidthDp;
     private int deviceHeightDp;
     private boolean mSideMenuOpened = true;
@@ -172,6 +173,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private ImageView ivBg;
     private boolean isCamEnabled;
     private boolean isMicEnabled;
+    private AudioManager droidAudioManager;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -185,6 +187,9 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         deviceHeightDp = Display.getDisplayHeight(this);
         this.initComponents();
         this.bottomBarMeeting.setVisibility(View.GONE);
+
+        this.droidAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        this.droidAudioManager.setSpeakerphoneOn(true);
 
         progressDialog = WooProgressDialog.make(this, "Setting up ...");
         progressDialog.show();
@@ -217,12 +222,16 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
         this.buttonMoreMenu.setOnClickListener(view -> {
             // More Button
-            this.morePopup = new MeetingMorePopup(
-                    this, this.mainContainer,
-                    this.bottomBarMeeting.getHeight(),
-                    mMeetingClient);
-            morePopup.show();
-            fetchRoomData2();
+            try {
+                this.morePopup = new MeetingMorePopup(
+                        this, this.mainContainer,
+                        this.bottomBarMeeting.getHeight(),
+                        mMeetingClient);
+                morePopup.show();
+                fetchRoomData2();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
 
         this.buttonAI.setOnClickListener(view -> {
@@ -508,26 +517,30 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     }
 
     private void showLanguageSelectionSheet() {
-        closeDrawer();
-        View view = LayoutInflater.from(this).inflate(R.layout.layout_dialog_language_select, null);
-        Button buttCancel = view.findViewById(R.id.buttonLangSelectCancel);
-        ListView listView = view.findViewById(R.id.listViewLangSelect);
-        listView.setAdapter(new LangSelectionAdapter(this, langs.getLanguages(), selectedLanguageName));
+        try {
+            closeDrawer();
+            View view = LayoutInflater.from(this).inflate(R.layout.layout_dialog_language_select, null);
+            Button buttCancel = view.findViewById(R.id.buttonLangSelectCancel);
+            ListView listView = view.findViewById(R.id.listViewLangSelect);
+            listView.setAdapter(new LangSelectionAdapter(this, langs.getLanguages(), selectedLanguageName));
 
-        BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.SheetDialog);
-        sheet.setContentView(view);
-        sheet.show();
+            BottomSheetDialog sheet = new BottomSheetDialog(this, R.style.SheetDialog);
+            sheet.setContentView(view);
+            sheet.show();
 
-        listView.setOnItemClickListener((parent, view1, position, id) -> {
-            selectedLanguageName = langs.getLanguages().get(position).getName();
-            selectedLanguageCode = langs.getLanguages().get(position).getCode();
-            updateLanguage();
-            sheet.dismiss();
-        });
+            listView.setOnItemClickListener((parent, view1, position, id) -> {
+                selectedLanguageName = langs.getLanguages().get(position).getName();
+                selectedLanguageCode = langs.getLanguages().get(position).getCode();
+                updateLanguage();
+                sheet.dismiss();
+            });
 
-        buttCancel.setOnClickListener(view2 -> {
-            sheet.dismiss();
-        });
+            buttCancel.setOnClickListener(view2 -> {
+                sheet.dismiss();
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void fetchRoomData() {
@@ -652,8 +665,8 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         this.mMeetingClient.setUsername(username);
         this.mMeetingClient.setPicture(picture);
         this.mMeetingClient.start();
-        this.mMeetingClient.setCamOn(this.isCamEnabled);
-        this.mMeetingClient.setMicOn(this.isMicEnabled);
+//        this.mMeetingClient.setCamOn(this.isCamEnabled);
+//        this.mMeetingClient.setMicOn(this.isMicEnabled);
         if (!joining) this.mMeetingClient.setRole(MeetingClient.Role.ADMIN);
 
         initAccount();
@@ -816,7 +829,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         listGridPeer.clear();
         List<ListGridPeer> peers = new LinkedList<>();
         if (addMe) {
-            peers.add(new ListGridPeer(ListGridPeer.VIEW_TYPE_ME_PEER, null, null));
+            ListGridPeer mePeer = new ListGridPeer(ListGridPeer.VIEW_TYPE_ME_PEER, null, null);
+            mePeer.setPeer1CamOn(true);
+            mePeer.setPeer1MicOn(true);
+            peers.add(mePeer);
             for (int i = 0; i < peersList.size(); i++) {
                 Peer p = peersList.get(i);
                 if (i == 0 || i == 3) {
@@ -901,6 +917,25 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        this.callbackHandler = new Handler(this);
+        WooEvents.getInstance().addHandler(this.callbackHandler);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        destroyCallbackHandler();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        destroyCallbackHandler();
+    }
+
+    @Override
     public boolean handleMessage(@NonNull Message msg) {
         Log.d(TAG, "<< Handler Event >>> " + msg.what);
         switch (msg.what) {
@@ -910,6 +945,13 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 runOnUiThread(() -> {
                     progressDialog.dismiss();
                 });
+                if (!joining) {
+                    try {
+                        putMember();
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                }
                 return true;
             case WooEvents.EVENT_TYPE_PRODUCER_CREATED:
                 Log.d(TAG, "<< Handler Event PRODUCER CREATED [" + msg.obj + "]");
@@ -965,6 +1007,12 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 return true;
             case WooEvents.EVENT_TYPE_SOCKET_DISCONNECTED:
                 Log.d(TAG, "<< Handler Event Socket disconnected with socket id: [" + msg.obj + "]");
+                runOnUiThread(() -> {
+                    if (droidAudioManager != null) {
+                        droidAudioManager.setSpeakerphoneOn(false);
+                        droidAudioManager.setMode(AudioManager.MODE_NORMAL);
+                    }
+                });
                 if (peersList.isEmpty()) {
                     // Destroy and finish()
                     onBackPressed();
@@ -1161,7 +1209,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                         try {
                             Peer p = peers.getPeer(handRaised.getString("socketId"));
                             if (p != null) {
-                                showCommonPopup(p.getDisplayName() + " Raised Hand", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                                showCommonPopup(p.getDisplayName() + " wants to say something!", true, WooCommonPopup.VERTICAL_POSITION_TOP);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -1182,30 +1230,34 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
     private void showNetworkErrorDialog() {
         runOnUiThread(() -> {
-            progressDialog.dismiss();
-            UIManager.showErrorDialog(
-                    MeetingActivity.this,
-                    "Connection Error",
-                    "Failed to fetch remote data. Please try again later",
-                    "OK",
-                    R.drawable.ic_connection_error_34,
-                    new UIManager.DialogCallback() {
-                        @Override
-                        public void onPositiveButton(@Nullable Object sender, @Nullable Object data) {
-                            finish();
-                        }
+            try {
+                progressDialog.dismiss();
+                UIManager.showErrorDialog(
+                        MeetingActivity.this,
+                        "Connection Error",
+                        "Failed to fetch remote data. Please try again later",
+                        "OK",
+                        R.drawable.ic_connection_error_34,
+                        new UIManager.DialogCallback() {
+                            @Override
+                            public void onPositiveButton(@Nullable Object sender, @Nullable Object data) {
+                                finish();
+                            }
 
-                        @Override
-                        public void onNeutralButton(@Nullable Object sender, @Nullable Object data) {
+                            @Override
+                            public void onNeutralButton(@Nullable Object sender, @Nullable Object data) {
 
-                        }
+                            }
 
-                        @Override
-                        public void onNegativeButton(@Nullable Object sender, @Nullable Object data) {
+                            @Override
+                            public void onNegativeButton(@Nullable Object sender, @Nullable Object data) {
 
-                        }
-                    });
-            closeDrawer();
+                            }
+                        });
+                closeDrawer();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
     }
 
@@ -1223,24 +1275,28 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     }
 
     private void showMembersSheet() {
-        List<Member> members = new LinkedList<>();
-        if (roomData.getAdmins() != null) {
-            for (RoomData.Admin admin : roomData.getAdmins()) {
-                members.add(new Member(null, admin.getUsername(), admin.getPicture(), MeetingClient.Role.ADMIN));
+        try {
+            List<Member> members = new LinkedList<>();
+            if (roomData.getAdmins() != null) {
+                for (RoomData.Admin admin : roomData.getAdmins()) {
+                    members.add(new Member(null, admin.getUsername(), admin.getPicture(), MeetingClient.Role.ADMIN));
+                }
             }
-        }
-        if (roomData.getMembers() != null) {
-            for (RoomData.Member member : roomData.getMembers()) {
-                members.add(new Member(member.getSocketId(), member.getUsername(), member.getPicture(), MeetingClient.Role.USER));
+            if (roomData.getMembers() != null) {
+                for (RoomData.Member member : roomData.getMembers()) {
+                    members.add(new Member(member.getSocketId(), member.getUsername(), member.getPicture(), MeetingClient.Role.USER));
+                }
             }
+            BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.SheetDialog);
+            View v = LayoutInflater.from(this).inflate(R.layout.layout_sheet_members, null);
+            TextView tvTitle = v.findViewById(R.id.tvTitle);
+            ListView lv = v.findViewById(R.id.listView);
+            lv.setAdapter(new MemberAdapter(this, members));
+            dialog.setContentView(v);
+            dialog.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.SheetDialog);
-        View v = LayoutInflater.from(this).inflate(R.layout.layout_sheet_members, null);
-        TextView tvTitle = v.findViewById(R.id.tvTitle);
-        ListView lv = v.findViewById(R.id.listView);
-        lv.setAdapter(new MemberAdapter(this, members));
-        dialog.setContentView(v);
-        dialog.show();
     }
 
     /**
@@ -1341,8 +1397,12 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
      * @param verticalAlignment
      */
     private void showCommonPopup(@NonNull String message, boolean autoDismiss, int verticalAlignment) {
-        WooCommonPopup popup = new WooCommonPopup(this, this.mainContainer, message, autoDismiss, verticalAlignment);
-        popup.show();
+        try {
+            WooCommonPopup popup = new WooCommonPopup(this, this.mainContainer, message, autoDismiss, verticalAlignment);
+            popup.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void hideKeyboard() {
@@ -1371,10 +1431,15 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         }
     });
 
+    private void destroyCallbackHandler() {
+        WooEvents.getInstance().removeHandler(this.callbackHandler);
+    }
+
     @Override
     protected void onDestroy() {
         destroyMeeting();
         chatList.clear();
+        destroyCallbackHandler();
         super.onDestroy();
     }
 
@@ -1384,11 +1449,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             closeDrawer();
         } else {
             new Handler().postDelayed(() -> {
-                WooEvents.getInstance().removeHandler(callbackHandler);
                 destroyMeeting();
                 chatList.clear();
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                super.onBackPressed();
+//                super.onBackPressed();
                 finish();
             }, 1000);
         }
