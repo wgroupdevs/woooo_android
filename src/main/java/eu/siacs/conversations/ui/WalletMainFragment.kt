@@ -39,14 +39,12 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import dagger.hilt.android.AndroidEntryPoint
 import eu.siacs.conversations.R
 import eu.siacs.conversations.databinding.FragmentWalletMainBinding
-import eu.siacs.conversations.http.model.wallet.CryptoNetwork
-import eu.siacs.conversations.http.model.wallet.Currencies
-import eu.siacs.conversations.http.model.wallet.Wallets
+import eu.siacs.conversations.http.model.wallet.Currency
+import eu.siacs.conversations.http.model.wallet.Wallet
 import eu.siacs.conversations.ui.adapter.ChainAdapter
 import eu.siacs.conversations.ui.wallet.SendReceiveCurrencyActivity
 import eu.siacs.conversations.ui.wallet.WalletTransactionActivity
 import eu.siacs.conversations.ui.wallet.WalletViewModel
-import io.metamask.androidsdk.Dapp
 import kotlinx.coroutines.launch
 
 
@@ -58,13 +56,11 @@ class WalletMainFragment : XmppFragment() {
     private var activity: ConversationsActivity? = null
 
 
-    var cryptoNetwork: Currencies? = null
-    var selectedWallet: Wallets? = null
-    var selectedCurrency: Currencies? = null
-
+    private var currentChain: Currency? = null
+    var selectedWallet: Wallet? = null
+    var selectedCurrency: Currency? = null
     private var progressDialog: ProgressDialog? = null
 
-    var currentChainId: String? = ""
 
     companion object {
         lateinit var walletViewModel: WalletViewModel
@@ -142,18 +138,17 @@ class WalletMainFragment : XmppFragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 walletViewModel.walletOverviewData.collect {
                     // New location! Update the map
-                    Log.d(TAG, "currencies Count... ${it.currencies.size}")
-                    Log.d(TAG, "wallets Count... ${it.wallets.size}")
-                    Log.d(TAG, "payments Count... ${it.payments.size}")
-                    if (it.wallets.isNotEmpty()) {
+                    Log.d(TAG, "currency Count... ${it.currency.size}")
+                    Log.d(TAG, "wallet Count... ${it.wallet.size}")
+                    if (it.wallet.isNotEmpty()) {
                         populatePIChart()
                         if (progressDialog?.isShowing == true) {
                             progressDialog?.hide()
                         }
-                     } else {
+                    } else {
                         showProgressDialog()
                     }
-                    if (it.currencies.isNotEmpty()) {
+                    if (it.currency.isNotEmpty()) {
                         refreshCurrencyView()
                     }
                     updateAppBar()
@@ -209,16 +204,15 @@ class WalletMainFragment : XmppFragment() {
 
 
     private fun updateAppBar() {
-        cryptoNetwork =
-            walletViewModel.walletOverviewData.value.currencies.firstOrNull { it.chainHexId == walletViewModel.getChainID() }
-        cryptoNetwork?.let {
+        currentChain =
+            walletViewModel.walletOverviewData.value.currency.firstOrNull { it.hexId == walletViewModel.getChainID() }
+        currentChain?.let {
             this.activity?.binding?.toolbar?.currentChainView?.setOnClickListener {
                 showSelectChainDialog(this.requireActivity())
             }
-
-            this.activity?.binding?.toolbar?.chainName?.text = it.fullName
+            this.activity?.binding?.toolbar?.chainName?.text = it.name
             this.activity?.binding?.toolbar?.chainIc?.let { imageView ->
-                Glide.with(this).load(cryptoNetwork?.imgURL ?: "").into(
+                Glide.with(this).load(it.imgURL ?: "").into(
                     imageView
                 )
             }
@@ -231,8 +225,7 @@ class WalletMainFragment : XmppFragment() {
         val entries = ArrayList<PieEntry>()
         val colorList = ArrayList<Int>()
 
-
-        if (walletViewModel.walletOverviewData.value.wallets.isEmpty()) {
+        if (walletViewModel.walletOverviewData.value.wallet.isEmpty()) {
             entries.add(PieEntry(100f))
             colorList.add(Color.YELLOW)
         } else {
@@ -245,11 +238,10 @@ class WalletMainFragment : XmppFragment() {
                         val currency = e.data ?: "WOO"
 
                         selectedWallet =
-                            walletViewModel.walletOverviewData.value.wallets.firstOrNull { it.currency == currency }
+                            walletViewModel.walletOverviewData.value.wallet.firstOrNull { it.currency == currency }
 
                         selectedCurrency =
-                            walletViewModel.walletOverviewData.value.currencies.firstOrNull { it.threeDigitName == currency }
-
+                            walletViewModel.walletOverviewData.value.currency.firstOrNull { it.code == currency }
 
 
                         if (selectedCurrency == null || selectedWallet == null)
@@ -265,7 +257,7 @@ class WalletMainFragment : XmppFragment() {
             })
         }
 
-        for (wallet in walletViewModel.walletOverviewData.value.wallets) {
+        for (wallet in walletViewModel.walletOverviewData.value.wallet) {
             var walletBalance = wallet.balance ?: 0.0
             if (walletBalance == 0.0) {
                 continue
@@ -274,13 +266,13 @@ class WalletMainFragment : XmppFragment() {
                 selectedWallet = wallet
             }
             entries.add(PieEntry(walletBalance.toFloat(), "", wallet.currency))
-            walletViewModel.walletOverviewData.value.currencies.firstOrNull {
-                wallet.currency == it.threeDigitName
+            colorList.add(Color.parseColor(wallet.colorCode))
+
+
+            walletViewModel.walletOverviewData.value.currency.firstOrNull {
+                wallet.currency == it.code
             }?.let { currency ->
-                currency.colorCode?.let {
-                    colorList.add(Color.parseColor(it))
-                }
-                if (currency.threeDigitName == "WOO") {
+                if (currency.code == "WOO") {
                     selectedCurrency = currency
                 }
             }
@@ -403,7 +395,7 @@ class WalletMainFragment : XmppFragment() {
             context = context,
             chainID = walletViewModel.getChainID(),
             showOnDialog = true,
-            chainList = walletViewModel.walletOverviewData.value.currencies
+            chainList = walletViewModel.walletOverviewData.value.currency
         )
         recycler.adapter = chainAdapter
 
@@ -421,7 +413,7 @@ class WalletMainFragment : XmppFragment() {
         // Create and show the AlertDialog
         val alertDialog = alertDialogBuilder.create()
         chainAdapter.onItemClick = { chain ->
-            chain.chainHexId?.let {
+            chain.hexId?.let {
                 walletViewModel.switchChain(
                     it,
                     onSuccess = { result ->
@@ -448,14 +440,14 @@ class WalletMainFragment : XmppFragment() {
         val chainAdapter = ChainAdapter(
             context = this.requireActivity(),
             showOnDialog = false,
-            chainList = walletViewModel.walletOverviewData.value.currencies
+            chainList = walletViewModel.walletOverviewData.value.currency
         )
         binding.chainRecyclerview.adapter = chainAdapter
-        chainAdapter.onItemClick = { currency ->
+        chainAdapter.onItemClick = { chain ->
             run {
                 val transactionIntent =
                     Intent(getActivity(), SendReceiveCurrencyActivity::class.java)
-                SendReceiveCurrencyActivity.currency = currency
+                SendReceiveCurrencyActivity.chain = chain
                 SendReceiveCurrencyActivity.walletViewModel = walletViewModel
                 startActivity(transactionIntent)
             }
@@ -489,7 +481,7 @@ class WalletMainFragment : XmppFragment() {
 
             val transactionIntent =
                 Intent(getActivity(), SendReceiveCurrencyActivity::class.java)
-            SendReceiveCurrencyActivity.currency = selectedCurrency!!
+            SendReceiveCurrencyActivity.chain = selectedCurrency!!
             SendReceiveCurrencyActivity.receiverWalletAddress = result
             SendReceiveCurrencyActivity.walletViewModel = walletViewModel
             startActivity(transactionIntent)
@@ -506,9 +498,9 @@ class WalletMainFragment : XmppFragment() {
             "^(1|3|[13][a-km-zA-HJ-NP-Z2-9]{25,34}|bc1[ac-hj-np-z02-9]{25,39})$".toRegex()
         // Ethereum addresses are 40 characters long and start with '0x'
         val ethereumPattern = "^0x[0-9a-fA-F]{40}$".toRegex()
-        // You can add more patterns for other cryptocurrencies here...
+        // You can add more patterns for other cryptocurrency here...
         return bitcoinPattern.matches(address) || ethereumPattern.matches(address)
-        // Add more checks for other cryptocurrencies here...
+        // Add more checks for other cryptocurrency here...
     }
 
 

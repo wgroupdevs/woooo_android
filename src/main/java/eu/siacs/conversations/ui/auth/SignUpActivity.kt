@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModelProvider
 import com.hbb20.CountryCodePicker
 import dagger.hilt.android.AndroidEntryPoint
@@ -70,7 +71,7 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult {
             walletAddress = walletViewModel.ethereumState.value?.selectedAddress.toString()
             return
         }
-        walletViewModel.showWalletNotConnectedDialog(this, onSuccess = {
+        walletViewModel.showWalletNotConnectedDialog(this, title = "Configure Wallet", onSuccess = {
             walletAddress = it
         }, onError = {
             Toast.makeText(this, "Connection Failed", Toast.LENGTH_LONG).show()
@@ -193,6 +194,7 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult {
             phoneNumber = phoneNumber,
             password = password,
             userReferralCode = referralCode,
+            walletAddress = walletAddress
         )
 
         val wooAuthService = WooAPIService.getInstance()

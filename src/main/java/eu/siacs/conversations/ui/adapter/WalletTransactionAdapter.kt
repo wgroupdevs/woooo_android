@@ -6,26 +6,19 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import eu.siacs.conversations.R
-import eu.siacs.conversations.http.model.wallet.CryptoNetwork
-import eu.siacs.conversations.http.model.wallet.Payment
-import java.text.DateFormat
+import eu.siacs.conversations.http.model.wallet.Transaction
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Date
 
 
 class WalletTransactionAdapter(
     private val context: Context,
-    private val payment: List<Payment>
+    private val transaction: List<Transaction>
 ) :
     RecyclerView.Adapter<WalletTransactionAdapter.ViewHolder>() {
 
@@ -46,12 +39,12 @@ class WalletTransactionAdapter(
     // binds the list items to a view
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val payment = payment[position]
-        holder.trDate.text = payment.paymentDate?.let {
+        val payment = transaction[position]
+        holder.trDate.text = payment.date?.let {
             formatDate(it)
         }
         holder.trCurrency.text = payment.currency ?: ""
-        holder.trType.text = payment.paymentType ?: ""
+        holder.trType.text = payment.type ?: ""
         holder.trAmount.text = payment.amount?.let { it.toString() }
         holder.trStatus.text = payment.confirms?.let {
             when (it) {
@@ -67,7 +60,7 @@ class WalletTransactionAdapter(
 
     // return the number of the items in the list
     override fun getItemCount(): Int {
-        return payment.size
+        return transaction.size
     }
 
 

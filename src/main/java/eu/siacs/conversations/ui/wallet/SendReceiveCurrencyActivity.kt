@@ -16,13 +16,10 @@ import com.bumptech.glide.Glide
 import dagger.hilt.android.AndroidEntryPoint
 import eu.siacs.conversations.R
 import eu.siacs.conversations.databinding.ActivitySendReceiveCurrencyBinding
-import eu.siacs.conversations.http.model.wallet.CryptoNetwork
-import eu.siacs.conversations.http.model.wallet.Currencies
+import eu.siacs.conversations.http.model.wallet.Currency
 import eu.siacs.conversations.http.model.wallet.PaymentReqModel
-import eu.siacs.conversations.http.model.wallet.Wallets
+import eu.siacs.conversations.http.model.wallet.Wallet
 import eu.siacs.conversations.services.BarcodeProvider
-import eu.siacs.conversations.ui.WalletMainFragment
-import eu.siacs.conversations.ui.util.ShareUtil
 
 @AndroidEntryPoint
 class SendReceiveCurrencyActivity : AppCompatActivity() {
@@ -30,7 +27,7 @@ class SendReceiveCurrencyActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySendReceiveCurrencyBinding
     private var walletAddress: String = ""
     lateinit var bitmap: Bitmap
-    private var wallet: Wallets? = null
+    private var wallet: Wallet? = null
 
     // on below line we are creating
     // a variable for qr encoder.
@@ -40,7 +37,7 @@ class SendReceiveCurrencyActivity : AppCompatActivity() {
         binding = ActivitySendReceiveCurrencyBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.backArrow.setOnClickListener { finish() }
-        Glide.with(this).load(currency.imgURL ?: "").into(
+        Glide.with(this).load(chain.imgURL ?: "").into(
             binding.chainIc
         )
         binding.sendLabel.setOnClickListener {
@@ -78,8 +75,8 @@ class SendReceiveCurrencyActivity : AppCompatActivity() {
 
     private fun getWalletByCurrency() {
         //        find-currency-wallet
-        wallet = walletViewModel.walletOverviewData.value.wallets.firstOrNull {
-            currency.threeDigitName == it.currency
+        wallet = walletViewModel.walletOverviewData.value.wallet.firstOrNull {
+            chain.code == it.currency
         }
         updateWalletBalance()
 
@@ -154,7 +151,7 @@ class SendReceiveCurrencyActivity : AppCompatActivity() {
 
 
     companion object {
-        lateinit var currency: Currencies
+        lateinit var chain: Currency
         var receiverWalletAddress: String = ""
         lateinit var walletViewModel: WalletViewModel
         val TAG = "SendCurrency_TAG"
@@ -182,7 +179,7 @@ class SendReceiveCurrencyActivity : AppCompatActivity() {
 
                 val payment = PaymentReqModel(
                     accountId = walletViewModel.mAccount?.accountId,
-                    currency = currency.threeDigitName,
+                    currency = chain.code,
                     transactionHash = it.toString(),
                     amount = amount.toDouble(),
                     paymentType = TransactionType.WITHDRAW.name

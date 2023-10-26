@@ -15,8 +15,8 @@ import eu.siacs.conversations.http.model.requestmodels.GetWooContactsRequestPara
 import eu.siacs.conversations.http.model.requestmodels.EmailRequestModel;
 import eu.siacs.conversations.http.model.requestmodels.ResetPasswordRequestModel;
 import eu.siacs.conversations.http.model.wallet.BlockChainAPIModel;
-import eu.siacs.conversations.http.model.wallet.Payment;
 import eu.siacs.conversations.http.model.wallet.PaymentReqModel;
+import eu.siacs.conversations.http.model.wallet.TransactionAPIModel;
 import eu.siacs.conversations.http.model.wallet.WalletOverviewApiModel;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -35,8 +35,11 @@ public interface WooService {
     @GET("/api/v1/Account/SearchAccount")
     Call<SearchAccountAPIResponse> searchAccount(@Query("value") String value, @Query("isEmail") boolean isEmail);
 
-    @GET("/api/v1/Wallet/GetOverviewData")
+    @GET("/api/v1/Wallet/WalletOverviewMobile")
     Call<WalletOverviewApiModel> getWalletOverviewData(@Query("accountId") String value);
+
+    @GET("/api/v1/Payment/GetTransactions")
+    Call<TransactionAPIModel> getTransactions(@Query("AccountId") String accountId, @Query("PageNumber") int pageNumber, @Query("PageSize") int pageSize);
 
     @POST("/api/v1/Contact/ContactsFromPhone")
     Call<GetWooContactsModel> getWooContacts(@Body GetWooContactsRequestParams params);

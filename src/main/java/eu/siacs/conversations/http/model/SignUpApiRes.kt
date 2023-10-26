@@ -15,7 +15,8 @@ data class SignUpData(
     val phoneNumber: String? = null,
     val imageURL: String? = null,
     val id: Long? = null,
-    val jID: String? = null
+    val jID: String? = null,
+    val walletAddress: String? = null
 )
 
 data class SignUpRequestModel(
@@ -26,5 +27,6 @@ data class SignUpRequestModel(
     val lastName: String = "",
     val password: String = "",
     val phoneNumber: String = "",
-    val userReferralCode: String = ""
+    val userReferralCode: String = "",
+    val walletAddress: String = ""
 )

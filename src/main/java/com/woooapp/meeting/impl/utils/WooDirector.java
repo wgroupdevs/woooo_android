@@ -1,18 +1,10 @@
 package com.woooapp.meeting.impl.utils;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.res.AssetManager;
 import android.provider.Settings;
 
 import androidx.annotation.NonNull;
-
-import com.android.volley.VolleyError;
-import com.woogroup.woooo_app.woooo.di.WooApplication;
-import com.woooapp.meeting.lib.MeetingClient;
-import com.woooapp.meeting.net.ApiManager;
-import com.woooapp.meeting.net.models.PutMembersDataBody;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

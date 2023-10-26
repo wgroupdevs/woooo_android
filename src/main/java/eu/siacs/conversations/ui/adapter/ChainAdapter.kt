@@ -10,16 +10,16 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import eu.siacs.conversations.R
-import eu.siacs.conversations.http.model.wallet.Currencies
+import eu.siacs.conversations.http.model.wallet.Currency
 
 class ChainAdapter(
     private val context: Context,
     private val chainID: String = "0x1",
     private val showOnDialog: Boolean = false,
-    private val chainList: List<Currencies>
+    private val chainList: List<Currency>
 ) :
     RecyclerView.Adapter<ChainAdapter.ViewHolder>() {
-    var onItemClick: ((Currencies) -> Unit)? = null
+    var onItemClick: ((Currency) -> Unit)? = null
 
     // create new views
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -42,10 +42,10 @@ class ChainAdapter(
 //        holder.imageView.setImageResource(get)
 
         // sets the text to the textview from our itemHolder class
-        holder.textView.text = currency.fullName
+        holder.textView.text = currency.name
         if (showOnDialog) {
             holder.arrowBtn.visibility = View.GONE
-            if (chainID == currency.chainHexId) {
+            if (chainID == currency.hexId) {
                 holder.arrowBtn.visibility = View.VISIBLE
                 holder.arrowBtn.setImageResource(R.drawable.ic_baseline_check_24)
             }

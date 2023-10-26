@@ -919,5 +919,14 @@
     <string name="switch_chain">Switch Chain</string>
     <string name="add_chain">Add Chain</string>
 
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+
+    <string name="meeting_drawer_open">open</string>
+    <string name="meeting_drawer_close">close</string>
+
+
+
 
 </resources>

@@ -13,7 +13,6 @@ import eu.siacs.conversations.R
 import eu.siacs.conversations.entities.Account
 import eu.siacs.conversations.http.model.wallet.BlockChainAPIModel
 import eu.siacs.conversations.http.model.wallet.CryptoNetwork
-import eu.siacs.conversations.http.model.wallet.Payment
 import eu.siacs.conversations.http.model.wallet.PaymentReqModel
 import eu.siacs.conversations.http.model.wallet.WalletOverviewApiModel
 import eu.siacs.conversations.http.model.wallet.WalletOverviewData
@@ -362,7 +361,7 @@ class WalletViewModel @Inject constructor(
         } else {
             titleTV.text = title
         }
-        desTV.text = "To proceed, please connect to MetaMask."
+        desTV.text = "To proceed, please connect to Wallet."
 
         // Set the custom layout to the dialog
         alertDialogBuilder.setView(customView)

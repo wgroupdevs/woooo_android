@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.http.HttpConnectionManager;
 import eu.siacs.conversations.http.model.GetWooContactsModel;
@@ -28,11 +26,9 @@ import eu.siacs.conversations.http.model.requestmodels.GetWooContactsRequestPara
 import eu.siacs.conversations.http.model.requestmodels.EmailRequestModel;
 import eu.siacs.conversations.http.model.requestmodels.ResetPasswordRequestModel;
 import eu.siacs.conversations.http.model.wallet.BlockChainAPIModel;
-import eu.siacs.conversations.http.model.wallet.Payment;
 import eu.siacs.conversations.http.model.wallet.PaymentReqModel;
+import eu.siacs.conversations.http.model.wallet.TransactionAPIModel;
 import eu.siacs.conversations.http.model.wallet.WalletOverviewApiModel;
-import eu.siacs.conversations.persistance.WOOPrefManager;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import retrofit2.Call;
@@ -53,7 +49,6 @@ public class WooAPIService {
     public static String userToken;
 
     public static WooAPIService getInstance() {
-
 
 
         if (wooooAuthService == null) {
@@ -332,9 +327,7 @@ public class WooAPIService {
     }
 
     public void getWalletOverviewData(String value, OnWalletOverviewAPiResult listener) {
-
         Log.d(TAG, "getWalletOverviewData VALUE :" + value);
-
         final Call<WalletOverviewApiModel> searchResultCall = wooService.getWalletOverviewData(value);
         searchResultCall.enqueue(new Callback<>() {
             @Override
@@ -352,13 +345,40 @@ public class WooAPIService {
                 } else {
                     listener.onWalletOverviewResultFound(body);
                 }
-
             }
 
             @Override
             public void onFailure(@NonNull Call<WalletOverviewApiModel> call, @NonNull Throwable throwable) {
                 Log.d(Config.LOGTAG, "getWalletOverviewData ERROR " + call.isCanceled(), throwable);
                 Log.d(Config.LOGTAG, "getWalletOverviewData ERROR " + call.timeout(), throwable.getCause());
+            }
+        });
+    }
+
+    public void getTransactions(String accountId, int pageNumber, int pageSize, OnGetTransactionPiResult listener) {
+        Log.d(TAG, "getWalletOverviewData VALUE :" + pageNumber);
+        final Call<TransactionAPIModel> transactionResultCall = wooService.getTransactions(accountId, pageNumber, pageSize);
+        transactionResultCall.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<TransactionAPIModel> call, @NonNull Response<TransactionAPIModel> response) {
+                Log.d(TAG, "getWalletOverviewData VALUE :" + response);
+                final TransactionAPIModel body = response.body();
+                if (body == null) {
+                    try {
+                        assert response.errorBody() != null;
+                        String errorBodyFound = response.errorBody().byteString().utf8();
+                        listener.onGetTransactionFound(parseErrorBody(errorBodyFound));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    listener.onGetTransactionFound(body);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<TransactionAPIModel> call, @NonNull Throwable throwable) {
+                Log.d(Config.LOGTAG, "getTransactions ERROR " + call.isCanceled(), throwable);
             }
         });
     }
@@ -565,6 +585,10 @@ public class WooAPIService {
 
     public interface OnWalletOverviewAPiResult {
         <T> void onWalletOverviewResultFound(T result);
+    }
+
+    public interface OnGetTransactionPiResult {
+        <T> void onGetTransactionFound(T result);
     }
 
     public interface OnGetAccountByJidAPiResult {
