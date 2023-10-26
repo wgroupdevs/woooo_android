@@ -14,8 +14,8 @@
         android:layout_height="match_parent"
         android:clipChildren="true"
         bind:cardBackgroundColor="@color/trans_bg"
-        bind:cardCornerRadius="2dp"
-        bind:cardUseCompatPadding="true">
+        bind:cardCornerRadius="15dp"
+        bind:cardUseCompatPadding="false">
 
         <include
             android:id="@+id/wooPeerView"
@@ -24,6 +24,88 @@
             android:layout_height="match_parent"
             bind:wooPeerViewProps="@{wooMeProps}"
             />
+
+        <LinearLayout
+            android:id="@+id/peerInfoPanel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="5sp"
+            android:layout_gravity="top|right"
+            android:layout_margin="3sp"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/meInfoHand"
+                android:layout_width="18sp"
+                android:layout_height="18sp"
+                android:layout_marginLeft="5sp"
+                android:layout_marginRight="5sp"
+                android:src="@drawable/ic_front_hand_white_34"/>
+
+            <ImageView
+                android:id="@+id/meInfoMic"
+                android:layout_width="22sp"
+                android:layout_height="22sp"
+                android:layout_marginLeft="5sp"
+                android:layout_marginRight="5sp"
+                android:src="@drawable/ic_mic_white_48dp"/>
+
+            <ImageView
+                android:id="@+id/meInfoCam"
+                android:layout_width="22sp"
+                android:layout_height="22sp"
+                android:layout_marginLeft="5sp"
+                android:layout_marginRight="5sp"
+                android:src="@drawable/ic_video_camera_white"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/controls"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:gravity="center_vertical"
+            android:padding="2dp"
+            android:orientation="horizontal"
+            android:layout_margin="10sp"
+            android:background="@drawable/bg_rounded_yellow"
+            >
+<!--            android:visibility="@{wooMeProps.connected ? View.VISIBLE : View.GONE}" -->
+            <TextView
+                android:id="@+id/tvMeName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:padding="1sp"
+                android:text="Me"
+                android:textStyle="bold"
+                android:textSize="10sp"
+                android:textColor="@color/black"
+                android:ellipsize="end"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/audio_me_layout"
+            android:layout_width="25sp"
+            android:layout_height="25sp"
+            android:orientation="horizontal"
+            android:layout_margin="10sp"
+            android:gravity="center"
+            android:padding="3sp"
+            android:background="@drawable/bg_rounded_blue"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/audio_me_gif"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_audio_giphy"/>
+
+        </LinearLayout>
 
     </androidx.cardview.widget.CardView>
 

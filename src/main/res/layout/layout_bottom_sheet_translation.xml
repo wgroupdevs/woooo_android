@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rounded_default"
+    android:clipChildren="true"
+    android:elevation="10sp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20sp">
+
+        <Button
+            android:id="@+id/buttonTransSheetText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/blue_primary_transparent"
+            android:foreground="?attr/selectableItemBackground"
+            android:src="@drawable/ic_check_circle_34"
+            android:text="Text Translation"
+            android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1sp"
+            android:background="@color/white" />
+
+        <Button
+            android:id="@+id/buttonTransSheetVoice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/blue_primary_transparent"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="Voice Translation"
+            android:textColor="@color/black" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1sp"
+            android:background="@color/white" />
+
+        <Button
+            android:id="@+id/buttonTransSheetCancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/blue_primary_transparent"
+            android:foreground="?attr/selectableItemBackground"
+            android:text="Cancel"
+            android:textColor="@color/red500" />
+
+    </LinearLayout>
+
+</RelativeLayout>

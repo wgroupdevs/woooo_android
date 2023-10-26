@@ -144,13 +144,9 @@ dependencies {
 
     // charts
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'com.intuit.sdp:sdp-android:1.1.0'
 
-    //Blur
-    implementation 'com.github.furkankaplan:fk-blur-view-android:1.0.1'
-
-    implementation 'com.nabinbhandari.android:permissions:3.8'
     implementation 'org.protoojs.droid:protoo-client:4.0.3'
-
     implementation "androidx.preference:preference-ktx:1.2.1"
 
     // Jackson
@@ -192,6 +188,9 @@ android {
         resValue "string", "app_name", appName
         buildConfigField "String", "APP_NAME", "\"$appName\""
         multiDexEnabled true
+
+        renderscriptTargetApi 21
+        renderscriptSupportModeEnabled true
     }
 
     splits {
@@ -225,8 +224,6 @@ android {
     buildFeatures {
 //        compose true
         viewBinding true
-        aidl true
-
     }
 //    composeOptions {
 //        kotlinCompilerExtensionVersion = "1.4.7"

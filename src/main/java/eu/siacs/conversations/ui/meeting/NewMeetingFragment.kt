@@ -2,8 +2,11 @@ package eu.siacs.conversations.ui.meeting
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Message
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.text.Editable
@@ -14,17 +17,19 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toLowerCase
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.woooapp.meeting.impl.utils.ClipboardCopy
+import com.woooapp.meeting.impl.utils.WooEvents
 import com.woooapp.meeting.impl.views.MeetingActivity
 import com.woooapp.meeting.lib.Utils
 import eu.siacs.conversations.R
 import eu.siacs.conversations.databinding.FragmentNewMeetingBinding
 import eu.siacs.conversations.entities.Account
 import eu.siacs.conversations.persistance.DatabaseBackend
-import java.util.Locale
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,7 +41,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [NewMeetingFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class NewMeetingFragment : Fragment() {
+class NewMeetingFragment : Fragment(), Handler.Callback {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -47,6 +52,9 @@ class NewMeetingFragment : Fragment() {
     private var meetingId: String? = null
 
     private var vibrator: Vibrator? = null
+    private val handler: Handler = Handler(this)
+    private var camEnabled = true
+    private var micEnabled = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +62,9 @@ class NewMeetingFragment : Fragment() {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+
+        WooEvents.getInstance().addHandler(handler)
+
         // Database backend
         Log.d(TAG, "<< Initializing DatabaseBackend and fetching accounts")
         var databaseBackend = DatabaseBackend.getInstance(context)
@@ -63,7 +74,6 @@ class NewMeetingFragment : Fragment() {
             if (accounts?.size!! > 0)
                 this.account = accounts?.get(0)
         }
-        Log.d(TAG, "<< Accounts Size >> " + accounts?.size)
     }
 
     override fun onCreateView(
@@ -77,22 +87,26 @@ class NewMeetingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        var intent: Intent? = null
+        this.initComponents()
 
+        var intent: Intent? = null
         if (account != null) {
-            meetingId = Utils.getRandomString(8)
+            meetingId = Utils.getNumericString(9);
             mBinding?.meetingUrlEt?.text = Editable.Factory.getInstance()
                 .newEditable("https://cc.watchblock.net/meeting/$meetingId")
             val email = account!!.userEmail
             val accountUniqueId = account!!.accountId
             val picture = account!!.avatar
-            val username = account!!.username
+            val username = account!!.displayName
             Log.d(TAG, "Account >> MeetingId[$meetingId], Email[$email], AccountUniqueID[$accountUniqueId], Picture[$picture], Username[$username]")
             intent = Intent(context, MeetingActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             intent.putExtra("email", email)
             intent.putExtra("accountUniqueId", accountUniqueId)
             intent.putExtra("picture", picture)
+            intent.putExtra("username", username)
+            intent.putExtra("camOn", camEnabled)
+            intent.putExtra("micOn", micEnabled)
         }
 
         // Start Meeting
@@ -102,7 +116,9 @@ class NewMeetingFragment : Fragment() {
                     if (intent != null) {
                         intent.putExtra("meetingName", mBinding?.meetingNameEt?.text.toString())
                         intent.putExtra("meetingId", meetingId)
+                        intent.putExtra("joining", false)
                         startActivity(intent)
+                        mBinding?.meetingNameEt?.text = Editable.Factory.getInstance().newEditable("")
                     }
                 } else {
                     meetingEtEmptyError()
@@ -158,11 +174,78 @@ class NewMeetingFragment : Fragment() {
         }
     }
 
+    /**
+     *
+     */
+    private fun initComponents() {
+        if (micEnabled) {
+            mBinding?.buttonMic?.setImageResource(R.drawable.ic_mic_white_48dp)
+            mBinding?.tvMic?.text = "Mic is On"
+        } else {
+            mBinding?.buttonMic?.setImageResource(R.drawable.ic_mic_off_gray)
+            mBinding?.tvMic?.text = "Mic is Off"
+        }
+        if (camEnabled) {
+            mBinding?.buttonCam?.setImageResource(R.drawable.ic_video_camera_white)
+            mBinding?.tvCam?.text = "Camera is On"
+        } else {
+            mBinding?.buttonCam?.setImageResource(R.drawable.ic_camera_off_gray)
+            mBinding?.tvCam?.text = "Camera is Off"
+        }
+
+        mBinding?.buttonMic?.setOnClickListener {
+            micEnabled = if (micEnabled) {
+                mBinding?.buttonMic?.setImageResource(R.drawable.ic_mic_off_gray)
+                mBinding?.tvMic?.text = "Mic is Off"
+                mBinding?.tvMic?.setTextColor(Color.parseColor("#dddddd"))
+                false
+            } else {
+                mBinding?.buttonMic?.setImageResource(R.drawable.ic_mic_white_48dp)
+                mBinding?.tvMic?.text = "Mic is On"
+                mBinding?.tvMic?.setTextColor(Color.parseColor("#ffffff"))
+                true
+            }
+        }
+
+        mBinding?.buttonCam?.setOnClickListener {
+            camEnabled = if (camEnabled) {
+                mBinding?.buttonCam?.setImageResource(R.drawable.ic_camera_off_gray)
+                mBinding?.tvCam?.text = "Camera is Off"
+                mBinding?.tvCam?.setTextColor(Color.parseColor("#dddddd"))
+                false
+            } else {
+                mBinding?.buttonCam?.setImageResource(R.drawable.ic_video_camera_white)
+                mBinding?.tvCam?.text = "Camera is On"
+                mBinding?.tvCam?.setTextColor(Color.parseColor("#ffffff"))
+                true
+            }
+        }
+    }
+
     @SuppressWarnings("deprecation")
     fun meetingEtEmptyError() {
         mBinding?.meetingNameEt?.setHintTextColor(Color.parseColor("#ff0000"))
         mBinding?.meetingNameEt?.hint = "* Meeting name is required!"
         vibrator?.vibrate(100L)
+    }
+
+    override fun handleMessage(msg: Message): Boolean {
+        if (msg.what == WooEvents.EVENT_TYPE_SOCKET_DISCONNECTED) {
+            meetingId = Utils.getNumericString(9);
+            mBinding?.meetingUrlEt?.text = Editable.Factory.getInstance()
+                .newEditable("https://cc.watchblock.net/meeting/$meetingId")
+            return true
+        }
+        return false
+    }
+
+    override fun onStop() {
+        super.onStop()
+        WooEvents.getInstance().removeHandler(handler)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 
     companion object {

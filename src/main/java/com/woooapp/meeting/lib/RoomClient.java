@@ -52,6 +52,8 @@ import java.util.List;
  */
 public class RoomClient extends RoomMessageHandler {
 
+    private static final String TAG = RoomClient.class.getSimpleName() + ".java";
+
     public enum ConnectionState {
         // initial state.
         NEW,

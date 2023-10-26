@@ -31,7 +31,6 @@ import java.util.Set;
 public class PeerProps extends PeerViewProps {
 
     private static final String TAG = "PeerProps";
-
     private final ObservableField<Boolean> mAudioEnabled;
     private final ObservableField<Boolean> mVideoVisible;
     private final StateComposer mStateComposer;

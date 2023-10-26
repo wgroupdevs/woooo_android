@@ -21,8 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.Manifest;
 
-import com.nabinbhandari.android.permissions.PermissionHandler;
-import com.nabinbhandari.android.permissions.Permissions;
 import com.woooapp.meeting.impl.views.adapters.PeerAdapter;
 import com.woooapp.meeting.impl.vm.EdiasProps;
 import com.woooapp.meeting.impl.vm.MeProps;
@@ -53,14 +51,11 @@ public class RoomActivity extends AppCompatActivity {
     private String mRoomId;
     private String mPeerId;
     private String mDisplayName;
-
     private boolean mForceH264;
     private boolean mForceVP9;
-
     private RoomOptions mOptions;
     private RoomStore mRoomStore;
     private RoomClient mRoomClient;
-
     private ActivityRoomBinding mBinding;
     private PeerAdapter mPeerAdapter;
 
@@ -228,17 +223,6 @@ public class RoomActivity extends AppCompatActivity {
                 });
     }
 
-    private PermissionHandler permissionHandler =
-            new PermissionHandler() {
-                @Override
-                public void onGranted() {
-                    Logger.d(TAG, "permission granted");
-                    if (mRoomClient != null) {
-                        mRoomClient.join();
-                    }
-                }
-            };
-
     private void checkPermission() {
         String[] permissions = {
 //                Manifest.permission.INTERNET,
@@ -247,9 +231,7 @@ public class RoomActivity extends AppCompatActivity {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
         };
         String rationale = "Please provide permissions";
-        Permissions.Options options =
-                new Permissions.Options().setRationaleDialogTitle("Info").setSettingsDialogTitle("Warning");
-        Permissions.check(this, permissions, null, null, permissionHandler);
+
     }
 
     private void destroyRoom() {

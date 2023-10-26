@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/morePopupContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_rounded_dark_transulecent"
+    android:orientation="vertical"
+    android:clipChildren="false">
+
+    <!-- ROW 1 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="10sp"
+        android:padding="12sp"
+        android:clipChildren="false">
+
+        <LinearLayout
+            android:id="@+id/morePopupButtonMeetingId"
+            android:layout_width="90sp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:clipChildren="false">
+
+            <ImageView
+                android:id="@+id/morePopupIvMeetingId"
+                android:layout_width="32sp"
+                android:layout_height="32sp"
+                android:src="@drawable/ic_share_white_24dp" />
+
+            <TextView
+                android:id="@+id/morePopupTvMeetingId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8sp"
+                android:text="Share Link"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/morePopupButtonParticipants"
+            android:layout_width="90sp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/morePopupIvParticipants"
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:src="@drawable/ic_meeting_new" />
+
+            <TextView
+                android:id="@+id/morePopupTvParticipants"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5sp"
+                android:text="Participants"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/morePopupButtonSelectLang"
+            android:layout_width="90sp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:src="@drawable/ic_lang_disable" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5sp"
+                android:text="Select Language"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Row 2 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="15sp"
+        android:padding="12sp"
+        android:clipChildren="false">
+
+        <LinearLayout
+            android:id="@+id/morePopupButtonSelectBackground"
+            android:layout_width="90sp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:src="@drawable/ic_wallpaper" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5sp"
+                android:text="Select background"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/morePopupButtonMuteEveryone"
+            android:layout_width="90sp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/morePopupIvMute"
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:src="@drawable/ic_speaker_off" />
+
+            <TextView
+                android:id="@+id/morePopupTvMute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5sp"
+                android:text="Mute Everyone"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/morePopupButtonDisableCam"
+            android:layout_width="90sp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/morePopupIvCam"
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:src="@drawable/ic_video_camera_white" />
+
+            <TextView
+                android:id="@+id/morePopupTvCam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5sp"
+                android:text="Disable Everyone's camera"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- ROW 3 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="15sp"
+        android:padding="12sp"
+        android:clipChildren="false">
+
+        <LinearLayout
+            android:id="@+id/morePopupButtonCloseMemberVideo"
+            android:layout_width="90sp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:src="@drawable/ic_camera_off_white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp"
+                android:text="Close Member's Video"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/morePopupButtonMuteMember"
+            android:layout_width="90sp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="32sp"
+                android:layout_height="32sp"
+                android:src="@drawable/ic_shut_up_white" />
+
+            <TextView
+                android:layout_width="120sp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18sp"
+                android:text="Mute Member"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/morePopupButtonKickMember"
+            android:layout_width="90sp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:clipChildren="false">
+
+            <ImageView
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:src="@drawable/ic_kick_out_white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8sp"
+                android:text="Kick Out Member"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- ROW 3 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:layout_marginTop="15sp">
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

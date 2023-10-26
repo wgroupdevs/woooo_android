@@ -3,19 +3,23 @@ package com.woooapp.meeting.net;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 
 import eu.siacs.conversations.BuildConfig;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * @author Muneeb Ahmad
@@ -26,16 +30,14 @@ import eu.siacs.conversations.BuildConfig;
  */
 public final class ApiManager {
 
+    private static final String TAG = ApiManager.class.getSimpleName() + ".java";
     private Context mContext;
-    private final RequestQueue requestQueue;
 
     /**
-     *
      * @param context
      */
     private ApiManager(Context context) {
         this.mContext = context;
-        this.requestQueue = Volley.newRequestQueue(mContext);
     }
 
     public static final String BASE_URL = "https://wmediasoup.watchblock.net";
@@ -45,118 +47,138 @@ public final class ApiManager {
      */
     private static final String EP_CREATE = "/meeting/create";
     private static final String EP_GET_ROOM_DATA = "/meeting/";
+    public static final String URL_MIC_MUTED = "https://wmediasoup.watchblock.net/meeting/mic/push";
+    public static final String URL_MIC_UN_MUTED = "https://wmediasoup.watchblock.net/meeting/mic/pull";
+    public static final String URL_HAND_RAISED = "https://wmediasoup.watchblock.net/meeting/hand/push";
+    public static final String URL_HAND_LOWERED = "https://wmediasoup.watchblock.net/meeting/mic/pull";
 
     private static final String USER_AGENT = String.format("%s[Android]-%s v%s",
             BuildConfig.APP_NAME, BuildConfig.BUILD_TYPE, BuildConfig.VERSION_NAME);
 
     /**
-     *
      * @param jsonBody
      * @param apiResultCallback
      */
-    public void fetchCreatePreMeeting(@NonNull String jsonBody, @NonNull ApiResult apiResultCallback) {
-        StringRequest strRequest = new StringRequest(
-                Request.Method.POST,
-                BASE_URL + EP_CREATE,
-                apiResultCallback::onResult,
-                apiResultCallback::onFailure) {
+    public void fetchCreatePreMeeting(@NonNull String jsonBody, @NonNull ApiResult2 apiResultCallback) {
+        OkHttpClient client = new OkHttpClient.Builder().build();
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(jsonBody, mediaType);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(BASE_URL + EP_CREATE)
+                .method("POST", body)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("User-Agent", USER_AGENT)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                apiResultCallback.onFailure(call, e.getMessage());
             }
 
             @Override
-            public byte[] getBody() throws AuthFailureError {
-                return jsonBody.getBytes(StandardCharsets.UTF_8);
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                apiResultCallback.onResult(call, response);
             }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                headers.put("User-Agent", USER_AGENT);
-                return headers;
-            }
-        };
-
-        requestQueue.add(strRequest);
+        });
     }
 
     /**
-     *
      * @param meetingId
      * @param apiResultCallback
      */
-    public void fetchRoomData(@NonNull String meetingId, @NonNull ApiResult apiResultCallback) {
-        StringRequest strRequest = new StringRequest(
-                Request.Method.GET,
-                BASE_URL + EP_GET_ROOM_DATA + meetingId,
-                apiResultCallback::onResult,
-                apiResultCallback::onFailure
-        ) {
+    public void fetchRoomData2(@NonNull String meetingId, @NonNull ApiResult2 apiResultCallback) {
+        OkHttpClient client = new OkHttpClient.Builder().build();
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(BASE_URL + EP_GET_ROOM_DATA + meetingId)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("User-Agent", USER_AGENT)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("User-Agent", USER_AGENT);
-                return headers;
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                apiResultCallback.onFailure(call, e.getMessage());
             }
-        };
 
-        requestQueue.add(strRequest);
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                apiResultCallback.onResult(call, response);
+            }
+        });
     }
 
     /**
-     *  Also Make Put Request To Server
-     * {@link ApiManager#BASE_URL}/meeting/[meetingID] To Add Our Own Member Data. Sent Data
-     * Should Look Like:
-     * <p>
-     * {
-     *      accountUniqueId:data?.accountUniqueId,
-     *      email:data?.email,
-     *      username:data?.userName,
-     *      picture:data?.imageURL,
-     *      socketId:socket.id
-     * }
-     * </p>
-     *
      * @param jsonBody
      * @param meetingId
      * @param apiResultCallback
      */
-    public void putMembersData(@NonNull String jsonBody, @NonNull String meetingId, @NonNull ApiResult apiResultCallback) {
-        StringRequest strRequest = new StringRequest(
-                Request.Method.PUT,
-                String.format("%s/meeting/%s", BASE_URL, meetingId),
-                apiResultCallback::onResult,
-                apiResultCallback::onFailure) {
+    public void putMembersData(@NonNull String jsonBody, @NonNull String meetingId, @NonNull ApiResult2 apiResultCallback) {
+        OkHttpClient client = new OkHttpClient.Builder().build();
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(jsonBody, mediaType);
+        okhttp3.Request request = new okhttp3.Request.Builder()
+                .url(String.format("%s/meeting/%s", BASE_URL, meetingId))
+                .method("PUT", body)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("User-Agent", USER_AGENT)
+                .build();
+        client.newCall(request).enqueue(new Callback() {
             @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                apiResultCallback.onFailure(call, e.getMessage());
             }
 
             @Override
-            public byte[] getBody() throws AuthFailureError {
-                return jsonBody.getBytes(StandardCharsets.UTF_8);
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
+                apiResultCallback.onResult(call, response);
             }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                headers.put("User-Agent", USER_AGENT);
-                return headers;
-            }
-        };
-        requestQueue.add(strRequest);
-    }
-
-    public interface ApiResult {
-        void onResult(Object response);
-        void onFailure(VolleyError error);
+        });
     }
 
     /**
-     *
+     * @param url
+     * @param meetingId
+     * @param socketId
+     * @param callback
+     */
+    public void putStates(@NonNull String url, @NonNull String meetingId, @NonNull String socketId, @Nullable ApiResult2 callback) {
+        OkHttpClient client = new OkHttpClient.Builder().build();
+        MediaType mediaType = MediaType.parse("application/json");
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("user", socketId);
+
+            RequestBody body = RequestBody.create(String.valueOf(obj), mediaType);
+            Request request = new Request.Builder()
+                    .url(String.format("%s/s", url, meetingId))
+                    .method("PUT", body)
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("User-Agent", USER_AGENT)
+                    .build();
+
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    if (callback != null) callback.onFailure(call, e.getMessage());
+                }
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    if (callback != null) callback.onResult(call, response);
+                }
+            });
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public interface ApiResult2 {
+        void onResult(Call call, Response response);
+
+        void onFailure(Call call, Object e);
+    }
+
+    /**
      * @param context
      * @return
      */

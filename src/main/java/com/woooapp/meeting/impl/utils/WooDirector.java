@@ -1,15 +1,21 @@
 package com.woooapp.meeting.impl.utils;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.res.AssetManager;
 import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 
 import com.android.volley.VolleyError;
+import com.woogroup.woooo_app.woooo.di.WooApplication;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.net.ApiManager;
 import com.woooapp.meeting.net.models.PutMembersDataBody;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -40,39 +46,32 @@ public final class WooDirector {
 
     /**
      *
-     * @param meetingId
-     * @param callback
+     * @param asset
+     * @param filename
+     * @return
      */
-    public void fetchRoomData(
-            @NonNull String meetingId,
-            @Nullable ApiManager.ApiResult callback) {
-       ApiManager.build(WooApplication.Companion.getSharedInstance())
-               .fetchRoomData(meetingId,
-                       callback != null ? callback : new ApiManager.ApiResult() {
-                           @Override
-                           public void onResult(Object response) {
-
-                           }
-
-                           @Override
-                           public void onFailure(VolleyError error) {
-
-                           }
-                       });
-    }
-
-    /**
-     *
-     * @param socketId
-     * @param meetingClient
-     */
-    public void addMember(@NonNull final String socketId, @NonNull MeetingClient meetingClient) {
-        PutMembersDataBody body = new PutMembersDataBody();
-        body.setEmail(meetingClient.getEmail());
-        body.setAccountUniqueId(meetingClient.getAccountUniqueId());
-        body.setUsername(meetingClient.getUsername());
-        body.setPicture(meetingClient.getPicture());
-        body.setSocketId(socketId);
+    @Nullable
+    public String readFileFromAssets(@NonNull AssetManager asset, @NonNull String filename) {
+        StringBuilder strBuff = new StringBuilder();
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new InputStreamReader(asset.open(filename), "UTF-8"));
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                strBuff.append(line);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return strBuff.toString();
     }
 
     /**

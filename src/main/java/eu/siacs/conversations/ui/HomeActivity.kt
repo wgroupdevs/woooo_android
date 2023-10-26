@@ -21,6 +21,7 @@ import eu.siacs.conversations.databinding.ActivityHomeBinding
 import eu.siacs.conversations.entities.Account
 import eu.siacs.conversations.services.XmppConnectionService
 import eu.siacs.conversations.ui.util.AvatarWorkerTask
+import pk.muneebahmad.lib.analytics.CrashChecker
 
 class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
 
@@ -28,9 +29,9 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private var pieChart: PieChart? = null
     private var circleIndex = 0
+    private var crashChecker: CrashChecker? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
         populateCircularMenu()
@@ -38,6 +39,10 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
         binding.appBarHome.toolbar.toolBarLeadingView.visibility = View.GONE
         binding.appBarHome.toolbar.toolbarProfilePhoto.visibility = View.VISIBLE
         binding.appBarHome.toolbar.toolbarNotification.visibility = View.VISIBLE
+
+
+        crashChecker = CrashChecker(this)
+        crashChecker?.checkForCrash()
 
         binding.appBarHome.toolbar.toolbarProfilePhoto.setOnClickListener {
             binding.drawerLayout.open()

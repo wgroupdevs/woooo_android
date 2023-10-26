@@ -22,6 +22,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <uses-feature
         android:name="android.hardware.location"
@@ -164,19 +165,7 @@
         </activity>
         <activity
             android:name=".ui.ShareLocationActivity"
-            android:label="@string/title_activity_share_location" /> <!-- <activity -->
-        <!-- android:name=".web3.dapp.ui.DappSampleActivity" -->
-        <!-- android:exported="true" -->
-        <!-- android:label="DappSampleActivity" -->
-        <!-- android:theme="@style/ConversationsTheme"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.intent.action.VIEW" /> -->
-        <!-- <category android:name="android.intent.category.DEFAULT" /> -->
-        <!-- <data -->
-        <!-- android:host="request" -->
-        <!-- android:scheme="com.wgroup.woooo_app" /> -->
-        <!-- </intent-filter> -->
-        <!-- </activity> -->
+            android:label="@string/title_activity_share_location" />
         <activity
             android:name=".ui.SearchActivity"
             android:label="@string/search_messages" />
@@ -407,6 +396,7 @@
             android:name="com.woooapp.meeting.impl.views.SettingsActivity"
             android:exported="false"
             android:label="Meeting Settings" />
+
         <activity
             android:name="com.woooapp.meeting.impl.views.RoomActivity"
             android:label="@string/title_activity_room_meet"
@@ -416,7 +406,9 @@
             android:name="com.woooapp.meeting.impl.views.MeetingActivity"
             android:label="Meeting"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:turnScreenOn="true"
+            />
     </application>
 
 </manifest>

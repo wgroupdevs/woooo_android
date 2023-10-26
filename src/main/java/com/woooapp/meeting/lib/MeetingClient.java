@@ -3,19 +3,18 @@ package com.woooapp.meeting.lib;
 import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.woooapp.meeting.impl.utils.WooEvents;
 import com.woooapp.meeting.lib.lv.RoomStore;
 import com.woooapp.meeting.lib.socket.WooSocket;
-import com.woooapp.meeting.net.models.CreateMeetingResponse;
+import com.woooapp.meeting.net.models.Message;
 
-import org.mediasoup.droid.Consumer;
-import org.mediasoup.droid.DataConsumer;
+import org.json.JSONException;
 
-import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Muneeb Ahmad (ahmadgallian@yahoo.com)
@@ -23,28 +22,27 @@ import java.util.concurrent.ConcurrentHashMap;
  * Class MeetingClient.java
  * Created on 16/09/2023 at 1:21 am
  */
-public class MeetingClient {
-
-    private static final String TAG = MeetingClient.class.getCanonicalName().toUpperCase(Locale.ROOT);
-
+public final class MeetingClient extends RoomMessageHandler {
+    private static final String TAG = MeetingClient.class.getSimpleName() + ".java";
     private final Context mContext;
     private final Handler mWorkerHandler;
-
     private WooSocket mSocket;
-
     private boolean mStarted = false;
     private final RoomStore mRoomStore;
-
-    @NonNull final Map<String, ConsumerHolder> mConsumers;
-    @NonNull final Map<String, DataConsumerHolder> mDataConsumers;
-
     private final String mMeetingId;
-
     private String username;
-
     private String email;
     private String accountUniqueId;
     private String picture;
+    private boolean micOn = true;
+    private boolean camOn = true;
+    private boolean everyoneCamOn = true;
+    private boolean audioMuted = false;
+    private boolean textTranslationOn = false;
+    private boolean voiceTranslationOn = false;
+    private String selectedLanguage = "English";
+    private String selectedLanguageCode = "en";
+    private Role role = Role.USER;
 
     public enum ConnectionState {
         // initial state.
@@ -57,6 +55,11 @@ public class MeetingClient {
         CLOSED,
     }
 
+    public enum Role {
+        USER,
+        ADMIN
+    }
+
     /**
      *
      * @param context
@@ -67,11 +70,9 @@ public class MeetingClient {
             @NonNull Context context,
             @NonNull RoomStore roomStore,
             @NonNull String meetingId) {
+        super(roomStore);
         this.mContext = context;
         this.mMeetingId = meetingId;
-
-        this.mConsumers = new ConcurrentHashMap<>();
-        this.mDataConsumers = new ConcurrentHashMap<>();
 
         this.mRoomStore = roomStore;
 
@@ -79,6 +80,7 @@ public class MeetingClient {
         HandlerThread handlerThread = new HandlerThread("WooWorker");
         handlerThread.start();
         this.mWorkerHandler = new Handler(handlerThread.getLooper());
+        Log.d(TAG, "MeetingClient Initialized ...");
     }
 
     /**
@@ -96,6 +98,14 @@ public class MeetingClient {
             mSocket.connect();
             mStarted = true;
         });
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public String getUsername() {
@@ -143,6 +153,183 @@ public class MeetingClient {
         this.picture = picture;
     }
 
+    public String getSelectedLanguage() {
+        return selectedLanguage;
+    }
+
+    public void setSelectedLanguage(String selectedLanguage) {
+        this.selectedLanguage = selectedLanguage;
+    }
+
+    public String getSelectedLanguageCode() {
+        return selectedLanguageCode;
+    }
+
+    public void setSelectedLanguageCode(String selectedLanguageCode) {
+        this.selectedLanguageCode = selectedLanguageCode;
+    }
+
+    public boolean isEveryoneCamOn() {
+        return everyoneCamOn;
+    }
+
+    public void setEveryoneCamOn(boolean everyoneCamOn) {
+        if (everyoneCamOn && !this.everyoneCamOn) {
+//            mSocket.disableAudioOnly();
+        } else {
+//            mSocket.enableAudioOnly();
+        }
+        this.everyoneCamOn = everyoneCamOn;
+    }
+
+    public void updateTranslationLanguage(@NonNull String langCode) {
+        try {
+            mSocket.emitUpdateLanguage(langCode);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isAudioMuted() {
+        return audioMuted;
+    }
+
+    /**
+     *
+     * @param mute
+     */
+    public void setEveryonesAudioMuted(boolean mute) {
+        if (mute) {
+            try {
+                mSocket.emitMuteEveryone();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+//            mSocket.muteAudio();
+        } else {
+
+//            mSocket.unmuteAudio();
+        }
+//        this.audioMuted = mute;
+    }
+
+    /**
+     *
+     * @param on
+     */
+    public void setTextTranslation(boolean on) {
+        if (mSocket.isConnected()) {
+            try {
+                mSocket.emitTextTranslation(on);
+                textTranslationOn = on;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void setVoiceTranslation(boolean on) {
+        // TODO
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isTextTranslationOn() {
+        return textTranslationOn;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isVoiceTranslationOn() {
+        return voiceTranslationOn;
+    }
+
+    public boolean isMicOn() {
+        return micOn;
+    }
+
+    public void setMicOn(boolean micOn) {
+        if (mSocket != null) {
+            if (micOn && !this.micOn) {
+                mSocket.unmuteMic();
+                try {
+                    mSocket.emitMicOpen();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                mSocket.muteMic();
+                try {
+                    mSocket.emitMicClosed();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        this.micOn = micOn;
+    }
+
+    public boolean isCamOn() {
+        return camOn;
+    }
+
+    public void setCamOn(boolean camOn) {
+        if (mSocket != null) {
+            if (!camOn && this.camOn) {
+                mSocket.disableCam();
+                try {
+                    mSocket.emitVideoOpen();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                mSocket.enableCam();
+                try {
+                    mSocket.emitVideoClose();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        this.camOn = camOn;
+    }
+
+    /**
+     *
+     * @param raised
+     */
+    public void setMeHandRaised(boolean raised) {
+        if (!raised) {
+            WooEvents.getInstance().notify(WooEvents.EVENT_ME_HAND_RAISED, true);
+        } else {
+            WooEvents.getInstance().notify(WooEvents.EVENT_ME_HAND_LOWERED, true);
+        }
+    }
+
+    public void emitHandRaisedState(boolean raised) throws JSONException {
+        if (raised) {
+            mSocket.emitHandRaised();
+        } else {
+            mSocket.emitHandLowered();
+        }
+    }
+
+    /**
+     * Send chat message
+     *
+     * @param message {@link Message}
+     */
+    public void sendMessage(@NonNull final Message message) {
+        if (mSocket != null) {
+            if (mSocket.isConnected()) {
+                mSocket.emitSendMessage(message);
+            }
+        }
+    }
     /**
      *
      * @return
@@ -153,45 +340,18 @@ public class MeetingClient {
 
     public void close() {
         if (mStarted) {
-            this.mWorkerHandler.post(() -> {
-               mSocket.disconnect();
-               mSocket = null;
-               mStarted = false;
-               mWorkerHandler.getLooper().quit();
-            });
+            try {
+                this.mWorkerHandler.post(() -> {
+                    mSocket.disconnect();
+                    mSocket = null;
+                    mStarted = false;
+                });
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            } finally {
+//                mWorkerHandler.getLooper().quit();
+            }
         }
     }
-
-    public static class ConsumerHolder {
-
-        @NonNull final String peerId;
-        @NonNull final Consumer mConsumer;
-
-        /**
-         *
-         * @param peerId
-         * @param consumer
-         */
-        public ConsumerHolder(@NonNull String peerId, @NonNull Consumer consumer) {
-            this.peerId = peerId;
-            this.mConsumer = consumer;
-        }
-    } // end class
-
-    static class DataConsumerHolder {
-        @NonNull final String peerId;
-        @NonNull final DataConsumer mDataConsumer;
-
-        /**
-         *
-         * @param peerId
-         * @param dataConsumer
-         */
-        public DataConsumerHolder(@NonNull String peerId, @NonNull DataConsumer dataConsumer) {
-            this.peerId = peerId;
-            this.mDataConsumer = dataConsumer;
-        }
-
-    } // end class
 
 } /** end class. */

@@ -36,6 +36,7 @@
 	<color name="blue_primary200">#ff2675AE</color>
 	<color name="blue_primary300">#ff22689B</color>
 	<color name="blue_primary_transparent">#8022689B</color>
+	<color name="dark_primary_transparent">#80000000</color>
 	<color name="cyan">#ff00FFFF</color>
 
 	<color name="green700_desaturated">#ff4d8e50</color> <!-- desaturated by 15 -->
@@ -63,5 +64,10 @@
 
     <color name="yellow">#ffff00</color>
     <color name="carrot">#e67e22</color>
+	<color name="pink_dark">#FF4081</color>
+	<color name="orange">#ffd700</color>
+	<color name="yellow">#ffff00</color>
+	<color name="light_blue">#1e90ff</color>
+	<color name="carrot">#e67e22</color>
 	<color name="pomegranate">#c0392b</color>
 </resources>

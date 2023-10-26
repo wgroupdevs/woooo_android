@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rounded_default"
+    android:clipChildren="true"
+    >
+
+    <LinearLayout
+        android:id="@+id/layoutToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10sp"
+        android:gravity="center_vertical"
+        android:weightSum="3">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_width="32sp"
+                android:layout_height="32sp"
+                android:src="@drawable/ic_lang_enabled"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5sp"
+                android:text="Select Translation Language"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/buttonLangSelectCancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="?attr/selectableItemBackground"
+            android:background="@android:color/transparent"
+            android:layout_weight="2"
+            android:text="Cancel"
+            android:textColor="@color/red500"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            />
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/listViewLangSelect"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:dividerHeight="1sp"
+        android:padding="5sp"
+        android:background="@android:color/transparent"
+        android:layout_below="@+id/layoutToolbar"
+        />
+
+</RelativeLayout>

@@ -3,6 +3,7 @@ package eu.siacs.conversations
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
 import org.mediasoup.droid.MediasoupClient
+import pk.muneebahmad.lib.analytics.UnexpectedExceptionHandler
 
 @HiltAndroidApp
 class WooApplication : Application() {
@@ -15,6 +16,7 @@ class WooApplication : Application() {
         super.onCreate()
         try {
             sharedInstance = this
+            Thread.setDefaultUncaughtExceptionHandler(UnexpectedExceptionHandler(applicationContext))
             MediasoupClient.initialize(applicationContext)
         } catch (e: Throwable) {
 

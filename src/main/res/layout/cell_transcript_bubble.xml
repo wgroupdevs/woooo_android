@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/bg_rounded_default"
+    android:padding="10sp"
+    android:layout_gravity="center_horizontal|center_vertical"
+    android:gravity="center_vertical|center_horizontal"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5sp"
+        android:background="@android:color/transparent"
+        >
+
+        <LinearLayout
+            android:id="@+id/top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="left"
+            android:layout_centerInParent="true">
+
+            <ImageView
+                android:id="@+id/ivThumbTranscript"
+                android:layout_width="30sp"
+                android:layout_height="30sp"
+                android:src="@drawable/woooo_logo"/>
+
+            <TextView
+                android:id="@+id/tvTranscriptMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Message"
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                android:layout_marginLeft="5sp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_below="@+id/top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="2"
+            >
+
+            <TextView
+                android:id="@+id/tvTranscriptTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="02:30 am"
+                android:textSize="10sp"
+                android:textColor="@color/grey500"
+                android:layout_marginLeft="5sp"
+                android:layout_gravity="left"
+                android:layout_weight="1"
+                />
+
+
+            <TextView
+                android:id="@+id/tvTranscriptName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Me"
+                android:textSize="10sp"
+                android:textColor="@color/grey500"
+                android:layout_marginLeft="5sp"
+                android:gravity="right"
+                android:layout_weight="1"
+                />
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

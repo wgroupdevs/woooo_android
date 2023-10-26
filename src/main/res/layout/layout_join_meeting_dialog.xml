@@ -48,7 +48,7 @@
         android:textSize="18sp"
         android:textColor="@color/white"
         android:padding="10sp"
-        android:inputType="text"
+        android:inputType="number"
         android:hint="Meeting ID"
         />
 

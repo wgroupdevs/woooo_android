@@ -20,6 +20,7 @@ public class PutMembersDataBody implements Serializable {
     private String username;
     private String picture;
     private String socketId;
+    private String language;
 
     public String getAccountUniqueId() {
         return accountUniqueId;
@@ -61,6 +62,14 @@ public class PutMembersDataBody implements Serializable {
         this.socketId = socketId;
     }
 
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
     @JsonIgnore
     @Override
     public String toString() {
@@ -70,6 +79,7 @@ public class PutMembersDataBody implements Serializable {
                 ", username='" + username + '\'' +
                 ", picture='" + picture + '\'' +
                 ", socketId='" + socketId + '\'' +
+                ", language='" + language + '\'' +
                 '}';
     }
 
