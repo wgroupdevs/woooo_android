@@ -134,6 +134,10 @@ public class MeetingPageFragment extends Fragment {
         if (this.adapter != null) this.adapter.notifyDataSetChanged();
     }
 
+    public void clean() {
+        this.mMeetingPage = null;
+    }
+
 } /**
  * end class.
  */
