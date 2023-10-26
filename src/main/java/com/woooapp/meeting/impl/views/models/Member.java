@@ -1,5 +1,7 @@
 package com.woooapp.meeting.impl.views.models;
 
+import androidx.annotation.NonNull;
+
 import com.woooapp.meeting.lib.MeetingClient;
 
 /**
@@ -9,6 +11,7 @@ import com.woooapp.meeting.lib.MeetingClient;
  */
 public final class Member {
 
+    private String accountUniqueId;
     private String socketId;
     private String name;
     private String picture;
@@ -16,12 +19,14 @@ public final class Member {
 
     /**
      *
+     * @param accountUniqueId
      * @param socketId
      * @param name
      * @param picture
      * @param role
      */
-    public Member(String socketId, String name, String picture, MeetingClient.Role role) {
+    public Member(@NonNull String accountUniqueId, String socketId, String name, String picture, MeetingClient.Role role) {
+        this.accountUniqueId = accountUniqueId;
         this.socketId = socketId;
         this.name = name;
         this.picture = picture;
@@ -60,4 +65,11 @@ public final class Member {
         this.role = role;
     }
 
+    public String getAccountUniqueId() {
+        return accountUniqueId;
+    }
+
+    public void setAccountUniqueId(String accountUniqueId) {
+        this.accountUniqueId = accountUniqueId;
+    }
 } /** end class. */

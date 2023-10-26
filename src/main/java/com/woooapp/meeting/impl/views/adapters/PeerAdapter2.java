@@ -100,7 +100,10 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
 
     @Override
     public int getViewTypeCount() {
-        return 2;
+        if (mPageNo == 1) {
+            return 2;
+        }
+        return 1;
     }
 
     @Override
@@ -282,7 +285,7 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
 
     public void resume() {
         this.handler = new Handler(this);
-        WooEvents.getInstance().addHandler(handler);
+//        WooEvents.getInstance().addHandler(handler);
     }
 
     @Override

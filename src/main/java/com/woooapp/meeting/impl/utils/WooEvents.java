@@ -54,6 +54,7 @@ public final class WooEvents {
     public static final int EVENT_PEER_CAM_TURNED_ON              = 0x2d;
     public static final int EVENT_SELECT_BACKGROUND               = 0x2e;
     public static final int EVENT_SHOW_MEMBERS                    = 0x2f;
+    public static final int EVENT_NETWORK_CONNECTIVITY_CHANGED    = 0x27;
 
     private WooEvents() {
         Log.d(TAG, "WooEvents Initialized ...");
@@ -67,6 +68,7 @@ public final class WooEvents {
     public void addHandler(@NonNull final Handler handler) {
         mHandlers.add(handler);
         Log.d(TAG, "Added a new Handler [" + handler + "]");
+        Log.d(TAG, "Handler Counts >>> " + mHandlers.size());
     }
 
     /**
@@ -92,10 +94,14 @@ public final class WooEvents {
      * @param msg
      */
     public void notify(int eventType, @NonNull Object msg) {
-        for (Handler h : mHandlers) {
-            Message message = Message.obtain(h, eventType, msg);
-            message.sendToTarget();
-            Log.d(TAG, "Notifying for Event [" + eventType + "]");
+        try {
+            for (Handler h : mHandlers) {
+                Message message = Message.obtain(h, eventType, msg);
+                message.sendToTarget();
+                Log.d(TAG, "Notifying for Event [" + eventType + "]");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 

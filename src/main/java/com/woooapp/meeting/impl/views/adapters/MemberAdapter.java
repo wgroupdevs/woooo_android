@@ -3,11 +3,13 @@ package com.woooapp.meeting.impl.views.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -68,9 +70,23 @@ public class MemberAdapter extends BaseAdapter {
         vh.ivThumb = convertView.findViewById(R.id.ivThumb);
         vh.tvName = convertView.findViewById(R.id.tvName);
         vh.tvRole = convertView.findViewById(R.id.tvRole);
+        vh.buttonMute = convertView.findViewById(R.id.buttonMute);
+        vh.buttonCam = convertView.findViewById(R.id.buttonCam);
+        vh.buttonKickout = convertView.findViewById(R.id.buttonKickout);
 
         vh.tvName.setText(members.get(position).getName());
-        vh.tvRole.setText(members.get(position).getRole() == MeetingClient.Role.ADMIN ? "ADMIN" : "USER");
+        vh.tvRole.setText(members.get(position).getRole() == MeetingClient.Role.ADMIN ? "ADMIN" : "MEMBER");
+        MeetingClient.Role role = members.get(position).getRole();
+        if (role == MeetingClient.Role.ADMIN) {
+            vh.tvRole.setBackgroundResource(R.drawable.bg_red_stroke);
+            vh.tvRole.setTextColor(Color.parseColor("#ffd700"));
+            vh.buttonMute.setVisibility(View.GONE);
+            vh.buttonCam.setVisibility(View.GONE);
+            vh.buttonKickout.setVisibility(View.GONE);
+        } else {
+            vh.tvRole.setBackgroundResource(R.drawable.bg_white_stroke);
+            vh.tvRole.setTextColor(Color.WHITE);
+        }
         try {
             URL url = new URL(members.get(position).getPicture());
             ViewHolder finalVh = vh;
@@ -88,8 +104,12 @@ public class MemberAdapter extends BaseAdapter {
                 @Override
                 public void done(String resource, Bitmap bitmap) {
                     ((Activity) mContext).runOnUiThread(() -> {
-                        CircleDrawable cd = new CircleDrawable(bitmap);
-                        finalVh.ivThumb.setImageDrawable(cd);
+                        try {
+                            CircleDrawable cd = new CircleDrawable(bitmap);
+                            finalVh.ivThumb.setImageDrawable(cd);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
                     });
                 }
             });
@@ -103,6 +123,9 @@ public class MemberAdapter extends BaseAdapter {
         ImageView ivThumb;
         TextView tvName;
         TextView tvRole;
+        LinearLayout buttonMute;
+        LinearLayout buttonCam;
+        LinearLayout buttonKickout;
     }
 
 } /** end class. */

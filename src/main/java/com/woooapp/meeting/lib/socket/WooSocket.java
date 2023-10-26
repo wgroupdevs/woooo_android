@@ -168,17 +168,25 @@ public class WooSocket {
                         Log.d(TAG, "Transport Disposed >>");
 
                         // dispose audio track.
-//                        if (mLocalAudioTrack != null) {
-//                            mLocalAudioTrack.setEnabled(false);
-//                            mLocalAudioTrack.dispose();
-//                            mLocalAudioTrack = null;
-//                        }
+                        try {
+                            if (mLocalAudioTrack != null) {
+                                mLocalAudioTrack.setEnabled(false);
+                                mLocalAudioTrack.dispose();
+                                mLocalAudioTrack = null;
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
 
                         // dispose video track.
-                        if (mLocalVideoTrack != null) {
-                            mLocalVideoTrack.setEnabled(false);
-                            mLocalVideoTrack.dispose();
-                            mLocalVideoTrack = null;
+                        try {
+                            if (mLocalVideoTrack != null) {
+                                mLocalVideoTrack.setEnabled(false);
+                                mLocalVideoTrack.dispose();
+                                mLocalVideoTrack = null;
+                            }
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
 
                         // Dispose everything
