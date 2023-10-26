@@ -84,14 +84,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Date"
-            android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+            android:textAppearance="@style/TextAppearance.Conversations.Caption.OnDark.Bold" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Currency"
-            android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+            android:textAppearance="@style/TextAppearance.Conversations.Caption.OnDark.Bold" />
 
         <TextView
             android:layout_width="0dp"
@@ -99,100 +99,33 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="Type"
-
-            android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+            android:textAppearance="@style/TextAppearance.Conversations.Caption.OnDark.Bold" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Amount"
-            android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+            android:textAppearance="@style/TextAppearance.Conversations.Caption.OnDark.Bold" />
+   <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Status"
+       android:gravity="center"
+            android:textAppearance="@style/TextAppearance.Conversations.Caption.OnDark.Bold" />
 
 
     </LinearLayout>
-
-    <LinearLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/trRecyclerview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_20sdp"
-
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="10-Dec-20"
-            android:textAppearance="@style/TextAppearance.Conversations.Body1" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/ic_ethereum"
-            android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Login"
-
-            android:textAppearance="@style/TextAppearance.Conversations.Body1" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="0.004"
-            android:textAppearance="@style/TextAppearance.Conversations.Body1" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/_5sdp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/wallet_transaction_row" />
 
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_20sdp"
-
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="09-Nov-21"
-            android:textAppearance="@style/TextAppearance.Conversations.Body1" />
-
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/ic_polygon"
-            android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Chat"
-
-            android:textAppearance="@style/TextAppearance.Conversations.Body1" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="0.009"
-            android:textAppearance="@style/TextAppearance.Conversations.Body1" />
-
-
-    </LinearLayout>
 
 
 </LinearLayout>

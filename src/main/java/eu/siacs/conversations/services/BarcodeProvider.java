@@ -61,7 +61,7 @@ public class BarcodeProvider extends ContentProvider implements ServiceConnectio
 			for (int y = 0; y < height; y++) {
 				final int offset = y * width;
 				for (int x = 0; x < width; x++) {
-					pixels[offset + x] = result.get(x, y) ? Color.BLACK : Color.WHITE;
+					pixels[offset + x] = result.get(x, y) ? Color.BLACK : Color.TRANSPARENT;
 				}
 			}
 			final Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);

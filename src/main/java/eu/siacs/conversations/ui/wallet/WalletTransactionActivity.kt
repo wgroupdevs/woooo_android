@@ -2,9 +2,9 @@ package eu.siacs.conversations.ui.wallet
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import eu.siacs.conversations.R
-import eu.siacs.conversations.databinding.ActivitySignUpBinding
 import eu.siacs.conversations.databinding.ActivityWalletTransactionBinding
+import eu.siacs.conversations.ui.WalletMainFragment
+import eu.siacs.conversations.ui.adapter.WalletTransactionAdapter
 
 class WalletTransactionActivity : AppCompatActivity() {
 
@@ -15,5 +15,15 @@ class WalletTransactionActivity : AppCompatActivity() {
         binding = ActivityWalletTransactionBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.backArrow.setOnClickListener { finish() }
+
+        val payments = WalletMainFragment.walletViewModel.walletOverviewData.value.payments
+
+        if (payments.isNotEmpty()) {
+
+            val transactionAdapter = WalletTransactionAdapter(this, payments)
+            binding.trRecyclerview.adapter = transactionAdapter
+        }
+
+
     }
 }

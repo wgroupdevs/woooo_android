@@ -14,6 +14,10 @@ import eu.siacs.conversations.http.model.UserBasicInfo;
 import eu.siacs.conversations.http.model.requestmodels.GetWooContactsRequestParams;
 import eu.siacs.conversations.http.model.requestmodels.EmailRequestModel;
 import eu.siacs.conversations.http.model.requestmodels.ResetPasswordRequestModel;
+import eu.siacs.conversations.http.model.wallet.BlockChainAPIModel;
+import eu.siacs.conversations.http.model.wallet.Payment;
+import eu.siacs.conversations.http.model.wallet.PaymentReqModel;
+import eu.siacs.conversations.http.model.wallet.WalletOverviewApiModel;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -30,6 +34,9 @@ public interface WooService {
 
     @GET("/api/v1/Account/SearchAccount")
     Call<SearchAccountAPIResponse> searchAccount(@Query("value") String value, @Query("isEmail") boolean isEmail);
+
+    @GET("/api/v1/Wallet/GetOverviewData")
+    Call<WalletOverviewApiModel> getWalletOverviewData(@Query("accountId") String value);
 
     @POST("/api/v1/Contact/ContactsFromPhone")
     Call<GetWooContactsModel> getWooContacts(@Body GetWooContactsRequestParams params);
@@ -62,5 +69,13 @@ public interface WooService {
     @POST("/api/Auth/reset-password")
     Call<BaseModelAPIResponse> resetPassword(@Body ResetPasswordRequestModel params);
 
+    @GET("api/v1/Blockchain")
+    Call<BlockChainAPIModel> getBlockChain();
+
+    @POST("/api/v1/Wallet/UpdateWalletAddress")
+    Call<BaseModelAPIResponse> updateWalletAddress(@Query("accountId") String accountId, @Query("walletAddress") String walletAddress);
+
+    @POST("/api/v1/Payment/CreatePayment")
+    Call<BaseModelAPIResponse> createPayment(@Body PaymentReqModel payment);
 
 }

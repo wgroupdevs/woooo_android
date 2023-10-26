@@ -60,6 +60,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
@@ -71,6 +73,10 @@ import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.ListItem;
 import eu.siacs.conversations.entities.MucOptions;
 import eu.siacs.conversations.entities.Presence;
+import eu.siacs.conversations.http.model.SearchAccountAPIResponse;
+import eu.siacs.conversations.http.model.UserBasicInfo;
+import eu.siacs.conversations.http.services.BaseModelAPIResponse;
+import eu.siacs.conversations.http.services.WooAPIService;
 import eu.siacs.conversations.services.QuickConversationsService;
 import eu.siacs.conversations.services.XmppConnectionService;
 import eu.siacs.conversations.services.XmppConnectionService.OnRosterUpdate;
@@ -87,7 +93,7 @@ import eu.siacs.conversations.xmpp.Jid;
 import eu.siacs.conversations.xmpp.OnUpdateBlocklist;
 import eu.siacs.conversations.xmpp.XmppConnection;
 
-public class StartConversationActivity extends XmppActivity implements XmppConnectionService.OnConversationUpdate, OnRosterUpdate, OnUpdateBlocklist, CreatePrivateGroupChatDialog.CreateConferenceDialogListener, JoinConferenceDialog.JoinConferenceDialogListener, SwipeRefreshLayout.OnRefreshListener, CreatePublicChannelDialog.CreatePublicChannelDialogListener {
+public class StartConversationActivity extends XmppActivity implements XmppConnectionService.OnConversationUpdate, OnRosterUpdate, OnUpdateBlocklist, CreatePrivateGroupChatDialog.CreateConferenceDialogListener, JoinConferenceDialog.JoinConferenceDialogListener, SwipeRefreshLayout.OnRefreshListener, CreatePublicChannelDialog.CreatePublicChannelDialogListener, WooAPIService.OnGetAccountByJidAPiResult {
 
     public static final String EXTRA_INVITE_URI = "eu.siacs.conversations.invite_uri";
     private static final String TAG = "StartConversationAtvy";
@@ -110,6 +116,7 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
     private final AtomicBoolean mOpenedFab = new AtomicBoolean(false);
     private boolean mHideOfflineContacts = false;
     private boolean createdByViewIntent = false;
+    private Account mAccount;
     private final MenuItem.OnActionExpandListener mOnActionExpandListener = new MenuItem.OnActionExpandListener() {
         @Override
         public boolean onMenuItemActionExpand(MenuItem item) {
@@ -280,10 +287,6 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
         });
         mListPagerAdapter = new ListPagerAdapter(getSupportFragmentManager());
         binding.startConversationViewPager.setAdapter(mListPagerAdapter);
-
-        Log.d(TAG, "GROUP COUNT : " + conferences.size());
-        Log.d(TAG, "Contacts COUNT : " + contacts.size());
-
 
         mConferenceAdapter = new ListItemAdapter(this, conferences);
         mContactsAdapter = new ListItemAdapter(this, contacts);
@@ -861,7 +864,61 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
         if (QuickConversationsService.isConversations() && AccountUtils.hasEnabledAccounts(xmppConnectionService) && this.contacts.size() == 0 && this.conferences.size() == 0 && mOpenedFab.compareAndSet(false, true)) {
             binding.speedDial.open();
         }
+
+
+//UPDATE_CONTACTS_NAME
+        try {
+            mAccount = xmppConnectionService.getAccounts().get(0);
+            List<Contact> contacts = mAccount.getRoster().getContacts();
+            if (!contacts.isEmpty()) {
+                for (Contact item : contacts) {
+                    if (startsWithNumber(item.getDisplayName())) {
+                        Log.d(TAG, "CONTACT_DISPLAY_NAME : " + item.getDisplayName());
+                        xmppConnectionService.getAccountByJid(item.getJid().asBareJid().toString(), this);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+        }
+
+
     }
+
+
+    public static boolean startsWithNumber(String input) {
+        Pattern pattern = Pattern.compile("^[0-9+].*");
+        Matcher matcher = pattern.matcher(input);
+        return matcher.find();
+    }
+
+
+    private void updateContactName(UserBasicInfo user) {
+        if(mAccount!=null){
+            Jid jid = Jid.ofEscaped(user.jid);
+            Contact contact =   mAccount.getRoster().getContactFromContactList(jid);
+            if(contact!=null){
+                contact.setServerName(user.firstName + " " + user.lastName);
+                xmppConnectionService.pushContactToServer(contact);
+            }
+        }
+    }
+
+
+    @Override
+    public <T> void onGetAccountByJidResultFound(T result) {
+        runOnUiThread(() -> {
+            if (result instanceof SearchAccountAPIResponse) {
+                UserBasicInfo user = ((SearchAccountAPIResponse) result).Data;
+                if (user != null) {
+                    updateContactName(user);
+                }
+            } else if (result instanceof BaseModelAPIResponse) {
+                Log.d(TAG, " BaseModelAPIResponse Called... " + ((BaseModelAPIResponse) result).Message);
+            }
+        });
+    }
+
 
     protected boolean processViewIntent(@NonNull Intent intent) {
         final String inviteUri = intent.getStringExtra(EXTRA_INVITE_URI);
@@ -985,10 +1042,10 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
 
         Log.d(TAG, "CONTACTS COUNTS : " + contacts.size());
 
-
         Collections.sort(this.contacts);
         mContactsAdapter.notifyDataSetChanged();
     }
+
 
     protected void filterConferences(String needle) {
 
@@ -1162,6 +1219,7 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
             }
         });
     }
+
 
     public static class MyListFragment extends SwipeRefreshListFragment {
         private AdapterView.OnItemClickListener mOnItemClickListener;

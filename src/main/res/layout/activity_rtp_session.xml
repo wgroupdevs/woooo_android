@@ -60,15 +60,15 @@
                 android:textColor="@color/white"
                 tools:text="Juliet Capulet" />
 
-            <TextView
-                android:id="@+id/with_jid"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/TextAppearance.Conversations.Caption"
-                android:textColor="@color/white"
-                android:visibility="visible"
-                android:layout_gravity="center_horizontal"
-                tools:text="abc@example.com" />
+<!--            <TextView-->
+<!--                android:id="@+id/with_jid"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:textAppearance="@style/TextAppearance.Conversations.Caption"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:visibility="visible"-->
+<!--                android:layout_gravity="center_horizontal"-->
+<!--                tools:text="abc@example.com" />-->
 
             <TextView
                 android:id="@+id/duration"
@@ -256,15 +256,18 @@
                 app:tint="?attr/icon_tint" />
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/using_account"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_margin="8dp"
-            android:text="@string/using_account"
-            android:textAppearance="@style/TextAppearance.Conversations.Caption" />
+<!--        <TextView-->
+<!--            android:id="@+id/using_account"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            android:layout_alignParentBottom="true"-->
+<!--            android:layout_marginStart="8dp"-->
+<!--            android:layout_marginTop="8dp"-->
+<!--            android:layout_marginEnd="8dp"-->
+<!--            android:layout_marginBottom="8dp"-->
+<!--            android:text="@string/using_account"-->
+<!--            android:textAppearance="@style/TextAppearance.Conversations.Caption" />-->
 
     </RelativeLayout>
 </layout>

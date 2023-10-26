@@ -90,6 +90,9 @@
         tools:replace="android:label"
         tools:targetApi="q">
         <activity
+            android:name=".ui.MiningActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.wallet.SendReceiveCurrencyActivity"
             android:exported="false" />
         <activity

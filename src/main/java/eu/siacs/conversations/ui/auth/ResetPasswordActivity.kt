@@ -155,7 +155,7 @@ class ResetPasswordActivity : AppCompatActivity(), WooAPIService.OnResetPassword
         val alertDialogBuilder = AlertDialog.Builder(this, R.style.popup_dialog_theme)
         // Inflate the custom layout
         val inflater = LayoutInflater.from(this)
-        val customView: View = inflater.inflate(R.layout.signup_dialog, null)
+        val customView: View = inflater.inflate(R.layout.title_des_ok_dialog, null)
         alertDialogBuilder.setView(customView)
         // Create and show the AlertDialog
 

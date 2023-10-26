@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.http.HttpConnectionManager;
 import eu.siacs.conversations.http.model.GetWooContactsModel;
@@ -25,7 +27,14 @@ import eu.siacs.conversations.http.model.UserBasicInfo;
 import eu.siacs.conversations.http.model.requestmodels.GetWooContactsRequestParams;
 import eu.siacs.conversations.http.model.requestmodels.EmailRequestModel;
 import eu.siacs.conversations.http.model.requestmodels.ResetPasswordRequestModel;
+import eu.siacs.conversations.http.model.wallet.BlockChainAPIModel;
+import eu.siacs.conversations.http.model.wallet.Payment;
+import eu.siacs.conversations.http.model.wallet.PaymentReqModel;
+import eu.siacs.conversations.http.model.wallet.WalletOverviewApiModel;
+import eu.siacs.conversations.persistance.WOOPrefManager;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,17 +50,39 @@ public class WooAPIService {
 
     private static String TAG = "WooooAPIService_TAG";
 
+    public static String userToken;
+
     public static WooAPIService getInstance() {
+
+
+
         if (wooooAuthService == null) {
+            Log.d(TAG, "USER TOKEN SET IN HEADER :" + userToken);
             wooooAuthService = new WooAPIService();
             final OkHttpClient.Builder builder = HttpConnectionManager.OK_HTTP_CLIENT.newBuilder();
             builder.connectTimeout(50, TimeUnit.SECONDS);
-            builder.readTimeout(50, TimeUnit.SECONDS);
+            builder.readTimeout(120, TimeUnit.SECONDS);
             builder.writeTimeout(50, TimeUnit.SECONDS);
-            final Retrofit retrofit = new Retrofit.Builder().client(builder.build()).baseUrl(Config.WOOOO_BASE_URL).addConverterFactory(GsonConverterFactory.create()).callbackExecutor(Executors.newSingleThreadExecutor()).build();
+            builder.addInterceptor(chain -> {
+                Request newRequest = chain.request().newBuilder()
+                        .addHeader("Authorization", "Bearer " + userToken)
+                        .build();
+                return chain.proceed(newRequest);
+            });
+            final Retrofit retrofit = new Retrofit.Builder()
+                    .client(builder.build())
+                    .baseUrl(Config.WOOOO_BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .callbackExecutor(Executors.newSingleThreadExecutor())
+                    .build();
             wooService = retrofit.create(WooService.class);
         }
         return wooooAuthService;
+    }
+
+    public static void resetWooAPIService() {
+        wooooAuthService = null;
+        getInstance();
     }
 
 
@@ -59,7 +90,7 @@ public class WooAPIService {
         Log.d(phone, "LOGIN STARTED...");
         final LoginRequestParams requestParams = new LoginRequestParams(email, phone, password, "", "", "");
         final Call<LoginAPIResponseJAVA> searchResultCall = wooService.login(isLoginWithEmail, requestParams);
-        searchResultCall.enqueue(new Callback<LoginAPIResponseJAVA>() {
+        searchResultCall.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<LoginAPIResponseJAVA> call, @NonNull Response<LoginAPIResponseJAVA> response) {
                 final LoginAPIResponseJAVA body = response.body();
@@ -79,7 +110,6 @@ public class WooAPIService {
             @Override
             public void onFailure(@NonNull Call<LoginAPIResponseJAVA> call, @NonNull Throwable throwable) {
                 Log.d(Config.LOGTAG, "Unable to query WoooService on " + Config.WOOOO_BASE_URL, throwable);
-//                        listener.);
             }
         });
     }
@@ -166,7 +196,7 @@ public class WooAPIService {
     }
 
     public void forgotPassword(EmailRequestModel bodyParams, OnForgotPasswordAPiResult listener) {
-        Log.d(TAG, "resendOTP STARTED...");
+        Log.d(TAG, "forgotPassword STARTED...");
         final Call<BaseModelAPIResponse> forgotPassword = wooService.forgotPassword(bodyParams);
         forgotPassword.enqueue(new Callback<BaseModelAPIResponse>() {
             @Override
@@ -192,10 +222,64 @@ public class WooAPIService {
         });
     }
 
+    public void updateWalletAddress(String accountId, String walletAddress, OnUpdateWalletAddressResult listener) {
+        Log.d(TAG, "updateWalletAddress STARTED...");
+        final Call<BaseModelAPIResponse> updateWallet = wooService.updateWalletAddress(accountId, walletAddress);
+        updateWallet.enqueue(new Callback<BaseModelAPIResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<BaseModelAPIResponse> call, @NonNull Response<BaseModelAPIResponse> response) {
+                final BaseModelAPIResponse body = response.body();
+                if (body == null) {
+                    try {
+                        assert response.errorBody() != null;
+                        String errorBodyFound = response.errorBody().byteString().utf8();
+                        listener.onUpdateWalletAddressFound(parseErrorBody(errorBodyFound));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    listener.onUpdateWalletAddressFound(body);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<BaseModelAPIResponse> call, @NonNull Throwable throwable) {
+                Log.d(Config.LOGTAG, "Unable to query WoooService on " + Config.WOOOO_BASE_URL, throwable);
+            }
+        });
+    }
+
+    public void createPayment(PaymentReqModel payment, OnCreatePaymentResult listener) {
+        Log.d(TAG, "createPayment STARTED...");
+        final Call<BaseModelAPIResponse> updateWallet = wooService.createPayment(payment);
+        updateWallet.enqueue(new Callback<BaseModelAPIResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<BaseModelAPIResponse> call, @NonNull Response<BaseModelAPIResponse> response) {
+                final BaseModelAPIResponse body = response.body();
+                if (body == null) {
+                    try {
+                        assert response.errorBody() != null;
+                        String errorBodyFound = response.errorBody().byteString().utf8();
+                        listener.onCreatePaymentFound(parseErrorBody(errorBodyFound));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    listener.onCreatePaymentFound(body);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<BaseModelAPIResponse> call, @NonNull Throwable throwable) {
+                Log.d(Config.LOGTAG, "Unable to query WoooService on " + Config.WOOOO_BASE_URL, throwable);
+            }
+        });
+    }
+
     public void resetPassword(ResetPasswordRequestModel bodyParams, OnResetPasswordAPiResult listener) {
         Log.d(TAG, "resendOTP STARTED...");
         final Call<BaseModelAPIResponse> resetPassword = wooService.resetPassword(bodyParams);
-        resetPassword.enqueue(new Callback<BaseModelAPIResponse>() {
+        resetPassword.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<BaseModelAPIResponse> call, @NonNull Response<BaseModelAPIResponse> response) {
                 final BaseModelAPIResponse body = response.body();
@@ -243,6 +327,38 @@ public class WooAPIService {
             public void onFailure(@NonNull Call<SearchAccountAPIResponse> call, @NonNull Throwable throwable) {
                 Log.d(Config.LOGTAG, "Unable to query WoooService on " + Config.WOOOO_BASE_URL, throwable);
 //                        listener.);
+            }
+        });
+    }
+
+    public void getWalletOverviewData(String value, OnWalletOverviewAPiResult listener) {
+
+        Log.d(TAG, "getWalletOverviewData VALUE :" + value);
+
+        final Call<WalletOverviewApiModel> searchResultCall = wooService.getWalletOverviewData(value);
+        searchResultCall.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<WalletOverviewApiModel> call, @NonNull Response<WalletOverviewApiModel> response) {
+                Log.d(TAG, "getWalletOverviewData VALUE :" + response);
+                final WalletOverviewApiModel body = response.body();
+                if (body == null) {
+                    try {
+                        assert response.errorBody() != null;
+                        String errorBodyFound = response.errorBody().byteString().utf8();
+                        listener.onWalletOverviewResultFound(parseErrorBody(errorBodyFound));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    listener.onWalletOverviewResultFound(body);
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<WalletOverviewApiModel> call, @NonNull Throwable throwable) {
+                Log.d(Config.LOGTAG, "getWalletOverviewData ERROR " + call.isCanceled(), throwable);
+                Log.d(Config.LOGTAG, "getWalletOverviewData ERROR " + call.timeout(), throwable.getCause());
             }
         });
     }
@@ -383,6 +499,33 @@ public class WooAPIService {
         });
     }
 
+    public void getBlockChain(OnGetBlockChainApiResult listener) {
+        final Call<BlockChainAPIModel> blockChainResultCall = wooService.getBlockChain();
+        blockChainResultCall.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<BlockChainAPIModel> call, @NonNull Response<BlockChainAPIModel> response) {
+                final BlockChainAPIModel body = response.body();
+                if (body == null) {
+                    try {
+                        assert response.errorBody() != null;
+                        String errorBodyFound = response.errorBody().byteString().utf8();
+                        listener.OnGetBlockChainResultFound(parseErrorBody(errorBodyFound));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    listener.OnGetBlockChainResultFound(body);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<BlockChainAPIModel> call, @NonNull Throwable throwable) {
+                Log.d(Config.LOGTAG, "Unable to query WoooService on " + Config.WOOOO_BASE_URL, throwable);
+//                        listener.);
+            }
+        });
+    }
+
 
     public interface OnLoginAPiResult {
         <T> void onLoginApiResultFound(T result);
@@ -404,12 +547,24 @@ public class WooAPIService {
         <T> void onForgotPasswordResultFound(T result);
     }
 
+    public interface OnUpdateWalletAddressResult {
+        <T> void onUpdateWalletAddressFound(T result);
+    }
+
+    public interface OnCreatePaymentResult {
+        <T> void onCreatePaymentFound(T result);
+    }
+
     public interface OnResetPasswordAPiResult {
         <T> void onResetPasswordResultFound(T result);
     }
 
     public interface OnSearchAccountAPiResult {
         <T> void onSearchAccountApiResultFound(T result);
+    }
+
+    public interface OnWalletOverviewAPiResult {
+        <T> void onWalletOverviewResultFound(T result);
     }
 
     public interface OnGetAccountByJidAPiResult {
@@ -430,6 +585,10 @@ public class WooAPIService {
 
     public interface OnUpdateAccountApiResult {
         <T> void OnUpdateAccountAPiResultFound(T result);
+    }
+
+    public interface OnGetBlockChainApiResult {
+        <T> void OnGetBlockChainResultFound(T result);
     }
 
 

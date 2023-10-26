@@ -14,8 +14,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.compose.ui.text.intl.Locale
-import androidx.compose.ui.text.toLowerCase
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
@@ -26,6 +24,7 @@ import eu.siacs.conversations.R
 import eu.siacs.conversations.databinding.FragmentNewMeetingBinding
 import eu.siacs.conversations.entities.Account
 import eu.siacs.conversations.persistance.DatabaseBackend
+import java.util.Locale
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -94,7 +93,6 @@ class NewMeetingFragment : Fragment() {
             intent.putExtra("email", email)
             intent.putExtra("accountUniqueId", accountUniqueId)
             intent.putExtra("picture", picture)
-            intent.putExtra("username", username.toString().toLowerCase(Locale.current))
         }
 
         // Start Meeting

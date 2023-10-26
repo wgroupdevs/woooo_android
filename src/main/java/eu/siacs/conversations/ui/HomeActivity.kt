@@ -104,8 +104,7 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
             Color.TRANSPARENT,
             Color.TRANSPARENT
         )
-        dataSet.valueTextSize = 0f
-        dataSet.label = ""
+        dataSet.setDrawValues(false)
         // Create a PieData object
         val data = PieData(dataSet)
         // Set the data for the PieChart
@@ -301,6 +300,10 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
             updatePiChart(true)
             if (index > 0) {
                 goToActivity(index)
+            } else {
+                var newIntent = Intent(this, MiningActivity::class.java);
+                startActivity(newIntent)
+
             }
         })
     }
@@ -309,7 +312,7 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
     private fun goToActivity(index: Int) {
         var newIntent = Intent(this, ConversationActivity::class.java);
         if (index == 2) {
-//            newIntent = Intent(this, DappSampleActivity::class.java)
+//            newIntent = Intent(this, WooDappActivity::class.java)
         }
         newIntent.putExtra(ConversationsActivity.EXTRA_CIRCLE_MENU_INDEX, index)
         startActivity(newIntent)

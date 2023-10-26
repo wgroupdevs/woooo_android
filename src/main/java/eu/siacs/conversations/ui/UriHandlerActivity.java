@@ -287,6 +287,9 @@ public class UriHandlerActivity extends AppCompatActivity {
     public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
         super.onActivityResult(requestCode, requestCode, intent);
         if (requestCode == REQUEST_SCAN_QR_CODE && resultCode == RESULT_OK) {
+
+
+
             final boolean allowProvisioning = allowProvisioning();
             final String result = intent.getStringExtra(ScanActivity.INTENT_EXTRA_RESULT);
             if (Strings.isNullOrEmpty(result)) {
@@ -308,6 +311,7 @@ public class UriHandlerActivity extends AppCompatActivity {
                 finish();
                 return;
             }
+
             final Uri uri = Uri.parse(result.trim());
             if (allowProvisioning && "https".equalsIgnoreCase(uri.getScheme()) && !XmppUri.INVITE_DOMAIN.equalsIgnoreCase(uri.getHost())) {
                 final HttpUrl httpUrl = HttpUrl.parse(uri.toString());

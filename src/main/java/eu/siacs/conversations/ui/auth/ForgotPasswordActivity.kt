@@ -15,7 +15,6 @@ import eu.siacs.conversations.databinding.ActivityForgotPasswordBinding
 import eu.siacs.conversations.http.model.requestmodels.EmailRequestModel
 import eu.siacs.conversations.http.services.BaseModelAPIResponse
 import eu.siacs.conversations.http.services.WooAPIService
-import eu.siacs.conversations.http.services.WooService
 import eu.siacs.conversations.ui.EditAccountActivity
 import eu.siacs.conversations.ui.util.PrDialog
 import eu.siacs.conversations.ui.util.isValidEmail
@@ -62,7 +61,7 @@ class ForgotPasswordActivity : AppCompatActivity(), WooAPIService.OnForgotPasswo
         val alertDialogBuilder = AlertDialog.Builder(this, R.style.popup_dialog_theme)
         // Inflate the custom layout
         val inflater = LayoutInflater.from(this)
-        val customView: View = inflater.inflate(R.layout.signup_dialog, null)
+        val customView: View = inflater.inflate(R.layout.title_des_ok_dialog, null)
         alertDialogBuilder.setView(customView)
         // Create and show the AlertDialog
 

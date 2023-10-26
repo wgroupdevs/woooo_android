@@ -8,7 +8,7 @@
         android:padding="@dimen/_10sdp">
 
         <TextView
-            android:id="@+id/language_name"
+            android:id="@+id/item_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -18,7 +18,7 @@
 
 
         <ImageView
-            android:id="@+id/selected_language"
+            android:id="@+id/selected_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/ic_baseline_check_24"

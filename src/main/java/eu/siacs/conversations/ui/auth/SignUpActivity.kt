@@ -12,7 +12,9 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.hbb20.CountryCodePicker
+import dagger.hilt.android.AndroidEntryPoint
 import eu.siacs.conversations.R
 import eu.siacs.conversations.databinding.ActivitySignUpBinding
 import eu.siacs.conversations.http.model.SignUpModel
@@ -20,16 +22,21 @@ import eu.siacs.conversations.http.model.SignUpRequestModel
 import eu.siacs.conversations.http.services.BaseModelAPIResponse
 import eu.siacs.conversations.http.services.WooAPIService
 import eu.siacs.conversations.ui.EditAccountActivity
+import eu.siacs.conversations.ui.WalletMainFragment
 import eu.siacs.conversations.ui.util.PrDialog
 import eu.siacs.conversations.ui.util.isValidEmail
+import eu.siacs.conversations.ui.wallet.WalletViewModel
 
 
+@AndroidEntryPoint
 class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult {
 
     private lateinit var binding: ActivitySignUpBinding
     private lateinit var codePicker: CountryCodePicker
     private val TAG = "SignUpActivity_TAG"
+    private var walletAddress = ""
 
+    lateinit var walletViewModel: WalletViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,11 +48,34 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult {
             finish()
         }
         binding.signUpBtn.setOnClickListener {
-
+            if (walletAddress.isBlank()) {
+                connectWallet()
+                return@setOnClickListener
+            }
             validateSignUpForm()
+        }
+
+        walletViewModel = ViewModelProvider(this)[WalletViewModel::class.java]
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (walletAddress.isBlank()) {
+            connectWallet()
         }
     }
 
+    private fun connectWallet() {
+        if (walletViewModel.isWalletConnected) {
+            walletAddress = walletViewModel.ethereumState.value?.selectedAddress.toString()
+            return
+        }
+        walletViewModel.showWalletNotConnectedDialog(this, onSuccess = {
+            walletAddress = it
+        }, onError = {
+            Toast.makeText(this, "Connection Failed", Toast.LENGTH_LONG).show()
+        })
+    }
 
     private fun passwordTextWatcher() {
         binding.passwordEt.addTextChangedListener(object : TextWatcher {
@@ -177,7 +207,7 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult {
         val alertDialogBuilder = AlertDialog.Builder(this, R.style.popup_dialog_theme)
         // Inflate the custom layout
         val inflater = LayoutInflater.from(this)
-        val customView: View = inflater.inflate(R.layout.signup_dialog, null)
+        val customView: View = inflater.inflate(R.layout.title_des_ok_dialog, null)
         alertDialogBuilder.setView(customView)
         // Create and show the AlertDialog
 

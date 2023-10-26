@@ -65,10 +65,7 @@ public class ConversationAdapter
         }
         CharSequence name = conversation.getName();
 
-        Log.d(TAG, "CONVERSATIONS NAME : " + name);
-
         if (name instanceof Jid) {
-
             viewHolder.binding.conversationName.setText(
                     ((Jid) name).getLocal());
         } else {

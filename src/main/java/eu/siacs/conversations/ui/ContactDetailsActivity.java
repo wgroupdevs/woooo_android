@@ -287,7 +287,7 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
                 shareLink(false);
                 break;
             case R.id.action_delete_contact:
-                builder.setTitle(getString(R.string.action_delete_contact)).setMessage(JidDialog.style(this, R.string.remove_contact_text, contact.getJid().toEscapedString())).setPositiveButton(getString(R.string.delete), removeFromRoster).create().show();
+                builder.setTitle(getString(R.string.action_delete_contact)).setMessage(JidDialog.style(this, R.string.remove_contact_text, contact.getDisplayName())).setPositiveButton(getString(R.string.delete), removeFromRoster).create().show();
                 break;
             case R.id.action_edit_contact:
                 Uri systemAccount = contact.getSystemAccount();

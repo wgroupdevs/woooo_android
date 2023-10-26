@@ -60,6 +60,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.crypto.axolotl.AxolotlService;
@@ -76,6 +79,7 @@ import eu.siacs.conversations.http.model.UserBasicInfo;
 import eu.siacs.conversations.http.model.requestmodels.GetWooContactsRequestParams;
 import eu.siacs.conversations.http.services.BaseModelAPIResponse;
 import eu.siacs.conversations.http.services.WooAPIService;
+import eu.siacs.conversations.persistance.WOOPrefManager;
 import eu.siacs.conversations.services.BarcodeProvider;
 import eu.siacs.conversations.services.QuickConversationsService;
 import eu.siacs.conversations.services.XmppConnectionService;
@@ -106,6 +110,7 @@ import eu.siacs.conversations.xmpp.forms.Data;
 import eu.siacs.conversations.xmpp.pep.Avatar;
 import okhttp3.HttpUrl;
 
+@AndroidEntryPoint
 public class EditAccountActivity extends OmemoActivity implements OnAccountUpdate, OnUpdateBlocklist, OnKeyStatusUpdated, OnCaptchaRequested, KeyChainAliasCallback, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnMamPreferencesFetched, WooAPIService.OnLoginAPiResult, WooAPIService.OnGetWooContactAPiResult, WooAPIService.OnUpdateAccountApiResult {
     Boolean isLoginWithEmail = false;
     CountryCodePicker codePicker;
@@ -134,6 +139,10 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     private boolean mShowOptions = false;
     private Account mAccount;
     private LoginAPIResponseJAVA loginAPIResponseJAVA = new LoginAPIResponseJAVA();
+
+
+    @Inject
+    WOOPrefManager wooPrefManager;
     private final OnClickListener mCancelButtonClickListener = v -> {
         deleteAccountAndReturnIfNecessary();
         finish();
@@ -603,7 +612,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             if (avatar != null || (connection != null && !connection.getFeatures().pep())) {
                 Log.d(TAG, "finishInitialSetup Called");
                 //Go to HOME
-                intent = new Intent(getApplicationContext(), HomeActivity.class);
+                intent = new Intent(getApplicationContext(), MainActivity.class);
 
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 //                intent = new Intent(getApplicationContext(), StartConversationActivity.class);
@@ -613,7 +622,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 //                intent.putExtra(EXTRA_ACCOUNT, mAccount.getJid().asBareJid().toEscapedString());
             } else {
                 //Go to HOME
-                intent = new Intent(getApplicationContext(), HomeActivity.class);
+                intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 //
 //                intent.putExtra(EXTRA_ACCOUNT, mAccount.getJid().asBareJid().toEscapedString());
@@ -1874,6 +1883,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
                 if (!userBasicInfo.isVarified) {
                     Intent intent = new Intent(getApplicationContext(), OTPVerificationActivity.class);
+                    intent.putExtra(OTPVerificationActivity.EMAIL, userBasicInfo.email);
                     startActivity(intent);
                     return;
                 }
@@ -1884,7 +1894,10 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                 if (languageCode == null || languageCode.isEmpty()) {
                     languageCode = "en";
                 }
-
+//reset-WOO-API-SERVICE-WITH_USER_TOKEN
+                wooPrefManager.saveString(WOOPrefManager.USER_TOKEN_KEY, loginAPIResponseJAVA.getData().token);
+                WooAPIService.userToken = loginAPIResponseJAVA.getData().token;
+                WooAPIService.resetWooAPIService();
 
                 performXMPPLoginAttempt(userBasicInfo, jid, password, 5222, null, languageCode);
 
@@ -1936,15 +1949,18 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == REQUEST_CODE_READ_CONTACTS) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                getContactListFromPhoneBook();
+                    getContactListFromPhoneBook();
 
 
-            } else {
-                // The user denied the permission.
-                // ...
+                } else {
+                    // The user denied the permission.
+                    // ...
+                }
             }
+
         }
     }
 
