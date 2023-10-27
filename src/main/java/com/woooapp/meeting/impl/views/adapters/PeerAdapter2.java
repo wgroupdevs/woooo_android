@@ -52,6 +52,7 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
     private int mBottomBarHeight = 90;
     private boolean translationEnabled = false;
     private Handler handler;
+    private boolean shouldAnimate = false;
 
     /**
      * @param mContext
@@ -132,7 +133,6 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
             vhm.peerView = convertView.findViewById(R.id.cellPeerView2);
             Peer p3 = peerList.get(position).getPeer2();
             if (p3 != null) {
-                Log.d(TAG, "Showing Peer3 for position >>> " + position);
                 PeerProps peerProp = new PeerProps(((AppCompatActivity) mContext).getApplication(), mStore);
                 peerProp.connect(mLifecycleOwner, p3.getId());
                 vhm.peerView.setProps(peerProp, mMeetingClient);
@@ -177,7 +177,6 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
         vhpp.peerView2 = convertView.findViewById(R.id.cellPeerView3);
         Peer p2 = peerList.get(position).getPeer2();
         if (p2 != null) {
-            Log.d(TAG, "Showing Peer2 for position >>> " + position);
             PeerProps props2 = new PeerProps(((AppCompatActivity) mContext).getApplication(), mStore);
             props2.connect(mLifecycleOwner, p2.getId());
             vhpp.peerView2.setProps(props2, mMeetingClient);
@@ -258,10 +257,14 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
      * @param peerList
      */
     public void replaceList(final @NonNull List<ListGridPeer> peerList) {
-//        if (shouldReplaceList(peerList)) {
-            this.peerList = peerList;
-            notifyDataSetChanged();
-//        }
+        if (shouldReplaceList(peerList)) {
+            this.shouldAnimate = true;
+        } else {
+            this.shouldAnimate = false;
+        }
+        Log.d(TAG, "<< Should Animate [" + this.shouldAnimate + "]");
+        this.peerList = peerList;
+        notifyDataSetChanged();
     }
 
     /**
@@ -284,7 +287,7 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
     }
 
     public void resume() {
-        this.handler = new Handler(this);
+//        this.handler = new Handler(this);
 //        WooEvents.getInstance().addHandler(handler);
     }
 
@@ -527,6 +530,4 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
         PeerView peerView2;
     }
 
-} /**
- * end class.
- */
+} /** end class. */
