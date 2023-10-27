@@ -10,7 +10,6 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import eu.siacs.conversations.R
-import eu.siacs.conversations.entities.Account
 import eu.siacs.conversations.http.model.wallet.BlockChainAPIModel
 import eu.siacs.conversations.http.model.wallet.CryptoNetwork
 import eu.siacs.conversations.http.model.wallet.PaymentReqModel
@@ -19,7 +18,6 @@ import eu.siacs.conversations.http.model.wallet.WalletOverviewData
 import eu.siacs.conversations.http.services.BaseModelAPIResponse
 import eu.siacs.conversations.http.services.WooAPIService
 import eu.siacs.conversations.persistance.WOOPrefManager
-import eu.siacs.conversations.ui.MainActivity
 import eu.siacs.conversations.ui.MainActivity.Companion.account
 import io.metamask.androidsdk.Dapp
 import io.metamask.androidsdk.ErrorType

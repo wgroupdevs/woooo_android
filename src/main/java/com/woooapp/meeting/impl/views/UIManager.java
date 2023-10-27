@@ -120,7 +120,7 @@ public final class UIManager {
         });
     }
 
-    interface DialogCallback {
+    public interface DialogCallback {
         void onPositiveButton(@Nullable Object sender, @Nullable Object data);
 
         void onNeutralButton(@Nullable Object sender, @Nullable Object data);

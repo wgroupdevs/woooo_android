@@ -237,13 +237,15 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
         this.buttonAI.setOnClickListener(view -> {
             View contentView = LayoutInflater.from(this).inflate(R.layout.layout_bottom_sheet_translation, null);
-            Button buttonTextTrans = contentView.findViewById(R.id.buttonTransSheetText);
+            View buttonTextTrans = contentView.findViewById(R.id.buttonTransSheetText);
+            ImageView ivText = contentView.findViewById(R.id.ivText);
+            ImageView ivVoice = contentView.findViewById(R.id.ivVoice);
             if (mMeetingClient.isTextTranslationOn()) {
-                buttonTextTrans.setTextColor(Color.WHITE);
+                ivText.setVisibility(View.VISIBLE);
             } else {
-                buttonTextTrans.setTextColor(Color.BLACK);
+                ivText.setVisibility(View.GONE);
             }
-            Button buttonVoiceTrans = contentView.findViewById(R.id.buttonTransSheetVoice);
+            View buttonVoiceTrans = contentView.findViewById(R.id.buttonTransSheetVoice);
             Button buttonCancel = contentView.findViewById(R.id.buttonTransSheetCancel);
 
             BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.SheetDialog);
@@ -251,7 +253,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             dialog.show();
 
             buttonTextTrans.setOnClickListener(v -> {
-                buttonTextTrans.setTextColor(Color.WHITE);
                 if (mMeetingClient != null) {
                     mMeetingClient.setTextTranslation(!mMeetingClient.isTextTranslationOn());
                     if (mMeetingClient.isTextTranslationOn()) {

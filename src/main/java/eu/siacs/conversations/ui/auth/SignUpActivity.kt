@@ -12,7 +12,6 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModelProvider
 import com.hbb20.CountryCodePicker
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,7 +22,6 @@ import eu.siacs.conversations.http.model.SignUpRequestModel
 import eu.siacs.conversations.http.services.BaseModelAPIResponse
 import eu.siacs.conversations.http.services.WooAPIService
 import eu.siacs.conversations.ui.EditAccountActivity
-import eu.siacs.conversations.ui.WalletMainFragment
 import eu.siacs.conversations.ui.util.PrDialog
 import eu.siacs.conversations.ui.util.isValidEmail
 import eu.siacs.conversations.ui.wallet.WalletViewModel

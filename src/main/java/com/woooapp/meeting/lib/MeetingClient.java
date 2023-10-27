@@ -1,5 +1,6 @@
 package com.woooapp.meeting.lib;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -8,7 +9,9 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.woooapp.meeting.impl.utils.WooDirector;
 import com.woooapp.meeting.impl.utils.WooEvents;
+import com.woooapp.meeting.impl.views.UIManager;
 import com.woooapp.meeting.lib.lv.RoomStore;
 import com.woooapp.meeting.lib.socket.WooSocket;
 import com.woooapp.meeting.net.models.Message;
@@ -16,6 +19,8 @@ import com.woooapp.meeting.net.models.Message;
 import org.json.JSONException;
 
 import java.util.Map;
+
+import eu.siacs.conversations.R;
 
 /**
  * @author Muneeb Ahmad (ahmadgallian@yahoo.com)
@@ -96,8 +101,35 @@ public final class MeetingClient extends RoomMessageHandler {
                     mRoomStore,
                     mWorkerHandler,
                     this);
-            mSocket.connect();
-            mStarted = true;
+            try {
+                mSocket.connect();
+                mStarted = true;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                UIManager.showErrorDialog(
+                        mContext,
+                        "Communication Error",
+                        "App encountered and internal error. Please try again later!",
+                        "Okay",
+                        R.drawable.ic_warning,
+                        new UIManager.DialogCallback() {
+
+                            @Override
+                            public void onPositiveButton(@Nullable Object sender, @Nullable Object data) {
+                                ((Activity) mContext).finish();
+                            }
+
+                            @Override
+                            public void onNeutralButton(@Nullable Object sender, @Nullable Object data) {
+
+                            }
+
+                            @Override
+                            public void onNegativeButton(@Nullable Object sender, @Nullable Object data) {
+
+                            }
+                        });
+            }
         });
     }
 
