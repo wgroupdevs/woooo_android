@@ -55,7 +55,6 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult {
             }
             validateSignUpForm()
         }
-
         walletViewModel = ViewModelProvider(this)[WalletViewModel::class.java]
     }
 

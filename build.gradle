@@ -162,7 +162,7 @@ dependencies {
     kapt 'com.google.dagger:hilt-compiler:2.48.1'
 
 //    META_MASK
-    implementation 'io.metamask.androidsdk:metamask-android-sdk:0.2.0'
+    implementation 'io.metamask.androidsdk:metamask-android-sdk:0.2.1'
 
 
 }

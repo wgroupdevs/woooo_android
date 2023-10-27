@@ -10,6 +10,7 @@ import eu.siacs.conversations.http.model.wallet.Transaction
 import eu.siacs.conversations.http.model.wallet.TransactionAPIModel
 import eu.siacs.conversations.http.services.BaseModelAPIResponse
 import eu.siacs.conversations.http.services.WooAPIService
+import eu.siacs.conversations.ui.MainActivity.Companion.account
 import eu.siacs.conversations.ui.WalletMainFragment
 import eu.siacs.conversations.ui.adapter.WalletTransactionAdapter
 import okhttp3.internal.notify
@@ -40,7 +41,7 @@ class WalletTransactionActivity : AppCompatActivity(), WooAPIService.OnGetTransa
 
     private fun getTransactions() {
         isLoading = true;
-        WalletMainFragment.walletViewModel.mAccount?.let {
+        account?.let {
             wooAPIService.getTransactions(it.accountId, currentPage, 10, this)
         }
     }

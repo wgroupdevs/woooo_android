@@ -20,8 +20,9 @@ import eu.siacs.conversations.http.model.wallet.Currency
 import eu.siacs.conversations.http.model.wallet.PaymentReqModel
 import eu.siacs.conversations.http.model.wallet.Wallet
 import eu.siacs.conversations.services.BarcodeProvider
+import eu.siacs.conversations.ui.MainActivity.Companion.account
+import eu.siacs.conversations.ui.MainActivity.Companion.walletViewModel
 
-@AndroidEntryPoint
 class SendReceiveCurrencyActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySendReceiveCurrencyBinding
@@ -153,7 +154,6 @@ class SendReceiveCurrencyActivity : AppCompatActivity() {
     companion object {
         lateinit var chain: Currency
         var receiverWalletAddress: String = ""
-        lateinit var walletViewModel: WalletViewModel
         val TAG = "SendCurrency_TAG"
     }
 
@@ -178,7 +178,7 @@ class SendReceiveCurrencyActivity : AppCompatActivity() {
                 Log.d(TAG, "sendTransaction onSuccess : $it")
 
                 val payment = PaymentReqModel(
-                    accountId = walletViewModel.mAccount?.accountId,
+                    accountId = account?.accountId,
                     currency = chain.code,
                     transactionHash = it.toString(),
                     amount = amount.toDouble(),

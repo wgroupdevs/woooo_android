@@ -21,7 +21,9 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -41,6 +43,7 @@ import eu.siacs.conversations.R
 import eu.siacs.conversations.databinding.FragmentWalletMainBinding
 import eu.siacs.conversations.http.model.wallet.Currency
 import eu.siacs.conversations.http.model.wallet.Wallet
+import eu.siacs.conversations.ui.MainActivity.Companion.walletViewModel
 import eu.siacs.conversations.ui.adapter.ChainAdapter
 import eu.siacs.conversations.ui.wallet.SendReceiveCurrencyActivity
 import eu.siacs.conversations.ui.wallet.WalletTransactionActivity
@@ -48,7 +51,6 @@ import eu.siacs.conversations.ui.wallet.WalletViewModel
 import kotlinx.coroutines.launch
 
 
-@AndroidEntryPoint
 class WalletMainFragment : XmppFragment() {
     val TAG = "WalletMainFragment_TAG";
 
@@ -61,9 +63,7 @@ class WalletMainFragment : XmppFragment() {
     var selectedCurrency: Currency? = null
     private var progressDialog: ProgressDialog? = null
 
-
     companion object {
-        lateinit var walletViewModel: WalletViewModel
         private const val REQUEST_SCAN_QR_CODE = 0x0001
         private const val REQUEST_CAMERA_PERMISSIONS_TO_SCAN = 0x0002
     }
@@ -90,6 +90,7 @@ class WalletMainFragment : XmppFragment() {
         super.onResume()
         this.activity?.binding?.toolbar?.toolbarSearch?.visibility = View.GONE
         this.activity?.binding?.toolbar?.walletMainAppBar?.visibility = View.VISIBLE
+
         updateAppBar()
 
     }
@@ -182,7 +183,7 @@ class WalletMainFragment : XmppFragment() {
                         walletViewModel.connect(
                             onSuccess = {
                                 Log.d(TAG, "Wallet connected successfully $it")
-                                updateAppBar()
+//                                updateAppBar()
                             },
                             onError = { msg ->
                                 Log.d(TAG, "Wallet Connection Error $msg")
@@ -194,7 +195,7 @@ class WalletMainFragment : XmppFragment() {
                     walletViewModel.isWalletConnected = true
                     this.activity?.binding?.toolbar?.connectWalletView?.visibility = View.GONE
                     this.activity?.binding?.toolbar?.currentChainView?.visibility = View.VISIBLE
-                    updateAppBar()
+//                    updateAppBar()
                 }
 
 
@@ -448,7 +449,6 @@ class WalletMainFragment : XmppFragment() {
                 val transactionIntent =
                     Intent(getActivity(), SendReceiveCurrencyActivity::class.java)
                 SendReceiveCurrencyActivity.chain = chain
-                SendReceiveCurrencyActivity.walletViewModel = walletViewModel
                 startActivity(transactionIntent)
             }
         }
@@ -483,7 +483,6 @@ class WalletMainFragment : XmppFragment() {
                 Intent(getActivity(), SendReceiveCurrencyActivity::class.java)
             SendReceiveCurrencyActivity.chain = selectedCurrency!!
             SendReceiveCurrencyActivity.receiverWalletAddress = result
-            SendReceiveCurrencyActivity.walletViewModel = walletViewModel
             startActivity(transactionIntent)
 
 

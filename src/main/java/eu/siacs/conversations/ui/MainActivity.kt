@@ -3,6 +3,7 @@ package eu.siacs.conversations.ui
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.activity.viewModels
 import androidx.lifecycle.ViewModelProvider
 import dagger.hilt.android.AndroidEntryPoint
 import eu.siacs.conversations.entities.Account
@@ -46,9 +47,6 @@ class MainActivity : XmppActivity(), OnAccountUpdate {
                 startNewActivity(welcomeIntent)
             } else {
 
-
-
-
                 //reset-WOO-API-SERVICE-WITH_USER_TOKEN
                 val token =
                     wooPrefManager.getString(WOOPrefManager.USER_TOKEN_KEY, "")
@@ -57,12 +55,11 @@ class MainActivity : XmppActivity(), OnAccountUpdate {
                 Log.d(TAG, "USER TOKEN FROM PREF : $token")
                 WooAPIService.resetWooAPIService()
 
-                WalletViewModel.account = mAccount
-
-                val walletViewModel: WalletViewModel =
-                    ViewModelProvider(this)[WalletViewModel::class.java]
-
-                WalletMainFragment.walletViewModel = walletViewModel
+                mAccount?.let {
+                    account = mAccount!!
+                    val viewModel: WalletViewModel by viewModels()
+                    walletViewModel = viewModel
+                }
 
                 val homeIntent = Intent(this@MainActivity, HomeActivity::class.java)
                 startNewActivity(homeIntent)
@@ -78,6 +75,12 @@ class MainActivity : XmppActivity(), OnAccountUpdate {
     }
 
     override fun onAccountUpdate() {
+    }
+
+
+    companion object {
+        lateinit var walletViewModel: WalletViewModel
+        lateinit var account: Account
     }
 
 

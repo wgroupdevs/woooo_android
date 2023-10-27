@@ -66,6 +66,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialView;
@@ -78,6 +79,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import eu.siacs.conversations.Config;
@@ -103,6 +106,7 @@ import eu.siacs.conversations.ui.util.ActivityResult;
 import eu.siacs.conversations.ui.util.ConversationMenuConfigurator;
 import eu.siacs.conversations.ui.util.MenuDoubleTabUtil;
 import eu.siacs.conversations.ui.util.PendingItem;
+import eu.siacs.conversations.ui.wallet.WalletViewModel;
 import eu.siacs.conversations.utils.AccountUtils;
 import eu.siacs.conversations.utils.ExceptionHelper;
 import eu.siacs.conversations.utils.SignupUtils;
@@ -110,7 +114,6 @@ import eu.siacs.conversations.utils.XmppUri;
 import eu.siacs.conversations.xmpp.Jid;
 import eu.siacs.conversations.xmpp.OnUpdateBlocklist;
 
-@AndroidEntryPoint
 public class ConversationsActivity extends XmppActivity implements OnConversationSelected, OnConversationArchived, OnConversationsListItemUpdated, OnConversationRead, XmppConnectionService.OnAccountUpdate, XmppConnectionService.OnConversationUpdate, XmppConnectionService.OnRosterUpdate, OnUpdateBlocklist, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnAffiliationChanged, CreatePrivateGroupChatDialog.CreateConferenceDialogListener, WooAPIService.OnGetAccountByJidAPiResult {
 
 
@@ -127,6 +130,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
     public static final String EXTRA_TYPE = "type";
     public static final String TAG = "ConversationsActivity_TAG";
     private final int REQUEST_CREATE_CONFERENCE = 0x39da;
+
     private static final List<String> VIEW_AND_SHARE_ACTIONS = Arrays.asList(
             ACTION_VIEW_CONVERSATION,
             Intent.ACTION_SEND,
@@ -231,7 +235,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
 //        find contact by jid
         Jid jid = Jid.ofEscaped(user.jid);
         Conversation conversation = xmppConnectionService.findConversationByJid(jid);
-        if(conversation!=null){
+        if (conversation != null) {
             Contact contact = conversation.getContact();
             contact.setServerName(user.firstName + " " + user.lastName);
             xmppConnectionService.pushContactToServer(contact);
@@ -245,7 +249,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         runOnUiThread(() -> {
             if (result instanceof SearchAccountAPIResponse) {
                 UserBasicInfo user = ((SearchAccountAPIResponse) result).Data;
-                if(user!=null){
+                if (user != null) {
                     updateContactName(user);
                 }
             } else if (result instanceof BaseModelAPIResponse) {
@@ -583,7 +587,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
             return false;
         });
 
-        Log.d(TAG, "OnCreate Called");
+
     }
 
 

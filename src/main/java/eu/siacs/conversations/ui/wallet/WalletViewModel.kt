@@ -19,6 +19,8 @@ import eu.siacs.conversations.http.model.wallet.WalletOverviewData
 import eu.siacs.conversations.http.services.BaseModelAPIResponse
 import eu.siacs.conversations.http.services.WooAPIService
 import eu.siacs.conversations.persistance.WOOPrefManager
+import eu.siacs.conversations.ui.MainActivity
+import eu.siacs.conversations.ui.MainActivity.Companion.account
 import io.metamask.androidsdk.Dapp
 import io.metamask.androidsdk.ErrorType
 import io.metamask.androidsdk.Ethereum
@@ -56,13 +58,11 @@ class WalletViewModel @Inject constructor(
     init {
         Log.d(TAG, "EthereumViewModel started...")
 //        wooAPIService.getBlockChain(this)
-        account?.let {
-            getWalletOverViewData()
-        }
+        getWalletOverViewData()
     }
 
     private fun getWalletOverViewData() {
-        wooAPIService.getWalletOverviewData(account?.accountId, this)
+        wooAPIService.getWalletOverviewData(account.accountId, this)
     }
 
 
@@ -72,9 +72,6 @@ class WalletViewModel @Inject constructor(
         }
         return ethereum.chainId
     }
-
-
-    var balance: String? = null
 
 
 //    private fun getWalletBalance() {
@@ -306,15 +303,6 @@ class WalletViewModel @Inject constructor(
         }
     }
 
-    val mAccount: Account?
-        get() {
-            return account
-        }
-
-    companion object {
-        public var account: Account? = null
-    }
-
     override fun <T : Any?> onUpdateWalletAddressFound(result: T) {
     }
 
@@ -325,14 +313,12 @@ class WalletViewModel @Inject constructor(
                     getWalletOverViewData()
                 }
                 Log.d(TAG, "onCreatePaymentFoundECEPTION FOUND... ${result.Message}")
-
             }
 
             else -> {
                 Log.d(TAG, "onCreatePaymentFoundECEPTION FOUND... $result")
 
                 if (result is BaseModelAPIResponse) {
-                    Log.d(TAG, "ECEPTION FOUND... ${result.Message}")
                 }
 
             }
