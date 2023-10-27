@@ -178,7 +178,7 @@ class SendReceiveCurrencyActivity : AppCompatActivity() {
                 Log.d(TAG, "sendTransaction onSuccess : $it")
 
                 val payment = PaymentReqModel(
-                    accountId = account?.accountId,
+                    accountId = account.accountId,
                     currency = chain.code,
                     transactionHash = it.toString(),
                     amount = amount.toDouble(),

@@ -35,7 +35,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="withdraw"
-            android:textAppearance="@style/TextAppearance.Conversations.Caption" />
+            android:textAppearance="@style/TextAppearance.Conversations.MiniCap" />
 
         <TextView
             android:id="@+id/tr_amount"
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="0.004"
+            android:text="0.0"
             android:textAppearance="@style/TextAppearance.Conversations.Caption" />
 
         <TextView

@@ -131,7 +131,7 @@ class WalletMainFragment : XmppFragment() {
             startActivity(transactionIntent)
         }
         observeWalletConnection()
-        populatePIChart()
+        piChartViewSettings()
         populateCurrencyDropDown()
 
 
@@ -147,6 +147,7 @@ class WalletMainFragment : XmppFragment() {
                             progressDialog?.hide()
                         }
                     } else {
+                        showEmptyPiChart()
                         showProgressDialog()
                     }
                     if (it.currency.isNotEmpty()) {
@@ -183,7 +184,6 @@ class WalletMainFragment : XmppFragment() {
                         walletViewModel.connect(
                             onSuccess = {
                                 Log.d(TAG, "Wallet connected successfully $it")
-//                                updateAppBar()
                             },
                             onError = { msg ->
                                 Log.d(TAG, "Wallet Connection Error $msg")
@@ -195,7 +195,6 @@ class WalletMainFragment : XmppFragment() {
                     walletViewModel.isWalletConnected = true
                     this.activity?.binding?.toolbar?.connectWalletView?.visibility = View.GONE
                     this.activity?.binding?.toolbar?.currentChainView?.visibility = View.VISIBLE
-//                    updateAppBar()
                 }
 
 
@@ -222,28 +221,40 @@ class WalletMainFragment : XmppFragment() {
 
     private fun populatePIChart() {
         val pieChart: PieChart = binding.pieChart
-
         val entries = ArrayList<PieEntry>()
         val colorList = ArrayList<Int>()
 
-        if (walletViewModel.walletOverviewData.value.wallet.isEmpty()) {
-            entries.add(PieEntry(100f))
-            colorList.add(Color.YELLOW)
-        } else {
-            // Set up an OnChartValueSelectedListener to handle click events
+        for (wallet in walletViewModel.walletOverviewData.value.wallet) {
+            var walletBalance = wallet.balance ?: 0.0
+            if (walletBalance == 0.0) {
+                continue
+            }
+            if (wallet.currency == "WOO") {
+                selectedWallet = wallet
+            }
+            entries.add(PieEntry(walletBalance.toFloat(), "", wallet.currency))
+            colorList.add(Color.parseColor(wallet.colorCode))
+            walletViewModel.walletOverviewData.value.currency.firstOrNull {
+                wallet.currency == it.code
+            }?.let { currency ->
+                if (currency.code == "WOO") {
+                    selectedCurrency = currency
+                }
+            }
+        }
+
+        if (entries.isNotEmpty()) {
+            //attach click listener
             pieChart?.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
 
                     if (e != null && h != null) {
 
                         val currency = e.data ?: "WOO"
-
                         selectedWallet =
                             walletViewModel.walletOverviewData.value.wallet.firstOrNull { it.currency == currency }
-
                         selectedCurrency =
                             walletViewModel.walletOverviewData.value.currency.firstOrNull { it.code == currency }
-
 
                         if (selectedCurrency == null || selectedWallet == null)
                             return
@@ -256,67 +267,55 @@ class WalletMainFragment : XmppFragment() {
                     // Handle when nothing is selected (e.g., deselect)
                 }
             })
+            // Create a PieDataSet
+            val dataSet = PieDataSet(entries, "Wallet")
+            dataSet.valueTextSize = 0f
+            dataSet.colors = colorList
+            dataSet.valueTextSize = 12f
+            dataSet.setDrawValues(false)
+            // Create a PieData object
+            val data = PieData(dataSet)
+            pieChart.data = data
+            // Refresh the chart to apply changes
+            updatePIChart()
+        } else {
+            showEmptyPiChart()
         }
 
-        for (wallet in walletViewModel.walletOverviewData.value.wallet) {
-            var walletBalance = wallet.balance ?: 0.0
-            if (walletBalance == 0.0) {
-                continue
-            }
-            if (wallet.currency == "WOO") {
-                selectedWallet = wallet
-            }
-            entries.add(PieEntry(walletBalance.toFloat(), "", wallet.currency))
-            colorList.add(Color.parseColor(wallet.colorCode))
+
+    }
 
 
-            walletViewModel.walletOverviewData.value.currency.firstOrNull {
-                wallet.currency == it.code
-            }?.let { currency ->
-                if (currency.code == "WOO") {
-                    selectedCurrency = currency
-                }
-            }
-        }
+    private fun piChartViewSettings() {
 
-        if (entries.isEmpty()) {
-            entries.add(PieEntry(100f))
-            colorList.add(Color.YELLOW)
-        }
+        binding.pieChart.holeRadius = 60f
+        binding.pieChart.setHoleColor(Color.TRANSPARENT)
+        binding.pieChart.transparentCircleRadius = 35f
+        binding.pieChart.legend.isEnabled = false
+        binding.pieChart.description.isEnabled = false
+    }
 
-        Log.d(TAG, "PICHART-ENTRIES : ${entries}")
-
+    private fun showEmptyPiChart() {
+        val pieChart: PieChart = binding.pieChart
+        val entries = ArrayList<PieEntry>()
+        val colorList = ArrayList<Int>()
+        entries.add(PieEntry(100f))
+        colorList.add(Color.YELLOW)
         // Create a PieDataSet
         val dataSet = PieDataSet(entries, "Wallet")
         dataSet.valueTextSize = 0f
         dataSet.colors = colorList
         dataSet.valueTextSize = 12f
         dataSet.setDrawValues(false)
-
-        // Create a PieData object
-
-        // Create a PieData object
         val data = PieData(dataSet)
-
         pieChart.data = data
-
-
-        pieChart.holeRadius = 60f // Set the radius of the center hole (0f for no hole)
-        pieChart.setHoleColor(Color.TRANSPARENT)
-        pieChart.transparentCircleRadius = 35f // Set the radius of the transparent circle
-        pieChart.legend.isEnabled = false
-        pieChart.description.isEnabled = false
-
-
-        // Refresh the chart to apply changes
         updatePIChart()
     }
 
-
     private fun updatePIChart() {
+        Log.d(TAG, "SELECTED WALLET : ${selectedWallet?.currency} : ${selectedWallet?.balance}")
 
         val pieChart: PieChart = binding.pieChart
-
         pieChart.centerText =
             "${selectedWallet?.currency ?: "WOO"}\n${selectedWallet?.balance ?: "0.0"}"
         pieChart.setCenterTextSize(25f)

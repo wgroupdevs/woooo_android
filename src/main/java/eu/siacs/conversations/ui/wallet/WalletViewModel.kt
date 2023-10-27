@@ -32,6 +32,8 @@ import io.metamask.androidsdk.Network
 import io.metamask.androidsdk.RequestError
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.math.BigDecimal
+import java.util.Timer
+import java.util.TimerTask
 import java.util.UUID
 import javax.inject.Inject
 
@@ -57,11 +59,14 @@ class WalletViewModel @Inject constructor(
 
     init {
         Log.d(TAG, "EthereumViewModel started...")
-//        wooAPIService.getBlockChain(this)
         getWalletOverViewData()
     }
 
+
+
     private fun getWalletOverViewData() {
+        Log.d(TAG, "getWalletOverViewData Started....")
+
         wooAPIService.getWalletOverviewData(account.accountId, this)
     }
 
@@ -185,7 +190,6 @@ class WalletViewModel @Inject constructor(
                 Logger.log("Ethereum transaction error: ${result.message}")
                 onError(result.message)
             } else {
-                getWalletOverViewData()
                 Logger.log("Ethereum transaction result: $result")
                 onSuccess(result)
             }
@@ -194,7 +198,8 @@ class WalletViewModel @Inject constructor(
 
 
     fun createPayment(payment: PaymentReqModel) {
-        wooAPIService.createPayment(payment, this)
+        wooAPIService.createPayment(payment, this@WalletViewModel)
+
     }
 
     fun switchChain(
@@ -287,6 +292,9 @@ class WalletViewModel @Inject constructor(
                 if (result.success == true) {
                     result.data?.let {
                         walletOverviewData.value = result.data!!
+
+                        Log.d(TAG, "onWalletOverviewResultFound ${result?.data?.wallet?.size}")
+
                     }
 
                 }
@@ -307,6 +315,7 @@ class WalletViewModel @Inject constructor(
     }
 
     override fun <T : Any?> onCreatePaymentFound(result: T) {
+
         when (result) {
             is BaseModelAPIResponse -> {
                 if (result.Success) {
@@ -317,9 +326,6 @@ class WalletViewModel @Inject constructor(
 
             else -> {
                 Log.d(TAG, "onCreatePaymentFoundECEPTION FOUND... $result")
-
-                if (result is BaseModelAPIResponse) {
-                }
 
             }
         }
@@ -343,7 +349,7 @@ class WalletViewModel @Inject constructor(
         val titleTV = customView.findViewById<TextView>(R.id.signup_title)
         val desTV = customView.findViewById<TextView>(R.id.signup_description)
         if (title.isBlank()) {
-            titleTV.text = "Not Connected"
+            titleTV.text = "Wallet Alert"
         } else {
             titleTV.text = title
         }

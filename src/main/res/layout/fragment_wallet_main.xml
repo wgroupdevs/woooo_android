@@ -45,13 +45,14 @@
     <!--    Currency Spinner START -->
     <LinearLayout
         android:id="@+id/currency_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/pieChart_layout"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/_15sdp"
-        android:background="@drawable/bg_border"
-        android:gravity="center_vertical"
+        android:layout_marginHorizontal="@dimen/_50sdp"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:background="@drawable/button"
+        android:gravity="center"
         android:orientation="horizontal"
         android:padding="@dimen/_10sdp">
 
@@ -66,13 +67,15 @@
         <View
             android:layout_width="@dimen/_1sdp"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="@dimen/_5sdp"
+            android:layout_marginHorizontal="@dimen/_8sdp"
             android:background="@color/grey50" />
 
         <Spinner
             android:id="@+id/currency_spinner"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:backgroundTint="@color/white" />
     </LinearLayout>
     <!--    Currency Spinner END -->
 
@@ -122,15 +125,15 @@
         tools:listitem="@layout/chain_row_item" />
 
 
-<!--    <ImageView-->
-<!--        android:id="@+id/loading_animation"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_centerInParent="true"-->
-<!--        android:src="@drawable/loading_animation"-->
-<!--        android:visibility="gone"-->
+    <!--    <ImageView-->
+    <!--        android:id="@+id/loading_animation"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_centerInParent="true"-->
+    <!--        android:src="@drawable/loading_animation"-->
+    <!--        android:visibility="gone"-->
 
-<!--        />-->
+    <!--        />-->
 
 
 </RelativeLayout>

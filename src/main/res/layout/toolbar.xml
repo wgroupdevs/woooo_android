@@ -99,7 +99,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:background="@drawable/bg_border"
+                android:background="@drawable/button"
+                android:gravity="center_vertical"
                 android:padding="@dimen/_5sdp"
                 android:visibility="gone">
 
@@ -132,22 +133,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:background="@drawable/bg_border"
+                android:background="@drawable/button"
+                android:gravity="center_vertical"
                 android:padding="@dimen/_8sdp"
                 android:visibility="gone">
-
-                <ImageView
-                    android:layout_width="@dimen/_20sdp"
-                    android:layout_height="@dimen/_20sdp"
-                    android:src="@drawable/baseline_account_balance_wallet_24" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/_5sdp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="Connect"
+                    android:text="Connect Wallet"
                     android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
 
 
