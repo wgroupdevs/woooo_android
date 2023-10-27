@@ -23,7 +23,6 @@ import eu.siacs.conversations.services.XmppConnectionService
 import eu.siacs.conversations.ui.util.AvatarWorkerTask
 import pk.muneebahmad.lib.analytics.CrashChecker
 
-
 class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
 
     private lateinit var binding: ActivityHomeBinding
@@ -110,8 +109,7 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
             Color.TRANSPARENT,
             Color.TRANSPARENT
         )
-        dataSet.valueTextSize = 0f
-        dataSet.label = ""
+        dataSet.setDrawValues(false)
         // Create a PieData object
         val data = PieData(dataSet)
         // Set the data for the PieChart
@@ -198,7 +196,6 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
                 R.dimen.avatar
             )
 
-
             editProfileButton.setOnClickListener {
                 binding.drawerLayout.close()
                 val intent = Intent(this, EditAccountActivity::class.java)
@@ -243,11 +240,6 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
         }
 
         binding.appBarHome.walletIv.setOnClickListener {
-
-
-//            val intent = Intent(this, WalletHomeActivity::class.java)
-//            startActivity(intent)
-
 
             rotateOuterCircle(false, 2)
             circleIndex = 1
@@ -312,14 +304,21 @@ class HomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
         rotateAnimatorClockWise.addListener(onEnd = {
             updatePiChart(true)
             if (index > 0) {
-                goToConversationActivity(index)
+                goToActivity(index)
+            } else {
+                var newIntent = Intent(this, MiningActivity::class.java);
+                startActivity(newIntent)
+
             }
         })
     }
 
 
-    private fun goToConversationActivity(index: Int) {
-        val newIntent = Intent(this, ConversationActivity::class.java);
+    private fun goToActivity(index: Int) {
+        var newIntent = Intent(this, ConversationActivity::class.java);
+        if (index == 2) {
+//            newIntent = Intent(this, WooDappActivity::class.java)
+        }
         newIntent.putExtra(ConversationsActivity.EXTRA_CIRCLE_MENU_INDEX, index)
         startActivity(newIntent)
     }

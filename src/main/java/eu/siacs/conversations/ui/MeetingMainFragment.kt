@@ -24,7 +24,7 @@ class MeetingMainFragment : XmppFragment() {
         return inflater.inflate(R.layout.fragment_meeting_main, container, false)
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val tabLayout = view?.findViewById<TabLayout>(R.id.tablayout)
@@ -43,7 +43,7 @@ class MeetingMainFragment : XmppFragment() {
 
     }
 
-    override fun onAttach(activity: Activity?) {
+    override fun onAttach(activity: Activity) {
         super.onAttach(activity)
         if (activity is XmppActivity) {
             this.activity = activity

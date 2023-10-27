@@ -570,10 +570,10 @@ public class RtpSessionActivity extends XmppActivity
         binding.with.setText(contact.getDisplayName());
         if (Arrays.asList(RtpEndUserState.INCOMING_CALL, RtpEndUserState.ACCEPTING_CALL)
                 .contains(state)) {
-            binding.withJid.setText(contact.getJid().asBareJid().toEscapedString());
-            binding.withJid.setVisibility(View.VISIBLE);
+//            binding.withJid.setText(contact.getJid().asBareJid().toEscapedString());
+//            binding.withJid.setVisibility(View.VISIBLE);
         } else {
-            binding.withJid.setVisibility(View.GONE);
+//            binding.withJid.setVisibility(View.GONE);
         }
     }
 
@@ -949,14 +949,14 @@ public class RtpSessionActivity extends XmppActivity
             } else {
                 binding.contactPhoto.setVisibility(View.GONE);
             }
-            final Account account = contact == null ? getWith().getAccount() : contact.getAccount();
-            binding.usingAccount.setVisibility(View.VISIBLE);
-            binding.usingAccount.setText(
-                    getString(
-                            R.string.using_account,
-                            account.getJid().asBareJid().toEscapedString()));
+//            final Account account = contact == null ? getWith().getAccount() : contact.getAccount();
+//            binding.usingAccount.setVisibility(View.VISIBLE);
+//            binding.usingAccount.setText(
+//                    getString(
+//                            R.string.using_account,
+//                            account.getJid().asBareJid().toEscapedString()));
         } else {
-            binding.usingAccount.setVisibility(View.GONE);
+//            binding.usingAccount.setVisibility(View.GONE);
             binding.contactPhoto.setVisibility(View.GONE);
         }
     }

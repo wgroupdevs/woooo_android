@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -77,10 +77,9 @@
     </queries>
 
     <application
-        android:name="com.woogroup.woooo_app.woooo.di.WooApplication"
+        android:name=".WooApplication"
         android:allowBackup="false"
         android:appCategory="social"
-        android:fullBackupContent="@xml/backup_content"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -90,7 +89,28 @@
         android:theme="@style/ConversationsTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:label"
-        tools:targetApi="q" >
+        tools:targetApi="q">
+        <activity
+            android:name=".ui.MiningActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.wallet.SendReceiveCurrencyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.wallet.WalletTransactionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.OTPVerificationActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.SignUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.ResetPasswordActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.HomeActivity"
             android:exported="false"
@@ -105,7 +125,7 @@
 
         <receiver
             android:name=".services.EventReceiver"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
@@ -116,7 +136,7 @@
         <receiver
             android:name=".services.UnifiedPushDistributor"
             android:enabled="false"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="org.unifiedpush.android.distributor.REGISTER" />
                 <action android:name="org.unifiedpush.android.distributor.UNREGISTER" />
@@ -136,7 +156,7 @@
             android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:theme="@style/ConversationsTheme" >
+            android:theme="@style/ConversationsTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -159,7 +179,7 @@
         <activity
             android:name=".ui.ConversationActivity"
             android:exported="true"
-            android:theme="@style/SplashTheme" >
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
@@ -169,8 +189,8 @@
             android:name=".ui.ConversationsActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
-            android:minHeight="300dp"
             android:minWidth="300dp"
+            android:minHeight="300dp"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ui.ScanActivity"
@@ -180,7 +200,7 @@
         <activity
             android:name=".ui.UriHandlerActivity"
             android:exported="true"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -189,7 +209,7 @@
 
                 <data android:scheme="xmpp" />
             </intent-filter>
-            <intent-filter android:autoVerify="true" >
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -221,7 +241,7 @@
             android:name=".ui.StartConversationActivity"
             android:exported="true"
             android:label="@string/title_activity_start_conversation"
-            android:launchMode="singleTop" >
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
@@ -229,7 +249,7 @@
         <activity
             android:name=".ui.SettingsActivity"
             android:exported="true"
-            android:label="@string/title_activity_settings" >
+            android:label="@string/title_activity_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -249,8 +269,8 @@
             android:name=".ui.ChooseAccountForProfilePictureActivity"
             android:enabled="false"
             android:exported="true"
-            android:label="@string/choose_account" >
-            <intent-filter android:label="@string/set_profile_picture" >
+            android:label="@string/choose_account">
+            <intent-filter android:label="@string/set_profile_picture">
                 <action android:name="android.intent.action.ATTACH_DATA" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -285,7 +305,7 @@
             android:name=".ui.ShareWithActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:launchMode="singleTop" >
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
@@ -314,7 +334,7 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".ui.AboutActivity"
-            android:parentActivityName=".ui.SettingsActivity" >
+            android:parentActivityName=".ui.SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="eu.siacs.conversations.ui.SettingsActivity" />
@@ -332,7 +352,7 @@
         <service
             android:name=".services.ContactChooserTargetService"
             android:exported="true"
-            android:permission="android.permission.BIND_CHOOSER_TARGET_SERVICE" >
+            android:permission="android.permission.BIND_CHOOSER_TARGET_SERVICE">
             <intent-filter>
                 <action android:name="android.service.chooser.ChooserTargetService" />
             </intent-filter>
@@ -342,7 +362,7 @@
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.files"
             android:exported="false"
-            android:grantUriPermissions="true" >
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
@@ -356,7 +376,7 @@
         <activity
             android:name=".ui.ShortcutActivity"
             android:exported="true"
-            android:label="@string/contact" >
+            android:label="@string/contact">
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
             </intent-filter>
@@ -371,10 +391,7 @@
             android:name=".ui.RtpSessionActivity"
             android:autoRemoveFromRecents="true"
             android:launchMode="singleInstance"
-            android:supportsPictureInPicture="true" />
-
-
-        <!-- MEETING -->
+            android:supportsPictureInPicture="true" /> <!-- MEETING -->
         <activity
             android:name="com.woooapp.meeting.impl.views.SettingsActivity"
             android:exported="false"
@@ -383,13 +400,13 @@
         <activity
             android:name="com.woooapp.meeting.impl.views.RoomActivity"
             android:label="@string/title_activity_room_meet"
-            android:screenOrientation="portrait"
-            android:launchMode="singleInstance" />
-
-        <activity android:name="com.woooapp.meeting.impl.views.MeetingActivity"
-            android:label="Meeting"
-            android:screenOrientation="portrait"
             android:launchMode="singleInstance"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.woooapp.meeting.impl.views.MeetingActivity"
+            android:label="Meeting"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
             android:turnScreenOn="true"
             />
     </application>

@@ -36,7 +36,7 @@ import eu.siacs.conversations.http.HttpConnectionManager;
 import eu.siacs.conversations.http.model.TextTranslateApiResponse;
 import eu.siacs.conversations.http.model.TextTranslateModel;
 import eu.siacs.conversations.http.services.BaseModelAPIResponse;
-import eu.siacs.conversations.http.services.WooooAPIService;
+import eu.siacs.conversations.http.services.WooAPIService;
 import eu.siacs.conversations.services.MessageArchiveService;
 import eu.siacs.conversations.services.QuickConversationsService;
 import eu.siacs.conversations.services.XmppConnectionService;
@@ -53,7 +53,7 @@ import eu.siacs.conversations.xmpp.jingle.JingleRtpConnection;
 import eu.siacs.conversations.xmpp.pep.Avatar;
 import eu.siacs.conversations.xmpp.stanzas.MessagePacket;
 
-public class MessageParser extends AbstractParser implements OnMessagePacketReceived, WooooAPIService.OnTextTranslateAPiResult {
+public class MessageParser extends AbstractParser implements OnMessagePacketReceived, WooAPIService.OnTextTranslateAPiResult {
 
     private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
     private String TAG = "MessageParser_TAG";

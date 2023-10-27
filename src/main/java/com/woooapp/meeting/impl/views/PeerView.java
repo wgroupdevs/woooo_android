@@ -32,7 +32,6 @@ import java.util.Objects;
 import java.util.Random;
 
 import eu.siacs.conversations.R;
-import eu.siacs.conversations.databinding.ViewPeerBinding;
 import eu.siacs.conversations.databinding.WooViewPeerBinding;
 
 /**

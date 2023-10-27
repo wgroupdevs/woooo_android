@@ -15,13 +15,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.android.volley.toolbox.ImageRequest;
 import com.woooapp.meeting.impl.utils.ClipboardCopy;
 import com.woooapp.meeting.impl.utils.WooEvents;
 import com.woooapp.meeting.impl.views.UIManager;
 import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
 import com.woooapp.meeting.lib.MeetingClient;
-
-import coil.request.ImageRequest;
 import eu.siacs.conversations.R;
 
 /**

@@ -60,6 +60,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.inject.Inject;
+
+import dagger.hilt.android.AndroidEntryPoint;
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.crypto.axolotl.AxolotlService;
@@ -73,8 +76,10 @@ import eu.siacs.conversations.entities.PresenceTemplate;
 import eu.siacs.conversations.http.model.GetWooContactsModel;
 import eu.siacs.conversations.http.model.LoginAPIResponseJAVA;
 import eu.siacs.conversations.http.model.UserBasicInfo;
+import eu.siacs.conversations.http.model.requestmodels.GetWooContactsRequestParams;
 import eu.siacs.conversations.http.services.BaseModelAPIResponse;
-import eu.siacs.conversations.http.services.WooooAPIService;
+import eu.siacs.conversations.http.services.WooAPIService;
+import eu.siacs.conversations.persistance.WOOPrefManager;
 import eu.siacs.conversations.services.BarcodeProvider;
 import eu.siacs.conversations.services.QuickConversationsService;
 import eu.siacs.conversations.services.XmppConnectionService;
@@ -82,6 +87,9 @@ import eu.siacs.conversations.services.XmppConnectionService.OnAccountUpdate;
 import eu.siacs.conversations.services.XmppConnectionService.OnCaptchaRequested;
 import eu.siacs.conversations.ui.adapter.KnownHostsAdapter;
 import eu.siacs.conversations.ui.adapter.PresenceTemplateAdapter;
+import eu.siacs.conversations.ui.auth.ForgotPasswordActivity;
+import eu.siacs.conversations.ui.auth.OTPVerificationActivity;
+import eu.siacs.conversations.ui.auth.SignUpActivity;
 import eu.siacs.conversations.ui.util.AvatarWorkerTask;
 import eu.siacs.conversations.ui.util.MenuDoubleTabUtil;
 import eu.siacs.conversations.ui.util.PendingItem;
@@ -101,11 +109,9 @@ import eu.siacs.conversations.xmpp.XmppConnection.Features;
 import eu.siacs.conversations.xmpp.forms.Data;
 import eu.siacs.conversations.xmpp.pep.Avatar;
 import okhttp3.HttpUrl;
-import woooo_app.woooo.data.models.auth.requestmodels.GetWooContactsRequestParams;
-import woooo_app.woooo.feature.auth.GV;
-import woooo_app.woooo.utils.NavIntentConstantKt;
 
-public class EditAccountActivity extends OmemoActivity implements OnAccountUpdate, OnUpdateBlocklist, OnKeyStatusUpdated, OnCaptchaRequested, KeyChainAliasCallback, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnMamPreferencesFetched, WooooAPIService.OnLoginAPiResult, WooooAPIService.OnGetWooContactAPiResult, WooooAPIService.OnUpdateAccountApiResult {
+@AndroidEntryPoint
+public class EditAccountActivity extends OmemoActivity implements OnAccountUpdate, OnUpdateBlocklist, OnKeyStatusUpdated, OnCaptchaRequested, KeyChainAliasCallback, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnMamPreferencesFetched, WooAPIService.OnLoginAPiResult, WooAPIService.OnGetWooContactAPiResult, WooAPIService.OnUpdateAccountApiResult {
     Boolean isLoginWithEmail = false;
     CountryCodePicker codePicker;
     Context context;
@@ -133,6 +139,10 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     private boolean mShowOptions = false;
     private Account mAccount;
     private LoginAPIResponseJAVA loginAPIResponseJAVA = new LoginAPIResponseJAVA();
+
+
+    @Inject
+    WOOPrefManager wooPrefManager;
     private final OnClickListener mCancelButtonClickListener = v -> {
         deleteAccountAndReturnIfNecessary();
         finish();
@@ -173,8 +183,14 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     private boolean mUseTor;
     private ActivityEditAccountBinding binding;
     private final OnClickListener mloginButtonClickListener = v -> loginAccountXMPP();
-    private final OnClickListener newAccount = v -> goToMainActivity(NavIntentConstantKt.SIGNUP_INTENT);
-    private final OnClickListener forgotPassword = v -> goToMainActivity(NavIntentConstantKt.FORGOT_PASSWORD_INTENT);
+    private final OnClickListener newAccount = v -> {
+        Intent intent = new Intent(this, SignUpActivity.class);
+        startActivity(intent);
+    };
+    private final OnClickListener forgotPassword = v -> {
+        Intent intent = new Intent(this, ForgotPasswordActivity.class);
+        startActivity(intent);
+    };
     private ProgressDialog progressDialog;
 
     public void showProgressDialog(Context context) {
@@ -191,15 +207,6 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         }
     }
 
-
-    private void goToMainActivity(String navIntentConst) {
-
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.putExtra(NavIntentConstantKt.CONST_KEY_INTENT, navIntentConst);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        GV.INSTANCE.clearEmailField();
-        startActivity(intent);
-    }
 
     private final TextWatcher mTextWatcher = new TextWatcher() {
 
@@ -218,21 +225,18 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
         }
     };
-    private final View.OnFocusChangeListener mEditTextFocusListener = new View.OnFocusChangeListener() {
-        @Override
-        public void onFocusChange(View view, boolean b) {
-            EditText et = (EditText) view;
-            if (b) {
-                int resId = mUsernameMode ? R.string.username : R.string.enter_email;
+    private final View.OnFocusChangeListener mEditTextFocusListener = (view, b) -> {
+        EditText et = (EditText) view;
+        if (b) {
+            int resId = mUsernameMode ? R.string.username : R.string.enter_email;
 //                        R.string.account_settings_example_jabber_id;
 //                if (view.getId() == R.id.hostname) {
 //                    resId = mUseTor ? R.string.hostname_or_onion : R.string.hostname_example;
 //                }
-                final int res = resId;
-                new Handler().postDelayed(() -> et.setHint(res), 200);
-            } else {
-                et.setHint(null);
-            }
+            final int res = resId;
+            new Handler().postDelayed(() -> et.setHint(res), 200);
+        } else {
+            et.setHint(null);
         }
     };
 
@@ -607,11 +611,8 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             final boolean wasFirstAccount = xmppConnectionService != null && xmppConnectionService.getAccounts().size() == 1;
             if (avatar != null || (connection != null && !connection.getFeatures().pep())) {
                 Log.d(TAG, "finishInitialSetup Called");
+                //Go to HOME
                 intent = new Intent(getApplicationContext(), MainActivity.class);
-
-                intent.putExtra(NavIntentConstantKt.CONST_KEY_INTENT, NavIntentConstantKt.HOME_INTENT);
-                intent.putExtra(NavIntentConstantKt.USER_INFO_KEY_INTENT, loginAPIResponseJAVA.getData().getUser());
-                intent.putExtra(NavIntentConstantKt.USER_TOKEN_KEY_INTENT, loginAPIResponseJAVA.getData().getToken());
 
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 //                intent = new Intent(getApplicationContext(), StartConversationActivity.class);
@@ -620,10 +621,8 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                 }
 //                intent.putExtra(EXTRA_ACCOUNT, mAccount.getJid().asBareJid().toEscapedString());
             } else {
+                //Go to HOME
                 intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.putExtra(NavIntentConstantKt.CONST_KEY_INTENT, NavIntentConstantKt.HOME_INTENT);
-                intent.putExtra(NavIntentConstantKt.USER_INFO_KEY_INTENT, loginAPIResponseJAVA.getData().getUser());
-                intent.putExtra(NavIntentConstantKt.USER_TOKEN_KEY_INTENT, loginAPIResponseJAVA.getData().getToken());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 //
 //                intent.putExtra(EXTRA_ACCOUNT, mAccount.getJid().asBareJid().toEscapedString());
@@ -844,6 +843,11 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setUpInitialViews();
+    }
 
     private void setUpInitialViews() {
 
@@ -1876,13 +1880,24 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                 final String password = binding.accountPassword.getText().toString();
                 loginAPIResponseJAVA = (LoginAPIResponseJAVA) result;
                 UserBasicInfo userBasicInfo = loginAPIResponseJAVA.getData().getUser();
+
+                if (!userBasicInfo.isVarified) {
+                    Intent intent = new Intent(getApplicationContext(), OTPVerificationActivity.class);
+                    intent.putExtra(OTPVerificationActivity.EMAIL, userBasicInfo.email);
+                    startActivity(intent);
+                    return;
+                }
+
                 String languageCode = userBasicInfo.languageCode;
                 Log.d("onLoginApiResultFound", " LoginAPIResponseJAVA Called in EditActivity LANGUAGE CODE " + languageCode);
 
                 if (languageCode == null || languageCode.isEmpty()) {
                     languageCode = "en";
                 }
-
+//reset-WOO-API-SERVICE-WITH_USER_TOKEN
+                wooPrefManager.saveString(WOOPrefManager.USER_TOKEN_KEY, loginAPIResponseJAVA.getData().token);
+                WooAPIService.userToken = loginAPIResponseJAVA.getData().token;
+                WooAPIService.resetWooAPIService();
 
                 performXMPPLoginAttempt(userBasicInfo, jid, password, 5222, null, languageCode);
 
@@ -1934,15 +1949,18 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if (requestCode == REQUEST_CODE_READ_CONTACTS) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                getContactListFromPhoneBook();
+                    getContactListFromPhoneBook();
 
 
-            } else {
-                // The user denied the permission.
-                // ...
+                } else {
+                    // The user denied the permission.
+                    // ...
+                }
             }
+
         }
     }
 

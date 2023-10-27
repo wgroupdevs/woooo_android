@@ -4,7 +4,6 @@
     <string name="action_add">Nová konverzace</string>
     <string name="action_accounts">Nastavení účtů</string>
     <string name="action_account">Nastavení účtu</string>
-    <string name="action_end_conversation">Zavřít konverzaci</string>
     <string name="action_contact_details">Detaily kontaktu</string>
     <string name="action_muc_details">Detaily skupinového chatu</string>
     <string name="channel_details">Detaily kanálu</string>
@@ -53,7 +52,6 @@
     <string name="contact_blocked">Kontakt zablokován</string>
     <string name="blocked">Zablokovaný</string>
     <string name="remove_bookmark_text">Přejete si odstranit %s ze záložek? Předešlé rozhovory pod záložkou nebudou odstraněny.</string>
-    <string name="register_account">Registrovat nový účet na serveru</string>
     <string name="change_password_on_server">Změnit heslo na serveru</string>
     <string name="share_with">Sdílet s…</string>
     <string name="start_conversation">Začít konverzaci</string>
@@ -68,7 +66,6 @@
     <string name="delete">Smazat</string>
     <string name="block">Zablokovat</string>
     <string name="unblock">Odblokovat</string>
-    <string name="save">Uložit</string>
     <string name="ok">OK</string>
     <string name="crash_report_title">%1$s přestal reagovat</string>
     <string name="crash_report_message">Zasíláním detailů o důvodu selhání z Vašeho XMPP účtu pomůžete dalšímu vývoji %1$s.</string>
@@ -77,14 +74,10 @@
     <string name="problem_connecting_to_account">Nelze se připojit k účtu</string>
     <string name="problem_connecting_to_accounts">Nebylo možné se připojit k několika účtům</string>
     <string name="touch_to_fix">Ťukněte pro nastavení účtů</string>
-    <string name="attach_file">Přiložit soubor</string>
     <string name="not_in_roster">Přidat chybějící kontakt do seznamu kontaktů?</string>
     <string name="add_contact">Přidat kontakt</string>
     <string name="send_failed">doručení selhalo</string>
     <string name="preparing_image">Připravuji odeslání obrázku</string>
-    <string name="preparing_images">Připravuji odeslání obrázků</string>
-    <string name="sharing_files_please_wait">Sdílení souborů. Chvíli strpení…</string>
-    <string name="action_clear_history">Smazat historii</string>
     <string name="clear_conversation_history">Smaže historii konverzací</string>
     <string name="clear_histor_msg">Opravdu chcete smazat všechny zprávy v této konverzace?\n\n<b>Varování</b>Toto neovlivní zprávy uložené na jiných zařízeních či serverech.</string>
     <string name="delete_file_dialog">Smazat soubor</string>
@@ -96,9 +89,6 @@
     <string name="send_unencrypted_message">Odeslat nešifrovanou zprávu</string>
     <string name="send_message">Odeslat zprávu</string>
     <string name="send_message_to_x">Odeslat zprávu pro %s</string>
-    <string name="send_omemo_message">Poslat OMEMO šifrovanou zprávu</string>
-    <string name="send_omemo_x509_message">Odeslat v\\OMEMO šifrovanou zprávu</string>
-    <string name="send_pgp_message">Poslat OpenPGP šifrovanou zprávu</string>
     <string name="your_nick_has_been_changed">Přezdívka změněna</string>
     <string name="send_unencrypted">Poslat nešifrované</string>
     <string name="decryption_failed">Zašifrování se nezdařilo. Možná nemáte správný privátní klíč.</string>
@@ -106,7 +96,6 @@
     <string name="openkeychain_required_long"><![CDATA[%1$s používá <b>OpenKeychain</b> k šifrování a dešifrování zpráv a ke správě Vašich veřejných klíčů.<br><br>OpenKeychain je vydána pod licencí GPLv3+ a dostupná na F-Droid nebo Google Play. <br><br><small>(Po instalaci, prosím, restartujte%1$s.)</small>]]></string>
     <string name="restart">Restartovat</string>
     <string name="install">Instalovat</string>
-    <string name="openkeychain_not_installed">Nainstalujte prosím OpenKeychain</string>
     <string name="offering">nabízí…</string>
     <string name="waiting">čekám…</string>
     <string name="no_pgp_key">Nebyl nalezen žádný OpenPGP klíč</string>
@@ -138,14 +127,12 @@
     <string name="bad_key_for_encryption">Chybný klíč pro šifrování.</string>
     <string name="accept">Přijmout</string>
     <string name="error">Došlo k chybě</string>
-    <string name="recording_error">Chyba</string>
     <string name="your_account">Váš účet</string>
     <string name="send_presence_updates">Zasílat změny stavu</string>
     <string name="receive_presence_updates">Přijímat změny stavu</string>
     <string name="ask_for_presence_updates">Zažádat o změny stavu</string>
     <string name="attach_choose_picture">Vybrat obrázek</string>
     <string name="attach_take_picture">Vyfotit obrázek</string>
-    <string name="preemptively_grant">Aktivně povolovat vyžádání změn stavu</string>
     <string name="error_not_an_image_file">Vybraný soubor není obrázek</string>
     <string name="error_compressing_image">Nebylo možné převést obrázek</string>
     <string name="error_file_not_found">Soubor nenalezen</string>
@@ -176,9 +163,7 @@
     <string name="encryption_choice_pgp">OpenPGP</string>
     <string name="encryption_choice_omemo">OMEMO</string>
     <string name="mgmt_account_delete">Smazat účet</string>
-    <string name="mgmt_account_disable">Dočasně vypnout</string>
     <string name="mgmt_account_publish_avatar">Zveřejnit avatar</string>
-    <string name="mgmt_account_publish_pgp">Zveřejnit OpenPGP klíč</string>
     <string name="unpublish_pgp">Odstranit veřejný klíč OpenPGP</string>
     <string name="unpublish_pgp_message">Skutečně chcete odstranit Váš současný veřejný OpenPGP klíč?\nVaše kontakty Vám nebudou moci nadále posílat zprávy šifrované pomocí OpenPGP. </string>
     <string name="openpgp_has_been_published">OpenPGP veřejný klíč zveřejněn.</string>
@@ -214,14 +199,11 @@
     <string name="last_seen_days">naposledy spatřen před %d dny</string>
     <string name="install_openkeychain">Šifrovaná zpráva. Nainstalujte OpenKeychain pro její dešifrování.</string>
     <string name="openpgp_messages_found">Nalezeny nové OpenPGP šifrované zprávy</string>
-    <string name="openpgp_key_id">OpenPGP ID klíče</string>
     <string name="omemo_fingerprint">OMEMO otisk</string>
     <string name="omemo_fingerprint_x509">v\\OMEMO otisk</string>
     <string name="omemo_fingerprint_selected_message">OMEMO otisk (původce zprávy)</string>
     <string name="omemo_fingerprint_x509_selected_message">v\\OMEMO otisk (původce zprávy)</string>
-    <string name="other_devices">Ostatní přístroje</string>
     <string name="trust_omemo_fingerprints">Věřit OMEMO otiskům</string>
-    <string name="fetching_keys">Získávání klíčů…</string>
     <string name="done">Hotovo</string>
     <string name="decrypt">Dešifrovat</string>
     <string name="search">Hledat</string>
@@ -244,12 +226,9 @@
     <string name="destroy_channel_dialog">Skutečně chcete zrušit veřejný kanál?\n\n<b>Varování:</b> Kanál bude zcela odstraněn ze serveru.</string>
     <string name="could_not_destroy_room">Nebylo možné zrušit skupinový chat</string>
     <string name="could_not_destroy_channel">Nebylo možné zrušit kanál</string>
-    <string name="action_edit_subject">Upravit předmět skupinového chatu</string>
     <string name="topic">Téma</string>
     <string name="joining_conference">Připojuji se ke skupinovému chatu…</string>
     <string name="leave">Odejít</string>
-    <string name="contact_added_you">Kontakt přidán do seznamu</string>
-    <string name="add_back">Opět přidat</string>
     <string name="contact_has_read_up_to_this_point">%s dočetl(a) až sem</string>
     <string name="contacts_have_read_up_to_this_point">%s dočetli až sem</string>
     <string name="contacts_and_n_more_have_read_up_to_this_point">%1$s +%2$d ostatní(ch) dočetli až sem</string>
@@ -265,7 +244,6 @@
     <string name="private_message">šeptem</string>
     <string name="private_message_to">pro %s</string>
     <string name="send_private_message_to">Zaslat soukromou zprávu pro %s</string>
-    <string name="connect">Připojit</string>
     <string name="account_already_exists">Tento účet již existuje</string>
     <string name="next">Další</string>
     <string name="server_info_session_established">Sezení vytvořeno</string>
@@ -291,7 +269,6 @@
     <string name="title_pref_quiet_hours_end_time">Dokdy</string>
     <string name="title_pref_enable_quiet_hours">Povolit tichý režim</string>
     <string name="pref_quiet_hours_summary">Upozornění budou během tichého režimu ztlumena</string>
-    <string name="pref_expert_options_other">Další</string>
     <string name="toast_message_omemo_fingerprint">OMEMO otisk zkopírován do schránky</string>
     <string name="conference_banned">Byl(a) jste blokován(a) v této skupině</string>
     <string name="conference_members_only">Tento skupinový chat je pouze pro registrované členy</string>
@@ -300,13 +277,10 @@
     <string name="conference_shutdown">Skupinový chat byl ukončen</string>
     <string name="conference_unknown_error">Již nejste členem tohoto skupinového chatu</string>
     <string name="using_account">za použití účtu %s</string>
-    <string name="hosted_on">hostován na %s</string>
     <string name="checking_x">Ověřuji %s na HTTP hostiteli</string>
     <string name="not_connected_try_again">Bez připojení. Zkus znovu později</string>
     <string name="check_x_filesize">Ověřit %s velikost</string>
     <string name="check_x_filesize_on_host">Kontrola %1$s velikosti na %2$s</string>
-    <string name="message_options">Možnosti zpráv</string>
-    <string name="quote">Citovat</string>
     <string name="paste_as_quote">Vložit jako citaci</string>
     <string name="copy_original_url">Kopírovat originální URL</string>
     <string name="send_again">Poslat znovu</string>
@@ -331,7 +305,6 @@
     <string name="restoring_backup">Obnovuji zálohu</string>
     <string name="notification_restored_backup_title">Záloha obnovena</string>
     <string name="notification_restored_backup_subtitle">Nezapomeňte si účet aktivovat.</string>
-    <string name="choose_file">Vybrat soubor</string>
     <string name="receiving_x_file">Přijímám %1$s (%2$d%% dokončeno)</string>
     <string name="download_x_file">Stáhnout %s</string>
     <string name="delete_x_file">Smazat %s</string>
@@ -353,8 +326,6 @@
     <string name="no_conference_server_found">Žádný server pro skupinový chat nebyl nalezen</string>
     <string name="conference_creation_failed">Nebylo možné vytvořit skupinový chat</string>
     <string name="account_image_description">Avatar účtu</string>
-    <string name="copy_omemo_clipboard_description">Zkopírovat OMEMO otisk do schránky</string>
-    <string name="regenerate_omemo_key">Znovu vytvořit OMEMO klíč</string>
     <string name="clear_other_devices">Smazat přístroje</string>
     <string name="clear_other_devices_desc">Opravdu chcete vymazat ostatní přístroje z OMEMO upozornění? Až se příště tyto přístroje připojí, znovu se ohlásí, ale pravděpodobně neobdrží zprávy odeslané v mezičase mezi přihlášeními.</string>
     <string name="error_no_keys_to_trust_server_error">Pro tento kontakt nejsou dostupné žádné použitelné klíče.\nNebylo možné získat nové klíče ze serveru. Možná je něco v nepořádku se serverem kontaktu?</string>
@@ -376,7 +347,6 @@
     <string name="no_role">Offline</string>
     <string name="outcast">Vyloučený</string>
     <string name="member">Člen</string>
-    <string name="advanced_mode">Pokročilý mód</string>
     <string name="grant_membership">Udělit oprávnění člena</string>
     <string name="remove_membership">Odebrat oprávnění člena</string>
     <string name="grant_admin_privileges">Povolit administrátorská oprávnění</string>
@@ -390,10 +360,8 @@
     <string name="ban_from_channel">Blokovat v kanálu</string>
     <string name="removing_from_public_conference">Pokoušíte se odstranit %s z veřejného kanálu. Jediný způsob, jak toho docílit, je zablokovat tohoto uživatele navždy.</string>
     <string name="ban_now">Vypovědět</string>
-    <string name="could_not_change_role">Nelze změnit roli uživatele %s</string>
     <string name="conference_options">Nastavení soukromých skupinových chatů</string>
     <string name="channel_options">Nastavení veřejných kanálů</string>
-    <string name="members_only">Soukromé, pouze pro členy</string>
     <string name="non_anonymous">Ukázat XMPP adresy všem</string>
     <string name="moderated">Nastavit kanál jako moderovaný</string>
     <string name="you_are_not_participating">Neúčastníte se</string>
@@ -407,8 +375,6 @@
     <string name="pref_input_options">Vstup</string>
     <string name="pref_enter_is_send">Enter odesílá</string>
     <string name="pref_enter_is_send_summary">Odeslat klávesou Enter. Vždy můžete zprávy odeslat pomocí Ctrl+Enter, i když tato možnost není povolena.</string>
-    <string name="pref_display_enter_key">Zobrazit klávesu enter</string>
-    <string name="pref_display_enter_key_summary">Změnit klávesu emotikon na klávesu enter</string>
     <string name="audio">audio</string>
     <string name="video">video</string>
     <string name="image">obrázek</string>
@@ -432,10 +398,6 @@
     <string name="title_undo_swipe_out_conversation">Conversation zavřena</string>
     <string name="title_undo_swipe_out_group_chat">Opustil(a) soukromý skupinový chat</string>
     <string name="title_undo_swipe_out_channel">Opustil(a) veřejný kanál</string>
-    <string name="pref_dont_trust_system_cas_title">Nedůvěřovat systémovým CA</string>
-    <string name="pref_dont_trust_system_cas_summary">Všechny certifikáty musí být schváleny ručně</string>
-    <string name="pref_remove_trusted_certificates_title">Odstranit certifikáty</string>
-    <string name="pref_remove_trusted_certificates_summary">Smazat ručně povolené certifikáty</string>
     <string name="toast_no_trusted_certs">Žádné ručně povolené certifikáty</string>
     <string name="dialog_manage_certs_title">Odstranit certifikáty</string>
     <string name="dialog_manage_certs_positivebutton">Smazat výběr</string>
@@ -472,9 +434,6 @@
     <string name="pref_dnd_on_silent_mode_summary">Při ztišeném vyzvánění označí váš stav jako \"nedostupný\"</string>
     <string name="pref_treat_vibrate_as_silent">Vibrační mód brát stejně jako tichý</string>
     <string name="pref_treat_vibrate_as_dnd_summary">Při nastavení pouze na vibrace označí váš stav jako \"nedostupný\"</string>
-    <string name="pref_show_connection_options">Rozšířená nastavení připojení</string>
-    <string name="pref_show_connection_options_summary">Zobrazovat nastavení hostname a port  při vytváření účtu</string>
-    <string name="hostname_example">xmpp.server.cz</string>
     <string name="action_add_account_with_certificate">Přihlásit se pomocí certifikátu</string>
     <string name="unable_to_parse_certificate">Nelze analyzovat certifikát</string>
     <string name="mam_prefs">Nastavení archivace</string>
@@ -485,18 +444,10 @@
     <string name="captcha_hint">Zadejte text z obrázku výše</string>
     <string name="jid_does_not_match_certificate">Adresa XMPP nesouhlasí s certifikátem</string>
     <string name="action_renew_certificate">Obnovit certifikát</string>
-    <string name="error_fetching_omemo_key">Chyba získání OMEMO klíče!</string>
-    <string name="verified_omemo_key_with_certificate">OMEMO klíč ověřen certifikátem!</string>
     <string name="device_does_not_support_certificates">Tento přístroj nepodporuje výběr klientského certifikátu!</string>
     <string name="pref_connection_options">Připojení</string>
     <string name="pref_use_tor">Připojit přes Tor</string>
     <string name="pref_use_tor_summary">Vedení všech připojení po Tor síti vyžaduje aplikaci Orbot</string>
-    <string name="account_settings_hostname">Hostname</string>
-    <string name="account_settings_port">Port</string>
-    <string name="hostname_or_onion">Server nebo .onion adresa</string>
-    <string name="not_a_valid_port">Toto není platné číslo portu</string>
-    <string name="not_valid_hostname">Toto není platné hostname</string>
-    <string name="connected_accounts">%1$d z %2$d účtů připojeno</string>
     <plurals name="x_messages">
         <item quantity="one">%d zpráva</item>
         <item quantity="few">%d zprávy</item>
@@ -504,10 +455,6 @@
         <item quantity="other">%d zpráv</item>
     </plurals>
     <string name="load_more_messages">Načíst více zpráv</string>
-    <string name="shared_file_with_x">Soubor sdílen s %s</string>
-    <string name="shared_image_with_x">Obrázek sdílen s %s</string>
-    <string name="shared_images_with_x">Obrázky sdíleny s %s</string>
-    <string name="shared_text_with_x">Text sdílen s %s</string>
     <string name="no_storage_permission">Povolit %1$s přístup k externímu úložišti</string>
     <string name="no_camera_permission">Povolit %1$s přístup ke kameře</string>
     <string name="sync_with_contacts">Synchronizovat s kontakty</string>
@@ -526,14 +473,12 @@
 \n
 \nNyní budete vyzváni k jejímu vypnutí.</string>
     <string name="disable">Vypnout</string>
-    <string name="selection_too_large">Vybraný obsah je příliš dlouhý</string>
     <string name="no_accounts">(Žádné aktivované účty)</string>
     <string name="this_field_is_required">Toto pole je vyžadováno</string>
     <string name="correct_message">Opravit zprávu</string>
     <string name="send_corrected_message">Odeslat opravenou zprávu</string>
     <string name="no_keys_just_confirm">Tento osobní otisk byl již bezpečně ověřen. Ťuknutím na \"Hotovo\" pouze potvrzujete, že %s je členem tohoto skupinového chatu.</string>
     <string name="this_account_is_disabled">Tento účet byl vypnut</string>
-    <string name="security_error_invalid_file_access">Bezpečnostní chyba: Neplatný přístup k souboru!</string>
     <string name="no_application_to_share_uri">Nebyla nalezena aplikace umožňující sdílení URI</string>
     <string name="share_uri_with">Sdílet URI s…</string>
     <string name="agree_and_continue">Souhlasit a pokračovat</string>
@@ -565,13 +510,6 @@
     <string name="pref_broadcast_last_activity">Informovat o používání</string>
     <string name="pref_broadcast_last_activity_summary">Tato možnost dává vědět Vašim kontaktům, kdy používáte Conversations</string>
     <string name="pref_privacy">Soukromí</string>
-    <string name="pref_theme_options">Vzhled</string>
-    <string name="pref_theme_options_summary">Vybrat paletu barev</string>
-    <string name="pref_theme_automatic">Automaticky</string>
-    <string name="pref_theme_light">Světlý vzhled</string>
-    <string name="pref_theme_dark">Tmavý vzhled</string>
-    <string name="pref_use_green_background">Zelené pozadí</string>
-    <string name="pref_use_green_background_summary">Použít zelené pozadí pro přijaté zprávy</string>
     <string name="unable_to_connect_to_keychain">Nelze se spojit s OpenKeychain</string>
     <string name="this_device_is_no_longer_in_use">Tento přístoj již není používán</string>
     <string name="type_pc">Počítač</string>
@@ -582,7 +520,6 @@
     <string name="payment_required">Vyžadována platba</string>
     <string name="missing_internet_permission">Udělte povolení pro přístup na Internet</string>
     <string name="me">Já</string>
-    <string name="contact_asks_for_presence_subscription">Kontakt žádá informace o změnách stavu</string>
     <string name="allow">Povolit</string>
     <string name="no_permission_to_access_x">Chybí oprávnění přistupovat k %s</string>
     <string name="remote_server_not_found">Vzdálený server nebyl nalezen</string>
@@ -590,7 +527,6 @@
     <string name="unable_to_update_account">Nelze aktualizovat účet</string>
     <string name="report_jid_as_spammer">Nahlásit tuto XMPP adresu kvůli odesílání spamu.</string>
     <string name="pref_delete_omemo_identities">Smazat OMEMO identity</string>
-    <string name="pref_delete_omemo_identities_summary">Znovu vygenerovat OMEMO klíče. Vyžaduje potvrzení od všech vašich kontaktů. Použijte pouze jako poslední řešení.</string>
     <string name="delete_selected_keys">Smazat vybrané klíče</string>
     <string name="error_publish_avatar_offline">Pro zveřejnění svého avatara musíte být online.</string>
     <string name="show_error_message">Zobrazit chybovou zprávu</string>
@@ -620,8 +556,6 @@
     <string name="i_followed_this_link_from_a_trusted_source">Tento odkaz pochází z důvěryhodného zdroje</string>
     <string name="verifying_omemo_keys_trusted_source">Kliknutím na odkaz se chystáte ověřit OMEMO klíče patřící %1$s. To je bezpečné jedině tehdy, pokud jste odkaz získali z důvěryhodného zdroje, kdy pouze %2$s mohl tento odkaz zveřejnit.</string>
     <string name="verify_omemo_keys">Ověřit OMEMO klíče</string>
-    <string name="show_inactive_devices">Zobrazit neaktivní</string>
-    <string name="hide_inactive_devices">Skrýt neaktivní</string>
     <string name="distrust_omemo_key">Odebrat z důvěryhodných</string>
     <string name="distrust_omemo_key_text">Jste si jisti, že chcete odebrat ověření tomuto zařízení?\nZařízení a příchozí zprávy z něj budou označeny jako \"Nedůvěryhodné\".</string>
     <plurals name="seconds">
@@ -662,7 +596,6 @@
     </plurals>
     <string name="pref_automatically_delete_messages">Automatické mazání zpráv</string>
     <string name="pref_automatically_delete_messages_description">Automaticky z tohoto zařízení mazat zprávy, které jsou starší, než je nastaveno.</string>
-    <string name="encrypting_message">Šifruji zprávu</string>
     <string name="transcoding_video">Komprimuji video</string>
     <string name="corresponding_conversations_closed">Odpovídající konverzace uzavřena.</string>
     <string name="contact_blocked_past_tense">Kontakt zablokován.</string>
@@ -676,27 +609,20 @@
     <string name="session_failure">Chyba sezení</string>
     <string name="sasl_downgrade">Degradovaný SASL mechanismus</string>
     <string name="account_status_regis_web">Server požaduje registraci přes webovou stránku</string>
-    <string name="open_website">Otevřít webovou stránku</string>
-    <string name="application_found_to_open_website">Nebyla nalezena aplikace umožňující otevření webové stránky</string>
     <string name="pref_headsup_notifications">Heads-up upozornění</string>
     <string name="pref_headsup_notifications_summary">Zobrazit heads-up upozornění</string>
     <string name="today">Dnes</string>
     <string name="yesterday">Včera</string>
-    <string name="pref_validate_hostname">Ověřit název hostitele pomocí DNSSEC</string>
-    <string name="pref_validate_hostname_summary">Certifikáty serverů obsahující ověřený název hostitele jsou považovány za ověřené</string>
     <string name="certificate_does_not_contain_jid">Certifikát neobsahuje XMPP adresu</string>
     <string name="server_info_partial">částečný</string>
     <string name="attach_record_video">Nahrát video</string>
     <string name="copy_to_clipboard">Kopírovat do schránky</string>
     <string name="message_copied_to_clipboard">Zpráva zkopírována do schránky</string>
     <string name="message">Zpráva</string>
-    <string name="private_messages_are_disabled">Soukromé zprávy jsou zakázány</string>
     <string name="huawei_protected_apps">Chráněné aplikace</string>
     <string name="huawei_protected_apps_summary">Abyste mohli dostávat upozornění i při vypnuté obrazovce, musíte přidat Conversations mezi chráněné aplikace.</string>
     <string name="mtm_accept_cert">Přijmout neznámý certifikát?</string>
     <string name="mtm_trust_anchor">Certifikát není podepsaný žádnou známou certifikační autoritou.</string>
-    <string name="mtm_accept_servername">Přijmout nesouhlasící jméno serveru?</string>
-    <string name="mtm_hostname_mismatch">Server se nemohl prokázat jako \"%s\". Certifikát je platný pouze pro:</string>
     <string name="mtm_connect_anyway">Chcete se přesto připojit?</string>
     <string name="mtm_cert_details">Detaily certifikátu:</string>
     <string name="once">Jednou</string>
@@ -731,7 +657,6 @@
     <string name="location_disabled">Sdílení polohy je vypnuto</string>
     <string name="action_copy_location">Kopírovat pozici</string>
     <string name="action_share_location">Sdílet pozici</string>
-    <string name="action_directions">Pokyny</string>
     <string name="title_activity_share_location">Sdílet pozici</string>
     <string name="title_activity_show_location">Zobrazit pozici</string>
     <string name="share">Sdílet</string>
@@ -745,9 +670,6 @@
     <string name="pref_use_share_location_plugin_summary">Použít Plugin pro sdílení pozice namísto interní mapy</string>
     <string name="copy_link">Kopírovat webovou adresu</string>
     <string name="copy_jabber_id">Kopírovat XMPP adresu</string>
-    <string name="p1_s3_filetransfer">HTTP sdílení souborů pro S3</string>
-    <string name="pref_start_search">Přímé vyhledávání</string>
-    <string name="pref_start_search_summary">Na úvodní obrazovce otevřít klávesnici a umístit kurzor do vyhledávacího pole</string>
     <string name="group_chat_avatar">Avatar skupinového chatu</string>
     <string name="host_does_not_support_group_chat_avatars">Hostitel nepodporuje avatary pro skupinový chat</string>
     <string name="only_the_owner_can_change_group_chat_avatar">Pouze vlastník může změnit avatar skupinového chatu</string>
@@ -755,7 +677,6 @@
     <string name="nickname">Přezdívka</string>
     <string name="group_chat_name">Jméno</string>
     <string name="providing_a_name_is_optional">Poskytnutí jména je nepovinné</string>
-    <string name="create_dialog_group_chat_name">Jméno skupinového chatu</string>
     <string name="conference_destroyed">Tento skupinový chat byl zrušen</string>
     <string name="unable_to_save_recording">Nebylo možné uložit nahrávku</string>
     <string name="foreground_service_channel_name">Služba na popředí</string>
@@ -772,7 +693,6 @@
     <string name="silent_messages_channel_description">Kategorie upozornění, která nejsou doprovázena žádným zvukem. Například když jste aktivní na jiném zařízení (ochranná doba).</string>
     <string name="delivery_failed_channel_name">Neúspěšné přenosy</string>
     <string name="pref_message_notification_settings">Nastavení upozornění na zprávy</string>
-    <string name="pref_incoming_call_notification_settings">Nastavení upozornění na příchozí hovory</string>
     <string name="pref_more_notification_settings_summary">Důležitost, Zvuk, Vibrace</string>
     <string name="video_compression_channel_name">Komprese videa</string>
     <string name="view_media">Zobrazit média</string>
@@ -786,47 +706,8 @@
     <string name="cancelled">zrušeno</string>
     <string name="already_drafting_message">Již máte rozepsaný koncept zprávy.</string>
     <string name="feature_not_implemented">Funkce není implemetována</string>
-    <string name="invalid_country_code">Neplatný kód země</string>
-    <string name="choose_a_country">Vyberte zemi</string>
-    <string name="phone_number">telefonní číslo</string>
-    <string name="verify_your_phone_number">Ověřte své telefonní číslo</string>
-    <string name="enter_country_code_and_phone_number">Quicksy Vám pošle zprávu SMS (mohou Vám být účtovány poplatky dle tarifu) k ověření Vašeho telefonního čísla. Zadejte kód země a telefonní číslo:</string>
-    <string name="we_will_be_verifying"><![CDATA[Ověření pro telefonní číslo <br/><br/><b>%s</b><br/><br/>. Je číslo v pořádku, nebo ho chete upravit?]]></string>
-    <string name="not_a_valid_phone_number">%s není platné telefonní číslo.</string>
-    <string name="please_enter_your_phone_number">Prosíme, zadejte své telefonní číslo.</string>
-    <string name="search_countries">Hledat zemi</string>
-    <string name="verify_x">Ověřit %s</string>
-    <string name="we_have_sent_you_an_sms_to_x"><![CDATA[Poslali jsme Vám SMS na <b>%s</b>.]]></string>
-    <string name="we_have_sent_you_another_sms">Poslali jsme Vám další SMS se 6místným kódem.</string>
-    <string name="please_enter_pin_below">Prosím, vložte 6místný pin.</string>
-    <string name="resend_sms">Poslat SMS znovu</string>
-    <string name="resend_sms_in">Poslat SMS znovu (%s)</string>
-    <string name="wait_x">Chvíli strpení (%s)</string>
     <string name="back">zpět</string>
-    <string name="possible_pin">Automaticky vložen pravděpodobný pin ze schránky.</string>
-    <string name="please_enter_pin">Prosím, vložte svůj 6místný pin.</string>
-    <string name="abort_registration_procedure">Opravdu si přejete přerušit registraci?</string>
-    <string name="yes">Ano</string>
-    <string name="no">Ne</string>
-    <string name="verifying">Ověřuji…</string>
-    <string name="incorrect_pin">Pin, který jste zadali, je nesprávný.</string>
-    <string name="pin_expired">Pin, který jsme Vám poslali, vypršel.</string>
-    <string name="unknown_api_error_network">Neznámá chyba sítě.</string>
-    <string name="unknown_api_error_response">Neznámá odpověď serveru.</string>
-    <string name="unable_to_connect_to_server">Nebylo možné se připojit k serveru.</string>
-    <string name="unable_to_establish_secure_connection">Nebylo možné navázat zabezpečené spojení.</string>
-    <string name="unable_to_find_server">Server nenalezen.</string>
-    <string name="something_went_wrong_processing_your_request">Něco se pokazilo při zpracovávání Vašeho požadavku.</string>
-    <string name="temporarily_unavailable">Dočasně nedostupné. Zkuste to později.</string>
-    <string name="no_network_connection">Žádné připojení k síti.</string>
-    <string name="try_again_in_x">Prosíme, zkuste to znovu za %s</string>
-    <string name="too_many_attempts">Příliš mnoho pokusů</string>
-    <string name="the_app_is_out_of_date">Používáte zastaralou verzi této aplikace.</string>
-    <string name="update">Aktualizovat</string>
-    <string name="logged_in_with_another_device">Toto telefonní číslo je již přihlášeno z jiného zařízení.</string>
-    <string name="enter_your_name_instructions">Prosíme, vložte své jméno, aby ostatní, kteří Vás nemají v seznamu kontaktů, věděli, kdo jste.</string>
     <string name="your_name">Vaše jméno</string>
-    <string name="enter_your_name">Vložte své jméno</string>
     <string name="no_name_set_instructions">Pro nastavení jména klepněte na Upravit.</string>
     <string name="reject_request">Odmítnout žádost</string>
     <string name="install_orbot">Instalovat Orbot</string>
@@ -844,8 +725,6 @@
     <string name="unable_to_restore_backup">Nebylo možné obnovit zálohu.</string>
     <string name="unable_to_decrypt_backup">Nebylo možné dešifrovat zálohu. Zadal(a) jste správné heslo?</string>
     <string name="backup_channel_name">Záloha &amp; Obnova</string>
-    <string name="enter_jabber_id">Zadejte XMPP adresu</string>
-    <string name="create_group_chat">Vytvořit skupinový chat</string>
     <string name="join_public_channel">Připojit se k veřejnému kanálu</string>
     <string name="create_private_group_chat">Vytvořit soukromý skupinový chat</string>
     <string name="create_public_channel">Vytvořit veřejný kanál</string>
@@ -876,12 +755,8 @@
     <string name="discover_channels">Najít kanály</string>
     <string name="search_channels">Prohledat kanály</string>
     <string name="channel_discovery_opt_in_title">Možné porušení soukromí!</string>
-    <string name="i_already_have_an_account">Již mám účet</string>
     <string name="add_existing_account">Přidat existující účet</string>
     <string name="register_new_account">Vytvořit nový účet</string>
-    <string name="this_looks_like_a_domain">Toto vypadá jako adresa domény</string>
-    <string name="add_anway">Přesto přidat</string>
-    <string name="this_looks_like_channel">Toto vypadá jako adresa kanálu</string>
     <string name="share_backup_files">Sdílet soubory zálohy</string>
     <string name="conversations_backup">Záloha Conversations</string>
     <string name="event">Událost</string>
@@ -892,10 +767,6 @@
     <string name="unable_to_perform_this_action">Nebylo možné vykonat tuto akci</string>
     <string name="open_join_dialog">Připojit se k veřejnému kanálu…</string>
     <string name="sharing_application_not_grant_permission">Sdílející aplikace neudělila dostatečná oprávnění pro přístup k souboru.</string>
-    <string name="group_chats_and_channels"><![CDATA[Skupinové chaty & Kanály]]></string>
-    <string name="local_server">Místní server</string>
-    <string name="pref_channel_discovery_summary">Většině uživatelů doporučujeme použít \'jabber.network\' kvůli lepším návrhům z celého veřejného XMPP ekosystému.</string>
-    <string name="pref_channel_discovery">Metoda objevování kanálů</string>
     <string name="backup">Záloha</string>
     <string name="category_about">O</string>
     <string name="please_enable_an_account">Prosíme, povolte účet</string>
@@ -934,13 +805,9 @@
     <string name="remove_from_favorites">Odepnout shora</string>
     <string name="gpx_track">GPX trasa</string>
     <string name="could_not_correct_message">Nebylo možné opravit zprávu</string>
-    <string name="search_all_conversations">Všechny konverzace</string>
-    <string name="search_this_conversation">Tato konverzace</string>
     <string name="your_avatar">Váš avatar</string>
     <string name="avatar_for_x">Avatar uživatele %s</string>
     <string name="encrypted_with_omemo">Šifrováno pomocí OMEMO</string>
-    <string name="encrypted_with_openpgp">Šifrováno pomocí OpenPGP</string>
-    <string name="not_encrypted">Nešifrováno</string>
     <string name="exit">Ukončit</string>
     <string name="record_voice_mail">Nahrát hlasovou zprávu</string>
     <string name="play_audio">Přehrát audio</string>
@@ -959,7 +826,6 @@
         <item quantity="other">Některé zprávy nemohly být doručeny</item>
     </plurals>
     <string name="failed_deliveries">Neúspěšné přenosy</string>
-    <string name="more_options">Více možností</string>
     <string name="no_application_found">Nenalezena žádná aplikace</string>
     <string name="invite_to_app">Pozvat do Conversations</string>
     <string name="unable_to_parse_invite">Nelze načíst pozvánku</string>
@@ -977,7 +843,6 @@
         <item quantity="few">%d zmeškané hovory</item>
         <item quantity="other">%d zmeškaných hovorů</item>
     </plurals>
-    <string name="pref_autojoin">Synchronizovat se záložkami</string>
     <plurals name="n_missed_calls_from_m_contacts">
         <item quantity="one">%1$d zmeškaný hovor od %2$d kontaktu</item>
         <item quantity="few">%1$d zmeškané hovory od %2$d kontaktů</item>
@@ -992,7 +857,6 @@
     <string name="conference_technical_problems">Tento skupinový chat jste opustili z technických důvodů</string>
     <string name="channel_discover_opt_in_message">Vyhledávání kanálů používá službu třetí strany jménem &lt;a href=https://search.jabber.network&gt;search.jabber.network&lt;/a&gt;.&lt;br&gt;&lt;br&gt;Používání této služby odešle vaši IP adresu a vyhledávaný termín této službě. Pro více informací konzultujte jejich &lt;a href=https://search.jabber.network/privacy&gt;Zásady ochrany osobních údajů&lt;/a&gt;.</string>
     <string name="reconnecting_call">Znovu spojuji hovor</string>
-    <string name="blindly_trusted_omemo_keys">Slepě důvěřované klíče OMEMO, které mohou být někdo jiný nebo někým zasaženy.</string>
     <string name="incoming_call_duration_timestamp">Příchozí hovor ·(%s) · %s</string>
     <string name="certificate_chain_is_not_trusted">Nedůvěryhodný řetězec certifikátů</string>
     <string name="not_fetching_history_retention_period">Zprávy se nenačítají kvůli v aplikaci nastavené době uchování.</string>
@@ -1012,7 +876,6 @@
     <string name="ebook">e-kniha</string>
     <string name="search_group_chats">Hledat skupinové chaty</string>
     <string name="action_unfix_from_location">Uvolnit polohu</string>
-    <string name="jabber_network">jabber.network</string>
     <string name="reconnecting_video_call">Znovu spojuji videohovor</string>
     <string name="outgoing_call_duration_timestamp">Odchozí hovor · (%s) · %s</string>
     <string name="plain_text_document">Dokument prostého textu</string>

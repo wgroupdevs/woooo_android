@@ -8,7 +8,6 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
-import coil.Coil;
 import pk.muneebahmad.lib.graphics.CachedImageLoaderListener;
 import pk.muneebahmad.lib.services.HttpImageService;
 import pk.muneebahmad.lib.services.ServiceManager;

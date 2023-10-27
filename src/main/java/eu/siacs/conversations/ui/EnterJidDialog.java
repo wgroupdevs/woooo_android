@@ -24,16 +24,15 @@ import eu.siacs.conversations.R;
 import eu.siacs.conversations.databinding.EnterJidDialogBinding;
 import eu.siacs.conversations.http.model.SearchAccountAPIResponse;
 import eu.siacs.conversations.http.services.BaseModelAPIResponse;
-import eu.siacs.conversations.http.services.WooooAPIService;
+import eu.siacs.conversations.http.services.WooAPIService;
 import eu.siacs.conversations.services.XmppConnectionService;
 import eu.siacs.conversations.ui.adapter.KnownHostsAdapter;
 import eu.siacs.conversations.ui.interfaces.OnBackendConnected;
 import eu.siacs.conversations.ui.util.DelayedHintHelper;
 import eu.siacs.conversations.xmpp.Jid;
-import woooo_app.woooo.utils.UserInfoKt;
 
 
-public class EnterJidDialog extends DialogFragment implements OnBackendConnected, TextWatcher, WooooAPIService.OnSearchAccountAPiResult {
+public class EnterJidDialog extends DialogFragment implements OnBackendConnected, TextWatcher, WooAPIService.OnSearchAccountAPiResult {
 
     private static final List<String> SUSPICIOUS_DOMAINS = Arrays.asList("conference", "muc", "room", "rooms", "chat");
 
@@ -142,7 +141,6 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
 
             Log.d(TAG, "dialogOnClick");
             Log.d(TAG, "Account " + account);
-            Log.d(TAG, "Account " + UserInfoKt.getUSER_JID());
             searchAccount(binding);
 //                    handleEnter(binding, account);
 
@@ -181,7 +179,7 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
     private void searchAccount(EnterJidDialogBinding binding) {
 
         String value = binding.jid.getText().toString();
-        final WooooAPIService wooooAuthService = WooooAPIService.getInstance();
+        final WooAPIService wooooAuthService = WooAPIService.getInstance();
 
 
         if (searchWithEmail) {

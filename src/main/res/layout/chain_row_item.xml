@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/_5sdp"
+    android:background="@drawable/bg_border"
+    android:id="@+id/rootLayout"
+    android:padding="@dimen/_5sdp">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/chain_ic"
+        android:layout_width="@dimen/_35sdp"
+        android:layout_height="@dimen/_35sdp"
+        android:src="@drawable/ic_ethereum" />
+
+    <TextView
+        android:id="@+id/chain_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="@dimen/_5sdp"
+        android:layout_toRightOf="@id/chain_ic"
+        android:singleLine="true"
+        android:text="Ethereum"
+        android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/_5sdp"
+        android:id="@+id/chainDetailsBtn"
+        android:src="@drawable/baseline_arrow_forward_24"
+
+        />
+
+
+</RelativeLayout>

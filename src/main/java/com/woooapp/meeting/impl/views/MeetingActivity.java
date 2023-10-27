@@ -41,7 +41,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.woogroup.woooo_app.woooo.di.WooApplication;
 import com.woooapp.meeting.device.Display;
 import com.woooapp.meeting.impl.utils.WooDirector;
 import com.woooapp.meeting.impl.utils.WooEvents;
@@ -88,6 +87,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import eu.siacs.conversations.R;
+import eu.siacs.conversations.WooApplication;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.persistance.DatabaseBackend;
 import okhttp3.Call;

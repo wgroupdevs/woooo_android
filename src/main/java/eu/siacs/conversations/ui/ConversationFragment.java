@@ -10,8 +10,6 @@ import static eu.siacs.conversations.utils.PermissionUtils.writeGranted;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
@@ -63,9 +61,12 @@ import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.inputmethod.InputConnectionCompat;
 import androidx.core.view.inputmethod.InputContentInfoCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
@@ -115,7 +116,7 @@ import eu.siacs.conversations.http.model.TextTranslateApiResponse;
 import eu.siacs.conversations.http.model.TextTranslateModel;
 import eu.siacs.conversations.http.model.UpdateUserLanguageModel;
 import eu.siacs.conversations.http.services.BaseModelAPIResponse;
-import eu.siacs.conversations.http.services.WooooAPIService;
+import eu.siacs.conversations.http.services.WooAPIService;
 import eu.siacs.conversations.persistance.FileBackend;
 import eu.siacs.conversations.services.MessageArchiveService;
 import eu.siacs.conversations.services.QuickConversationsService;
@@ -159,9 +160,8 @@ import eu.siacs.conversations.xmpp.jingle.JingleFileTransferConnection;
 import eu.siacs.conversations.xmpp.jingle.Media;
 import eu.siacs.conversations.xmpp.jingle.OngoingRtpSession;
 import eu.siacs.conversations.xmpp.jingle.RtpCapability;
-import woooo_app.woooo.feature.auth.GV;
 
-public class ConversationFragment extends XmppFragment implements EditMessage.KeyboardListener, MessageAdapter.OnContactPictureLongClicked, MessageAdapter.OnContactPictureClicked, MessageAdapter.OnParentMessageClicked, ChooseContactActivity.OnForwardItemsSelected, WooooAPIService.OnUpdateUserLanguageApiResult, WooooAPIService.OnTextTranslateAPiResult {
+public class ConversationFragment extends XmppFragment implements EditMessage.KeyboardListener, MessageAdapter.OnContactPictureLongClicked, MessageAdapter.OnContactPictureClicked, MessageAdapter.OnParentMessageClicked, ChooseContactActivity.OnForwardItemsSelected, WooAPIService.OnUpdateUserLanguageApiResult, WooAPIService.OnTextTranslateAPiResult {
     private boolean translation = false;
     private boolean reply = false;
     public static final int REQUEST_SEND_MESSAGE = 0x0201;
@@ -403,10 +403,12 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 //        reqModel.getLanguageCode(languageCode);
 //        reqModel.setAccountId("0102600c-ab5f-4385-a7ac-8d6c6754fabd");
 
-        String reqModel = GV.INSTANCE.getUniqueId();
-        Log.e("woedpocpmcspoc", "" + reqModel);
+//        String reqModel = GV.INSTANCE.getUniqueId();
+//        Log.e("woedpocpmcspoc", "" + reqModel);
 
-        activity.xmppConnectionService.updateUserLanguage(reqModel, language, languageCode, ConversationFragment.this);
+        Account account = activity.xmppConnectionService.getAccounts().get(0);
+
+        activity.xmppConnectionService.updateUserLanguage(account.getAccountId(), language, languageCode, ConversationFragment.this);
     }
 
 
@@ -522,11 +524,13 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     private Message mPendingDownloadableMessage;
 
     private static ConversationFragment findConversationFragment(Activity activity) {
-        Fragment fragment = activity.getFragmentManager().findFragmentById(R.id.main_fragment);
+        FragmentManager fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
+
+        Fragment fragment = fragmentManager.findFragmentById(R.id.main_fragment);
         if (fragment instanceof ConversationFragment) {
             return (ConversationFragment) fragment;
         }
-        fragment = activity.getFragmentManager().findFragmentById(R.id.secondary_fragment);
+        fragment = fragmentManager.findFragmentById(R.id.secondary_fragment);
         if (fragment instanceof ConversationFragment) {
             return (ConversationFragment) fragment;
         }
@@ -569,7 +573,9 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     }
 
     private static Conversation getConversation(Activity activity, @IdRes int res) {
-        final Fragment fragment = activity.getFragmentManager().findFragmentById(res);
+        FragmentManager fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
+
+        final androidx.fragment.app.Fragment fragment = fragmentManager.findFragmentById(res);
         if (fragment instanceof ConversationFragment) {
             return ((ConversationFragment) fragment).getConversation();
         } else {
@@ -578,8 +584,8 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     }
 
     public static ConversationFragment get(Activity activity) {
-        FragmentManager fragmentManager = activity.getFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(R.id.main_fragment);
+        FragmentManager fragmentManager = ((AppCompatActivity) activity).getSupportFragmentManager();
+        androidx.fragment.app.Fragment fragment = fragmentManager.findFragmentById(R.id.main_fragment);
         if (fragment instanceof ConversationFragment) {
             return (ConversationFragment) fragment;
         } else {
@@ -1574,19 +1580,9 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         // Inflate the custom layout
         LayoutInflater inflater = LayoutInflater.from(context);
         View customView = inflater.inflate(R.layout.encryption_dialog, null);
-        // Set the custom layout to the dialog
-
         alertDialogBuilder.setView(customView);
         // Create and show the AlertDialog
         android.app.AlertDialog alertDialog = alertDialogBuilder.create();
-//        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-// Set the width of the dialog to 70% of the screen width
-//        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-//        layoutParams.copyFrom(alertDialog.getWindow().getAttributes());
-//        layoutParams.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.7);
-//        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-//        alertDialog.getWindow().setAttributes(layoutParams);
-
         alertDialog.show();
     }
 
@@ -3431,14 +3427,6 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             }
         }
         activity.switchToAccount(message.getConversation().getAccount(), fingerprint);
-    }
-
-    private Activity requireActivity() {
-        final Activity activity = getActivity();
-        if (activity == null) {
-            throw new IllegalStateException("Activity not attached");
-        }
-        return activity;
     }
 
     @Override

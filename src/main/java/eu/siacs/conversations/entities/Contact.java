@@ -161,20 +161,19 @@ public class Contact implements ListItem, Blockable {
         if (Config.X509_VERIFICATION && !TextUtils.isEmpty(this.commonName)) {
             return this.commonName;
         } else if (!TextUtils.isEmpty(this.systemName)) {
-            Log.d(TABLENAME, "SYSTEM_NAME " + this.systemName);
+//            Log.d(TABLENAME, "SYSTEM_NAME " + this.systemName);
             return this.systemName;
         } else if (!TextUtils.isEmpty(this.serverName)) {
-            Log.d(TABLENAME, "SERVER_NAME " + this.serverName);
+//            Log.d(TABLENAME, "SERVER_NAME " + this.presenceName);
             return this.serverName;
         } else if (!TextUtils.isEmpty(this.presenceName) && ((QuickConversationsService.isQuicksy() && JidHelper.isQuicksyDomain(jid.getDomain())) || mutualPresenceSubscription())) {
-            Log.d(TABLENAME, "PRESENCE_NAME " + this.presenceName);
+//            Log.d(TABLENAME, "PRESENCE_NAME " + this.presenceName);
             return this.presenceName;
         } else if (jid.getLocal() != null) {
-            Log.d(TABLENAME, "getLocal() " +JidHelper.localPartOrFallback(jid));
+//            Log.d(TABLENAME, "getLocal() " +JidHelper.localPartOrFallback(jid));
             return JidHelper.localPartOrFallback(jid);
         } else {
-            Log.d(TABLENAME, "getDomain() " + this.systemName);
-
+//            Log.d(TABLENAME, "getDomain() " + this.systemName);
             return jid.getDomain().toEscapedString();
         }
     }

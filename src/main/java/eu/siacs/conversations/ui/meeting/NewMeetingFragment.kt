@@ -2,12 +2,10 @@ package eu.siacs.conversations.ui.meeting
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.os.VibrationEffect
 import android.os.Vibrator
 import android.text.Editable
 import android.util.Log

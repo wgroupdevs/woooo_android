@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import eu.siacs.conversations.R;
-import eu.siacs.conversations.databinding.LanguageRowBinding;
+import eu.siacs.conversations.databinding.ItemRowWithNameSelectionBinding;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.http.model.LanguageModel;
 
@@ -26,7 +26,6 @@ public class LanguageAdapter extends ArrayAdapter<LanguageModel> {
     public LanguageAdapter(@NonNull Context context, ArrayList<LanguageModel> objects, Account mAccount) {
         super(context, 0, objects);
         this.mAccount = mAccount;
-
         Log.d(TAG, "LanguageAdapter : ACCOUNT " + this.mAccount);
     }
 
@@ -40,7 +39,7 @@ public class LanguageAdapter extends ArrayAdapter<LanguageModel> {
         Log.d(TAG, "Language : " + language.code);
 
         if (view == null) {
-            LanguageRowBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.language_row, parent, false);
+            ItemRowWithNameSelectionBinding binding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_row_with_name_selection, parent, false);
             view = binding.getRoot();
             viewHolder = new LanguageAdapter.ViewHolder(binding);
             view.setTag(viewHolder);
@@ -49,11 +48,11 @@ public class LanguageAdapter extends ArrayAdapter<LanguageModel> {
         }
 
 
-        viewHolder.binding.languageName.setText(language.name);
+        viewHolder.binding.itemName.setText(language.name);
         if (Objects.equals(this.mAccount.getLanguageCode(), language.code)) {
-            viewHolder.binding.selectedLanguage.setVisibility(View.VISIBLE);
+            viewHolder.binding.selectedItem.setVisibility(View.VISIBLE);
         } else {
-            viewHolder.binding.selectedLanguage.setVisibility(View.GONE);
+            viewHolder.binding.selectedItem.setVisibility(View.GONE);
 
         }
 
@@ -61,9 +60,9 @@ public class LanguageAdapter extends ArrayAdapter<LanguageModel> {
     }
 
     private static class ViewHolder {
-        private final LanguageRowBinding binding;
+        private final ItemRowWithNameSelectionBinding binding;
 
-        private ViewHolder(LanguageRowBinding binding) {
+        private ViewHolder(ItemRowWithNameSelectionBinding binding) {
             this.binding = binding;
         }
     }

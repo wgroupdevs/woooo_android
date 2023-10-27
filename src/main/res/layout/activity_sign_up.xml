@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.auth.SignUpActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/_20sdp"
+            android:paddingVertical="@dimen/_15sdp">
+
+            <!--        Top back arrow with label-->
+
+            <LinearLayout
+                android:id="@+id/backArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_30sdp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/back_icon" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/_2sdp"
+                    android:text="Back"
+                    android:textAppearance="@style/TextAppearance.Conversations.Title"
+
+                    />
+
+
+            </LinearLayout>
+
+            <!--        Divider-->
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:src="@drawable/divider_ic" />
+
+
+            <!--                FIRST NAME EDITTEXT-->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:text="First Name"
+                android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+
+            <eu.siacs.conversations.ui.widget.TextInputEditText
+                android:id="@+id/first_name_et"
+                style="@style/Widget.Conversations.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/textfield_background"
+                android:hint="Enter first name"
+                android:imeOptions="actionNext"
+                android:maxLength="25"
+                android:paddingVertical="@dimen/_10sdp"
+                android:paddingStart="@dimen/_5sdp"
+                android:textColor="@color/white" />
+
+
+            <!--                LAST NAME EDITTEXT-->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="Last Name"
+                android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+
+            <eu.siacs.conversations.ui.widget.TextInputEditText
+                android:id="@+id/last_name_et"
+                style="@style/Widget.Conversations.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/textfield_background"
+                android:hint="Enter Last name"
+                android:imeOptions="actionNext"
+                android:maxLength="25"
+                android:paddingVertical="@dimen/_10sdp"
+                android:paddingStart="@dimen/_5sdp"
+                android:textColor="@color/white" />
+            <!--               EMAIL EDITTEXT-->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="Email"
+                android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+
+            <eu.siacs.conversations.ui.widget.TextInputEditText
+                android:id="@+id/email_et"
+                style="@style/Widget.Conversations.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/textfield_background"
+                android:focusable="true"
+                android:hint="Email"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:paddingVertical="@dimen/_10sdp"
+                android:paddingStart="@dimen/_5sdp"
+                android:textColor="@color/white" />
+
+            <!--               PHONE NUMBER EDITTEXT-->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="Phone number"
+                android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_50sdp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.hbb20.CountryCodePicker
+                    android:id="@+id/country_code_picker"
+                    style="@style/Widget.Conversations.EditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/textfield_background"
+                    app:ccpDialog_cornerRadius="@dimen/_10sdp"
+                    app:ccpDialog_showFlag="false"
+                    app:ccpDialog_showNameCode="false"
+                    app:ccpDialog_textColor="@color/white"
+                    app:ccp_arrowColor="@android:color/white"
+                    app:ccp_contentColor="@color/white"
+                    app:ccp_defaultNameCode="jp"
+                    app:ccp_showFlag="false"
+                    app:ccp_showNameCode="false"
+                    app:ccp_showPhoneCode="false" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/phoneNumberFieldError"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_5sdp"
+                    android:hint="Phone Number"
+                    android:visibility="visible"
+                    app:errorTextAppearance="@style/TextAppearance.Conversations.Design.Error"
+                    app:hintEnabled="false"
+                    app:hintTextAppearance="@style/TextAppearance.Conversations.Design.Hint">
+
+                    <eu.siacs.conversations.ui.widget.TextInputEditText
+                        android:id="@+id/phoneNumberField"
+                        style="@style/Widget.Conversations.EditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:background="@drawable/textfield_background"
+                        android:hint="Phone Number"
+                        android:maxLength="11"
+                        android:imeOptions="actionNext"
+                        android:inputType="phone"
+                        android:paddingVertical="@dimen/_10sdp"
+                        android:paddingStart="@dimen/_5sdp"
+                        android:textColor="@color/white" />
+
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+
+            <!--       NEW-PASSWORD EDIT_TEXT-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="Password"
+                android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/password_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+
+                android:background="@drawable/textfield_background"
+                app:hintEnabled="false"
+                app:errorTextColor="@color/white"
+
+                >
+
+                <eu.siacs.conversations.ui.widget.TextInputEditText
+                    android:id="@+id/password_et"
+                    style="@style/Widget.Conversations.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="true"
+                    android:hint="enter password..."
+                    android:imeOptions="actionNext"
+                    android:paddingVertical="@dimen/_10sdp"
+                    android:paddingStart="@dimen/_5sdp"
+                    android:textColor="@color/white" />
+
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!--      CONFIRM-NEW-PASSWORD EDIT_TEXT-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="Confirm Password"
+                android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+
+            <eu.siacs.conversations.ui.widget.TextInputEditText
+                android:id="@+id/confirm_password_et"
+                style="@style/Widget.Conversations.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/textfield_background"
+                android:focusable="true"
+                android:hint="re-enter password..."
+                android:imeOptions="actionNext"
+                android:paddingVertical="@dimen/_10sdp"
+                android:paddingStart="@dimen/_5sdp"
+                android:textColor="@color/white" />
+
+            <!--      CONFIRM-NEW-PASSWORD EDIT_TEXT-->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="Referral code (optional)"
+                android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+
+            <eu.siacs.conversations.ui.widget.TextInputEditText
+                android:id="@+id/referral_code_et"
+                style="@style/Widget.Conversations.EditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:background="@drawable/textfield_background"
+                android:focusable="true"
+                android:hint="referral code"
+                android:imeOptions="actionNext"
+                android:maxLength="10"
+                android:paddingVertical="@dimen/_10sdp"
+                android:paddingStart="@dimen/_5sdp"
+                android:textColor="@color/white" />
+
+
+            <Button
+                android:id="@+id/signUp_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:background="@drawable/button"
+                android:enabled="true"
+                android:padding="10dp"
+                android:text="Sign up"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="17sp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</RelativeLayout>

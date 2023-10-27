@@ -4,7 +4,6 @@
     <string name="action_add">Nowo godka</string>
     <string name="action_accounts">Sztelōnki kōnt</string>
     <string name="action_account">Sztelōnki kōnta</string>
-    <string name="action_end_conversation">Zawrzij godka</string>
     <string name="action_contact_details">Informacyje kōntaktu</string>
     <string name="action_muc_details">Informacyje kōnferyncyje</string>
     <string name="channel_details">Informacyje kanału</string>
@@ -57,7 +56,6 @@
     <string name="contact_blocked">Kōntakt zablokowany</string>
     <string name="blocked">Zablokowane</string>
     <string name="remove_bookmark_text">Chcesz wymazać zokłodka %s\? Godki z niōm niy bydōm wymazane.</string>
-    <string name="register_account">Zaregistruj nowe kōnto na serwerze</string>
     <string name="change_password_on_server">Umiyń hasło na serwerze</string>
     <string name="share_with">Udostympnij…</string>
     <string name="start_conversation">Zacznij godka</string>
@@ -72,7 +70,6 @@
     <string name="delete">Wymaż</string>
     <string name="block">Zablokuj</string>
     <string name="unblock">Ôdblokuj</string>
-    <string name="save">Spamiyntej</string>
     <string name="ok">OK</string>
     <string name="crash_report_title">We %1$s doszło do awaryje</string>
     <string name="crash_report_message">Jak używosz swojigo kōnta XMPP do wysyłanio sztrekōw sztapla, to pōmogosz przi budowaniu %1$s.</string>
@@ -81,14 +78,10 @@
     <string name="problem_connecting_to_account">Niy idzie połōnczyć z kōntym</string>
     <string name="problem_connecting_to_accounts">Niy idzie połōnczyć z mockōm kōnt</string>
     <string name="touch_to_fix">Tyknij, coby sztelować swoje kōnta</string>
-    <string name="attach_file">Przidej zbiōr</string>
     <string name="not_in_roster">Przidać tyn kōntakt do twojij listy kōntaktōw\?</string>
     <string name="add_contact">Przidej kōntakt</string>
     <string name="send_failed">wysyłanie sie niy podarziło</string>
     <string name="preparing_image">Rychtowanie do wysłanio ôbrozka</string>
-    <string name="preparing_images">Rychtowanie do wysłanio ôbrozkōw</string>
-    <string name="sharing_files_please_wait">Udostympnianie zbiorōw. Czekej…</string>
-    <string name="action_clear_history">Wymaż historyjo</string>
     <string name="clear_conversation_history">Wymaż historyjo kōnwersacyje</string>
     <string name="clear_histor_msg">Chcesz wymazać wszyjske wiadōmości we tyj godce\?
 \n
@@ -102,9 +95,6 @@
     <string name="send_unencrypted_message">Wyślij wiadōmość bez szyfrowanio</string>
     <string name="send_message">Wyślij wiadōmość</string>
     <string name="send_message_to_x">Wyślij wiadōmość do kōntaktu %s</string>
-    <string name="send_omemo_message">Wyślij wiadōmość zaszyfrowano OMEMO</string>
-    <string name="send_omemo_x509_message">Wyślij wiadōmość zaszyfrowano v\\OMEMO</string>
-    <string name="send_pgp_message">Wyślij zaszyfrowano wiadōmość (OpenPGP)</string>
     <string name="your_nick_has_been_changed">Przemianek je umiyniōny</string>
     <string name="send_unencrypted">Wyślij bez szyfrowanio</string>
     <string name="decryption_failed">Niy idzie ôdszyfrować. Możno niy mosz noleznego prywatnego klucza.</string>
@@ -112,7 +102,6 @@
     <string name="openkeychain_required_long">%1$s używo &lt;b&gt;OpenKeychain&lt;/b&gt;, żeby szyfrować i ôdszyfrowować wiadōmości i zarzōndzać twojimi publicznymi kluczami.&lt;br&gt;&lt;br&gt;OpenKeychain je na licyncyji GPLv3+ i je dostympny we F-Droid abo Google Play.&lt;br&gt;&lt;br&gt;&lt;small&gt;(Puść %1$s na nowo po zainstalowaniu.)&lt;/small&gt;</string>
     <string name="restart">Zresztartuj</string>
     <string name="install">Zainstaluj</string>
-    <string name="openkeychain_not_installed">Zainstaluj OpenKeychain</string>
     <string name="offering">ôferowanie…</string>
     <string name="waiting">czekanie…</string>
     <string name="no_pgp_key">Niy szło znojś klucza OpenPGP</string>
@@ -150,14 +139,12 @@
     <string name="bad_key_for_encryption">Zły klucz szyfrowanio.</string>
     <string name="accept">Akceptować</string>
     <string name="error">Doszło do błyndu</string>
-    <string name="recording_error">Błōnd</string>
     <string name="your_account">Twoje kōnto</string>
     <string name="send_presence_updates">Wysyłej powiadōmiynia ôbecności</string>
     <string name="receive_presence_updates">Dostowej powiadōmiynia ôbecności</string>
     <string name="ask_for_presence_updates">Poproś ô powiadōmiynia ôbecności</string>
     <string name="attach_choose_picture">Ôbier ôbroz</string>
     <string name="attach_take_picture">Zrōb fotografijo</string>
-    <string name="preemptively_grant">Autōmatyczno zwolo na subskrypcyjo</string>
     <string name="error_not_an_image_file">Ôbrany zbiōr to niy ôbroz</string>
     <string name="error_compressing_image">Błōnd kōnwersyje ôbrazu</string>
     <string name="error_file_not_found">Niy szło znojś zbioru</string>
@@ -190,9 +177,7 @@
     <string name="encryption_choice_pgp">OpenPGP</string>
     <string name="encryption_choice_omemo">OMEMO</string>
     <string name="mgmt_account_delete">Wymaż kōnto</string>
-    <string name="mgmt_account_disable">Zastow tymczasowo</string>
     <string name="mgmt_account_publish_avatar">Publikuj awatar</string>
-    <string name="mgmt_account_publish_pgp">Udostympnij klucz publiczny OpenPGP</string>
     <string name="unpublish_pgp">Wymaż klucz publiczny OpenPGP</string>
     <string name="unpublish_pgp_message">Na zicher chcesz wymazać klucz publiczny OpenPGP ze swojij propagacyje ôbecności\?
 \nTwoje kōntakty niy bydōm już mogły wysyłać ci wiadōmości zaszyfrowanych OpenPGP.</string>
@@ -230,14 +215,11 @@
     <string name="last_seen_days">widziany przed %d dniami</string>
     <string name="install_openkeychain">Wiadōmość zaszyfrowano. Zainstaluj OpenKeychain, coby ôdszyfrować.</string>
     <string name="openpgp_messages_found">Znojdziōne nowe wiadōmości zaszyfrowane we OpenPGP</string>
-    <string name="openpgp_key_id">ID klucza OpenPGP</string>
     <string name="omemo_fingerprint">Ôdcisk OMEMO</string>
     <string name="omemo_fingerprint_x509">Ôdcisk v\\OMEMO</string>
     <string name="omemo_fingerprint_selected_message">Ôdcisk OMEMO tyj wiadōmości</string>
     <string name="omemo_fingerprint_x509_selected_message">Ôdcisk v\\OMEMO tyj wiadōmości</string>
-    <string name="other_devices">Insze masziny</string>
     <string name="trust_omemo_fingerprints">Zadufane ôdciski OMEMO</string>
-    <string name="fetching_keys">Pobiyranie kluczy…</string>
     <string name="done">Skōńczōno</string>
     <string name="decrypt">Ôdszyfruj</string>
     <string name="search">Szukej</string>
@@ -264,12 +246,9 @@
 \n<b>Pozōr:</b> Tyn kanał bydzie doimyntnie wymazany ze serwera.</string>
     <string name="could_not_destroy_room">Niy szło wymazać kōnferyncyje</string>
     <string name="could_not_destroy_channel">Niy szło wymazać kanału</string>
-    <string name="action_edit_subject">Edytuj tytuł kōnferyncyje</string>
     <string name="topic">Tymat</string>
     <string name="joining_conference">Przistympowanie do kōnferyncyje…</string>
     <string name="leave">Ôpuść izba</string>
-    <string name="contact_added_you">Kōntakt przidoł cie do listy kōntaktōw</string>
-    <string name="add_back">Tyż przidej</string>
     <string name="contact_has_read_up_to_this_point">Kōntakt %s przeczytoł dotōnd</string>
     <string name="contacts_have_read_up_to_this_point">Kōntakty %s przeczytały dotōnd</string>
     <string name="contacts_and_n_more_have_read_up_to_this_point">Kōntakty %1$s i %2$d inszych przeczytało dotōnd</string>
@@ -285,7 +264,6 @@
     <string name="private_message">szepce</string>
     <string name="private_message_to">do %s</string>
     <string name="send_private_message_to">Wyślij prywatno wiadōmość do %s</string>
-    <string name="connect">Połōncz</string>
     <string name="account_already_exists">Kōnto już istniyje</string>
     <string name="next">Dalij</string>
     <string name="server_info_session_established">Połōnczōno ze serwerym</string>
@@ -313,7 +291,6 @@
     <string name="title_pref_quiet_hours_end_time">Kōniec</string>
     <string name="title_pref_enable_quiet_hours">Włōncz godziny cisze</string>
     <string name="pref_quiet_hours_summary">Powiadōmiynia bydōm wyciszōne we ôbranych godzinach</string>
-    <string name="pref_expert_options_other">Inksze</string>
     <string name="toast_message_omemo_fingerprint">Ôdcisk klucza OMEMO bōł skopiowany do skrytki</string>
     <string name="conference_banned">Ôd tyj grupy mosz wykluczynie</string>
     <string name="conference_members_only">Kōnferyncyjo ino dlo czōnkōw</string>
@@ -322,13 +299,10 @@
     <string name="conference_shutdown">Kōnferyncyjo ôstała zawarto</string>
     <string name="conference_unknown_error">Już żeś niy je we tyj kōnferyncyji</string>
     <string name="using_account">ze użyciym kōnta %s</string>
-    <string name="hosted_on">trzimane na %s</string>
     <string name="checking_x">Wybadowanie %s na hoście HTTP</string>
     <string name="not_connected_try_again">Brak połōnczynio. Sprōbuj zaś niyskorzij</string>
     <string name="check_x_filesize">Wybadej srogość %s</string>
     <string name="check_x_filesize_on_host">Wybadej srogość %1$s na %2$s</string>
-    <string name="message_options">Ôpcyje wiadōmości</string>
-    <string name="quote">Cytata</string>
     <string name="paste_as_quote">Wraź za cytata</string>
     <string name="copy_original_url">Skopiyruj ôryginalny URL</string>
     <string name="send_again">Wyślij zaś</string>
@@ -353,7 +327,6 @@
     <string name="restoring_backup">Prziwrocanie ze kopije ibrycznyj</string>
     <string name="notification_restored_backup_title">Prziwrocanie ze kopije ibrycznyj gotowe</string>
     <string name="notification_restored_backup_subtitle">Niy zapōmnij ô aktywacyji tego kōnta.</string>
-    <string name="choose_file">Ôbier zbiōr</string>
     <string name="receiving_x_file">Ôdbiyranie %1$s (skōńczōne %2$d%%)</string>
     <string name="download_x_file">Pobier %s</string>
     <string name="delete_x_file">Wymaż %s</string>
@@ -375,8 +348,6 @@
     <string name="no_conference_server_found">Niy szło znojś serwera kōnferyncyje</string>
     <string name="conference_creation_failed">Niy szło stworzić kōnferyncyje</string>
     <string name="account_image_description">Awatar kōnta</string>
-    <string name="copy_omemo_clipboard_description">Skopiuj ôdcisk klucza OMEMO do skrytki</string>
-    <string name="regenerate_omemo_key">Wygyneruj zaś klucz OMEMO</string>
     <string name="clear_other_devices">Wymaż masziny</string>
     <string name="clear_other_devices_desc">Na zicher chcesz wymazać wszyjske inksze masziny z ôgłoszynio OMEMO\? Jak twoje masziny sie zaś połōnczōm, to sie zaś ôgłoszōm, ale mogōm niy dostać wiadōmości wysłanych bez tyn czas.</string>
     <string name="error_no_keys_to_trust_server_error">Niy ma dostympnych kluczy dlo tego kōntaktu.
@@ -400,7 +371,6 @@
     <string name="no_role">Offline</string>
     <string name="outcast">Wykluczōny</string>
     <string name="member">Czōnek</string>
-    <string name="advanced_mode">Tryb rozszyrżōny</string>
     <string name="grant_membership">Prziznej uprawniynia czōnkostwa</string>
     <string name="remove_membership">Wymaż uprawniynia czōnkostwa</string>
     <string name="grant_admin_privileges">Prziznej uprawniynia administratora</string>
@@ -414,10 +384,8 @@
     <string name="ban_from_channel">Wyklucz na kanale</string>
     <string name="removing_from_public_conference">Chcesz wyciepnōńć %s z publicznego kanału. Jedyny spusōb na to, to je wykluczyć ta ôsoba na dycki.</string>
     <string name="ban_now">Wyklucz teroz</string>
-    <string name="could_not_change_role">Niy szło zmiynić funkcyje %s</string>
     <string name="conference_options">Kōnfiguracyjo prywatnyj kōnferyncyje</string>
     <string name="channel_options">Kōnfiguracyjo publicznego kanału</string>
-    <string name="members_only">Prywatne, ino dlo czōnkōw</string>
     <string name="non_anonymous">Niych adresa XMPP bydzie widzialno dlo wszyjskich</string>
     <string name="moderated">Niych kanał bydzie moderowany</string>
     <string name="you_are_not_participating">Niy bieresz udziału</string>
@@ -431,8 +399,6 @@
     <string name="pref_input_options">Sztelōnki wkludzanio</string>
     <string name="pref_enter_is_send">Enter wysyło</string>
     <string name="pref_enter_is_send_summary">Używej knefla Enter do wysyłanio wiadōmości. Dycki możesz używać Ctrl+Enter, żeby wysłać wiadōmość, nawet jak ta ôpcyjo je zastawiōno.</string>
-    <string name="pref_display_enter_key">Pokoż knefel Enter</string>
-    <string name="pref_display_enter_key_summary">Umiyń knefel emotikōnōw na Enter</string>
     <string name="audio">zbiōr audio</string>
     <string name="video">zbiōr wideo</string>
     <string name="image">ôbroz</string>
@@ -457,10 +423,6 @@
     <string name="title_undo_swipe_out_conversation">Kōnwersacyjo zawarto</string>
     <string name="title_undo_swipe_out_group_chat">Ôpuś prywatno kōnferyncyjo</string>
     <string name="title_undo_swipe_out_channel">Ôpuś publiczny kanał</string>
-    <string name="pref_dont_trust_system_cas_title">Niy dufej certyfikatōm systymowym</string>
-    <string name="pref_dont_trust_system_cas_summary">Wymogej ryncznego potwiyrdzanio certyfikatōw</string>
-    <string name="pref_remove_trusted_certificates_title">Wymaż certyfikaty</string>
-    <string name="pref_remove_trusted_certificates_summary">Ôbier zadufane certyfikaty do wymazanio</string>
     <string name="toast_no_trusted_certs">Brak ryncznie zadufanych certyfikatōw</string>
     <string name="dialog_manage_certs_title">Wymaż certyfikaty</string>
     <string name="dialog_manage_certs_positivebutton">Wymaż zaznaczōne</string>
@@ -497,9 +459,6 @@
     <string name="pref_dnd_on_silent_mode_summary">Ôznaczo twōj zasōb za „Niy szterować”, kej maszina je w trybie cichym</string>
     <string name="pref_treat_vibrate_as_silent">Traktuj tryb wibracyje jak tryb cichy</string>
     <string name="pref_treat_vibrate_as_dnd_summary">Ôznaczo twōj zasōb za „Niy szterować”, kej maszina je w trybie wibracyje</string>
-    <string name="pref_show_connection_options">Rozszyrzōne sztelōnki połōnczynio</string>
-    <string name="pref_show_connection_options_summary">Pokoż miano ôd hosta i sztelōnki portu przi przidowaniu kōnta</string>
-    <string name="hostname_example">xmpp.prziklod.com</string>
     <string name="action_add_account_with_certificate">Wloguj certyfikatym</string>
     <string name="unable_to_parse_certificate">Niy szło ôdczytać certyfikatu</string>
     <string name="mam_prefs">Preferyncyje archiwizacyje</string>
@@ -511,28 +470,16 @@
     <string name="certificate_chain_is_not_trusted">Lyńcuch certyfikatōw niyma zadufany</string>
     <string name="jid_does_not_match_certificate">Adresa XMPP niy pasuje do certyfikatu</string>
     <string name="action_renew_certificate">Ôdnōw certyfikat</string>
-    <string name="error_fetching_omemo_key">Błōnd pobiyranio klucza OMEMO!</string>
-    <string name="verified_omemo_key_with_certificate">Klucz OMEMO zweryfikowany certyfikatym!</string>
     <string name="device_does_not_support_certificates">Twoja maszina niy spiyro ôbiyranio certyfikatōw klijynckich!</string>
     <string name="pref_connection_options">Połōnczynie</string>
     <string name="pref_use_tor">Połōncz bez nec TOR</string>
     <string name="pref_use_tor_summary">Tuneluj wszyjske połōnczynia bez nec TOR. Wymogo aplikacyje Orbot</string>
-    <string name="account_settings_hostname">Miano hosta</string>
-    <string name="account_settings_port">Port</string>
-    <string name="hostname_or_onion">Adresa serwera abo .onion</string>
-    <string name="not_a_valid_port">To niyma noleżny numer portu</string>
-    <string name="not_valid_hostname">To niyma noleżne miano hosta</string>
-    <string name="connected_accounts">%1$d z %2$d kōnt połōnczōnych</string>
     <plurals name="x_messages">
         <item quantity="one">%d wiadōmość</item>
         <item quantity="few">%d wiadōmości</item>
         <item quantity="other">%d wiadōmości</item>
     </plurals>
     <string name="load_more_messages">Zaladuj wiyncyj wiadōmości</string>
-    <string name="shared_file_with_x">Zbiōr dzielōny ze %s</string>
-    <string name="shared_image_with_x">Ôbroz dzielōny ze %s</string>
-    <string name="shared_images_with_x">Ôbrazy dzielōne ze %s</string>
-    <string name="shared_text_with_x">Tekst dzielōny ze %s</string>
     <string name="no_storage_permission">Przizwōl %1$s na dostymp do zewnyntrznego składu</string>
     <string name="no_camera_permission">Przizwōl %1$s na dostymp do aparatu</string>
     <string name="sync_with_contacts">Synchrōnizuj z kōntaktami</string>
@@ -555,14 +502,12 @@
 \n
 \nTeroz pojawi sie prośba ô jejich zastawiynie.</string>
     <string name="disable">Zastow</string>
-    <string name="selection_too_large">Zaznaczōne przestrzyństwo je za sroge</string>
     <string name="no_accounts">(Brak aktywynych kōnt)</string>
     <string name="this_field_is_required">To pole je wymogane</string>
     <string name="correct_message">Poprow wiadōmość</string>
     <string name="send_corrected_message">Wyślij poprawiōno wiadōmość</string>
     <string name="no_keys_just_confirm">Tyn kōntakt już bōł ôd ciebie zweryfikowany. Bez wybranie “Gotowe” ino potwiyrdzosz, że %s noleży do tyj grupowyj godki.</string>
     <string name="this_account_is_disabled">To kōnto było ôd ciebie zastawiōne</string>
-    <string name="security_error_invalid_file_access">Feler bezpieczyństwa: niynoleżny dostymp do zbioru!</string>
     <string name="no_application_to_share_uri">Niy szło znojś aplikacyje do udostympniynio URI</string>
     <string name="share_uri_with">Udostympnij URI ze pōmocōm…</string>
     <string name="agree_and_continue">Zgodzōm sie, kōntynuuj</string>
@@ -594,13 +539,6 @@
     <string name="pref_broadcast_last_activity">Roznajmuj użycie</string>
     <string name="pref_broadcast_last_activity_summary">Informuje twoje kōntakty ô tym, kedy używosz Conversations</string>
     <string name="pref_privacy">Prywatność</string>
-    <string name="pref_theme_options">Tymat</string>
-    <string name="pref_theme_options_summary">Wybier paleta farbōw</string>
-    <string name="pref_theme_automatic">Autōmatycznie</string>
-    <string name="pref_theme_light">Jasny</string>
-    <string name="pref_theme_dark">Ciymny</string>
-    <string name="pref_use_green_background">Zielōny zadek</string>
-    <string name="pref_use_green_background_summary">Używej zielōnego zadku dlo dostanych wiadōmości</string>
     <string name="unable_to_connect_to_keychain">Niy idzie sie połōnczyć z OpenKeychain</string>
     <string name="this_device_is_no_longer_in_use">Ta maszina juz niy je używano</string>
     <string name="type_pc">Kōmputer</string>
@@ -611,7 +549,6 @@
     <string name="payment_required">Wymogany płat</string>
     <string name="missing_internet_permission">Dej zwōlo na dostymp do Internetu</string>
     <string name="me">Jo</string>
-    <string name="contact_asks_for_presence_subscription">Kōntakt prosi ô udostympniynie statusu</string>
     <string name="allow">Przizwōl</string>
     <string name="no_permission_to_access_x">Brak zwōle na dostymp do %s</string>
     <string name="remote_server_not_found">Niy szło znojś serwera</string>
@@ -619,7 +556,6 @@
     <string name="unable_to_update_account">Niy szło zaktualizować kōnta</string>
     <string name="report_jid_as_spammer">Zgłoś ta adresa XMPP za spamowanie.</string>
     <string name="pref_delete_omemo_identities">Wymaż tożsamości OMEMO</string>
-    <string name="pref_delete_omemo_identities_summary">Wygyneruj jeszcze roz klucze OMEMO. Wszyske twoje kōntakty bydōm musiały cie zaś zweryfikować. Użyj tego ino w ôstateczności.</string>
     <string name="delete_selected_keys">Wymaż zaznaczōne klucze</string>
     <string name="error_publish_avatar_offline">Potrzebne połōnczynie, coby ôpublikować twōj awatar.</string>
     <string name="show_error_message">Pokoż kōmunikaty felerōw</string>
@@ -641,7 +577,6 @@
     <string name="share_as_http">Udostympnij bez link HTTP</string>
     <string name="pref_blind_trust_before_verification">Ôd Razu Ufej Przed Weryfikacyjōm</string>
     <string name="pref_blind_trust_before_verification_summary">Autōmatycznie ufej wszyskim nowym maszinōm ôd niyzweryfikowanych kōntaktōw, ale proś ô rynczne potwierdzynie nowych maszin ôd zweryfikowanych kōntaktōw.</string>
-    <string name="blindly_trusted_omemo_keys">Ôd razu zaufane klucze OMEMO, to znaczy mogōm noleżeć do kogoś inkszego abo ftoś może sie podepnōńć.</string>
     <string name="not_trusted">Niezaufane</string>
     <string name="invalid_barcode">Niynoleżny kod kryskowy 2D</string>
     <string name="pref_clean_cache_summary">Wypucuj cache (używane ôd fotoaparatu)</string>
@@ -653,8 +588,6 @@
     <string name="verifying_omemo_keys_trusted_source_account">Zaroz zweryfikujesz klucze OMEMO swojego kōnta. To je bezpieczne ino jeźli ôtwiyrosz tyn link ze zaufanego zdrzōdła, kaj ino ty możesz ôpublikować tyn link.</string>
     <string name="continue_btn">Dalij</string>
     <string name="verify_omemo_keys">Zweryfikuj klucze OMEMO</string>
-    <string name="show_inactive_devices">Pokoż niyaktywne</string>
-    <string name="hide_inactive_devices">Skryj niyaktywne</string>
     <string name="distrust_omemo_key">Przestōń ufać maszinie</string>
     <string name="distrust_omemo_key_text">Je żeś zicher, iże chcesz cofnōńć weryfikacyjo tyj masziny\?
 \nTa maszina, i wiadōmości, co bydōm z nij przichodzić, bydōm ôznaczane za niyzaufane.</string>
@@ -690,7 +623,6 @@
     </plurals>
     <string name="pref_automatically_delete_messages">Autōmatyczne wymazowanie wiadōmości</string>
     <string name="pref_automatically_delete_messages_description">Autōmatycznie wymazuj z tyj masziny wiadōmości starsze aniżeli skōnfigurowany ôkres czasu.</string>
-    <string name="encrypting_message">Szyfrowanie wiadōmości</string>
     <string name="not_fetching_history_retention_period">Bez pobiyranio wiadōmości bez lokalny ôkres retyncyje.</string>
     <string name="transcoding_video">Kōmpresowanie filmu</string>
     <string name="corresponding_conversations_closed">Powiōnzane godki zawarte.</string>
@@ -705,27 +637,20 @@
     <string name="session_failure">Feler sesyje</string>
     <string name="sasl_downgrade">Starszy mechanizm SASL</string>
     <string name="account_status_regis_web">Serwer wymogo registracyje na strōnie</string>
-    <string name="open_website">Ôtwōrz strōna</string>
-    <string name="application_found_to_open_website">Niy szło znojś aplikacyje do ôtwarciŏ strōny</string>
     <string name="pref_headsup_notifications">Powiadōmiynia heads-up</string>
     <string name="pref_headsup_notifications_summary">Pokazuj powiadōmiynia Heads-up</string>
     <string name="today">Dzisiej</string>
     <string name="yesterday">Wczorej</string>
-    <string name="pref_validate_hostname">Potwiyrdź miano ôd hosta ze pōmocōm DNSSEC</string>
-    <string name="pref_validate_hostname_summary">Certyfikaty serwera, co posiadajōm noleżne miano ôd hosta, sōm uznowane za zweryfikowane</string>
     <string name="certificate_does_not_contain_jid">Certyfikat niy zawiyro adresy XMPP</string>
     <string name="server_info_partial">czyńściowo</string>
     <string name="attach_record_video">Nagrej film</string>
     <string name="copy_to_clipboard">Skopiyruj do skrytki</string>
     <string name="message_copied_to_clipboard">Wiadōmość skopiyrowano do skrytki</string>
     <string name="message">Wiadōmość</string>
-    <string name="private_messages_are_disabled">Prywatne wiadōmości sōm zastawiōne</string>
     <string name="huawei_protected_apps">Aplikacyje chrōniōne</string>
     <string name="huawei_protected_apps_summary">Coby dostować wiadōmości, kedy ekran je zastawiōny, musisz przidać Conversations do listy chrōniōnych aplikacyji.</string>
     <string name="mtm_accept_cert">Zaakceptować niyznōmy certyfikat\?</string>
     <string name="mtm_trust_anchor">Certyfikat ôd serwera niy ma podpisany ôd znōmego Amtu Certyfikacyje.</string>
-    <string name="mtm_accept_servername">Zaakceptować niypasujōnce miano ôd serwera\?</string>
-    <string name="mtm_hostname_mismatch">Niy idzie potwiyrdzić serwera za “%s. Certyfikat je ważny ino dlo:</string>
     <string name="mtm_connect_anyway">Chcesz kōntynuować połōnczynie\?</string>
     <string name="mtm_cert_details">Informacyje certyfikatu:</string>
     <string name="once">Roz</string>
@@ -763,7 +688,6 @@
     <string name="action_unfix_from_location">Ôdblokuj pozycyjo</string>
     <string name="action_copy_location">Skopiyruj lokalizacyjo</string>
     <string name="action_share_location">Udostympnij lokalizacyjo</string>
-    <string name="action_directions">Kerōnki</string>
     <string name="title_activity_share_location">Udostympniej lokalizacyjo</string>
     <string name="title_activity_show_location">Pokazuj lokalizacyjo</string>
     <string name="share">Udostympnij</string>
@@ -777,9 +701,6 @@
     <string name="pref_use_share_location_plugin_summary">Użyj Przidowka Udostympnianio Lokalizacyje zamiast wbudowanyj karty</string>
     <string name="copy_link">Skopiyruj URL</string>
     <string name="copy_jabber_id">Skopiyruj adresa XMPP</string>
-    <string name="p1_s3_filetransfer">Udostympnianie zbiorōw bez HTTP S3</string>
-    <string name="pref_start_search">Bezpostrzednie wyszukowanie</string>
-    <string name="pref_start_search_summary">Na ekranie “Zacznij kōnwersacyjo” ôtwōrz tastatura i wraź kursōr w polu wyszukowanio</string>
     <string name="group_chat_avatar">Awatar kōnwersacyje</string>
     <string name="host_does_not_support_group_chat_avatars">Serwer niy spiyro awatarōw kōnwersacyje</string>
     <string name="only_the_owner_can_change_group_chat_avatar">Ino posiedziciel może zmiynić awatar kōnwersacyje</string>
@@ -787,7 +708,6 @@
     <string name="nickname">Pseudōnim</string>
     <string name="group_chat_name">Miano</string>
     <string name="providing_a_name_is_optional">Niy trza podować miana</string>
-    <string name="create_dialog_group_chat_name">Miano ôd kōnferyncyje</string>
     <string name="conference_destroyed">Ta kōnferyncyjo ôstała wymazano</string>
     <string name="unable_to_save_recording">Niy idzie zaczōńć nagrowanio</string>
     <string name="foreground_service_channel_name">Usuga na piyrszym planie</string>
@@ -804,7 +724,6 @@
     <string name="silent_messages_channel_description">Ta kategoryjo powiadōmiyń je używano coby pokazować powiadōmiynia, co niy powodujōm żodnych klangōw. Bez tyn przikłod w czasie aktywności na inkszyj maszinie (ôkres karyncyje).</string>
     <string name="delivery_failed_channel_name">Niypodarzōne wysyłki</string>
     <string name="pref_message_notification_settings">Sztalōnki powiadōmiyń wiadōmości</string>
-    <string name="pref_incoming_call_notification_settings">Sztalōnki powiadōmiyń dlo połōnczyń, co przichodzōm</string>
     <string name="pref_more_notification_settings_summary">Ważność, Klang, Wibracyjo</string>
     <string name="video_compression_channel_name">Kōmpresyjo wideo</string>
     <string name="view_media">Pokoż media</string>
@@ -818,50 +737,8 @@
     <string name="cancelled">pociepniynte</string>
     <string name="already_drafting_message">Już tworzisz nowo wiadōmość.</string>
     <string name="feature_not_implemented">Funkcyjo niyzaimplymyntowano</string>
-    <string name="invalid_country_code">Niynoleżny kod kraju</string>
-    <string name="choose_a_country">Ôbier kroj</string>
-    <string name="phone_number">numer telefōnu</string>
-    <string name="verify_your_phone_number">Zweryfikuj swōj numer telefōnu</string>
-    <string name="enter_country_code_and_phone_number">Quicksy wyśle SMS (mogōm być naliczane płaty) coby zweryfikować numer telefōnu. Wpisz kod ôd kraju i numer telefōnu:</string>
-    <string name="we_will_be_verifying">Zweryfikujymy numer telefōnu <br/><br/><b>%s</b><br/><br/>Zgodzo sie wszysko, abo chcesz zmiynić numer\?</string>
-    <string name="not_a_valid_phone_number">%s to niy ma noleżny numer telefōnu.</string>
-    <string name="please_enter_your_phone_number">Wkludź swōj numer telefōnu.</string>
-    <string name="search_countries">Przeszukej kraje</string>
-    <string name="verify_x">Zweryfikuj %s</string>
-    <string name="we_have_sent_you_an_sms_to_x">Wysłali my SMS do <b>%s</b>.</string>
-    <string name="we_have_sent_you_another_sms">Wysłali my dalszy SMS z 6 cyfrowym kodym.</string>
-    <string name="please_enter_pin_below">Wkludź 6-cyfrowy kod PIN niżyj.</string>
-    <string name="resend_sms">Wyślij SMS zaś</string>
-    <string name="resend_sms_in">Wyślij SMS zaś (%s)</string>
-    <string name="wait_x">Czekej (%s)</string>
     <string name="back">nazod</string>
-    <string name="possible_pin">Autōmatycznie bōł wrażōny prowdopodobny PIN ze skrytki.</string>
-    <string name="please_enter_pin">Wkludź 6-cyfrowy PIN.</string>
-    <string name="abort_registration_procedure">Na zicher chcesz przerwać procedura registracyje\?</string>
-    <string name="yes">Ja</string>
-    <string name="no">Niy</string>
-    <string name="verifying">Weryfikowanie…</string>
-    <string name="requesting_sms">Żōndanie SMS…</string>
-    <string name="incorrect_pin">Wkludzōny PIN je niynoleżny.</string>
-    <string name="pin_expired">Wysłany ôd nos PIN straciōł ważność.</string>
-    <string name="unknown_api_error_network">Niyznōmy feler necu.</string>
-    <string name="unknown_api_error_response">Niyznōmo ôdpowiydź serwera.</string>
-    <string name="unable_to_connect_to_server">Niy idzie sie połōnczyć z serwerym.</string>
-    <string name="unable_to_establish_secure_connection">Niy idzie dostać bezpiecznego połōnczynio.</string>
-    <string name="unable_to_find_server">Niy szło znojś serwera.</string>
-    <string name="something_went_wrong_processing_your_request">Coś poszło źle przi przetworzaniu twojigo żōndanio.</string>
-    <string name="invalid_user_input">Niynoleżny wert używocza</string>
-    <string name="temporarily_unavailable">Tymczasowo niydostympne. Sprōbuj niyskorzij.</string>
-    <string name="no_network_connection">Brak połōnczynio z necym.</string>
-    <string name="try_again_in_x">Sprōbuj zaś za %s</string>
-    <string name="rate_limited">Limit pytań spotrzebowany</string>
-    <string name="too_many_attempts">Za moc prōb</string>
-    <string name="the_app_is_out_of_date">Używosz zastarzałyj wersyje aplikacyje.</string>
-    <string name="update">Aktualizuj</string>
-    <string name="logged_in_with_another_device">Twōj numer telefōnu je aktualnie wlogowany na inkszyj maszinie.</string>
-    <string name="enter_your_name_instructions">Wkludź swoje miano, coby ludzie, co cie majōm we kōntaktach, wiedzieli, fto żeś je.</string>
     <string name="your_name">Twoje miano</string>
-    <string name="enter_your_name">Wkludź swoje miano</string>
     <string name="no_name_set_instructions">Użyj knefla edycyje coby nasztalować swoje miano.</string>
     <string name="reject_request">Ôdciepżōndanie</string>
     <string name="install_orbot">Zainstaluj Orbot</string>
@@ -880,8 +757,6 @@
     <string name="unable_to_restore_backup">Niy idzie prziwrōcić kopije ibrycznyj.</string>
     <string name="unable_to_decrypt_backup">Niy idzie ôdszyfrować kopije ibrycznyj. Je hasło noleżne\?</string>
     <string name="backup_channel_name">Kopijo i Prziwrocanie</string>
-    <string name="enter_jabber_id">Wkludź adresa XMPP</string>
-    <string name="create_group_chat">Nowo grupowo godka</string>
     <string name="join_public_channel">Prziwstōń do publicznego kanału</string>
     <string name="create_private_group_chat">Nowo prywatno grupowo godka</string>
     <string name="create_public_channel">Nowy publiczny kanał</string>
@@ -912,12 +787,8 @@
     <string name="discover_channels">Ôdkryj kanały</string>
     <string name="search_channels">Wyszukej kanał</string>
     <string name="channel_discovery_opt_in_title">Możliwe naruszynie prywatności!</string>
-    <string name="i_already_have_an_account">Już mōm kōnto</string>
     <string name="add_existing_account">Przidej kōnto, co juz istniyje</string>
     <string name="register_new_account">Zaregistruj nowe kōnto</string>
-    <string name="this_looks_like_a_domain">To wyglōndo jak miano ôd dōmyny</string>
-    <string name="add_anway">Przidej tak by tak</string>
-    <string name="this_looks_like_channel">To wyglōndo jak adresa ôd kanału</string>
     <string name="share_backup_files">Udostympnij zbiory kopiji ibrycznych</string>
     <string name="conversations_backup">Kopijo ibryczno Conversations</string>
     <string name="event">Zdarzynie</string>
@@ -928,11 +799,6 @@
     <string name="unable_to_perform_this_action">Niy idzie wykōnać tyj akcyje</string>
     <string name="open_join_dialog">Przistōmp do publicznego kanału…</string>
     <string name="sharing_application_not_grant_permission">Aplikacyjo, co udostympnio, niy dała zwōle na dostymp do tego zbioru.</string>
-    <string name="group_chats_and_channels">Grupowe godki i kanały</string>
-    <string name="jabber_network">jabber.network</string>
-    <string name="local_server">Serwer lokalny</string>
-    <string name="pref_channel_discovery_summary">Wiynkszość używoczōw powinna ôbrać “jabber.network” dlo lepszych dorad ze cołkigo ekosystymu XMPP.</string>
-    <string name="pref_channel_discovery">Metoda ôdkrywanio kanałōw</string>
     <string name="backup">Kopijo ibryczno</string>
     <string name="category_about">Ô aplikacyji</string>
     <string name="please_enable_an_account">Włōncz kōnto</string>
@@ -976,13 +842,9 @@
     <string name="remove_from_favorites">Wymaż ze ôblubiōnych</string>
     <string name="gpx_track">Śledzynie GPX</string>
     <string name="could_not_correct_message">Niy szło skorygować wiadōmości</string>
-    <string name="search_all_conversations">Wszyske kōnwersacyje</string>
-    <string name="search_this_conversation">Ta kōnwersacyjo</string>
     <string name="your_avatar">Twōj awatar</string>
     <string name="avatar_for_x">Awatar ôd %s</string>
     <string name="encrypted_with_omemo">Zaszyfrowane bez OMEMO</string>
-    <string name="encrypted_with_openpgp">Zaszyfrowane bez OpenPGP</string>
-    <string name="not_encrypted">Niyzaszyfrowane</string>
     <string name="exit">Zawrzij</string>
     <string name="record_voice_mail">Nagrej głosowo wiadōmość</string>
     <string name="play_audio">Grej źwiynk</string>
@@ -999,7 +861,6 @@
         <item quantity="other">Wielaś wiadōmości niy mogło być dolifrowanych</item>
     </plurals>
     <string name="failed_deliveries">Niypodarzōne lifrowania</string>
-    <string name="more_options">Wiyncyj ôpcyjōw</string>
     <string name="no_application_found">Żodno aplikacyjo niyznojdziōno</string>
     <string name="invite_to_app">Zaproś do Conversations</string>
     <string name="unable_to_parse_invite">Niy idzie przetworzić zaproszynio</string>

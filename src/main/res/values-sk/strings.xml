@@ -4,7 +4,6 @@
     <string name="action_add">Nová konverzácia</string>
     <string name="action_accounts">Nastavenie účtov</string>
     <string name="action_account">Nastaviť účet</string>
-    <string name="action_end_conversation">Zavrieť rozhovor</string>
     <string name="action_contact_details">Detaily kontaktu</string>
     <string name="action_muc_details">Detaily skupinového rozhovoru</string>
     <string name="channel_details">Detaily kanála</string>
@@ -60,7 +59,6 @@
     <string name="contact_blocked">Kontakt zablokovaný</string>
     <string name="blocked">Zablokovaný</string>
     <string name="remove_bookmark_text">Chcete vymazať %sako záložku? Rozhovory s touto záložkou nebudú zmazané.</string>
-    <string name="register_account">Registrovať nový účet na serveri</string>
     <string name="change_password_on_server">Zmeniť heslo na serveri</string>
     <string name="share_with">Zdieľať s</string>
     <string name="start_conversation">Začať rozhovor</string>
@@ -75,7 +73,6 @@
     <string name="delete">Vymazať</string>
     <string name="block">Zablokovať</string>
     <string name="unblock">Odblokovať</string>
-    <string name="save">Uložiť</string>
     <string name="ok">OK</string>
     <string name="crash_report_title">%1$ssa zrútila</string>
     <string name="crash_report_message">Pomocou vášho XMPP konta nám pošlite záznam o zlyhaní, ktorý nám pomôže vo vývoji %1$s.</string>
@@ -84,14 +81,10 @@
     <string name="problem_connecting_to_account">Nedá sa pripojiť k účtu</string>
     <string name="problem_connecting_to_accounts">Nedá sa pripojiť k viacerým kontám</string>
     <string name="touch_to_fix">Ťapnite na správu vášho účtu</string>
-    <string name="attach_file">Priložiť súbor</string>
     <string name="not_in_roster">Pridať tento chýbajúci kontakt do vašich kontaktov?</string>
     <string name="add_contact">Pridať kontakt</string>
     <string name="send_failed">doručenie zlyhalo</string>
     <string name="preparing_image">Pripravujem odoslanie obrázka</string>
-    <string name="preparing_images">Pripravujem odoslanie obrázkov</string>
-    <string name="sharing_files_please_wait">Zdieľam súbory. Prosím čakajte...</string>
-    <string name="action_clear_history">Vymazať históriu</string>
     <string name="clear_conversation_history">Vymazať históriu konverzácií</string>
     <string name="clear_histor_msg">Chcete vymazať všetky správy v tomto rozhovore?\n\n<b>Upozornenie:</b>Nebude to mať vplyv na správy uložené na ostatných zariadeniach alebo serveroch.</string>
     <string name="delete_file_dialog">Zmazať súbor</string>
@@ -101,16 +94,12 @@
     <string name="send_unencrypted_message">Poslať nezašifrovanú správu</string>
     <string name="send_message">Poslať správu</string>
     <string name="send_message_to_x">Poslať správu na %s</string>
-    <string name="send_omemo_message">Poslať OMEMO šifrovanú správu</string>
-    <string name="send_omemo_x509_message">Poslať v\\OMEMO šifrovanú správu</string>
-    <string name="send_pgp_message">Poslať OpenPGP šifrovanú správu</string>
     <string name="your_nick_has_been_changed">Používa sa nová prezývka</string>
     <string name="send_unencrypted">Poslať nešifrované</string>
     <string name="decryption_failed">Zašifrovanie zlyhalo. Možno nemáte správny privátny kľúč.</string>
     <string name="openkeychain_required">OpenKeychain</string>
     <string name="restart">Reštartovať</string>
     <string name="install">Inštalovať</string>
-    <string name="openkeychain_not_installed">Prosím, nainštalujte OpenKeychain</string>
     <string name="offering">ponúka…</string>
     <string name="waiting">čakám…</string>
     <string name="no_pgp_key">Nenašiel sa žiadny OpenPGP kľúč</string>
@@ -143,14 +132,12 @@
     <string name="bad_key_for_encryption">Nesprávny kľúč na šifrovanie.</string>
     <string name="accept">Prijať</string>
     <string name="error">Došlo k chybe</string>
-    <string name="recording_error">Chyba</string>
     <string name="your_account">Váš účet</string>
     <string name="send_presence_updates">Zasielať zmeny stavu</string>
     <string name="receive_presence_updates">Prijímať zmeny stavu</string>
     <string name="ask_for_presence_updates">Požiadať o zmeny stavu</string>
     <string name="attach_choose_picture">Vybrať obrázok</string>
     <string name="attach_take_picture">Odfotiť</string>
-    <string name="preemptively_grant">Aktívne povoliť vyžiadanie zmeny stavu</string>
     <string name="error_not_an_image_file">Vybraný súbor nie je obrázok</string>
     <string name="error_compressing_image">Nemohol som konvertovať obrázkový súbor</string>
     <string name="error_file_not_found">Súbor sa nenašiel</string>
@@ -179,9 +166,7 @@
     <string name="encryption_choice_pgp">OpenPGP</string>
     <string name="encryption_choice_omemo">OMEMO</string>
     <string name="mgmt_account_delete">Vymazať účet</string>
-    <string name="mgmt_account_disable">Dočasne vypnúť</string>
     <string name="mgmt_account_publish_avatar">Zverejniť avatar</string>
-    <string name="mgmt_account_publish_pgp">Zverejniť OpenPGP kľúč</string>
     <string name="unpublish_pgp">Odstrániť OpenPGP  verejný kľúč</string>
     <string name="mgmt_account_enable">Povoliť účet</string>
     <string name="attach_record_voice">Nahrať hlas</string>
@@ -217,9 +202,7 @@
     <string name="omemo_fingerprint_x509">v\\OMEMO odtlačok</string>
     <string name="omemo_fingerprint_selected_message">OMEMO odtlačok (pôvod správy)</string>
     <string name="omemo_fingerprint_x509_selected_message">v\\OMEMO odtlačok (pôvod správy)</string>
-    <string name="other_devices">Ostatné zariadenia</string>
     <string name="trust_omemo_fingerprints">Dôverovať OMEMO identifikátoru</string>
-    <string name="fetching_keys">Načítavam kľúče...</string>
     <string name="done">Dokončený</string>
     <string name="decrypt">Dešifrovať</string>
     <string name="search">Hľadať</string>
@@ -241,12 +224,9 @@
     <string name="destroy_room_dialog">Ste si istý, že chcete zrušiť tento skupinový rozhovor?\n\n<b>Upozornenie:</b> Skupinový rozhovor bude kompletne vymazaný zo servera.</string>
     <string name="could_not_destroy_room">Nemohol som vymazať skupinový rozhovor</string>
     <string name="could_not_destroy_channel">Nemohol som vymazať kanál</string>
-    <string name="action_edit_subject">Upraviť predmet skupinového rozhovoru</string>
     <string name="topic">Téma</string>
     <string name="joining_conference">Pripájam skupinový rozhovor...</string>
     <string name="leave">Odísť</string>
-    <string name="contact_added_you">Kontakt pridaný do zoznamu</string>
-    <string name="add_back">Znova pridať</string>
     <string name="contact_has_read_up_to_this_point">%s dočítal až potiaľ</string>
     <string name="contacts_have_read_up_to_this_point">%sdočítal potiaľto</string>
     <string name="contacts_and_n_more_have_read_up_to_this_point">%1$s+%2$dostatní dočítali potiaľto</string>
@@ -262,7 +242,6 @@
     <string name="private_message">súkromná správa</string>
     <string name="private_message_to">pre %s</string>
     <string name="send_private_message_to">Odoslať súkromnú správu %s</string>
-    <string name="connect">Pripojiť </string>
     <string name="account_already_exists">Tento účet už existuje</string>
     <string name="next">Ďalší</string>
     <string name="server_info_session_established">Spojenie naviazané</string>
@@ -284,7 +263,6 @@
     <string name="title_pref_quiet_hours_end_time">Čas konca</string>
     <string name="title_pref_enable_quiet_hours">Povoliť tichý režim</string>
     <string name="pref_quiet_hours_summary">Upozornenia budú počas tichého režimu stlmené</string>
-    <string name="pref_expert_options_other">Ďalší</string>
     <string name="toast_message_omemo_fingerprint">OMEMO odtlačok skopírovaný do schránky</string>
     <string name="conference_banned">Ste zakázaný na tomto skupinovom rozhovore</string>
     <string name="conference_members_only">Skupinový rozhovor len pre členov</string>
@@ -292,13 +270,10 @@
     <string name="conference_shutdown">Skupinový rozhovor bol zastavený</string>
     <string name="conference_unknown_error">Už viac nie ste v tomto skupinovom rozhovore</string>
     <string name="using_account">Používa sa účet %s</string>
-    <string name="hosted_on">Hostovaný na %s</string>
     <string name="checking_x">Overiť %s na HTTP host</string>
     <string name="not_connected_try_again">Nie ste pripojený. Skúste to neskôr</string>
     <string name="check_x_filesize">Overiť %s veľkosť</string>
     <string name="check_x_filesize_on_host">Skontrolujte %1$sveľkosť na %2$s</string>
-    <string name="message_options">Možnosti správy</string>
-    <string name="quote">Citovať</string>
     <string name="paste_as_quote">Vložiť ako citát</string>
     <string name="copy_original_url">Skopírovať originálny URL</string>
     <string name="send_again">Poslať znova</string>
@@ -323,7 +298,6 @@
     <string name="restoring_backup">Obnovujem zálohu</string>
     <string name="notification_restored_backup_title">Vaša záloha bola obnovená</string>
     <string name="notification_restored_backup_subtitle">Nezabudnite si zapnúť konto.</string>
-    <string name="choose_file">Vybrať súbor</string>
     <string name="receiving_x_file">Prijímam %1$s (%2$d%% ukončený)</string>
     <string name="download_x_file">Stiahnuť %s</string>
     <string name="delete_x_file">Zmazať %s</string>
@@ -343,8 +317,6 @@
     <string name="pref_show_dynamic_tags_summary">Zobraziť štítky pod kontaktmi</string>
     <string name="enable_notifications">Povoliť upozornenia</string>
     <string name="account_image_description">Avatar účtu</string>
-    <string name="copy_omemo_clipboard_description">Skopírovať OMEMO identifikátor do schránky</string>
-    <string name="regenerate_omemo_key">Regenerovať OMEMO kľúč</string>
     <string name="clear_other_devices">Vymazať zariadenia</string>
     <string name="clear_other_devices_desc">Ste si istý, že chcete odstrániť všetky ostatné zariadenia z OMEMO oznámenia? Keď sa nabudúce vaše zariadenia pripoja, znova sa samé ohlásia, ale nemusia prijať správy odoslané medzitým. </string>
     <string name="fetching_history_from_server">Načítať históriu zo serveru</string>
@@ -362,18 +334,14 @@
     <string name="no_role">Offline</string>
     <string name="outcast">Vylúčený</string>
     <string name="member">Člen</string>
-    <string name="advanced_mode">Rozšírený režim</string>
     <string name="grant_admin_privileges">Povoliť administrátorské výsady</string>
     <string name="remove_admin_privileges">Odobrať administrátorské výsady</string>
     <string name="could_not_change_affiliation">Nepodarilo sa zmeniť pripojenie užívateľa %s</string>
     <string name="ban_now">Vylúčiť</string>
-    <string name="could_not_change_role">Nepodarilo sa zmeniť úlohu %s</string>
     <string name="you_are_not_participating">Nezúčastňujete sa</string>
     <string name="never">Nikdy</string>
     <string name="until_further_notice">Až do odvolania</string>
     <string name="pref_enter_is_send">Enter odosiela</string>
-    <string name="pref_display_enter_key">Zobraziť klávesu enter</string>
-    <string name="pref_display_enter_key_summary">Zmeniť klávesu s emotikonmi na klávesu enter</string>
     <string name="audio">audio</string>
     <string name="video">video</string>
     <string name="image">obrázok</string>
@@ -394,10 +362,6 @@
     <string name="show_location">Zobraziť polohu</string>
     <string name="location">Poloha</string>
     <string name="title_undo_swipe_out_conversation">Konverzácia zatvorená</string>
-    <string name="pref_dont_trust_system_cas_title">Nedôverovať systému CAs</string>
-    <string name="pref_dont_trust_system_cas_summary">Všetky certifikáty musia byť ručne schválené</string>
-    <string name="pref_remove_trusted_certificates_title">Odstrániť certifikáty</string>
-    <string name="pref_remove_trusted_certificates_summary">Vymazať ručne schválené certifikáty</string>
     <string name="toast_no_trusted_certs">Žiadne ručne schválené certifikáty</string>
     <string name="dialog_manage_certs_title">Odstrániť certifikáty</string>
     <string name="dialog_manage_certs_positivebutton">Vymazať výber</string>
@@ -418,10 +382,7 @@
     <string name="invalid_username">Toto nie je platné užívateľské meno</string>
     <string name="action_add_account_with_certificate">Prihlásiť sa s certifikátom</string>
     <string name="action_renew_certificate">Obnoviť certifikát</string>
-    <string name="error_fetching_omemo_key">Chyba pri načítaní OMEMO kľúča!</string>
-    <string name="verified_omemo_key_with_certificate">kľúč OMEMO overený certifikátom!</string>
     <string name="pref_use_tor">Pripojiť cez Tor</string>
-    <string name="connected_accounts">%1$dz%2$dúčtov pripojených</string>
     <plurals name="x_messages">
         <item quantity="one">%dspráva</item>
         <item quantity="few">%dsprávy</item>
@@ -429,10 +390,6 @@
         <item quantity="other">%dspráv</item>
     </plurals>
     <string name="load_more_messages">Načítať viac správ</string>
-    <string name="shared_file_with_x">Súbor zdieľaný s %s</string>
-    <string name="shared_image_with_x">Obrázok zdieľaný s %s</string>
-    <string name="shared_images_with_x">Obrázky zdieľané s %s</string>
-    <string name="shared_text_with_x">Text zdieľaný s %s</string>
     <string name="notify_on_all_messages">Oznamovať na všetkých správach</string>
     <string name="always">Vždy</string>
     <string name="disable">Deaktivovať</string>
@@ -445,12 +402,7 @@
     <string name="gp_disable">Deaktivovať</string>
     <string name="pref_broadcast_last_activity">Oznamovať používanie</string>
     <string name="pref_privacy">Súkromie</string>
-    <string name="pref_theme_options">Téma</string>
-    <string name="pref_theme_options_summary">Zvoľte si farebnú schému</string>
-    <string name="pref_use_green_background">Zelené pozadie</string>
-    <string name="pref_use_green_background_summary">Použiť zelené pozadie pre prijaté správy</string>
     <string name="pref_delete_omemo_identities">Vymazať OMEMO identifikátory</string>
-    <string name="pref_delete_omemo_identities_summary">Re-generuje vaše kľúče OMEMO. Všetky vaše kontakty vás budú musieť znova overiť. Použite to ako poslednú možnosť.</string>
     <string name="delete_selected_keys">Odstrániť označené kľúče</string>
     <string name="all_omemo_keys_have_been_verified">Overili ste všetky kľúče OMEMO vo vašom vlastníctve.</string>
     <string name="share_as_barcode">Zdieľať ako qr kód</string>
@@ -485,10 +437,7 @@
     <string name="incoming_calls_channel_name">Prichádzajúce hovory</string>
     <string name="ongoing_calls_channel_name">Prebiehajúce hovory</string>
     <string name="delivery_failed_channel_name">Zlyhané doručenia</string>
-    <string name="pref_incoming_call_notification_settings">Nastavenia oznámení prichádzajúcich hovorov</string>
-    <string name="enter_your_name_instructions">Prosím vložte vaše meno, aby ľudia, ktorí vás nemajú v adresári, vedeli kto ste.</string>
     <string name="your_name">Vaše meno</string>
-    <string name="enter_your_name">Vložte vaše meno</string>
     <string name="no_name_set_instructions">Pre nastavenie vášho mena, použite tlačidlo Upraviť.</string>
     <string name="restore_backup">Obnoviť zálohu</string>
     <string name="xmpp_address">XMPP adresa</string>
@@ -520,5 +469,4 @@
     <string name="remove_from_favorites">Odopnúť z vrchu</string>
     <string name="encrypted_with_omemo">Zašifrované s OMEMO</string>
     <string name="failed_deliveries">Zlyhané doručenia</string>
-    <string name="more_options">Viac možnosťí</string>
-    </resources>
+</resources>

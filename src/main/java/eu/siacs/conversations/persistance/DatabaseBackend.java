@@ -1305,7 +1305,6 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 
     public void deleteAllData() {
         SQLiteDatabase db = this.getWritableDatabase();
-
         Cursor cursor = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
         if (cursor != null) {
             while (cursor.moveToNext()) {

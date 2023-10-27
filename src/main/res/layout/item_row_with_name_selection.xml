@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/_10sdp">
+
+        <TextView
+            android:id="@+id/item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:scrollHorizontally="false"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+
+
+        <ImageView
+            android:id="@+id/selected_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_baseline_check_24"
+            android:focusable="false"
+            android:padding="16dp"
+            android:visibility="gone" />
+
+    </LinearLayout>
+</layout>

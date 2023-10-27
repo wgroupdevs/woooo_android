@@ -29,13 +29,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProvider;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
@@ -49,7 +46,7 @@ import eu.siacs.conversations.entities.ListItem;
 import eu.siacs.conversations.http.model.SearchAccountAPIResponse;
 import eu.siacs.conversations.http.model.UserBasicInfo;
 import eu.siacs.conversations.http.services.BaseModelAPIResponse;
-import eu.siacs.conversations.http.services.WooooAPIService;
+import eu.siacs.conversations.http.services.WooAPIService;
 import eu.siacs.conversations.services.AbstractQuickConversationsService;
 import eu.siacs.conversations.services.XmppConnectionService.OnAccountUpdate;
 import eu.siacs.conversations.services.XmppConnectionService.OnRosterUpdate;
@@ -71,7 +68,7 @@ import eu.siacs.conversations.xmpp.OnKeyStatusUpdated;
 import eu.siacs.conversations.xmpp.OnUpdateBlocklist;
 import eu.siacs.conversations.xmpp.XmppConnection;
 
-public class ContactDetailsActivity extends OmemoActivity implements OnAccountUpdate, OnRosterUpdate, OnUpdateBlocklist, OnKeyStatusUpdated, OnMediaLoaded, WooooAPIService.OnGetAccountByJidAPiResult {
+public class ContactDetailsActivity extends OmemoActivity implements OnAccountUpdate, OnRosterUpdate, OnUpdateBlocklist, OnKeyStatusUpdated, OnMediaLoaded, WooAPIService.OnGetAccountByJidAPiResult {
     public static final String ACTION_VIEW_CONTACT = "view_contact";
     public static final String TAG = "ContactDetailsActivity";
     private final int REQUEST_SYNC_CONTACTS = 0x28cf;
@@ -196,9 +193,6 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
         }
     }
 
-    @Inject
-    ViewModelProvider.Factory viewModelFactory;
-
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -293,7 +287,7 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
                 shareLink(false);
                 break;
             case R.id.action_delete_contact:
-                builder.setTitle(getString(R.string.action_delete_contact)).setMessage(JidDialog.style(this, R.string.remove_contact_text, contact.getJid().toEscapedString())).setPositiveButton(getString(R.string.delete), removeFromRoster).create().show();
+                builder.setTitle(getString(R.string.action_delete_contact)).setMessage(JidDialog.style(this, R.string.remove_contact_text, contact.getDisplayName())).setPositiveButton(getString(R.string.delete), removeFromRoster).create().show();
                 break;
             case R.id.action_edit_contact:
                 Uri systemAccount = contact.getSystemAccount();

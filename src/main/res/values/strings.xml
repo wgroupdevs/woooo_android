@@ -4,7 +4,6 @@
     <string name="action_add">New conversation</string>
     <string name="action_accounts">Manage account</string>
     <string name="action_account">Manage account</string>
-    <string name="action_end_conversation">Close conversation</string>
     <string name="action_contact_details">Contact details</string>
     <string name="action_muc_details">Group chat details</string>
     <string name="channel_details">Channel details</string>
@@ -52,7 +51,6 @@
     <string name="contact_blocked">Contact blocked</string>
     <string name="blocked">Blocked</string>
     <string name="remove_bookmark_text">Would you like to remove %s as a bookmark? Conversations with this bookmark will not be removed.</string>
-    <string name="register_account">Register new account on server</string>
     <string name="change_password_on_server">Change password on server</string>
     <string name="share_with">Share with…</string>
     <string name="start_conversation">Start conversation</string>
@@ -68,7 +66,6 @@
     <string name="delete">Delete</string>
     <string name="block">Block</string>
     <string name="unblock">Unblock</string>
-    <string name="save">Save</string>
     <string name="ok">OK</string>
     <string name="crash_report_title">%1$s has crashed</string>
     <string name="crash_report_message">Using your XMPP account to send in stack traces helps the ongoing development of %1$s.</string>
@@ -77,14 +74,10 @@
     <string name="problem_connecting_to_account">Could not connect to account</string>
     <string name="problem_connecting_to_accounts">Could not connect to multiple accounts</string>
     <string name="touch_to_fix">Tap to manage your accounts</string>
-    <string name="attach_file">Attach file</string>
     <string name="not_in_roster">Add this missing contact to your contact list?</string>
     <string name="add_contact">Add contact</string>
     <string name="send_failed">delivery failed</string>
     <string name="preparing_image">Getting ready to send image</string>
-    <string name="preparing_images">Getting ready to send images</string>
-    <string name="sharing_files_please_wait">Sharing files. Please wait…</string>
-    <string name="action_clear_history">Clear history</string>
     <string name="clear_conversation_history">Clear Conversation History</string>
     <string name="clear_histor_msg">Do you want to delete all messages in this conversation?\n\n<b>Warning:</b> This will not influence messages stored on other devices or servers.</string>
     <string name="delete_file_dialog">Delete file</string>
@@ -94,9 +87,6 @@
     <string name="send_unencrypted_message">Send unencrypted message</string>
     <string name="send_message">Send message</string>
     <string name="send_message_to_x">Send message to %s</string>
-    <string name="send_omemo_message">Send ARMORED encrypted message</string>
-    <string name="send_omemo_x509_message">Send v\\ARMORED encrypted message</string>
-    <string name="send_pgp_message">Send OpenPGP encrypted message</string>
     <string name="your_nick_has_been_changed">New nickname in use</string>
     <string name="send_unencrypted">Send unencrypted</string>
     <string name="decryption_failed">Decryption failed. Maybe you don’t have the proper private key.</string>
@@ -104,7 +94,6 @@
     <string name="openkeychain_required_long"><![CDATA[%1$s uses <b>OpenKeychain</b> to encrypt and decrypt messages and manage your public keys.<br><br>It is licensed under GPLv3+ and available on F-Droid and Google Play.<br><br><small>(Please restart %1$s afterwards.)</small>]]></string>
     <string name="restart">Restart</string>
     <string name="install">Install</string>
-    <string name="openkeychain_not_installed">Please install OpenKeychain</string>
     <string name="offering">offering…</string>
     <string name="waiting">waiting…</string>
     <string name="no_pgp_key">No OpenPGP Key found</string>
@@ -138,14 +127,12 @@
     <string name="bad_key_for_encryption">Bad key for encryption.</string>
     <string name="accept">Accept</string>
     <string name="error">An error has occurred</string>
-    <string name="recording_error">Error</string>
     <string name="your_account">Your account</string>
     <string name="send_presence_updates">Send presence updates</string>
     <string name="receive_presence_updates">Receive presence updates</string>
     <string name="ask_for_presence_updates">Ask for presence updates</string>
     <string name="attach_choose_picture">Choose picture</string>
     <string name="attach_take_picture">Take picture</string>
-    <string name="preemptively_grant">Preemptively grant subscription request</string>
     <string name="error_not_an_image_file">The file you selected is not an image</string>
     <string name="error_compressing_image">Could not convert image file</string>
     <string name="error_file_not_found">File not found</string>
@@ -177,9 +164,7 @@
     <string name="encryption_choice_pgp">OpenPGP</string>
     <string name="encryption_choice_omemo">ARMORED</string>
     <string name="mgmt_account_delete">Delete account</string>
-    <string name="mgmt_account_disable">Temporarily disable</string>
     <string name="mgmt_account_publish_avatar">Publish avatar</string>
-    <string name="mgmt_account_publish_pgp">Publish OpenPGP public key</string>
     <string name="unpublish_pgp">Remove OpenPGP public key</string>
     <string name="unpublish_pgp_message">Are you sure you want to remove your OpenPGP public key from your presence announcement?\nYour contacts will no longer be able to send you OpenPGP encrypted messages.</string>
     <string name="openpgp_has_been_published">OpenPGP public key published.</string>
@@ -217,14 +202,11 @@
     <string name="last_seen_days">last seen %d days ago</string>
     <string name="install_openkeychain">Encrypted message. Please install OpenKeychain to decrypt it.</string>
     <string name="openpgp_messages_found">New OpenPGP encrypted messages found</string>
-    <string name="openpgp_key_id">OpenPGP Key ID</string>
     <string name="omemo_fingerprint">ARMORED fingerprint</string>
     <string name="omemo_fingerprint_x509">v\\ARMORED fingerprint</string>
     <string name="omemo_fingerprint_selected_message">ARMORED fingerprint (message origin)</string>
     <string name="omemo_fingerprint_x509_selected_message">v\\ARMORED fingerprint (message origin)</string>
-    <string name="other_devices">Other devices</string>
     <string name="trust_omemo_fingerprints">Trust ARMORED Fingerprints</string>
-    <string name="fetching_keys">Fetching keys…</string>
     <string name="done">Done</string>
     <string name="decrypt">Decrypt</string>
     <string name="group_chats">Group chats</string>
@@ -249,12 +231,9 @@
     <string name="destroy_channel_dialog">Are you sure you want to destroy this public channel?\n\n<b>Warning:</b> The channel will be completely removed on the server.</string>
     <string name="could_not_destroy_room">Could not destroy group chat</string>
     <string name="could_not_destroy_channel">Could not destroy channel</string>
-    <string name="action_edit_subject">Edit group chat subject</string>
     <string name="topic">Topic</string>
     <string name="joining_conference">Joining group chat…</string>
     <string name="leave">Leave</string>
-    <string name="contact_added_you">Contact added you to contact list</string>
-    <string name="add_back">Add back</string>
     <string name="contact_has_read_up_to_this_point">%s has read up to this point</string>
     <string name="contacts_have_read_up_to_this_point">%s have read up to this point</string>
     <string name="contacts_and_n_more_have_read_up_to_this_point">%1$s +%2$d others have read up to this point</string>
@@ -270,7 +249,6 @@
     <string name="private_message">whispered</string>
     <string name="private_message_to">to %s</string>
     <string name="send_private_message_to">Send private message to %s</string>
-    <string name="connect">Connect</string>
     <string name="account_already_exists">This account already exists</string>
     <string name="next">Next</string>
     <string name="server_info_session_established">Session established</string>
@@ -294,9 +272,6 @@
     <string name="title_pref_quiet_hours_end_time">End time</string>
     <string name="title_pref_enable_quiet_hours">Enable quiet hours</string>
     <string name="pref_quiet_hours_summary">Silence Your Notifications for Undisturbed Moments.</string>
-    <string name="pref_expert_options_other">Other</string>
-    <string name="pref_autojoin">Synchronize bookmarks</string>
-    <string name="pref_autojoin_summary">Set “autojoin” flag when entering or leaving a MUC and react to modifications made by other clients.</string>
     <string name="toast_message_omemo_fingerprint">ARMORED fingerprint copied to clipboard</string>
     <string name="conference_banned">You are banned from this group chat</string>
     <string name="conference_members_only">This group chat is members only</string>
@@ -306,13 +281,10 @@
     <string name="conference_unknown_error">You are no longer in this group chat</string>
     <string name="conference_technical_problems">You left this group chat due to technical reasons</string>
     <string name="using_account">using account %s</string>
-    <string name="hosted_on">hosted on %s</string>
     <string name="checking_x">Checking %s on HTTP host</string>
     <string name="not_connected_try_again">You are not connected. Try again later</string>
     <string name="check_x_filesize">Check %s size</string>
     <string name="check_x_filesize_on_host">Check %1$s size on %2$s</string>
-    <string name="message_options">Message options</string>
-    <string name="quote">Quote</string>
     <string name="paste_as_quote">Paste as quote</string>
     <string name="copy_original_url">Copy original URL</string>
     <string name="send_again">Send again</string>
@@ -337,7 +309,6 @@
     <string name="restoring_backup">Restoring backup</string>
     <string name="notification_restored_backup_title">Your backup has been restored</string>
     <string name="notification_restored_backup_subtitle">Do not forget to enable the account.</string>
-    <string name="choose_file">Choose file</string>
     <string name="receiving_x_file">Receiving %1$s (%2$d%% completed)</string>
     <string name="download_x_file">Download %s</string>
     <string name="delete_x_file">Delete %s</string>
@@ -359,8 +330,6 @@
     <string name="no_conference_server_found">No group chat server found</string>
     <string name="conference_creation_failed">Could not create group chat</string>
     <string name="account_image_description">Account avatar</string>
-    <string name="copy_omemo_clipboard_description">Copy ARMORED fingerprint to clipboard</string>
-    <string name="regenerate_omemo_key">Regenerate ARMORED key</string>
     <string name="clear_other_devices">Clear devices</string>
     <string name="clear_other_devices_desc">Are you sure you want to clear all other devices from the ARMORED announcement? The next time your devices connect, they will reannounce themselves, but might not receive messages sent meanwhile.</string>
     <string name="error_no_keys_to_trust_server_error">There are no usable keys available for this contact.\nCould not fetch new keys from the server. Maybe there is something wrong with your contact’s server?</string>
@@ -382,7 +351,6 @@
     <string name="no_role">Offline</string>
     <string name="outcast">Outcast</string>
     <string name="member">Member</string>
-    <string name="advanced_mode">Advanced mode</string>
     <string name="grant_membership">Grant member privileges</string>
     <string name="remove_membership">Revoke member privileges</string>
     <string name="grant_admin_privileges">Grant admin privileges</string>
@@ -396,10 +364,8 @@
     <string name="ban_from_channel">Ban from channel</string>
     <string name="removing_from_public_conference">You are trying to remove %s from a public channel. The only way to do that is to ban that user forever.</string>
     <string name="ban_now">Ban now</string>
-    <string name="could_not_change_role">Could not change role of %s</string>
     <string name="conference_options">Private group chat configuration</string>
     <string name="channel_options">Public channel configuration</string>
-    <string name="members_only">Private, members only</string>
     <string name="non_anonymous">Make XMPP addresses visible to anyone</string>
     <string name="moderated">Make channel moderated</string>
     <string name="you_are_not_participating">You are not participating</string>
@@ -413,8 +379,6 @@
     <string name="pref_input_options">Input</string>
     <string name="pref_enter_is_send">Enter is send</string>
     <string name="pref_enter_is_send_summary">Use Enter key to send message. You can always use Ctrl+Enter to send message, even if this option is disabled.</string>
-    <string name="pref_display_enter_key">Show enter key</string>
-    <string name="pref_display_enter_key_summary">Change the emoticons key to an enter key</string>
     <string name="audio">audio</string>
     <string name="video">video</string>
     <string name="image">image</string>
@@ -440,10 +404,6 @@
     <string name="title_undo_swipe_out_conversation">Conversation closed</string>
     <string name="title_undo_swipe_out_group_chat">Left private group chat</string>
     <string name="title_undo_swipe_out_channel">Left public channel</string>
-    <string name="pref_dont_trust_system_cas_title">Don’t trust system CAs</string>
-    <string name="pref_dont_trust_system_cas_summary">All certificates must be manually approved</string>
-    <string name="pref_remove_trusted_certificates_title">Remove certificates</string>
-    <string name="pref_remove_trusted_certificates_summary">Delete manually approved certificates</string>
     <string name="toast_no_trusted_certs">No manually approved certificates</string>
     <string name="dialog_manage_certs_title">Remove certificates</string>
     <string name="dialog_manage_certs_positivebutton">Delete selection</string>
@@ -480,9 +440,6 @@
     <string name="pref_dnd_on_silent_mode_summary">When your phone is on silent mode, your status will automatically show as \'Busy\'.</string>
     <string name="pref_treat_vibrate_as_silent">Treat vibrate as silent mode</string>
     <string name="pref_treat_vibrate_as_dnd_summary">Show as Busy when device is on vibrate</string>
-    <string name="pref_show_connection_options">Extended connection settings</string>
-    <string name="pref_show_connection_options_summary">Show hostname and port settings when setting up an account</string>
-    <string name="hostname_example">xmpp.example.com</string>
     <string name="action_add_account_with_certificate">Login with certificate</string>
     <string name="unable_to_parse_certificate">Could not parse certificate</string>
     <string name="mam_prefs">Archiving preferences</string>
@@ -494,27 +451,16 @@
     <string name="certificate_chain_is_not_trusted">Untrusted certificate chain</string>
     <string name="jid_does_not_match_certificate">XMPP address does not match certificate</string>
     <string name="action_renew_certificate">Renew certificate</string>
-    <string name="error_fetching_omemo_key">Error fetching ARMORED key!</string>
-    <string name="verified_omemo_key_with_certificate">Verified ARMORED key with certificate!</string>
     <string name="device_does_not_support_certificates">Your device does not support the selection of client certificates!</string>
     <string name="pref_connection_options">Connection</string>
     <string name="pref_use_tor">Embrace Anonymity with Tor: The Onion Router</string>
     <string name="pref_use_tor_summary">Enhance Chat Security: Go Stealth with Tor\'s Tunnel Network for the Ultimate Experience.</string>
-    <string name="account_settings_hostname">Hostname</string>
-    <string name="account_settings_port">Port</string>
-    <string name="hostname_or_onion">Server- or .onion-address</string>
-    <string name="not_a_valid_port">This is not a valid port number</string>
-    <string name="not_valid_hostname">This is not a valid hostname</string>
     <!--    <string name="connected_accounts">%1$d of %2$d accounts connected</string>-->
     <plurals name="x_messages">
         <item quantity="one">%d message</item>
         <item quantity="other">%d messages</item>
     </plurals>
     <string name="load_more_messages">Load more messages</string>
-    <string name="shared_file_with_x">File shared with %s</string>
-    <string name="shared_image_with_x">Image shared with %s</string>
-    <string name="shared_images_with_x">Images shared with %s</string>
-    <string name="shared_text_with_x">Text shared with %s</string>
     <string name="no_storage_permission">Grant %1$s access to external storage</string>
     <string name="no_camera_permission">Grant %1$s access to the camera</string>
     <string name="sync_with_contacts">Synchronize with contacts</string>
@@ -532,19 +478,14 @@
     <string name="battery_optimizations_enabled_explained">Your device is employing heavy battery optimizations for %1$s which may lead to delayed notifications or even message loss.\nIt is recommended to disable them.</string>
     <string name="battery_optimizations_enabled_dialog">Your device is employing heavy battery optimizations for %1$s which may lead to delayed notifications or even message loss.\n\nYou will now be asked to disable them.</string>
     <string name="disable">Disable</string>
-    <string name="selection_too_large">The selected area is too large</string>
     <string name="no_accounts">(No activated accounts)</string>
     <string name="this_field_is_required">This field is required</string>
     <string name="correct_message">Correct message</string>
     <string name="send_corrected_message">Send corrected message</string>
     <string name="no_keys_just_confirm">You have already validated this persons fingerprint securely to confirm trust. By selecting “Done” you are just confirming that %s is part of this group chat.</string>
     <string name="this_account_is_disabled">You have disabled this account</string>
-    <string name="security_error_invalid_file_access">Security error: Invalid file access!</string>
     <string name="no_application_to_share_uri">No app found to share URI</string>
     <string name="share_uri_with">Share URI with…</string>
-    <string name="welcome_header" translatable="false">Join the Conversation</string>
-    <string name="welcome_header_quicksy" translatable="false">Have some Quick Conversations</string>
-    <string name="welcome_text_quicksy_static" translatable="false"><![CDATA[Quicksy is a spin off of the popular XMPP client Conversations with automatic contact discovery.<br><br>You sign up with your phone number and Quicksy will automatically—based on the phone numbers in your address book—suggest possible contacts to you.<br>Quicksy stores your contacts’ phone numbers to make suggestions about possible contacts who are already on Quicksy.<br>By signing up you agree to our <a href="https://quicksy.im/privacy.htm">Privacy Policy</a> and our <a href="https://quicksy.im/tos.htm">Terms &amp; Conditions</a>.]]></string>
     <string name="agree_and_continue">Agree and continue</string>
     <string name="magic_create_text">A guide is set up for account creation on conversations.im.\nWhen picking conversations.im as a provider you will be able to communicate with users of other providers by giving them your full XMPP address.</string>
     <string name="your_full_jid_will_be">Your full XMPP address will be: %s</string>
@@ -573,13 +514,6 @@
     <string name="pref_broadcast_last_activity">Publicize Utilization</string>
     <string name="pref_broadcast_last_activity_summary">Let your network know when you are using the Woooo app.</string>
     <string name="pref_privacy">Data Protection</string>
-    <string name="pref_theme_options">Theme</string>
-    <string name="pref_theme_options_summary">Select the color palette</string>
-    <string name="pref_theme_automatic">Automatic</string>
-    <string name="pref_theme_light">Light</string>
-    <string name="pref_theme_dark">Dark</string>
-    <string name="pref_use_green_background">Green Background</string>
-    <string name="pref_use_green_background_summary">Use green background for received messages</string>
     <string name="unable_to_connect_to_keychain">Could not connect to OpenKeychain</string>
     <string name="this_device_is_no_longer_in_use">This device is no longer in use</string>
     <string name="type_pc">Computer</string>
@@ -590,7 +524,6 @@
     <string name="payment_required">Payment required</string>
     <string name="missing_internet_permission">Grant permission to use the Internet</string>
     <string name="me">Me</string>
-    <string name="contact_asks_for_presence_subscription">Add this person to your contacts</string>
     <string name="allow">Allow</string>
     <string name="no_permission_to_access_x">No permission to access %s</string>
     <string name="remote_server_not_found">Remote server not found</string>
@@ -598,7 +531,6 @@
     <string name="unable_to_update_account">Could not update account</string>
     <string name="report_jid_as_spammer">Report this XMPP address for spamming.</string>
     <string name="pref_delete_omemo_identities">Delete ARMORED identities</string>
-    <string name="pref_delete_omemo_identities_summary">Regenerate your ARMORED keys. All your contacts will have to verify you again. Only use this as a last resort.</string>
     <string name="delete_selected_keys">Delete selected keys</string>
     <string name="error_publish_avatar_offline">You need to be connected to publish your avatar.</string>
     <string name="show_error_message">Show error message</string>
@@ -619,7 +551,6 @@
     <string name="share_as_http">Share as HTTP link</string>
     <string name="pref_blind_trust_before_verification">Smart Device Authorization</string>
     <string name="pref_blind_trust_before_verification_summary">Embrace New Devices from Non-Verified Contacts with Trust, while Requiring Manual Confirmation for New Devices from Verified Contacts.</string>
-    <string name="blindly_trusted_omemo_keys">Blindly trusted ARMORED keys, meaning they could be someone else or someone could have tapped in.</string>
     <string name="not_trusted">Untrusted</string>
     <string name="invalid_barcode">Invalid 2D barcode</string>
     <string name="pref_clean_cache_summary">Clean cache folder (used by camera app)</string>
@@ -631,8 +562,6 @@
     <string name="verifying_omemo_keys_trusted_source_account">You are about to verify the ARMORED keys of your own account. This is only secure if you followed this link from a trusted source where only you could have published this link.</string>
     <string name="continue_btn">Continue</string>
     <string name="verify_omemo_keys">Verify ARMORED keys</string>
-    <string name="show_inactive_devices">Show inactive</string>
-    <string name="hide_inactive_devices">Hide inactive</string>
     <string name="distrust_omemo_key">Distrust device</string>
     <string name="distrust_omemo_key_text">Are you sure you want to remove the verification of this device?\nThis device and messages from it will be marked as “Untrusted”.</string>
     <plurals name="seconds">
@@ -661,7 +590,6 @@
     </plurals>
     <string name="pref_automatically_delete_messages">Automated Message Deletion: Clearing Older Messages Based on Configuration</string>
     <string name="pref_automatically_delete_messages_description">Automatically delete messages older than the configured time frame from this device.</string>
-    <string name="encrypting_message">Encrypting message</string>
     <string name="not_fetching_history_retention_period">Not fetching messages due to local retention period.</string>
     <string name="transcoding_video">Compressing video</string>
     <string name="corresponding_conversations_closed">Corresponding conversations closed.</string>
@@ -676,27 +604,20 @@
     <string name="session_failure">Session failure</string>
     <string name="sasl_downgrade">Downgraded SASL mechanism</string>
     <string name="account_status_regis_web">Server requires registration on website</string>
-    <string name="open_website">Open website</string>
-    <string name="application_found_to_open_website">No app found to open website</string>
     <string name="pref_headsup_notifications">Heads-up Notifications</string>
     <string name="pref_headsup_notifications_summary">Show heads-up notifications</string>
     <string name="today">Today</string>
     <string name="yesterday">Yesterday</string>
-    <string name="pref_validate_hostname">Validate hostname with DNSSEC</string>
-    <string name="pref_validate_hostname_summary">Server certificates that contain the validated hostname are considered verified</string>
     <string name="certificate_does_not_contain_jid">Certificate does not contain a XMPP address</string>
     <string name="server_info_partial">partial</string>
     <string name="attach_record_video">Record video</string>
     <string name="copy_to_clipboard">Copy</string>
     <string name="message_copied_to_clipboard">Message copied to clipboard</string>
     <string name="message">Message</string>
-    <string name="private_messages_are_disabled">Private messages are disabled</string>
     <string name="huawei_protected_apps">Protected Apps</string>
     <string name="huawei_protected_apps_summary">To keep receiving notifications, even when the screen is turned off, you need to add Conversations to the list of protected apps.</string>
     <string name="mtm_accept_cert">Accept Unknown Certificate?</string>
     <string name="mtm_trust_anchor">The server certificate is not signed by a known Certificate Authority.</string>
-    <string name="mtm_accept_servername">Accept Mismatching Server Name?</string>
-    <string name="mtm_hostname_mismatch">Server could not authenticate as \&quot;%s\&quot;. The certificate is only valid for:</string>
     <string name="mtm_connect_anyway">Do you want to connect anyway?</string>
     <string name="mtm_cert_details">Certificate details:</string>
     <string name="once">Once</string>
@@ -733,7 +654,6 @@
     <string name="action_unfix_from_location">Unfix position</string>
     <string name="action_copy_location">Copy Location</string>
     <string name="action_share_location">Share Location</string>
-    <string name="action_directions">Directions</string>
     <string name="title_activity_share_location">Share location</string>
     <string name="title_activity_show_location">Show location</string>
     <string name="share">Share</string>
@@ -747,9 +667,7 @@
     <string name="pref_use_share_location_plugin_summary">Use the Share Location Plugin instead of the built-in map</string>
     <string name="copy_link">Copy web address</string>
     <string name="copy_jabber_id">Copy XMPP address</string>
-    <string name="p1_s3_filetransfer">HTTP File Sharing for S3</string>
     <!--    <string name="pref_start_search">Direct Search</string>-->
-    <string name="pref_start_search_summary">At ‘Start Conversation’ screen open keyboard and place cursor in search field</string>
     <string name="group_chat_avatar">Group chat avatar</string>
     <string name="host_does_not_support_group_chat_avatars">Host does not support group chat avatars</string>
     <string name="only_the_owner_can_change_group_chat_avatar">Only the owner can change group chat avatar</string>
@@ -757,7 +675,6 @@
     <string name="nickname">Nickname</string>
     <string name="group_chat_name">Name</string>
     <string name="providing_a_name_is_optional">Providing a name is optional</string>
-    <string name="create_dialog_group_chat_name">Group chat name</string>
     <string name="conference_destroyed">This group chat has been destroyed</string>
     <string name="unable_to_save_recording">Could not save recording</string>
     <string name="foreground_service_channel_name">Foreground service</string>
@@ -775,7 +692,6 @@
     <string name="silent_messages_channel_description">This notification group is used to display notifications that should not trigger any sound. For example when being active on another device (Grace Period).</string>
     <string name="delivery_failed_channel_name">Failed deliveries</string>
     <string name="pref_message_notification_settings">Message Alert Preferences</string>
-    <string name="pref_incoming_call_notification_settings">Incoming calls notification settings</string>
     <string name="pref_more_notification_settings_summary">Personalize Your Settings According to Your Preferences.</string>
     <string name="video_compression_channel_name">Video compression</string>
     <string name="view_media">View media</string>
@@ -789,50 +705,8 @@
     <string name="cancelled">cancelled</string>
     <string name="already_drafting_message">You are already drafting a message.</string>
     <string name="feature_not_implemented">Feature not implemented</string>
-    <string name="invalid_country_code">Invalid country code</string>
-    <string name="choose_a_country">Choose a country</string>
-    <string name="phone_number">phone number</string>
-    <string name="verify_your_phone_number">Verify your phone number</string>
-    <string name="enter_country_code_and_phone_number">Quicksy will send an SMS message (carrier charges may apply) to verify your phone number. Enter your country code and phone number:</string>
-    <string name="we_will_be_verifying"><![CDATA[We will be verifying the phone number<br/><br/><b>%s</b><br/><br/>Is this OK, or would you like to edit the number?]]></string>
-    <string name="not_a_valid_phone_number">%s is not a valid phone number.</string>
-    <string name="please_enter_your_phone_number">Please enter your phone number.</string>
-    <string name="search_countries">Search countries</string>
-    <string name="verify_x">Verify %s</string>
-    <string name="we_have_sent_you_an_sms_to_x"><![CDATA[We have sent you an SMS to <b>%s</b>.]]></string>
-    <string name="we_have_sent_you_another_sms">We have sent you another SMS with a 6 digit code.</string>
-    <string name="please_enter_pin_below">Please enter the 6 digit pin below.</string>
-    <string name="resend_sms">Resend SMS</string>
-    <string name="resend_sms_in">Resend SMS (%s)</string>
-    <string name="wait_x">Please wait (%s)</string>
     <string name="back">back</string>
-    <string name="possible_pin">Automatically pasted possible pin from clipboard.</string>
-    <string name="please_enter_pin">Please enter your 6 digit pin.</string>
-    <string name="abort_registration_procedure">Are you sure you want to abort the registration procedure?</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="verifying">Verifying…</string>
-    <string name="requesting_sms">Requesting SMS…</string>
-    <string name="incorrect_pin">The pin you have entered is incorrect.</string>
-    <string name="pin_expired">The pin we have sent you has expired.</string>
-    <string name="unknown_api_error_network">Unknown network error.</string>
-    <string name="unknown_api_error_response">Unknown response from server.</string>
-    <string name="unable_to_connect_to_server">Could not connect to server.</string>
-    <string name="unable_to_establish_secure_connection">Could not establish secure connection.</string>
-    <string name="unable_to_find_server">Could not find server.</string>
-    <string name="something_went_wrong_processing_your_request">Something went wrong processing your request.</string>
-    <string name="invalid_user_input">Invalid user input</string>
-    <string name="temporarily_unavailable">Temporarily unavailable. Try again later.</string>
-    <string name="no_network_connection">No network connection.</string>
-    <string name="try_again_in_x">Please try again in %s</string>
-    <string name="rate_limited">You are rate limited</string>
-    <string name="too_many_attempts">Too many attempts</string>
-    <string name="the_app_is_out_of_date">You are using an out of date version of this app.</string>
-    <string name="update">Update</string>
-    <string name="logged_in_with_another_device">This phone number is currently logged in with another device.</string>
-    <string name="enter_your_name_instructions">Please enter your name to let people, who don’t have you in their address books, know who you are.</string>
     <string name="your_name">Your name</string>
-    <string name="enter_your_name">Enter your name</string>
     <string name="no_name_set_instructions">Edit your display name.</string>
     <string name="reject_request">Reject request</string>
     <string name="install_orbot">Install Orbot</string>
@@ -851,8 +725,6 @@
     <string name="unable_to_restore_backup">Could not restore backup.</string>
     <string name="unable_to_decrypt_backup">Could not decrypt backup. Is the password correct?</string>
     <string name="backup_channel_name">Backup &amp; Restore</string>
-    <string name="enter_jabber_id">Enter XMPP address</string>
-    <string name="create_group_chat">Create group chat</string>
     <string name="join_public_channel">Join public channel</string>
     <string name="create_private_group_chat">Create private group chat</string>
     <string name="create_public_channel">Create public channel</string>
@@ -884,12 +756,8 @@
     <string name="search_channels">Search channels</string>
     <string name="channel_discovery_opt_in_title">Possible privacy violation!</string>
     <string name="channel_discover_opt_in_message"><![CDATA[Channel discovery uses a third party service called <a href="https://search.jabber.network">search.jabber.network</a>.<br><br>Using this feature will transmit your IP address and search terms to that service. See their <a href="https://search.jabber.network/privacy">Privacy Policy</a> for more information.]]></string>
-    <string name="i_already_have_an_account">I already have an account</string>
     <string name="add_existing_account">Add existing account</string>
     <string name="register_new_account">Register new account</string>
-    <string name="this_looks_like_a_domain">This looks like a domain address</string>
-    <string name="add_anway">Add anyway</string>
-    <string name="this_looks_like_channel">This looks like a channel address</string>
     <string name="share_backup_files">Share backup files</string>
     <string name="conversations_backup">Conversations backup</string>
     <string name="event">Event</string>
@@ -900,11 +768,6 @@
     <string name="unable_to_perform_this_action">Could not perform this action</string>
     <string name="open_join_dialog">Join public channel…</string>
     <string name="sharing_application_not_grant_permission">The sharing app did not grant permission to access this file.</string>
-    <string name="group_chats_and_channels"><![CDATA[Group Chats & Channels]]></string>
-    <string name="jabber_network">jabber.network</string>
-    <string name="local_server">Local server</string>
-    <string name="pref_channel_discovery_summary">Most users should choose ‘jabber.network’ for better suggestions from the entirety of the public XMPP ecosystem.</string>
-    <string name="pref_channel_discovery">Channel discovery method</string>
     <string name="backup">Backup</string>
     <string name="category_about">About</string>
     <string name="please_enable_an_account">Please enable an account</string>
@@ -965,13 +828,9 @@
     <string name="remove_from_favorites">Unpin from top</string>
     <string name="gpx_track">GPX track</string>
     <string name="could_not_correct_message">Could not correct message</string>
-    <string name="search_all_conversations">All conversations</string>
-    <string name="search_this_conversation">This conversation</string>
     <string name="your_avatar">Your avatar</string>
     <string name="avatar_for_x">Avatar for %s</string>
     <string name="encrypted_with_omemo">Encrypted with ARMORED</string>
-    <string name="encrypted_with_openpgp">Encrypted with OpenPGP</string>
-    <string name="not_encrypted">Not encrypted</string>
     <string name="exit">Exit</string>
     <string name="record_voice_mail">Record voice mail</string>
     <string name="play_audio">Play audio</string>
@@ -986,7 +845,6 @@
         <item quantity="other">Some messages could not be delivered</item>
     </plurals>
     <string name="failed_deliveries">Failed deliveries</string>
-    <string name="more_options">More options</string>
     <string name="no_application_found">No application found</string>
     <string name="invite_to_app">Invite to Conversations</string>
     <string name="unable_to_parse_invite">Unable to parse invite</string>
@@ -1002,26 +860,13 @@
     <string name="audio_video_disabled_tor">Calls are disabled when using Tor</string>
     <string name="switch_to_video">Switch to video</string>
     <string name="reject_switch_to_video">Reject switch to video request</string>
-    <string name="unified_push_distributor">UnifiedPush Distributor</string>
-    <string name="pref_up_push_account_title">XMPP Account</string>
-    <string name="pref_up_push_account_summary">The account through which push messages will be received.</string>
-    <string name="pref_up_push_server_title">Push Server</string>
-    <string name="pref_up_push_server_summary">A user-chosen push server to relay push messages via XMPP to your device.</string>
     <string name="no_account_deactivated">None (deactivated)</string>
     <string name="decline">Decline</string>
     <string name="delete_from_server">Remove account from server</string>
     <string name="could_not_delete_account_from_server">Could not delete account from server</string>
     <string name="don_t_have_an_account_sign_up">Don\'t have an account? Sign Up</string>
     <string name="forgot_password">Forgot Password ?</string>
-    <string name="unprotected">Unprotected</string>
-    <string name="stealth_mode">Armored Chat</string>
-    <string name="private_mode">Private Mode</string>
-    <string name="attach_image">Attach Image</string>
-    <string name="capture_video">Capture Video</string>
-    <string name="record_audio">Record Audio</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="armored_chat">Armored Chat</string>
     <string name="stealth_net">Stealth net</string>
     <string name="include_in_your_contact_list">Include in your contact list.</string>
     <string name="show_current_status">Show Current Status</string>
@@ -1046,15 +891,9 @@
     <!-- Meeting Device Preferences -->
     <string name="camera">camera</string>
 
-    <string name="connection">connection</string>
     <string name="setting">setting</string>
     <string name="title_activity_room_meet">Room</string>
-    <string name="title_activity_settings_meet">Settings</string>
     <string name="invite_link_copied">Room link copied to the clipboard</string>
-    <string name="audio_producer_copied">Copy audio producer id to clipboard</string>
-    <string name="audio_consumer_copied">Copy audio consumer id to clipboard</string>
-    <string name="video_producer_copied">Copy video producer id to clipboard</string>
-    <string name="video_consumer_copied">Copy video consumer id to clipboard</string>
 
     <string-array name="Currency">
         <item>USD</item>
@@ -1062,11 +901,23 @@
         <item>EURO</item>
     </string-array>
     <string name="title_activity_home">HomeActivity</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="connection_label">Connection result: </string>
+    <string name="session_label">SessionId: </string>
+    <string name="sign_label">Sign result: </string>
+    <string name="send_label">Transaction result: </string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="dapp_actions_label">Dapp Actions</string>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="clear_session">Clear Session</string>
+    <string name="sign">Sign Message</string>
+    <string name="send">Send Transaction</string>
+    <string name="switch_chain">Switch Chain</string>
+    <string name="add_chain">Add Chain</string>
 
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
@@ -1074,4 +925,8 @@
 
     <string name="meeting_drawer_open">open</string>
     <string name="meeting_drawer_close">close</string>
+
+
+
+
 </resources>

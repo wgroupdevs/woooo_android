@@ -39,6 +39,7 @@ import eu.siacs.conversations.entities.Message;
 import eu.siacs.conversations.entities.MucOptions;
 import eu.siacs.conversations.entities.RawBlockable;
 import eu.siacs.conversations.entities.Room;
+import eu.siacs.conversations.http.model.wallet.CryptoNetwork;
 import eu.siacs.conversations.utils.UIHelper;
 import eu.siacs.conversations.xmpp.Jid;
 import eu.siacs.conversations.xmpp.OnAdvancedStreamFeaturesLoaded;
@@ -86,6 +87,7 @@ public class AvatarService implements OnAdvancedStreamFeaturesLoaded {
 		} else if (avatarable instanceof Room) {
 			return get((Room) avatarable, size, cachedOnly);
 		}
+
 		throw new AssertionError("AvatarService does not know how to generate avatar from "+avatarable.getClass().getName());
 
 	}

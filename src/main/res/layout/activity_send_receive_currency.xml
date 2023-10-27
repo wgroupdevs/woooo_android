@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/_15sdp"
+    tools:context=".ui.wallet.SendReceiveCurrencyActivity">
+
+    <!--        Top back arrow with label-->
+
+    <LinearLayout
+        android:id="@+id/backArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_30sdp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/back_icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/_2sdp"
+            android:text="Back"
+            android:textAppearance="@style/TextAppearance.Conversations.Title"
+
+            />
+
+    </LinearLayout>
+
+    <!--        Divider-->
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:src="@drawable/divider_ic" />
+
+
+    <!--    Body-->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/chain_ic"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_60sdp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/_20sdp"/>
+
+            <TextView
+                android:id="@+id/balanceTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="Your Balance "
+                android:textAppearance="@style/TextAppearance.Conversations.Title" />
+
+
+            <!--        send-receive-->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:background="@drawable/bg_border"
+                android:orientation="horizontal"
+
+                >
+
+
+                <LinearLayout
+                    android:id="@+id/send_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/button"
+                    android:paddingHorizontal="@dimen/_25sdp"
+                    android:paddingVertical="@dimen/_10sdp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Send"
+                        android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/receive_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_border"
+                    android:paddingHorizontal="@dimen/_15sdp"
+                    android:paddingVertical="@dimen/_10sdp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Receive"
+                        android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+            <!--        Receive Currency View-->
+
+            <LinearLayout
+                android:id="@+id/receive_currency_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/wallet_address_qr_code"
+                    android:layout_width="@dimen/_200sdp"
+                    android:layout_height="@dimen/_200sdp"
+
+                    />
+
+                <TextView
+                    android:id="@+id/walletAddressTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:textAppearance="@style/TextAppearance.Conversations.Caption" />
+
+                <Button
+                    android:id="@+id/copy_address_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:background="@drawable/button"
+                    android:enabled="true"
+                    android:padding="10dp"
+                    android:text="Copy Address"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="17sp" />
+
+
+            </LinearLayout>
+
+
+            <!--       Send Currency View-->
+            <LinearLayout
+                android:id="@+id/send_currency_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/_10sdp">
+
+                <!--                Address EDITTEXT-->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:text="Address"
+                    android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+
+                <eu.siacs.conversations.ui.widget.TextInputEditText
+                    android:id="@+id/address_et"
+                    style="@style/Widget.Conversations.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:background="@drawable/textfield_background"
+                    android:hint="0xf9ece............................."
+                    android:paddingVertical="@dimen/_10sdp"
+                    android:paddingStart="@dimen/_5sdp"
+                    android:textColor="@color/white" />
+
+                <!--                AMOUNT EDITTEXT-->
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:text="Amount"
+                    android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+
+                <eu.siacs.conversations.ui.widget.TextInputEditText
+                    android:id="@+id/amount_et"
+                    style="@style/Widget.Conversations.EditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:background="@drawable/textfield_background"
+                    android:hint="000000"
+                    android:inputType="numberDecimal"
+                    android:paddingVertical="@dimen/_10sdp"
+                    android:paddingStart="@dimen/_5sdp"
+                    android:textColor="@color/white" />
+
+
+                <Button
+                    android:id="@+id/send_currency_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:background="@drawable/button"
+                    android:enabled="true"
+                    android:padding="10dp"
+                    android:text="Send"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="17sp" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
