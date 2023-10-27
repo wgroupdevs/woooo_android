@@ -77,7 +77,7 @@
     </queries>
 
     <application
-        android:name=".WooApplication"
+        android:name="eu.siacs.conversations.WooApplication"
         android:allowBackup="false"
         android:appCategory="social"
         android:hardwareAccelerated="true"
@@ -91,28 +91,28 @@
         tools:replace="android:label"
         tools:targetApi="q">
         <activity
-            android:name=".ui.MiningActivity"
+            android:name="eu.siacs.conversations.ui.MiningActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.wallet.SendReceiveCurrencyActivity"
+            android:name="eu.siacs.conversations.ui.wallet.SendReceiveCurrencyActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.wallet.WalletTransactionActivity"
+            android:name="eu.siacs.conversations.ui.wallet.WalletTransactionActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.auth.OTPVerificationActivity"
+            android:name="eu.siacs.conversations.ui.auth.OTPVerificationActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.auth.SignUpActivity"
+            android:name="eu.siacs.conversations.ui.auth.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.auth.ForgotPasswordActivity"
+            android:name="eu.siacs.conversations.ui.auth.ForgotPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.auth.ResetPasswordActivity"
+            android:name="eu.siacs.conversations.ui.auth.ResetPasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.HomeActivity"
+            android:name="eu.siacs.conversations.ui.HomeActivity"
             android:exported="false"
             android:label="@string/title_activity_home"
             android:theme="@style/ConversationsTheme.NoActionBar" />
@@ -124,7 +124,7 @@
         <service android:name=".services.XmppConnectionService" />
 
         <receiver
-            android:name=".services.EventReceiver"
+            android:name="eu.siacs.conversations.services.EventReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -134,7 +134,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".services.UnifiedPushDistributor"
+            android:name="eu.siacs.conversations.services.UnifiedPushDistributor"
             android:enabled="false"
             android:exported="true">
             <intent-filter>
@@ -152,7 +152,7 @@
         </receiver>
 
         <activity
-            android:name=".ui.MainActivity"
+            android:name="eu.siacs.conversations.ui.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -164,20 +164,20 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.ShareLocationActivity"
+            android:name="eu.siacs.conversations.ui.ShareLocationActivity"
             android:label="@string/title_activity_share_location" />
         <activity
-            android:name=".ui.SearchActivity"
+            android:name="eu.siacs.conversations.ui.SearchActivity"
             android:label="@string/search_messages" />
         <activity
-            android:name=".ui.RecordingActivity"
+            android:name="eu.siacs.conversations.ui.RecordingActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/ConversationsTheme.Dialog" />
         <activity
-            android:name=".ui.ShowLocationActivity"
+            android:name="eu.siacs.conversations.ui.ShowLocationActivity"
             android:label="@string/title_activity_show_location" />
         <activity
-            android:name=".ui.ConversationActivity"
+            android:name="eu.siacs.conversations.ui.ConversationActivity"
             android:exported="true"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -186,19 +186,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.ConversationsActivity"
+            android:name="eu.siacs.conversations.ui.ConversationsActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:minWidth="300dp"
             android:minHeight="300dp"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".ui.ScanActivity"
+            android:name="eu.siacs.conversations.ui.ScanActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ConversationsTheme.FullScreen"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".ui.UriHandlerActivity"
+            android:name="eu.siacs.conversations.ui.UriHandlerActivity"
             android:exported="true"
             android:label="@string/app_name">
             <intent-filter>
@@ -238,7 +238,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.StartConversationActivity"
+            android:name="eu.siacs.conversations.ui.StartConversationActivity"
             android:exported="true"
             android:label="@string/title_activity_start_conversation"
             android:launchMode="singleTop">
@@ -247,7 +247,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.SettingsActivity"
+            android:name="eu.siacs.conversations.ui.SettingsActivity"
             android:exported="true"
             android:label="@string/title_activity_settings">
             <intent-filter>
@@ -257,16 +257,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.ChooseContactActivity"
+            android:name="eu.siacs.conversations.ui.ChooseContactActivity"
             android:label="@string/title_activity_choose_contact" />
         <activity
-            android:name=".ui.BlocklistActivity"
+            android:name="eu.siacs.conversations.ui.BlocklistActivity"
             android:label="@string/title_activity_block_list" />
         <activity
-            android:name=".ui.ChangePasswordActivity"
+            android:name="eu.siacs.conversations.ui.ChangePasswordActivity"
             android:label="@string/change_password_on_server" />
         <activity
-            android:name=".ui.ChooseAccountForProfilePictureActivity"
+            android:name="eu.siacs.conversations.ui.ChooseAccountForProfilePictureActivity"
             android:enabled="false"
             android:exported="true"
             android:label="@string/choose_account">
@@ -279,30 +279,30 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.ShareViaAccountActivity"
+            android:name="eu.siacs.conversations.ui.ShareViaAccountActivity"
             android:label="@string/title_activity_share_via_account"
             android:launchMode="singleTop" />
         <activity
-            android:name=".ui.EditAccountActivity"
+            android:name="eu.siacs.conversations.ui.EditAccountActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name=".ui.ConferenceDetailsActivity"
+            android:name="eu.siacs.conversations.ui.ConferenceDetailsActivity"
             android:label="@string/action_muc_details"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".ui.ContactDetailsActivity"
+            android:name="eu.siacs.conversations.ui.ContactDetailsActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".ui.PublishProfilePictureActivity"
+            android:name="eu.siacs.conversations.ui.PublishProfilePictureActivity"
             android:label="@string/mgmt_account_publish_avatar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".ui.PublishGroupChatProfilePictureActivity"
+            android:name="eu.siacs.conversations.ui.PublishGroupChatProfilePictureActivity"
             android:label="@string/group_chat_avatar" />
         <activity
-            android:name=".ui.ShareWithActivity"
+            android:name="eu.siacs.conversations.ui.ShareWithActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:launchMode="singleTop">
@@ -329,11 +329,11 @@
                 android:value="eu.siacs.conversations.services.ContactChooserTargetService" />
         </activity>
         <activity
-            android:name=".ui.TrustKeysActivity"
+            android:name="eu.siacs.conversations.ui.TrustKeysActivity"
             android:label="@string/trust_omemo_fingerprints"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".ui.AboutActivity"
+            android:name="eu.siacs.conversations.ui.AboutActivity"
             android:parentActivityName=".ui.SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -344,11 +344,11 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".ui.MemorizingActivity" />
         <activity
-            android:name=".ui.MediaBrowserActivity"
+            android:name="eu.siacs.conversations.ui.MediaBrowserActivity"
             android:label="@string/media_browser" />
 
-        <service android:name=".services.ExportBackupService" />
-        <service android:name=".services.ImportBackupService" />
+        <service android:name="eu.siacs.conversations.services.ExportBackupService" />
+        <service android:name="eu.siacs.conversations.services.ImportBackupService" />
         <service
             android:name=".services.ContactChooserTargetService"
             android:exported="true"
@@ -368,13 +368,13 @@
                 android:resource="@xml/file_paths" />
         </provider>
         <provider
-            android:name=".services.BarcodeProvider"
+            android:name="eu.siacs.conversations.services.BarcodeProvider"
             android:authorities="${applicationId}.barcodes"
             android:exported="false"
             android:grantUriPermissions="true" />
 
         <activity
-            android:name=".ui.ShortcutActivity"
+            android:name="eu.siacs.conversations.ui.ShortcutActivity"
             android:exported="true"
             android:label="@string/contact">
             <intent-filter>
@@ -382,13 +382,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.MucUsersActivity"
+            android:name="eu.siacs.conversations.ui.MucUsersActivity"
             android:label="@string/group_chat_members" />
         <activity
-            android:name=".ui.ChannelDiscoveryActivity"
+            android:name="eu.siacs.conversations.ui.ChannelDiscoveryActivity"
             android:label="@string/discover_channels" />
         <activity
-            android:name=".ui.RtpSessionActivity"
+            android:name="eu.siacs.conversations.ui.RtpSessionActivity"
             android:autoRemoveFromRecents="true"
             android:launchMode="singleInstance"
             android:supportsPictureInPicture="true" /> <!-- MEETING -->

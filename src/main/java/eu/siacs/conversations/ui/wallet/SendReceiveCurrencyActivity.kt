@@ -13,7 +13,6 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import dagger.hilt.android.AndroidEntryPoint
 import eu.siacs.conversations.R
 import eu.siacs.conversations.databinding.ActivitySendReceiveCurrencyBinding
 import eu.siacs.conversations.http.model.wallet.Currency

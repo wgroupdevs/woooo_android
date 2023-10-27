@@ -3,17 +3,13 @@ package eu.siacs.conversations.ui.wallet
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import eu.siacs.conversations.databinding.ActivityWalletTransactionBinding
 import eu.siacs.conversations.http.model.wallet.Transaction
 import eu.siacs.conversations.http.model.wallet.TransactionAPIModel
 import eu.siacs.conversations.http.services.BaseModelAPIResponse
 import eu.siacs.conversations.http.services.WooAPIService
 import eu.siacs.conversations.ui.MainActivity.Companion.account
-import eu.siacs.conversations.ui.WalletMainFragment
 import eu.siacs.conversations.ui.adapter.WalletTransactionAdapter
-import okhttp3.internal.notify
 
 class WalletTransactionActivity : AppCompatActivity(), WooAPIService.OnGetTransactionPiResult {
 

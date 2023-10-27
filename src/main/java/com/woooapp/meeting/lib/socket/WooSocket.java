@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.WorkerThread;
 
@@ -77,7 +78,6 @@ public class WooSocket {
     private boolean mConnected = false;
     private Device mMediaSoupDevice;
     private SendTransport mSendTransport;
-    //    private RecvTransport mRecvTransport;
     private final Map<String, RecvTransport> mRecvTransports = new HashMap<>();
     private AudioTrack mLocalAudioTrack;
     private VideoTrack mLocalVideoTrack;
@@ -250,6 +250,7 @@ public class WooSocket {
     /**
      * @return
      */
+    @Nullable
     public Socket getSocket() {
         return this.mSocket;
     }
@@ -257,6 +258,7 @@ public class WooSocket {
     /**
      * @return
      */
+    @Nullable
     public String getSocketId() {
         return mSocketId;
     }
@@ -481,7 +483,11 @@ public class WooSocket {
                                                     try {
                                                         JSONObject peer = new JSONObject();
                                                         peer.put("id", producerSockId);
-                                                        peer.put("displayName", finalUsername.isEmpty() ? "" : finalUsername);
+                                                        if (finalUsername != null) {
+                                                            peer.put("displayName", finalUsername.isEmpty() ? "" : finalUsername);
+                                                        } else {
+                                                            peer.put("displayName", "?");
+                                                        }
                                                         peer.put("device", null);
                                                         mStore.addPeer(producerSockId, peer);
                                                         WooEvents.getInstance().notify(WooEvents.EVENT_NEW_PEER_JOINED, finalUsername.isEmpty() ? "" : finalUsername);
@@ -639,7 +645,11 @@ public class WooSocket {
                                                     try {
                                                         JSONObject peer = new JSONObject();
                                                         peer.put("id", producerSockId);
-                                                        peer.put("displayName", finalUsername.isEmpty() ? "" : finalUsername);
+                                                        if (finalUsername != null) {
+                                                            peer.put("displayName", finalUsername.isEmpty() ? "" : finalUsername);
+                                                        } else {
+                                                            peer.put("displayName", "?");
+                                                        }
                                                         peer.put("device", null);
                                                         mStore.addPeer(producerSockId, peer);
                                                         WooEvents.getInstance().notify(WooEvents.EVENT_NEW_PEER_JOINED, finalUsername.isEmpty() ? "" : finalUsername);

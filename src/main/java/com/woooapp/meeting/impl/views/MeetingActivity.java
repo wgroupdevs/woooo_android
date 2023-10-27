@@ -237,13 +237,15 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
         this.buttonAI.setOnClickListener(view -> {
             View contentView = LayoutInflater.from(this).inflate(R.layout.layout_bottom_sheet_translation, null);
-            Button buttonTextTrans = contentView.findViewById(R.id.buttonTransSheetText);
+            View buttonTextTrans = contentView.findViewById(R.id.buttonTransSheetText);
+            ImageView ivText = contentView.findViewById(R.id.ivText);
+            ImageView ivVoice = contentView.findViewById(R.id.ivVoice);
             if (mMeetingClient.isTextTranslationOn()) {
-                buttonTextTrans.setTextColor(Color.WHITE);
+                ivText.setVisibility(View.VISIBLE);
             } else {
-                buttonTextTrans.setTextColor(Color.BLACK);
+                ivText.setVisibility(View.GONE);
             }
-            Button buttonVoiceTrans = contentView.findViewById(R.id.buttonTransSheetVoice);
+            View buttonVoiceTrans = contentView.findViewById(R.id.buttonTransSheetVoice);
             Button buttonCancel = contentView.findViewById(R.id.buttonTransSheetCancel);
 
             BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.SheetDialog);
@@ -251,7 +253,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             dialog.show();
 
             buttonTextTrans.setOnClickListener(v -> {
-                buttonTextTrans.setTextColor(Color.WHITE);
                 if (mMeetingClient != null) {
                     mMeetingClient.setTextTranslation(!mMeetingClient.isTextTranslationOn());
                     if (mMeetingClient.isTextTranslationOn()) {
@@ -392,11 +393,12 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         this.meetingName = getIntent().getStringExtra("meetingName");
         if (meetingName != null) {
             if (meetingName.isEmpty()) {
-                meetingName = "Droid-" + Utils.getRandomString(4);
+                meetingName = Utils.getRandomString(4);
             }
         } else {
-            meetingName = "Droid-" + Utils.getRandomString(4);
+            meetingName = Utils.getRandomString(4);
         }
+        meetingName = "WooooDroid-" + meetingName;
         Log.d(TAG, "<< MEETING ID [" + mMeetingId + "]");
         if (!joining) {
             CreateMeetingBody.Admin admin1 = new CreateMeetingBody.Admin();
@@ -794,6 +796,12 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                             Log.d(TAG, "Pages Size >>> " + pageList.size());
                             peersPagerAdapter.replaceFragments(pageFragments, pageList);
                             updatePageControl(0);
+
+                            if (pageFragments.size() > 1) {
+                                createPageControl(0);
+                            } else {
+                                hidePageControl();
+                            }
 
 //                            if (mBinding.meetingViewPager.findViewWithTag(pageList.get(0).getPageNo()) != null) {
 //                                peersPagerAdapter.notifyDataSetChanged();
@@ -1347,11 +1355,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private void showMembersSheet() {
         try {
             List<Member> members = new LinkedList<>();
-//            if (roomData.getAdmins() != null) {
-//                for (RoomData.Admin admin : roomData.getAdmins()) {
-//                    members.add(new Member(null, admin.getUsername(), admin.getPicture(), MeetingClient.Role.ADMIN));
-//                }
-//            }
             if (roomData.getMembers() != null) {
                 for (RoomData.Member member : roomData.getMembers()) {
                     members.add(new Member(member.getAccountUniqueId(),
@@ -1449,16 +1452,36 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         }
     }
 
+    private void createPageControl(int selectedPosition) {
+        pageControlLayout.removeAllViews();
+        if (pageFragments.size() > 1) {
+            for (int i = 0; i < pageFragments.size(); i++) {
+                pageControlLayout.addView(createNewPageControl(i == selectedPosition, i + 1),
+                        (i == selectedPosition) ? getSelectedPageControlParams() : getUnSelectedPageControlParams());
+            }
+        }
+    }
+
+    private void hidePageControl() {
+        pageControlLayout.removeAllViews();
+    }
+
     /**
      *
      * @param selectedPosition
      */
     private void updatePageControl(int selectedPosition) {
-        pageControlLayout.removeAllViews();
        if (pageFragments.size() > 1) {
            for (int i = 0; i < pageFragments.size(); i++) {
-                pageControlLayout.addView(createNewPageControl(i == selectedPosition, i + 1),
-                        (i == selectedPosition) ? getSelectedPageControlParams() : getUnSelectedPageControlParams());
+               if (pageControlLayout.getChildAt(i) != null) {
+                   if (i == selectedPosition) {
+                       if (pageControlLayout.getChildAt(i) != null) {
+                           pageControlLayout.getChildAt(i).setLayoutParams(getSelectedPageControlParams());
+                       }
+                   } else {
+                       pageControlLayout.getChildAt(i).setLayoutParams(getUnSelectedPageControlParams());
+                   }
+               }
            }
         }
     }

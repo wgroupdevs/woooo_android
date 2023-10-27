@@ -12,29 +12,68 @@
         android:orientation="vertical"
         android:padding="20sp">
 
-        <Button
+        <RelativeLayout
             android:id="@+id/buttonTransSheetText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/blue_primary_transparent"
             android:foreground="?attr/selectableItemBackground"
-            android:src="@drawable/ic_check_circle_34"
-            android:text="Text Translation"
-            android:textColor="@color/black" />
+            android:padding="10sp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_check_circle_34"
+                android:text="Text Translation"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_centerHorizontal="true"/>
+
+            <ImageView
+                android:id="@+id/ivText"
+                android:layout_width="wrap_content"
+                android:layout_height="26sp"
+                android:src="@drawable/ic_check_circle_white_34"
+                android:layout_alignParentRight="true"
+                android:visibility="gone"
+                />
+
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1sp"
             android:background="@color/white" />
 
-        <Button
+        <RelativeLayout
             android:id="@+id/buttonTransSheetVoice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/blue_primary_transparent"
             android:foreground="?attr/selectableItemBackground"
-            android:text="Voice Translation"
-            android:textColor="@color/black" />
+            android:padding="10sp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_check_circle_34"
+                android:text="Voice Translation"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_centerHorizontal="true"/>
+
+            <ImageView
+                android:id="@+id/ivVoice"
+                android:layout_width="wrap_content"
+                android:layout_height="26sp"
+                android:src="@drawable/ic_check_circle_white_34"
+                android:layout_alignParentRight="true"
+                android:visibility="gone"
+                />
+
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
