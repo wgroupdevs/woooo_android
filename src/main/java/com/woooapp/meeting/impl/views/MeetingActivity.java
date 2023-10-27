@@ -1355,11 +1355,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private void showMembersSheet() {
         try {
             List<Member> members = new LinkedList<>();
-//            if (roomData.getAdmins() != null) {
-//                for (RoomData.Admin admin : roomData.getAdmins()) {
-//                    members.add(new Member(null, admin.getUsername(), admin.getPicture(), MeetingClient.Role.ADMIN));
-//                }
-//            }
             if (roomData.getMembers() != null) {
                 for (RoomData.Member member : roomData.getMembers()) {
                     members.add(new Member(member.getAccountUniqueId(),
