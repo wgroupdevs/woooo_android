@@ -483,7 +483,11 @@ public class WooSocket {
                                                     try {
                                                         JSONObject peer = new JSONObject();
                                                         peer.put("id", producerSockId);
-                                                        peer.put("displayName", finalUsername.isEmpty() ? "" : finalUsername);
+                                                        if (finalUsername != null) {
+                                                            peer.put("displayName", finalUsername.isEmpty() ? "" : finalUsername);
+                                                        } else {
+                                                            peer.put("displayName", "?");
+                                                        }
                                                         peer.put("device", null);
                                                         mStore.addPeer(producerSockId, peer);
                                                         WooEvents.getInstance().notify(WooEvents.EVENT_NEW_PEER_JOINED, finalUsername.isEmpty() ? "" : finalUsername);
@@ -641,7 +645,11 @@ public class WooSocket {
                                                     try {
                                                         JSONObject peer = new JSONObject();
                                                         peer.put("id", producerSockId);
-                                                        peer.put("displayName", finalUsername.isEmpty() ? "" : finalUsername);
+                                                        if (finalUsername != null) {
+                                                            peer.put("displayName", finalUsername.isEmpty() ? "" : finalUsername);
+                                                        } else {
+                                                            peer.put("displayName", "?");
+                                                        }
                                                         peer.put("device", null);
                                                         mStore.addPeer(producerSockId, peer);
                                                         WooEvents.getInstance().notify(WooEvents.EVENT_NEW_PEER_JOINED, finalUsername.isEmpty() ? "" : finalUsername);

@@ -15,7 +15,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black"
+        android:background="@color/blue_primaryDarker"
         >
 
         <org.webrtc.SurfaceViewRenderer
@@ -33,6 +33,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:gravity="center"
+            android:visibility="gone"
             bind:edias_render_empty="@{wooPeerViewProps.videoTrack}">
 
             <ImageView

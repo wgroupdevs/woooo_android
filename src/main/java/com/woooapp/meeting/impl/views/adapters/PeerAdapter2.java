@@ -137,6 +137,13 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
                 peerProp.connect(mLifecycleOwner, p3.getId());
                 vhm.peerView.setProps(peerProp, mMeetingClient);
                 vhm.peerView.setName(p3.getDisplayName());
+                if (position % 2 == 0) {
+                    vhm.peerView.setTitleBgDrawable(R.drawable.bg_rounded_red);
+                } else if (position % 3 == 0) {
+                    vhm.peerView.setTitleBgDrawable(R.drawable.bg_rounded_gray);
+                } else {
+                    vhm.peerView.setTitleBgDrawable(R.drawable.bg_rounded_blue);
+                }
 
                 vhm.peerView.setCameraState(peerList.get(position).isPeer2CamOn());
                 vhm.peerView.setMicState(peerList.get(position).isPeer2MicOn());
@@ -170,6 +177,14 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
         vhpp.peerView1.setProps(props1, mMeetingClient);
         vhpp.peerView1.setName(p1.getDisplayName());
 
+        if (position % 2 == 0) {
+            vhpp.peerView1.setTitleBgDrawable(R.drawable.bg_rounded_green);
+        } else if (position % 3 == 0) {
+            vhpp.peerView1.setTitleBgDrawable(R.drawable.bg_rounded_red);
+        } else {
+            vhpp.peerView1.setTitleBgDrawable(R.drawable.bg_rounded_gray);
+        }
+
         vhpp.peerView1.setCameraState(peerList.get(position).isPeer1CamOn());
         vhpp.peerView1.setMicState(peerList.get(position).isPeer1MicOn());
         vhpp.peerView1.setHandRaisedState(peerList.get(position).isPeer1HandRaised());
@@ -181,6 +196,14 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
             props2.connect(mLifecycleOwner, p2.getId());
             vhpp.peerView2.setProps(props2, mMeetingClient);
             vhpp.peerView2.setName(p2.getDisplayName());
+
+            if (position % 2 == 0) {
+                vhpp.peerView1.setTitleBgDrawable(R.drawable.bg_rounded_blue);
+            } else if (position % 3 == 0) {
+                vhpp.peerView1.setTitleBgDrawable(R.drawable.bg_rounded_green);
+            } else {
+                vhpp.peerView1.setTitleBgDrawable(R.drawable.bg_rounded_red);
+            }
 
             vhpp.peerView2.setCameraState(peerList.get(position).isPeer2CamOn());
             vhpp.peerView2.setMicState(peerList.get(position).isPeer2MicOn());

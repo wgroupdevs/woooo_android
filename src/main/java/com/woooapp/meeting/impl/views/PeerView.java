@@ -29,6 +29,7 @@ import com.woooapp.meeting.lib.model.Peer;
 import org.webrtc.MediaStreamTrack;
 
 import java.util.Objects;
+import java.util.Random;
 
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.databinding.ViewPeerBinding;
@@ -108,8 +109,6 @@ public class PeerView extends RelativeLayout {
         this.props = props;
         // set view model into included layout
         mBinding.wooPeerView.setWooPeerViewProps(props);
-
-
 
 //        if (props.getPeer() != null) {
 //            Peer p = (Peer) props.getPeer().get();
@@ -197,6 +196,14 @@ public class PeerView extends RelativeLayout {
                 mBinding.audioPeerLayout.setVisibility(View.GONE);
             }
         });
+    }
+
+    /**
+     *
+     * @param resId
+     */
+    public void setTitleBgDrawable(int resId) {
+        mBinding.controls.setBackgroundResource(resId);
     }
 
     @Override

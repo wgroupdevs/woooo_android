@@ -6,6 +6,7 @@ import android.os.HandlerThread;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.woooapp.meeting.impl.utils.WooEvents;
 import com.woooapp.meeting.lib.lv.RoomStore;
@@ -98,6 +99,15 @@ public final class MeetingClient extends RoomMessageHandler {
             mSocket.connect();
             mStarted = true;
         });
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Nullable
+    public RoomStore getRoomStore() {
+        return this.mRoomStore;
     }
 
     public Role getRole() {
