@@ -682,9 +682,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     }
 
     private void initViewModel() {
-        EdiasProps.Factory factory = new EdiasProps.Factory(WooApplication.Companion.getSharedInstance(), mRoomStore);
+//        EdiasProps.Factory factory = new EdiasProps.Factory(getApplication(), mRoomStore);
 
-        RoomProps roomProps = new ViewModelProvider(this, factory).get(RoomProps.class);
+//        RoomProps roomProps = new ViewModelProvider(this, factory).get(RoomProps.class);
+        RoomProps roomProps = new RoomProps(getApplication(), mRoomStore);
         roomProps.connect(this);
 
 //        mBinding.setMeetProps(roomProps);
