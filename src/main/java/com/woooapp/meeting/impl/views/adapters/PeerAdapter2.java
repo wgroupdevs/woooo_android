@@ -121,9 +121,9 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
 
             vhm.meView = convertView.findViewById(R.id.cellMeView);
 
-            vhm.meView.setCamEnabled(peerList.get(position).isPeer1CamOn());
-            vhm.meView.setMicEnabled(peerList.get(position).isPeer1MicOn());
-            vhm.meView.setHandRaisedState(peerList.get(position).isPeer1HandRaised());
+//            vhm.meView.setCamEnabled(peerList.get(position).isPeer1CamOn());
+//            vhm.meView.setMicEnabled(peerList.get(position).isPeer1MicOn());
+//            vhm.meView.setHandRaisedState(peerList.get(position).isPeer1HandRaised());
 
             MeProps meProps = new MeProps(((AppCompatActivity) mContext).getApplication(), mStore);
             meProps.connect(mLifecycleOwner);
@@ -145,9 +145,9 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
                     vhm.peerView.setTitleBgDrawable(R.drawable.bg_rounded_blue);
                 }
 
-                vhm.peerView.setCameraState(peerList.get(position).isPeer2CamOn());
-                vhm.peerView.setMicState(peerList.get(position).isPeer2MicOn());
-                vhm.peerView.setHandRaisedState(peerList.get(position).isPeer2HandRaised());
+//                vhm.peerView.setCameraState(peerList.get(position).isPeer2CamOn());
+//                vhm.peerView.setMicState(peerList.get(position).isPeer2MicOn());
+//                vhm.peerView.setHandRaisedState(peerList.get(position).isPeer2HandRaised());
 
                 vhm.peerView.getLayoutParams().width = getColumnWidth(2);
                 vhm.peerView.getLayoutParams().height = getRowHeight();
@@ -185,9 +185,9 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
             vhpp.peerView1.setTitleBgDrawable(R.drawable.bg_rounded_gray);
         }
 
-        vhpp.peerView1.setCameraState(peerList.get(position).isPeer1CamOn());
-        vhpp.peerView1.setMicState(peerList.get(position).isPeer1MicOn());
-        vhpp.peerView1.setHandRaisedState(peerList.get(position).isPeer1HandRaised());
+//        vhpp.peerView1.setCameraState(peerList.get(position).isPeer1CamOn());
+//        vhpp.peerView1.setMicState(peerList.get(position).isPeer1MicOn());
+//        vhpp.peerView1.setHandRaisedState(peerList.get(position).isPeer1HandRaised());
 
         vhpp.peerView2 = convertView.findViewById(R.id.cellPeerView3);
         Peer p2 = peerList.get(position).getPeer2();
@@ -205,9 +205,9 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
                 vhpp.peerView1.setTitleBgDrawable(R.drawable.bg_rounded_red);
             }
 
-            vhpp.peerView2.setCameraState(peerList.get(position).isPeer2CamOn());
-            vhpp.peerView2.setMicState(peerList.get(position).isPeer2MicOn());
-            vhpp.peerView2.setHandRaisedState(peerList.get(position).isPeer2HandRaised());
+//            vhpp.peerView2.setCameraState(peerList.get(position).isPeer2CamOn());
+//            vhpp.peerView2.setMicState(peerList.get(position).isPeer2MicOn());
+//            vhpp.peerView2.setHandRaisedState(peerList.get(position).isPeer2HandRaised());
 
             vhpp.peerView1.getLayoutParams().width = getColumnWidth(2);
             vhpp.peerView1.getLayoutParams().height = getRowHeight();
@@ -356,134 +356,140 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
                     return true;
                 case WooEvents.EVENT_PEER_CAM_TURNED_ON:
                     if (msg.obj != null) {
-                        try {
-                            JSONObject camOn = (JSONObject) msg.obj;
-                            String pId = camOn.getString("socketId");
-                            int peer1Index = findPeer1Index(pId);
-                            int peer2Index = findPeer2Index(pId);
-                            if (peer1Index != -1) {
-                                peerList.get(peer1Index).setPeer1CamOn(true);
-                                Log.d(TAG, "<< PEER 1 CAM TURNED ON >> " + pId);
-                                notifyDataSetChanged();
-                            }
-                            if (peer2Index != -1) {
-                                peerList.get(peer2Index).setPeer2CamOn(true);
-                                Log.d(TAG, "<< PEER 2 CAM TURNED ON >> " + pId);
-                                notifyDataSetChanged();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+//                        try {
+//                            JSONObject camOn = (JSONObject) msg.obj;
+//                            String pId = camOn.getString("socketId");
+//                            int peer1Index = findPeer1Index(pId);
+//                            int peer2Index = findPeer2Index(pId);
+//                            if (peer1Index != -1) {
+//                                peerList.get(peer1Index).setPeer1CamOn(true);
+//                                Log.d(TAG, "<< PEER 1 CAM TURNED ON >> " + pId);
+//                                notifyDataSetChanged();
+//                            }
+//                            if (peer2Index != -1) {
+//                                peerList.get(peer2Index).setPeer2CamOn(true);
+//                                Log.d(TAG, "<< PEER 2 CAM TURNED ON >> " + pId);
+//                                notifyDataSetChanged();
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+                        notifyDataSetChanged();
                     }
                     return true;
                 case WooEvents.EVENT_PEER_CAM_TURNED_OFF:
                     if (msg.obj != null) {
-                        try {
-                            JSONObject camOn = (JSONObject) msg.obj;
-                            String pId = camOn.getString("socketId");
-                            int peer1Index = findPeer1Index(pId);
-                            int peer2Index = findPeer2Index(pId);
-                            if (peer1Index != -1) {
-                                peerList.get(peer1Index).setPeer1CamOn(false);
-                                Log.d(TAG, "<< PEER 1 CAM TURNED OFF >> " + pId);
-                                notifyDataSetChanged();
-                            }
-                            if (peer2Index != -1) {
-                                peerList.get(peer2Index).setPeer2CamOn(false);
-                                Log.d(TAG, "<< PEER 2 CAM TURNED OFF >> " + pId);
-                                notifyDataSetChanged();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+//                        try {
+//                            JSONObject camOn = (JSONObject) msg.obj;
+//                            String pId = camOn.getString("socketId");
+//                            int peer1Index = findPeer1Index(pId);
+//                            int peer2Index = findPeer2Index(pId);
+//                            if (peer1Index != -1) {
+//                                peerList.get(peer1Index).setPeer1CamOn(false);
+//                                Log.d(TAG, "<< PEER 1 CAM TURNED OFF >> " + pId);
+//                                notifyDataSetChanged();
+//                            }
+//                            if (peer2Index != -1) {
+//                                peerList.get(peer2Index).setPeer2CamOn(false);
+//                                Log.d(TAG, "<< PEER 2 CAM TURNED OFF >> " + pId);
+//                                notifyDataSetChanged();
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+                        notifyDataSetChanged();
                     }
                     return true;
                 case WooEvents.EVENT_PEER_MIC_MUTED:
                     if (msg.obj != null) {
-                        try {
-                            JSONObject camOn = (JSONObject) msg.obj;
-                            String pId = camOn.getString("socketId");
-                            int peer1Index = findPeer1Index(pId);
-                            int peer2Index = findPeer2Index(pId);
-                            if (peer1Index != -1) {
-                                peerList.get(peer1Index).setPeer1MicOn(false);
-                                Log.d(TAG, "<< PEER 1 MIC TURNED ON >> " + pId);
-                                notifyDataSetChanged();
-                            }
-                            if (peer2Index != -1) {
-                                peerList.get(peer2Index).setPeer2MicOn(false);
-                                Log.d(TAG, "<< PEER 2 MIC TURNED ON >> " + pId);
-                                notifyDataSetChanged();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+//                        try {
+//                            JSONObject camOn = (JSONObject) msg.obj;
+//                            String pId = camOn.getString("socketId");
+//                            int peer1Index = findPeer1Index(pId);
+//                            int peer2Index = findPeer2Index(pId);
+//                            if (peer1Index != -1) {
+//                                peerList.get(peer1Index).setPeer1MicOn(false);
+//                                Log.d(TAG, "<< PEER 1 MIC TURNED ON >> " + pId);
+//                                notifyDataSetChanged();
+//                            }
+//                            if (peer2Index != -1) {
+//                                peerList.get(peer2Index).setPeer2MicOn(false);
+//                                Log.d(TAG, "<< PEER 2 MIC TURNED ON >> " + pId);
+//                                notifyDataSetChanged();
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+                        notifyDataSetChanged();
                     }
                     return true;
                 case WooEvents.EVENT_PEER_MIC_UNMUTED:
                     if (msg.obj != null) {
-                        try {
-                            JSONObject camOn = (JSONObject) msg.obj;
-                            String pId = camOn.getString("socketId");
-                            int peer1Index = findPeer1Index(pId);
-                            int peer2Index = findPeer2Index(pId);
-                            if (peer1Index != -1) {
-                                peerList.get(peer1Index).setPeer1MicOn(true);
-                                Log.d(TAG, "<< PEER 1 MIC TURNED OFF >> " + pId);
-                                notifyDataSetChanged();
-                            }
-                            if (peer2Index != -1) {
-                                peerList.get(peer2Index).setPeer2MicOn(true);
-                                Log.d(TAG, "<< PEER 2 MIC TURNED OFF >> " + pId);
-                                notifyDataSetChanged();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+//                        try {
+//                            JSONObject camOn = (JSONObject) msg.obj;
+//                            String pId = camOn.getString("socketId");
+//                            int peer1Index = findPeer1Index(pId);
+//                            int peer2Index = findPeer2Index(pId);
+//                            if (peer1Index != -1) {
+//                                peerList.get(peer1Index).setPeer1MicOn(true);
+//                                Log.d(TAG, "<< PEER 1 MIC TURNED OFF >> " + pId);
+//                                notifyDataSetChanged();
+//                            }
+//                            if (peer2Index != -1) {
+//                                peerList.get(peer2Index).setPeer2MicOn(true);
+//                                Log.d(TAG, "<< PEER 2 MIC TURNED OFF >> " + pId);
+//                                notifyDataSetChanged();
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+                        notifyDataSetChanged();
                     }
                     return true;
                 case WooEvents.EVENT_PEER_HAND_RAISED:
                     if (msg.obj != null) {
-                        try {
-                            JSONObject camOn = (JSONObject) msg.obj;
-                            String pId = camOn.getString("socketId");
-                            int peer1Index = findPeer1Index(pId);
-                            int peer2Index = findPeer2Index(pId);
-                            if (peer1Index != -1) {
-                                peerList.get(peer1Index).setPeer1HandRaised(true);
-                                Log.d(TAG, "<< PEER 1 RAISED HAND >> " + pId + " for index [" + peer1Index + "]");
-                                notifyDataSetChanged();
-                            }
-                            if (peer2Index != -1) {
-                                peerList.get(peer2Index).setPeer2HandRaised(true);
-                                Log.d(TAG, "<< PEER 2 RAISED HAND >> " + pId + " for index [" + peer2Index + "]");
-                                notifyDataSetChanged();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+//                        try {
+//                            JSONObject camOn = (JSONObject) msg.obj;
+//                            String pId = camOn.getString("socketId");
+//                            int peer1Index = findPeer1Index(pId);
+//                            int peer2Index = findPeer2Index(pId);
+//                            if (peer1Index != -1) {
+//                                peerList.get(peer1Index).setPeer1HandRaised(true);
+//                                Log.d(TAG, "<< PEER 1 RAISED HAND >> " + pId + " for index [" + peer1Index + "]");
+//                                notifyDataSetChanged();
+//                            }
+//                            if (peer2Index != -1) {
+//                                peerList.get(peer2Index).setPeer2HandRaised(true);
+//                                Log.d(TAG, "<< PEER 2 RAISED HAND >> " + pId + " for index [" + peer2Index + "]");
+//                                notifyDataSetChanged();
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+                        notifyDataSetChanged();
                     }
                     return true;
                 case WooEvents.EVENT_PEER_HAND_LOWERED:
                     if (msg.obj != null) {
-                        try {
-                            JSONObject camOn = (JSONObject) msg.obj;
-                            String pId = camOn.getString("socketId");
-                            int peer1Index = findPeer1Index(pId);
-                            int peer2Index = findPeer2Index(pId);
-                            if (peer1Index != -1) {
-                                peerList.get(peer1Index).setPeer1HandRaised(false);
-                                Log.d(TAG, "<< PEER 1 LOWERED HAND >> " + pId);
-                                notifyDataSetChanged();
-                            }
-                            if (peer2Index != -1) {
-                                peerList.get(peer2Index).setPeer2HandRaised(false);
-                                Log.d(TAG, "<< PEER 2 LOWERED HAND >> " + pId);
-                                notifyDataSetChanged();
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+//                        try {
+//                            JSONObject camOn = (JSONObject) msg.obj;
+//                            String pId = camOn.getString("socketId");
+//                            int peer1Index = findPeer1Index(pId);
+//                            int peer2Index = findPeer2Index(pId);
+//                            if (peer1Index != -1) {
+//                                peerList.get(peer1Index).setPeer1HandRaised(false);
+//                                Log.d(TAG, "<< PEER 1 LOWERED HAND >> " + pId);
+//                                notifyDataSetChanged();
+//                            }
+//                            if (peer2Index != -1) {
+//                                peerList.get(peer2Index).setPeer2HandRaised(false);
+//                                Log.d(TAG, "<< PEER 2 LOWERED HAND >> " + pId);
+//                                notifyDataSetChanged();
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+                        notifyDataSetChanged();
                     }
                     return true;
 

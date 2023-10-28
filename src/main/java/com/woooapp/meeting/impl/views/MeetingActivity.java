@@ -1194,12 +1194,12 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             case WooEvents.EVENT_NEW_PEER_JOINED:
                 if (msg.obj != null) {
                     runOnUiThread(() -> {
-                        showCommonPopup(msg.obj + " joined", true, WooCommonPopup.VERTICAL_POSITION_TOP);
-                        try {
-                            notificationSound.play();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+//                        showCommonPopup(msg.obj + " joined", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+////                        try {
+////                            notificationSound.play();
+////                        } catch (Exception e) {
+////                            e.printStackTrace();
+////                        }
                     });
                 }
                 return true;

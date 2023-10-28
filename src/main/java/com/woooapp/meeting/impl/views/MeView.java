@@ -77,6 +77,15 @@ public class MeView extends RelativeLayout {
         mBinding.wooPeerView.setWooPeerViewProps(props);
         mBinding.tvMeName.setText("Me");
 
+        if (props.getMe() != null) {
+            Me me = props.getMe().get();
+            if (me != null) {
+                setMicEnabled(me.isMicOn());
+                setCamEnabled(me.isCamOn());
+                setHandRaisedState(me.isHandRaised());
+            }
+        }
+
 //        if (MeProps.DeviceState.ON.equals(props.getCamState().get())) {
 //            Log.d(TAG, "<< Turning Camera ON >>");
 //            mBinding.meInfoCam.setImageResource(R.drawable.ic_video_camera_white);

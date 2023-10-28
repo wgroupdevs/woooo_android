@@ -109,6 +109,15 @@ public class PeerView extends RelativeLayout {
         // set view model into included layout
         mBinding.wooPeerView.setWooPeerViewProps(props);
 
+        if (props.getPeer() != null) {
+            Peer p = (Peer) props.getPeer().get();
+            if (p != null) {
+                setMicState(p.isMicOn());
+                setCameraState(p.isCamOn());
+                setHandRaisedState(p.isHandRaised());
+            }
+        }
+
 //        if (props.getPeer() != null) {
 //            Peer p = (Peer) props.getPeer().get();
 //            if (p != null) {

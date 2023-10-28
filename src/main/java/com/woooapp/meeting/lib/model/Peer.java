@@ -19,9 +19,6 @@ public class Peer extends Info {
     private String mId;
     private String mDisplayName;
     private DeviceInfo mDevice;
-    private boolean handRaised = false;
-    private boolean camOn = true;
-    private boolean micOn = true;
     private Set<String> mConsumers;
     private Set<String> mDataConsumers;
 
@@ -63,30 +60,6 @@ public class Peer extends Info {
 
     public void setDevice(DeviceInfo device) {
         this.mDevice = device;
-    }
-
-    public boolean isHandRaised() {
-        return handRaised;
-    }
-
-    public void setHandRaised(boolean handRaised) {
-        this.handRaised = handRaised;
-    }
-
-    public boolean isCamOn() {
-        return camOn;
-    }
-
-    public void setCamOn(boolean camOn) {
-        this.camOn = camOn;
-    }
-
-    public boolean isMicOn() {
-        return micOn;
-    }
-
-    public void setMicOn(boolean micOn) {
-        this.micOn = micOn;
     }
 
     public Set<String> getConsumers() {

@@ -20,6 +20,7 @@ import com.woooapp.meeting.lib.RoomClient;
 import com.woooapp.meeting.lib.lv.RoomStore;
 import com.woooapp.meeting.lib.lv.SupplierMutableLiveData;
 import com.woooapp.meeting.lib.model.Me;
+import com.woooapp.meeting.lib.model.Peer;
 import com.woooapp.meeting.net.ApiManager;
 import com.woooapp.meeting.net.models.Message;
 import com.woooapp.meeting.net.models.RoomData;
@@ -521,6 +522,16 @@ public class WooSocket {
                                                 }
                                             }
                                         }
+
+                                        if (roomData.getMicClosedUsers() != null) {
+                                            for (String pId : roomData.getMicClosedUsers()) {
+                                                mStore.getPeers().postValue(peers -> {
+                                                    if (peers.getPeer(pId) != null) {
+                                                        peers.getPeer(pId).setMicOn(false);
+                                                    }
+                                                });
+                                            }
+                                        }
                                     } catch (IOException | JSONException | MediasoupException e) {
                                         e.printStackTrace();
                                     }
@@ -746,6 +757,15 @@ public class WooSocket {
                 Log.d(TAG, "<< ON EVENT MIC CLOSED >>> " + args[0]);
                 try {
                     JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                    String pSId = obj.getString("socketId");
+                    if (pSId != null) {
+                        mStore.getPeers().postValue(peers -> {
+                            Peer p = peers.getPeer(pSId);
+                            if (p != null) {
+                                p.setMicOn(false);
+                            }
+                        });
+                    }
                     WooEvents.getInstance().notify(WooEvents.EVENT_PEER_MIC_MUTED, obj);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -758,6 +778,15 @@ public class WooSocket {
                 Log.d(TAG, "<< ON EVENT MIC OPEN >>> " + args[0]);
                 try {
                     JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                    String pSId = obj.getString("socketId");
+                    if (pSId != null) {
+                        mStore.getPeers().postValue(peers -> {
+                            Peer p = peers.getPeer(pSId);
+                            if (p != null) {
+                                p.setMicOn(true);
+                            }
+                        });
+                    }
                     WooEvents.getInstance().notify(WooEvents.EVENT_PEER_MIC_UNMUTED, obj);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -770,6 +799,15 @@ public class WooSocket {
                 Log.d(TAG, "<< ON EVENT HAND RAISED >>> " + args[0]);
                 try {
                     JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                    String pSId = obj.getString("socketId");
+                    if (pSId != null) {
+                        mStore.getPeers().postValue(peers -> {
+                            Peer p = peers.getPeer(pSId);
+                            if (p != null) {
+                                p.setHandRaised(true);
+                            }
+                        });
+                    }
                     WooEvents.getInstance().notify(WooEvents.EVENT_PEER_HAND_RAISED, obj);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -782,6 +820,15 @@ public class WooSocket {
                 Log.d(TAG, "<< ON EVENT HAND LOWERED >>> " + args[0]);
                 try {
                     JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                    String pSId = obj.getString("socketId");
+                    if (pSId != null) {
+                        mStore.getPeers().postValue(peers -> {
+                            Peer p = peers.getPeer(pSId);
+                            if (p != null) {
+                                p.setHandRaised(false);
+                            }
+                        });
+                    }
                     WooEvents.getInstance().notify(WooEvents.EVENT_PEER_HAND_LOWERED, obj);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -794,6 +841,15 @@ public class WooSocket {
                 Log.d(TAG, "<< ON EVENT VIDEO OPEN >>> " + args[0]);
                 try {
                     JSONObject videoOn = new JSONObject(String.valueOf(args[0]));
+                    String pSId = videoOn.getString("socketId");
+                    if (pSId != null) {
+                        mStore.getPeers().postValue(peers -> {
+                            Peer p = peers.getPeer(pSId);
+                            if (p != null) {
+                                p.setCamOn(true);
+                            }
+                        });
+                    }
                     WooEvents.getInstance().notify(WooEvents.EVENT_PEER_CAM_TURNED_ON, videoOn);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -806,6 +862,15 @@ public class WooSocket {
                 Log.d(TAG, "<< ON EVENT VIDEO CLOSE >>> " + args[0]);
                 try {
                     JSONObject videoClosed = new JSONObject(String.valueOf(args[0]));
+                    String pSId = videoClosed.getString("socketId");
+                    if (pSId != null) {
+                        mStore.getPeers().postValue(peers -> {
+                            Peer p = peers.getPeer(pSId);
+                            if (p != null) {
+                                p.setCamOn(false);
+                            }
+                        });
+                    }
                     WooEvents.getInstance().notify(WooEvents.EVENT_PEER_CAM_TURNED_OFF, videoClosed);
                 } catch (JSONException e) {
                     e.printStackTrace();
