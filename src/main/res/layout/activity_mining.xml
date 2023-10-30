@@ -19,43 +19,75 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/_10sdp">
 
+
+        <!--    Mined Asset-->
 
         <RelativeLayout
-            android:id="@+id/progress_layout"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_margin="100dp">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <!--progress bar implementation-->
-            <ProgressBar
-                android:id="@+id/progress_bar"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/circular_shape"
-                android:indeterminate="false"
-                android:progressDrawable="@drawable/circular_progressbar"
-                android:textAlignment="center" />
-
-            <!--Text implementation in center of the progress bar-->
+            <!--       Today's Mined Asset Text-->
             <TextView
-                android:id="@+id/progress_text"
+                android:id="@+id/todayMinedAsset_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:gravity="center"
-                android:text="---"
-                android:textColor="@color/white"
-                android:textSize="28sp"
-                android:textStyle="bold" />
+                android:text="Today's Mined Asset\n0.0189483"
+                android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+
+
+            <!--        Today minded asset progress-->
+            <RelativeLayout
+                android:id="@+id/progress_layout"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="@dimen/_80sdp"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="right">
+
+                <!--progress bar implementation-->
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/circular_shape"
+                    android:indeterminate="false"
+                    android:progressDrawable="@drawable/circular_progressbar"
+                    android:textAlignment="center" />
+
+                <!--Text implementation in center of the progress bar-->
+                <TextView
+                    android:id="@+id/progress_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:text="---"
+                    android:textColor="@color/white"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
+            </RelativeLayout>
+
+
         </RelativeLayout>
 
 
     </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:src="@drawable/divider_ic" />
 
 
 </LinearLayout>
