@@ -55,6 +55,7 @@ public final class WooEvents {
     public static final int EVENT_SELECT_BACKGROUND               = 0x2e;
     public static final int EVENT_SHOW_MEMBERS                    = 0x2f;
     public static final int EVENT_NETWORK_CONNECTIVITY_CHANGED    = 0x27;
+    public static final int EVENT_VOICE_TRANSLATION_RECEIVED      = 0x28;
 
     private WooEvents() {
         Log.d(TAG, "WooEvents Initialized ...");

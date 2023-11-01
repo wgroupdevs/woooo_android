@@ -51,6 +51,7 @@ public final class ApiManager {
     public static final String URL_MIC_UN_MUTED = "https://wmediasoup.watchblock.net/meeting/mic/pull";
     public static final String URL_HAND_RAISED = "https://wmediasoup.watchblock.net/meeting/hand/push";
     public static final String URL_HAND_LOWERED = "https://wmediasoup.watchblock.net/meeting/mic/pull";
+    public static final String URL_CHAT_TRANSLATION = "https://wooooapi.watchblock.net/api/v1/Chat/TranslateText";
 
     private static final String USER_AGENT = String.format("%s[Android]-%s v%s",
             BuildConfig.APP_NAME, BuildConfig.BUILD_TYPE, BuildConfig.VERSION_NAME);
@@ -151,6 +152,45 @@ public final class ApiManager {
             Request request = new Request.Builder()
                     .url(String.format("%s/s", url, meetingId))
                     .method("PUT", body)
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("User-Agent", USER_AGENT)
+                    .build();
+
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    if (callback != null) callback.onFailure(call, e.getMessage());
+                }
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    if (callback != null) callback.onResult(call, response);
+                }
+            });
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /**
+     *
+     * @param text
+     * @param languageCode
+     */
+    public void getTranslation(@NonNull String text, @NonNull String languageCode, @Nullable ApiResult2 callback) {
+        OkHttpClient client = new OkHttpClient.Builder().build();
+        MediaType mediaType = MediaType.parse("application/json");
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("text", text);
+            obj.put("languageCode", languageCode);
+
+            RequestBody reqBody = RequestBody.create(String.valueOf(obj), mediaType);
+            Request request = new Request.Builder()
+                    .url(URL_CHAT_TRANSLATION)
+                    .method("POST", reqBody)
                     .addHeader("Content-Type", "application/json")
                     .addHeader("User-Agent", USER_AGENT)
                     .build();

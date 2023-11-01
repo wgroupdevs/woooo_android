@@ -16,12 +16,11 @@ class WooApplication : Application() {
         super.onCreate()
         try {
             sharedInstance = this
-            Thread.setDefaultUncaughtExceptionHandler(UnexpectedExceptionHandler(applicationContext))
+//            Thread.setDefaultUncaughtExceptionHandler(UnexpectedExceptionHandler(applicationContext))
             MediasoupClient.initialize(applicationContext)
         } catch (e: Throwable) {
 
         }
-
     }
 
     override fun onLowMemory() {

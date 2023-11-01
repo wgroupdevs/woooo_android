@@ -17,6 +17,7 @@ import com.woooapp.meeting.lib.Async;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.PeerConnectionUtils;
 import com.woooapp.meeting.lib.RoomClient;
+import com.woooapp.meeting.lib.RoomMessageHandler;
 import com.woooapp.meeting.lib.lv.RoomStore;
 import com.woooapp.meeting.lib.lv.SupplierMutableLiveData;
 import com.woooapp.meeting.lib.model.Me;
@@ -158,61 +159,62 @@ public class WooSocket {
         mStore.setRoomState(RoomClient.ConnectionState.CLOSED);
         emitClose();
         if (mSocket != null && mSocket.isActive()) {
-            if (disposeCamMic()) {
+            if (disposeTransport()) {
                 mWorkHandler.post(() -> {
                     // Remove the peer
-                    for (Map.Entry<String, String> entry : producerSockIds.entrySet()) {
-                        mStore.removePeer(entry.getValue());
+//                    for (Map.Entry<String, String> entry : producerSockIds.entrySet()) {
+//                        mStore.removePeer(entry.getValue());
+//                    }
+
+                    // dispose audio track.
+                    if (mLocalAudioTrack != null) {
+                        try {
+                            mLocalAudioTrack.setEnabled(false);
+                            mLocalAudioTrack.dispose();
+                            mLocalAudioTrack = null;
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
                     }
 
-                    if (disposeTransport()) {
-                        Log.d(TAG, "Transport Disposed >>");
-
-                        // dispose audio track.
-                        try {
-                            if (mLocalAudioTrack != null) {
-                                mLocalAudioTrack.setEnabled(false);
-                                mLocalAudioTrack.dispose();
-                                mLocalAudioTrack = null;
-                            }
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
+                    // dispose video track.
+                    try {
+                        if (mLocalVideoTrack != null) {
+                            mLocalVideoTrack.setEnabled(false);
+                            mLocalVideoTrack.dispose();
+                            mLocalVideoTrack = null;
                         }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
 
-                        // dispose video track.
-                        try {
-                            if (mLocalVideoTrack != null) {
-                                mLocalVideoTrack.setEnabled(false);
-                                mLocalVideoTrack.dispose();
-                                mLocalVideoTrack = null;
-                            }
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-
-                        // Dispose everything
+                    try {
                         this.mPeerConnectionUtils.dispose();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
 
-                        mMainHandler.post(Logger::freeHandler);
-                        this.audioProducersIds.clear();
-                        this.videoProducerId = null;
+                    mMainHandler.post(Logger::freeHandler);
+                    this.audioProducersIds.clear();
+                    this.videoProducerId = null;
 
-                        // Close socket
+                    // Close socket
 //                    mWorkHandler.post(() -> {
-                        mSocket.disconnect();
-                        mSocketId = null;
-                        mConnected = false;
 //                    });
 
-                        // Say Bye Bye
-                        WooEvents.getInstance().notify(WooEvents.EVENT_TYPE_SOCKET_DISCONNECTED, mSocketId);
+//                    mCompositeDisposable.dispose();
 
-                        destroyed = true;
-                        sInstance = null;
-                        // Deliberate call to GC
-                        Runtime.getRuntime().gc();
-                        Log.d(TAG, "<< Socket Disconnected! >>");
-                    }
+                    destroyed = true;
+                    sInstance = null;
+
+                    mSocket.disconnect();
+                    mSocketId = null;
+                    mConnected = false;
+                    Log.d(TAG, "<< Socket Disconnected! >>");
+                    WooEvents.getInstance().notify(WooEvents.EVENT_TYPE_SOCKET_DISCONNECTED, mSocketId);
+
+                    // Deliberate call to GC
+                    Runtime.getRuntime().gc();
                 });
             }
         }
@@ -221,31 +223,59 @@ public class WooSocket {
 
     private boolean disposeCamMic() {
         // Disabling mic and cam
-        mMainHandler.post(this::disableMic);
-        mMainHandler.post(this::disableCam);
-        Log.d(TAG, "Mic & Camera Released ... >>");
+        try {
+            mMainHandler.post(this::disableMic);
+            mMainHandler.post(this::disableCam);
+            Log.d(TAG, "Mic & Camera Released ... >>");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
         return true;
     }
 
     private boolean disposeTransport() {
+//        removePeers();
         if (mSendTransport != null) {
-            mSendTransport.close();
-            mSendTransport.dispose();
-            mSendTransport = null;
+            try {
+                mSendTransport.close();
+                mSendTransport.dispose();
+                mSendTransport = null;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
-        Log.d(TAG, "<< Clearing RecvTransport Map with size >> " + mRecvTransports.size());
+        Log.d(TAG, "<< Disposing RecvTransport Map with size >> " + mRecvTransports.size());
         for (Map.Entry<String, RecvTransport> entry : mRecvTransports.entrySet()) {
-            Log.d(TAG, "<< Closing and Disposing Recv Transport >> [" + entry.getValue().getId() + "]");
-            entry.getValue().close();
-            entry.getValue().dispose();
+            try {
+                entry.getValue().close();
+                entry.getValue().dispose();
+                mRecvTransports.remove(entry.getKey());
+                Log.d(TAG, "<< Recv Transport >> [" + entry.getValue().getId() + "] disposed.");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
-        Log.d(TAG, "<< Clearing all Recv Transports >>");
-        mRecvTransports.clear();
+//        mRecvTransports.clear();
+
         if (mMediaSoupDevice != null) {
-            mMediaSoupDevice.dispose();
-            mMediaSoupDevice = null;
+            try {
+                mMediaSoupDevice.dispose();
+                mMediaSoupDevice = null;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
         return true;
+    }
+
+    private void removeConsumers() {
+        try {
+            for (MeetingClient.ConsumerHolder holder : mMeetingClient.getConsumers().values()) {
+                mStore.removeConsumer(holder.peerId, holder.mConsumer.getId());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -446,24 +476,6 @@ public class WooSocket {
                     Log.d(TAG, "Consumer Created of Kind [" + kind + "]");
 
                     // Peer created
-//                    mMainHandler.post(() -> {
-//                        try {
-//                            String meetingName = mMeetingClient.getEmail();
-//                            if (mMeetingClient.getUsername() != null) {
-//                                if (!mMeetingClient.getUsername().isEmpty()) {
-//                                    meetingName = mMeetingClient.getUsername();
-//                                }
-//                            }
-//                            JSONObject peer = new JSONObject();
-//                            peer.put("id", producerSockId);
-//                            peer.put("displayName", meetingName);
-//                            peer.put("device", null);
-//                            mStore.addPeer(producerSockId, peer);
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    });
-
                     ApiManager.build(mContext).fetchRoomData2(mMeetingClient.getMeetingId(), new ApiManager.ApiResult2() {
                         @Override
                         public void onResult(Call call, Response response) {
@@ -532,6 +544,16 @@ public class WooSocket {
                                                 });
                                             }
                                         }
+
+                                        if (roomData.getHandRaisedUsers() != null) {
+                                            for (String pId : roomData.getHandRaisedUsers()) {
+                                                mStore.getPeers().postValue(peers -> {
+                                                    if (peers.getPeer(pId) != null) {
+                                                        peers.getPeer(pId).setHandRaised(true);
+                                                    }
+                                                });
+                                            }
+                                        }
                                     } catch (IOException | JSONException | MediasoupException e) {
                                         e.printStackTrace();
                                     }
@@ -589,29 +611,29 @@ public class WooSocket {
 
                     RecvTransport recvTransport = mMediaSoupDevice
                             .createRecvTransport(new RecvTransport.Listener() {
-                                                                                           @Override
-                                                                                           public void onConnect(Transport transport, String dtlsParameters) {
-                                                                                               Log.d(TAG, "RecvTransport#onConnect() >> dtlsParameters > " + dtlsParameters);
-                                                                                               try {
-                                                                                                   emitConsumeTransportConnectBack(dtlsParameters);
-                                                                                               } catch (JSONException e) {
-                                                                                                   e.printStackTrace();
-                                                                                               }
-                                                                                               mSocket.on("consumerTransportConnectedBack", args1 -> {
-                                                                                                   Log.d(TAG, "<< Event Consumer Transport Connected Back >>");
-                                                                                                   // callback()
-                                                                                               });
-                                                                                           }
+                                                     @Override
+                                                     public void onConnect(Transport transport, String dtlsParameters) {
+                                                         Log.d(TAG, "RecvTransport#onConnect() >> dtlsParameters > " + dtlsParameters);
+                                                         try {
+                                                             emitConsumeTransportConnectBack(dtlsParameters);
+                                                         } catch (JSONException e) {
+                                                             e.printStackTrace();
+                                                         }
+                                                         mSocket.on("consumerTransportConnectedBack", args1 -> {
+                                                             Log.d(TAG, "<< Event Consumer Transport Connected Back >>");
+                                                             // callback()
+                                                         });
+                                                     }
 
-                                                                                           @Override
-                                                                                           public void onConnectionStateChange(Transport transport, String connectionState) {
+                                                     @Override
+                                                     public void onConnectionStateChange(Transport transport, String connectionState) {
 
-                                                                                           }
-                                                                                       },
-                            id,
-                            iceParameters.toString(),
-                            iceCandidates.toString(),
-                            dtlsParameters.toString());
+                                                     }
+                                                 },
+                                    id,
+                                    iceParameters.toString(),
+                                    iceCandidates.toString(),
+                                    dtlsParameters.toString());
                     mRecvTransports.put(storageId, recvTransport);
 
                     emitStartConsumingBack(producerId, producerSockId);
@@ -690,6 +712,26 @@ public class WooSocket {
                                                 }
                                             }
                                         }
+
+                                        if (roomData.getMicClosedUsers() != null) {
+                                            for (String pId : roomData.getMicClosedUsers()) {
+                                                mStore.getPeers().postValue(peers -> {
+                                                    if (peers.getPeer(pId) != null) {
+                                                        peers.getPeer(pId).setMicOn(false);
+                                                    }
+                                                });
+                                            }
+                                        }
+
+                                        if (roomData.getHandRaisedUsers() != null) {
+                                            for (String pId : roomData.getHandRaisedUsers()) {
+                                                mStore.getPeers().postValue(peers -> {
+                                                    if (peers.getPeer(pId) != null) {
+                                                        peers.getPeer(pId).setHandRaised(true);
+                                                    }
+                                                });
+                                            }
+                                        }
                                     } catch (IOException | MediasoupException e) {
                                         e.printStackTrace();
                                     }
@@ -749,6 +791,15 @@ public class WooSocket {
             if (args != null) {
                 Log.d(TAG, "<< EVENT Get Translation >> " + args[0]);
                 WooEvents.getInstance().notify(WooEvents.EVENT_ON_TEXT_TRANSLATION_RECV, args[0]);
+            }
+        });
+
+        mSocket.on("getVoiceTranslation", args -> {
+            if (args != null) {
+                if (args.length > 0) {
+                    Log.d(TAG, "<< Event Voice Translation >>> " + args[0]);
+                    WooEvents.getInstance().notify(WooEvents.EVENT_VOICE_TRANSLATION_RECEIVED, args[0]);
+                }
             }
         });
 
@@ -950,7 +1001,6 @@ public class WooSocket {
     }
 
     /**
-     *
      * @param producerId
      * @param producerSockId
      * @throws JSONException
@@ -966,7 +1016,6 @@ public class WooSocket {
     }
 
     /**
-     *
      * @param dtlsParams
      * @param storageId
      * @throws JSONException
@@ -1084,13 +1133,15 @@ public class WooSocket {
 
     /**
      * @param enableTranslation
+     * @param voice
      * @throws JSONException
      */
-    public void emitTextTranslation(boolean enableTranslation) throws JSONException {
+    public void emitTextTranslation(boolean enableTranslation, boolean voice) throws JSONException {
         JSONObject obj = new JSONObject();
         obj.put("meetingId", mMeetingClient.getMeetingId());
         obj.put("socketId", mSocketId);
         obj.put("value", enableTranslation);
+        obj.put("type", voice ? "voice" : "text");
         Log.d(TAG, "Emitting textTranslation >>> " + obj);
         mSocket.emit("textTranslation", obj);
     }
@@ -1135,7 +1186,6 @@ public class WooSocket {
     }
 
     /**
-     *
      * @throws JSONException
      */
     public void emitVideoClose() throws JSONException {
@@ -1231,37 +1281,12 @@ public class WooSocket {
         }
     }
 
-    // NOT CALLED, AS IT REQUIRES MIN SDK TO BE 24
-//    @Deprecated
-//    @RequiresApi(api = Build.VERSION_CODES.N)
-//    private String getProducerId(@NonNull String kind, @NonNull String rtpParameters) throws JSONException, ExecutionException, InterruptedException {
-//        emitProduce(kind, rtpParameters);
-//        // CompletableFuture
-//        final CompletableFuture<String> future = new CompletableFuture<>();
-//        mSocket.on("producing", args -> {
-//            if (args != null) {
-//                try {
-//                    Log.d(TAG, "<< Event Producing >>> " + args[0]);
-//                    JSONObject obj = new JSONObject(String.valueOf(args[0]));
-//                    String producerId = obj.getString("producerId");
-//                    String kind1 = obj.getString("kind");
-//                    boolean appData = obj.getBoolean("appData");
-//                    Log.d(TAG, "Producer ID >>> " + producerId);
-//                    future.complete(producerId);
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//        return future.get();
-//    }
-
     // Send Transport Listener
     private SendTransport.Listener sendListener = new SendTransport.Listener() {
 
         @Override
         public String onProduce(Transport transport, String kind, String rtpParameters, String appData) {
-            Log.d(TAG, "SendTransport.Listen.onProduce(transport, kind: " + kind + ", rtpParameters, appData: " + appData +  ")");
+            Log.d(TAG, "SendTransport.Listen.onProduce(transport, kind: " + kind + ", rtpParameters, appData: " + appData + ")");
             AtomicReference<String> producerId = new AtomicReference<>(null);
             try {
                 emitProduce(kind, rtpParameters);
@@ -1346,7 +1371,7 @@ public class WooSocket {
         Log.d(TAG, "<< Creating Mic & Camera Producers >>> ");
         mStore.setMediaCapabilities(true, true);
         mMainHandler.post(this::enableMic);
-        mMainHandler.post(this::enableCam);
+//        mMainHandler.post(this::enableCam);
 
         // Api Call For Put Member
         WooEvents.getInstance().notify(WooEvents.EVENT_TYPE_PRODUCER_CREATED, "");
@@ -1371,6 +1396,25 @@ public class WooSocket {
         }
         consumer.resume();
         mStore.setConsumerResumed(consumer.getId(), "local");
+    }
+
+    /**
+     * @param pId
+     */
+    @Async
+    public void removeVideoConsumer(@NonNull String pId) {
+        mWorkHandler.post(() -> {
+            for (MeetingClient.ConsumerHolder holder : mMeetingClient.getConsumers().values()) {
+                if (holder.peerId.equals(pId)) {
+                    if (holder.mConsumer.getKind().equals("video")) {
+                        holder.mConsumer.getTrack().setEnabled(false);
+                        holder.mConsumer.getTrack().dispose();
+                        holder.mConsumer.close();
+                    }
+                    mStore.removeConsumer(pId, holder.mConsumer.getId());
+                }
+            }
+        });
     }
 
     @Async

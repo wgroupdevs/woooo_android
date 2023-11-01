@@ -87,34 +87,36 @@ public class MemberAdapter extends BaseAdapter {
             vh.tvRole.setBackgroundResource(R.drawable.bg_white_stroke);
             vh.tvRole.setTextColor(Color.WHITE);
         }
-        try {
-            URL url = new URL(members.get(position).getPicture());
-            ViewHolder finalVh = vh;
-            Http.build().getImage((Activity) mContext, true, members.get(position).getPicture(), new HttpImageAdapter() {
-                @Override
-                public void connected(String resource) {
+        if (members.get(position).getPicture() != null) {
+            try {
+                URL url = new URL(members.get(position).getPicture());
+                ViewHolder finalVh = vh;
+                Http.build().getImage((Activity) mContext, true, members.get(position).getPicture(), new HttpImageAdapter() {
+                    @Override
+                    public void connected(String resource) {
 
-                }
+                    }
 
-                @Override
-                public void failed(String resource, String reasonPhrase) {
+                    @Override
+                    public void failed(String resource, String reasonPhrase) {
 
-                }
+                    }
 
-                @Override
-                public void done(String resource, Bitmap bitmap) {
-                    ((Activity) mContext).runOnUiThread(() -> {
-                        try {
-                            CircleDrawable cd = new CircleDrawable(bitmap);
-                            finalVh.ivThumb.setImageDrawable(cd);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    });
-                }
-            });
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+                    @Override
+                    public void done(String resource, Bitmap bitmap) {
+                        ((Activity) mContext).runOnUiThread(() -> {
+                            try {
+                                CircleDrawable cd = new CircleDrawable(bitmap);
+                                finalVh.ivThumb.setImageDrawable(cd);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        });
+                    }
+                });
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
         }
         return convertView;
     }
@@ -128,4 +130,6 @@ public class MemberAdapter extends BaseAdapter {
         LinearLayout buttonKickout;
     }
 
-} /** end class. */
+} /**
+ * end class.
+ */

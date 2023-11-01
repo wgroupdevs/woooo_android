@@ -9,7 +9,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.woooapp.meeting.impl.utils.WooDirector;
 import com.woooapp.meeting.impl.utils.WooEvents;
 import com.woooapp.meeting.impl.views.UIManager;
 import com.woooapp.meeting.lib.lv.RoomStore;
@@ -41,7 +40,7 @@ public final class MeetingClient extends RoomMessageHandler {
     private String accountUniqueId;
     private String picture;
     private boolean micOn = true;
-    private boolean camOn = true;
+    private boolean camOn = false;
     private boolean everyoneCamOn = true;
     private boolean audioMuted = false;
     private boolean textTranslationOn = false;
@@ -171,6 +170,16 @@ public final class MeetingClient extends RoomMessageHandler {
         return mConsumers;
     }
 
+    /**
+     *
+     * @param peerId
+     */
+    public void removeVideoConsumer(@NonNull String peerId) {
+        if (mSocket != null) {
+            mSocket.removeVideoConsumer(peerId);
+        }
+    }
+
     public String getEmail() {
         return email;
     }
@@ -224,6 +233,16 @@ public final class MeetingClient extends RoomMessageHandler {
         this.everyoneCamOn = everyoneCamOn;
     }
 
+    /**
+     *
+     * @param pId
+     */
+    public void pausePeerCam(@NonNull String pId) {
+        if (mSocket != null) {
+//            mSocket.pauseVideo(pId);
+        }
+    }
+
     public void updateTranslationLanguage(@NonNull String langCode) {
         try {
             mSocket.emitUpdateLanguage(langCode);
@@ -255,6 +274,26 @@ public final class MeetingClient extends RoomMessageHandler {
 //        this.audioMuted = mute;
     }
 
+    public void muteEveryoneLocally() {
+        if (mSocket != null) {
+            try {
+                mSocket.muteAudio();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public void unMuteEveryoneLocally() {
+        if (mSocket != null) {
+            try {
+                mSocket.unmuteAudio();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
     /**
      *
      * @param on
@@ -262,7 +301,7 @@ public final class MeetingClient extends RoomMessageHandler {
     public void setTextTranslation(boolean on) {
         if (mSocket.isConnected()) {
             try {
-                mSocket.emitTextTranslation(on);
+                mSocket.emitTextTranslation(on, false);
                 textTranslationOn = on;
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -270,8 +309,24 @@ public final class MeetingClient extends RoomMessageHandler {
         }
     }
 
+    /**
+     *
+     * @param on
+     */
     public void setVoiceTranslation(boolean on) {
-        // TODO
+        if (mSocket.isConnected()) {
+            try {
+                mSocket.emitTextTranslation(on, true);
+                voiceTranslationOn = on;
+                if (on) {
+                    muteEveryoneLocally();
+                } else {
+                    unMuteEveryoneLocally();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -324,14 +379,14 @@ public final class MeetingClient extends RoomMessageHandler {
             if (!camOn && this.camOn) {
                 mSocket.disableCam();
                 try {
-                    mSocket.emitVideoOpen();
+                    mSocket.emitVideoClose();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             } else {
                 mSocket.enableCam();
                 try {
-                    mSocket.emitVideoClose();
+                    mSocket.emitVideoOpen();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -384,9 +439,13 @@ public final class MeetingClient extends RoomMessageHandler {
         if (mStarted) {
             try {
                 this.mWorkerHandler.post(() -> {
-                    mSocket.disconnect();
-                    mSocket = null;
-                    mStarted = false;
+                    try {
+                        mSocket.disconnect();
+                        mSocket = null;
+                        mStarted = false;
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 });
             } catch (Exception ex) {
                 ex.printStackTrace();

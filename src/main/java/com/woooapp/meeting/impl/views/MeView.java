@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.Observable;
 
 import com.bumptech.glide.Glide;
 import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
@@ -24,6 +25,7 @@ import com.woooapp.meeting.lib.RoomClient;
 import com.woooapp.meeting.lib.model.Me;
 
 import org.webrtc.MediaStreamTrack;
+import org.webrtc.VideoTrack;
 
 import java.util.Objects;
 
@@ -84,6 +86,20 @@ public class MeView extends RelativeLayout {
                 setCamEnabled(me.isCamOn());
                 setHandRaisedState(me.isHandRaised());
             }
+        }
+
+        if (props.getVideoTrack() != null) {
+            props.getVideoTrack().addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+                @Override
+                public void onPropertyChanged(Observable sender, int propertyId) {
+                    VideoTrack vt = props.getVideoTrack().get();
+                    if (vt != null) {
+                        mBinding.wooPeerView.videoHidden.setVisibility(View.GONE);
+                    } else {
+                        mBinding.wooPeerView.videoHidden.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
         }
 
 //        if (MeProps.DeviceState.ON.equals(props.getCamState().get())) {
@@ -210,7 +226,7 @@ public class MeView extends RelativeLayout {
             mBinding.meInfoMic.setImageResource(R.drawable.baseline_mic_34);
             playAudioEffects();
         } else {
-            mBinding.meInfoMic.setImageResource(R.drawable.ic_mic_off_gray);
+            mBinding.meInfoMic.setImageResource(R.drawable.icon_mic_white_off);
             stopAudioEffect();
         }
     }

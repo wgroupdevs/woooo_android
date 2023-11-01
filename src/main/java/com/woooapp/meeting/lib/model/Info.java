@@ -13,6 +13,8 @@ public class Info {
     private boolean camOn = false;
     private boolean handRaised = false;
 
+    private String displayPicture;
+
     public String getId() {
         return "";
     }
@@ -49,6 +51,13 @@ public class Info {
         this.handRaised = handRaised;
     }
 
+    public String getDisplayPicture() {
+        return displayPicture;
+    }
+
+    public void setDisplayPicture(String displayPicture) {
+        this.displayPicture = displayPicture;
+    }
 } /**
  * end class [Info]
  */

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.volley.toolbox.ImageRequest;
 import com.woooapp.meeting.impl.utils.ClipboardCopy;
@@ -40,22 +41,28 @@ public final class MeetingMorePopup extends RelativeLayout {
     private final MeetingClient mClient;
     private Bitmap blurredBg;
     private ImageRequest mImageRequest;
+    private DismissCallback callback;
 
     /**
      *
      * @param context
      * @param parent
+     * @param bottomBarHeight
+     * @param client
+     * @param callback
      */
     public MeetingMorePopup(
             @NonNull final Context context,
             @NonNull RelativeLayout parent,
             int bottomBarHeight,
-            @NonNull MeetingClient client) {
+            @NonNull MeetingClient client,
+            @Nullable DismissCallback callback) {
         super(context);
         this.mContext = context;
         this.mParent = parent;
         this.mBottomBarHeight = bottomBarHeight;
         this.mClient = client;
+        this.callback = callback;
         this.uiManager = UIManager.getUIManager(mContext);
         this.mContentView = LayoutInflater.from(context).inflate(R.layout.meeting_more_popup, null);
         this.setContentView();
@@ -229,26 +236,6 @@ public final class MeetingMorePopup extends RelativeLayout {
     }
 
     public void dismiss() {
-//        WooAnimationUtil.hideView(this.mMainLayout, new AnimatorListenerAdapter() {
-//            @Override
-//            public void onAnimationEnd(Animator animation) {
-//                super.onAnimationEnd(animation);
-//                if (getChildAt(0) != null) {
-//                    removeViewAt(0);
-//                }
-//                mParent.removeView(MeetingMorePopup.this);
-//                if (blurredBg != null) {
-//                    blurredBg.recycle();
-//                }
-//            }
-//
-//            @Override
-//            public void onAnimationStart(Animator animation) {
-//                super.onAnimationStart(animation);
-//                Log.d(TAG, "<< Hide Animation Started >>");
-//            }
-//        });
-
         WooAnimationUtil.slideToBottom(this.mMainLayout, 800, new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -263,6 +250,9 @@ public final class MeetingMorePopup extends RelativeLayout {
                 mParent.removeView(MeetingMorePopup.this);
                 if (blurredBg != null) {
                     blurredBg.recycle();
+                }
+                if (callback != null) {
+                    callback.onDismiss();
                 }
             }
 
@@ -289,6 +279,10 @@ public final class MeetingMorePopup extends RelativeLayout {
             }
         }
         return false;
+    }
+
+    public interface DismissCallback {
+        void onDismiss();
     }
 
 } /** end class. */

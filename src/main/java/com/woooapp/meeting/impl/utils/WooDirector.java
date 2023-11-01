@@ -5,9 +5,14 @@ import android.content.res.AssetManager;
 import android.provider.Settings;
 
 import androidx.annotation.NonNull;
+
+import com.woooapp.meeting.net.models.RoomData;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -22,7 +27,12 @@ import eu.siacs.conversations.WooApplication;
 public final class WooDirector {
 
     private static WooDirector sInstance = null;
-    private WooDirector() {}
+    private final Map<String, Boolean> videoStateMap = new LinkedHashMap<>();
+    private RoomData roomData;
+    private boolean chatTranslationEnabled = false;
+    private WooDirector() {
+        this.videoStateMap.clear();
+    }
 
     @SuppressLint("HardwareIds")
     public String getDeviceUUID() {
@@ -34,6 +44,27 @@ public final class WooDirector {
         UUID devUUID = new UUID(androidId.hashCode(), (long) System.currentTimeMillis() << 32 | System.nanoTime());
         String uuid = devUUID.toString();
         return uuid;
+    }
+
+    /**
+     *
+     * @param pId
+     * @param videoOn
+     */
+    public void addPeerVideoState(String pId, boolean videoOn) {
+        videoStateMap.put(pId, videoOn);
+    }
+
+    /**
+     *
+     * @param pId
+     * @return
+     */
+    public boolean isCameraOn(@NonNull String pId) {
+        if (videoStateMap.get(pId) != null) {
+            return videoStateMap.get(pId);
+        }
+        return true;
     }
 
     /**
@@ -64,6 +95,45 @@ public final class WooDirector {
             }
         }
         return strBuff.toString();
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Nullable
+    public RoomData getRoomData() {
+        return roomData;
+    }
+
+    /**
+     *
+     * @param roomData
+     */
+    public void setRoomData(RoomData roomData) {
+        this.roomData = roomData;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public boolean isChatTranslationEnabled() {
+        return chatTranslationEnabled;
+    }
+
+    /**
+     *
+     * @param chatTranslationEnabled
+     */
+    public void setChatTranslationEnabled(boolean chatTranslationEnabled) {
+        this.chatTranslationEnabled = chatTranslationEnabled;
+    }
+
+    public void dispose() {
+        if (this.videoStateMap != null) {
+            this.videoStateMap.clear();
+        }
     }
 
     /**

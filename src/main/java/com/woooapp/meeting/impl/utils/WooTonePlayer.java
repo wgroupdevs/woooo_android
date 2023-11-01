@@ -12,9 +12,9 @@ import eu.siacs.conversations.services.MediaPlayer;
 /**
  * @author muneebahmad (ahmadgallian@yahoo.com)
  * Created On 3:57 pm 16/10/2023
- * <code>class</code> WooMediaPlayer.java
+ * <code>class</code> WooTonePlayer.java
  */
-public class WooMediaPlayer {
+public class WooTonePlayer {
 
     private final AssetFileDescriptor afd;
     private final FileDescriptor fd;
@@ -24,7 +24,7 @@ public class WooMediaPlayer {
      *
      * @param afd
      */
-    public WooMediaPlayer(@NonNull AssetFileDescriptor afd) {
+    public WooTonePlayer(@NonNull AssetFileDescriptor afd) {
         this.afd = afd;
         fd = afd.getFileDescriptor();
         this.mediaPlayer = new MediaPlayer();

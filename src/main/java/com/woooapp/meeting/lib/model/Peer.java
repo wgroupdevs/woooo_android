@@ -21,6 +21,7 @@ public class Peer extends Info {
     private DeviceInfo mDevice;
     private Set<String> mConsumers;
     private Set<String> mDataConsumers;
+    private boolean videoOn = false;
 
     public Peer(@NonNull JSONObject info) {
         mId = info.optString("id");
@@ -60,6 +61,14 @@ public class Peer extends Info {
 
     public void setDevice(DeviceInfo device) {
         this.mDevice = device;
+    }
+
+    public boolean isVideoOn() {
+        return videoOn;
+    }
+
+    public void setVideoOn(boolean videoOn) {
+        this.videoOn = videoOn;
     }
 
     public Set<String> getConsumers() {

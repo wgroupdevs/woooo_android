@@ -13,6 +13,7 @@ public class Chat {
     public static final int MESSAGE_TYPE_RECV = 0x01;
     private int messageType = -1;
     private Message message;
+    private String translation;
 
     /**
      *
@@ -39,4 +40,13 @@ public class Chat {
     public void setMessage(Message message) {
         this.message = message;
     }
+
+    public String getTranslation() {
+        return translation;
+    }
+
+    public void setTranslation(String translation) {
+        this.translation = translation;
+    }
+
 } /** end class. */
