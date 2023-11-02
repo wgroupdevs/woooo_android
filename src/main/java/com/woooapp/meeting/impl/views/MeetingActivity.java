@@ -29,6 +29,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -36,7 +37,11 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.core.app.ActivityCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -214,7 +219,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         }
 
         this.buttonEnd.setOnClickListener(view -> {
-            onBackPressed();
+            destroyMeeting();
         });
 
         this.drawerButton.setOnClickListener(view -> {
@@ -455,7 +460,209 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     }
 
     private void joinMeeting() {
-        initMeetingClient();
+        ApiManager.build(this).checkForPassword(mMeetingId, new ApiManager.ApiResult2() {
+            @Override
+            public void onResult(Call call, Response response) {
+                if (response != null) {
+                    try {
+                        String resp = response.body().string();
+                        Log.d(TAG, "<<< Check Password Response >>>> " + resp);
+                        JSONObject obj = new JSONObject(String.valueOf(resp));
+                        boolean value = obj.getBoolean("value");
+                        if (value) {
+                            runOnUiThread(() -> {
+                                try {
+                                    validatePassword();
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
+                            });
+                        } else {
+                            runOnUiThread(() -> {
+                                initMeetingClient();
+                            });
+                        }
+                    } catch (NullPointerException | IOException | JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, Object e) {
+                Log.d(TAG, "<<< Check Password call failed >>> " + e);
+            }
+        });
+    }
+
+    private void validatePassword() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.TransparentBgDialogStyle);
+        View v = LayoutInflater.from(this).inflate(R.layout.layout_dialog_meeting_password, null);
+        TextView tvMessage = v.findViewById(R.id.tvPassword);
+        final AppCompatEditText etPassword = v.findViewById(R.id.etPassword);
+        final Button buttonDone = v.findViewById(R.id.buttonOk);
+        final Button buttonCancel = v.findViewById(R.id.buttonCancel);
+        final ProgressBar progressBar = v.findViewById(R.id.progressBar);
+        tvMessage.setText("Meeting with id " + mMeetingId + " is protected by password. Kindly provide valid password to continue.");
+
+        builder.setView(v);
+
+        final AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+        buttonDone.setOnClickListener(view -> {
+            if (etPassword.getText().toString().isEmpty()) {
+                tvMessage.setText("Password is required");
+                tvMessage.setTextColor(Color.RED);
+            } else {
+                tvMessage.setText("Meeting with id " + mMeetingId + " is protected by password. Kindly provide valid password to continue.");
+                tvMessage.setTextColor(Color.WHITE);
+
+                buttonDone.setVisibility(View.GONE);
+                buttonCancel.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+                etPassword.setEnabled(false);
+
+                ApiManager.build(MeetingActivity.this).confirmPassword(mMeetingId, etPassword.getText().toString(), new ApiManager.ApiResult2() {
+                    @Override
+                    public void onResult(Call call, Response response) {
+                        if (response != null) {
+                            try {
+                                String resp = response.body().string();
+                                Log.d(TAG, "<< Confirm Password Response >>> " + resp);
+                                JSONObject obj = new JSONObject(resp);
+                                boolean value = obj.getBoolean("value");
+                                if (value) {
+                                    runOnUiThread(() -> {
+                                        initMeetingClient();
+                                        dialog.dismiss();
+                                    });
+                                } else {
+                                    runOnUiThread(() -> {
+                                        buttonDone.setVisibility(View.VISIBLE);
+                                        buttonCancel.setVisibility(View.VISIBLE);
+                                        progressBar.setVisibility(View.GONE);
+                                        etPassword.setEnabled(true);
+
+                                        tvMessage.setText("Provided password is incorrect. Kindly provide valid password");
+                                        tvMessage.setTextColor(Color.RED);
+                                    });
+                                }
+                            } catch (NullPointerException | JSONException | IOException e) {
+                                e.printStackTrace();
+                                runOnUiThread(() -> {
+                                    dialog.dismiss();
+                                    UIManager.showErrorDialog(MeetingActivity.this,
+                                            "Error",
+                                            "Failed to validate password from server. Please try again later.",
+                                            "Ok",
+                                            R.drawable.ic_warning,
+                                            null);
+                                });
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Object e) {
+                        runOnUiThread(() -> {
+                            dialog.dismiss();
+                            UIManager.showErrorDialog(MeetingActivity.this,
+                                    "Error",
+                                    "Failed to validate password from server. Please try again later.",
+                                    "Ok",
+                                    R.drawable.ic_warning,
+                                    null);
+                        });
+                    }
+                });
+            }
+        });
+
+        buttonCancel.setOnClickListener(view -> {
+            dialog.cancel();
+            finish();
+        });
+    }
+
+    private void setPassword() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.TransparentBgDialogStyle);
+        View v = LayoutInflater.from(this).inflate(R.layout.layout_dialog_meeting_add_password, null);
+        final AppCompatEditText etPassword = v.findViewById(R.id.etPassword);
+        final Button buttonOk = v.findViewById(R.id.buttonOk);
+        final Button buttonCancel = v.findViewById(R.id.buttonCancel);
+        final ProgressBar progressBar = v.findViewById(R.id.progressBar);
+
+        builder.setView(v);
+
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+        buttonOk.setOnClickListener(view -> {
+            if (etPassword.getText().toString().isEmpty()) {
+                etPassword.setHintTextColor(Color.RED);
+                etPassword.setHint("* Password is required");
+            } else {
+                etPassword.setEnabled(false);
+                buttonCancel.setVisibility(View.GONE);
+                buttonOk.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+
+                ApiManager.build(MeetingActivity.this).applyPassword(mMeetingId, etPassword.getText().toString(), new ApiManager.ApiResult2() {
+                    @Override
+                    public void onResult(Call call, Response response) {
+                        if (response != null) {
+                            try {
+                                String resp = response.body().string();
+                                Log.d(TAG, "<<< Add password response >>> " + resp);
+                                runOnUiThread(() -> {
+                                    progressBar.setVisibility(View.GONE);
+                                    dialog.dismiss();
+                                    try {
+                                        showCommonPopup("Password added successfully", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                                    } catch (Exception ex) {
+                                        ex.printStackTrace();
+                                    }
+                                    mMeetingClient.setPasswordSet(true);
+                                });
+                            } catch (NullPointerException | IOException e) {
+                                e.printStackTrace();
+                                runOnUiThread(() -> {
+                                    dialog.dismiss();
+                                    UIManager.showErrorDialog(MeetingActivity.this,
+                                            "Error",
+                                            "Failed to set password. Please try again later.",
+                                            "Ok",
+                                            R.drawable.ic_warning,
+                                            null);
+                                });
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Object e) {
+                        runOnUiThread(() -> {
+                            dialog.dismiss();
+                            UIManager.showErrorDialog(MeetingActivity.this,
+                                    "Error",
+                                    "Failed to set password. Please try again later.",
+                                    "Ok",
+                                    R.drawable.ic_warning,
+                                    null);
+                        });
+                    }
+                });
+            }
+        });
+
+        buttonCancel.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
     }
 
     /**
@@ -975,19 +1182,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         }
     }
 
-    public void destroyMeeting() {
-        if (this.mMeetingClient != null) {
-            this.mMeetingClient.close();
-            this.mMeetingClient = null;
-        }
-        if (mRoomStore != null) {
-            mRoomStore = null;
-        }
-//        mBinding.meView.dispose();
-        // TODO Mark check
-//        mBinding.peerView.dispose();
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -1188,7 +1382,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     public void onResult(Call call, Response response) {
                         try {
                             Log.d(TAG, "<< MIC MUTED RESPONSE >>> " + response.body().string());
-                        } catch (IOException e) {
+                        } catch (NullPointerException | IOException e) {
                             e.printStackTrace();
                         }
                     }
@@ -1398,6 +1592,13 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     }
                 }
                 return true;
+            case WooEvents.EVENT_ADD_PASSWORD:
+                try {
+                    setPassword();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                return true;
             default:
                 return false;
         }
@@ -1533,7 +1734,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     @Override
                     public void onPositiveButton(@Nullable Object sender, @Nullable Object data) {
                         if (finishOnDismiss) {
-                            onBackPressed();
+                            destroyMeeting();
                         }
                     }
 
@@ -1677,7 +1878,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             List<String> messages = new LinkedList<>();
             messages.add("Meeting in progress");
             messages.add("Click to go back to rooom");
-            uiManager.sendNotification(this, "Woooo", messages, false, getClass());
+            uiManager.sendNotification(this, "Meeting", messages, false, getClass());
         }
     }
 
@@ -1711,15 +1912,30 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         WooEvents.getInstance().removeHandler(this.callbackHandler);
     }
 
-    @Override
-    protected void onDestroy() {
-        destroyMeeting();
+    public void destroyMeeting() {
+        if (this.mMeetingClient != null) {
+            this.mMeetingClient.close();
+            this.mMeetingClient = null;
+        }
+        if (mRoomStore != null) {
+            mRoomStore = null;
+        }
         chatList.clear();
+        WooDirector.getInstance().dispose();
         destroyCallbackHandler();
         if (droidAudioManager != null) {
             droidAudioManager.setSpeakerphoneOn(false);
             droidAudioManager.setMode(AudioManager.MODE_NORMAL);
         }
+        new Handler().postDelayed(() -> {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            finish();
+        }, 1000);
+    }
+
+    @Override
+    protected void onDestroy() {
+        destroyMeeting();
         super.onDestroy();
     }
 
@@ -1728,13 +1944,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         if (mSideMenuOpened) {
             closeDrawer();
         } else {
-            WooDirector.getInstance().dispose();
-            new Handler().postDelayed(() -> {
-                destroyMeeting();
-                chatList.clear();
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-                finish();
-            }, 1000);
+            sendBackgroundNotification();
         }
     }
 

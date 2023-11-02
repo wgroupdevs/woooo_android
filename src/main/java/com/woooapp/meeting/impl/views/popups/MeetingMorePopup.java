@@ -22,6 +22,7 @@ import com.woooapp.meeting.impl.utils.WooEvents;
 import com.woooapp.meeting.impl.views.UIManager;
 import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
 import com.woooapp.meeting.lib.MeetingClient;
+
 import eu.siacs.conversations.R;
 
 /**
@@ -44,7 +45,6 @@ public final class MeetingMorePopup extends RelativeLayout {
     private DismissCallback callback;
 
     /**
-     *
      * @param context
      * @param parent
      * @param bottomBarHeight
@@ -167,6 +167,22 @@ public final class MeetingMorePopup extends RelativeLayout {
         } else {
             buttonKickOut.setVisibility(View.GONE);
         }
+
+        View buttonPassword = mContentView.findViewById(R.id.morePopupPassword);
+        TextView tvPassword = mContentView.findViewById(R.id.tvPassword);
+        if (mClient.getRole() == MeetingClient.Role.ADMIN) {
+            if (mClient.isPasswordSet()) {
+                tvPassword.setText("Change Password");
+            }
+            buttonPassword.setOnClickListener(view -> {
+                WooEvents.getInstance().notify(WooEvents.EVENT_ADD_PASSWORD, true);
+                dismiss();
+            });
+
+        } else {
+            buttonPassword.setVisibility(View.GONE);
+        }
+
 //        final ImageView ivThumb = mContentView.findViewById(R.id.morePopupIvThumb);
 //        TextView tvName = mContentView.findViewById(R.id.morePopupTvName);
 //
@@ -285,4 +301,6 @@ public final class MeetingMorePopup extends RelativeLayout {
         void onDismiss();
     }
 
-} /** end class. */
+} /**
+ * end class.
+ */

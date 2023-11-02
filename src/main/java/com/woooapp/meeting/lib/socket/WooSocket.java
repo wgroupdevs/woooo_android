@@ -81,6 +81,7 @@ public class WooSocket {
     private Device mMediaSoupDevice;
     private SendTransport mSendTransport;
     private final Map<String, RecvTransport> mRecvTransports = new HashMap<>();
+    private final Set<String> consumerStorageIds = new HashSet<>();
     private AudioTrack mLocalAudioTrack;
     private VideoTrack mLocalVideoTrack;
     private Producer mMicProducer;
@@ -119,6 +120,8 @@ public class WooSocket {
         this.mMeetingClient = meetingClient;
         this.mPeerConnectionUtils = new PeerConnectionUtils();
 
+        consumerStorageIds.clear();
+
         // Thread Handlers
         this.mMainHandler = new Handler(Looper.getMainLooper());
         this.mWorkHandler = workHandler;
@@ -154,17 +157,21 @@ public class WooSocket {
     }
 
     @WorkerThread
-    public boolean disconnect() {
+    public void disconnect() {
         // Say Bye
-        mStore.setRoomState(RoomClient.ConnectionState.CLOSED);
+//        mStore.setRoomState(RoomClient.ConnectionState.CLOSED);
         emitClose();
         if (mSocket != null && mSocket.isActive()) {
-            if (disposeTransport()) {
-                mWorkHandler.post(() -> {
+//            if (disposeTransport()) {
+//                mWorkHandler.postDelayed(() -> {
+                    this.disposeCamMic();
+
                     // Remove the peer
-//                    for (Map.Entry<String, String> entry : producerSockIds.entrySet()) {
-//                        mStore.removePeer(entry.getValue());
-//                    }
+                    for (Map.Entry<String, String> entry : producerSockIds.entrySet()) {
+                        mStore.removePeer(entry.getValue());
+                    }
+
+                    disposeTransport();
 
                     // dispose audio track.
                     if (mLocalAudioTrack != null) {
@@ -194,15 +201,20 @@ public class WooSocket {
                         ex.printStackTrace();
                     }
 
-                    mMainHandler.post(Logger::freeHandler);
                     this.audioProducersIds.clear();
                     this.videoProducerId = null;
 
-                    // Close socket
-//                    mWorkHandler.post(() -> {
-//                    });
+                    if (mMediaSoupDevice != null) {
+                        try {
+                            mMediaSoupDevice.dispose();
+                            mMediaSoupDevice = null;
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    }
 
-//                    mCompositeDisposable.dispose();
+                    mMainHandler.post(Logger::freeHandler);
+                    mRecvTransports.clear();
 
                     destroyed = true;
                     sInstance = null;
@@ -215,10 +227,9 @@ public class WooSocket {
 
                     // Deliberate call to GC
                     Runtime.getRuntime().gc();
-                });
-            }
+//                }, 2000);
+//            }
         }
-        return destroyed;
     }
 
     private boolean disposeCamMic() {
@@ -233,8 +244,8 @@ public class WooSocket {
         return true;
     }
 
-    private boolean disposeTransport() {
-//        removePeers();
+    private void disposeTransport() {
+        removeConsumers();
         if (mSendTransport != null) {
             try {
                 mSendTransport.close();
@@ -245,27 +256,29 @@ public class WooSocket {
             }
         }
         Log.d(TAG, "<< Disposing RecvTransport Map with size >> " + mRecvTransports.size());
-        for (Map.Entry<String, RecvTransport> entry : mRecvTransports.entrySet()) {
-            try {
-                entry.getValue().close();
-                entry.getValue().dispose();
-                mRecvTransports.remove(entry.getKey());
-                Log.d(TAG, "<< Recv Transport >> [" + entry.getValue().getId() + "] disposed.");
-            } catch (Exception ex) {
-                ex.printStackTrace();
+//        for (Map.Entry<String, RecvTransport> entry : mRecvTransports.entrySet()) {
+//            Log.d(TAG, "Trying to dispose transport with UUID/StorageID >>> " + entry.getKey());
+//            if (entry.getValue() != null) {
+//                if (!entry.getValue().isClosed()) {
+//                    try {
+//                        entry.getValue().close();
+//                        entry.getValue().dispose();
+//                        Log.d(TAG, "<< Recv Transport >> [" + entry.getValue().getId() + "] disposed.");
+//                    } catch (Exception ex) {
+//                        ex.printStackTrace();
+//                    }
+//                }
+//            }
+//        }
+        for (String storageId : consumerStorageIds) {
+            RecvTransport transport = mRecvTransports.get(storageId);
+            if (transport != null) {
+                transport.close();
+                transport.dispose();
+                Log.d(TAG, "Disposed Recv Transport for Storage Id >>> " + storageId);
+//                mRecvTransports.remove(storageId);
             }
         }
-//        mRecvTransports.clear();
-
-        if (mMediaSoupDevice != null) {
-            try {
-                mMediaSoupDevice.dispose();
-                mMediaSoupDevice = null;
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-        return true;
     }
 
     private void removeConsumers() {
@@ -444,6 +457,7 @@ public class WooSocket {
                             iceCandidates.toString(),
                             dtlsParameters.toString());
                     mRecvTransports.put(storageId, recvTransport);
+                    consumerStorageIds.add(storageId);
                     Log.d(TAG, "<<< Created Recv Transport (RX) >>>");
                     Log.d(TAG, "Ice Parameters >> " + iceParameters);
                     Log.d(TAG, "Ice Candidates >> " + iceCandidates);
@@ -491,7 +505,7 @@ public class WooSocket {
                                                     Log.d(TAG, "<< Members has producerSocketId >> " + producerSockId);
                                                     final String username = member.getUsername();
                                                     final String email = member.getEmail();
-                                                    final String finalUsername = username != null ? username : email;
+                                                    final String finalUsername = username != null ? username : "Unknown";
                                                     // TODO Mark Check
                                                     try {
                                                         JSONObject peer = new JSONObject();
@@ -503,7 +517,11 @@ public class WooSocket {
                                                         }
                                                         peer.put("device", null);
                                                         mStore.addPeer(producerSockId, peer);
-                                                        WooEvents.getInstance().notify(WooEvents.EVENT_NEW_PEER_JOINED, finalUsername.isEmpty() ? "" : finalUsername);
+                                                        if (finalUsername != null) {
+                                                            WooEvents.getInstance().notify(WooEvents.EVENT_NEW_PEER_JOINED, finalUsername.isEmpty() ? "" : finalUsername);
+                                                        } else {
+                                                            WooEvents.getInstance().notify(WooEvents.EVENT_NEW_PEER_JOINED, "Unknown");
+                                                        }
                                                         Log.d(TAG, "<< Created Peer >> " + peer);
 
                                                         // Peer id sent update peer form there.
@@ -635,6 +653,7 @@ public class WooSocket {
                                     iceCandidates.toString(),
                                     dtlsParameters.toString());
                     mRecvTransports.put(storageId, recvTransport);
+                    consumerStorageIds.add(storageId);
 
                     emitStartConsumingBack(producerId, producerSockId);
                 } catch (JSONException | MediasoupException e) {
@@ -681,11 +700,15 @@ public class WooSocket {
                                                         if (finalUsername != null) {
                                                             peer.put("displayName", finalUsername.isEmpty() ? "" : finalUsername);
                                                         } else {
-                                                            peer.put("displayName", "?");
+                                                            peer.put("displayName", "Unknown");
                                                         }
                                                         peer.put("device", null);
                                                         mStore.addPeer(producerSockId, peer);
-                                                        WooEvents.getInstance().notify(WooEvents.EVENT_NEW_PEER_JOINED, finalUsername.isEmpty() ? "" : finalUsername);
+                                                        if (finalUsername != null) {
+                                                            WooEvents.getInstance().notify(WooEvents.EVENT_NEW_PEER_JOINED, finalUsername.isEmpty() ? "" : finalUsername);
+                                                        } else {
+                                                            WooEvents.getInstance().notify(WooEvents.EVENT_NEW_PEER_JOINED, "Unknown");
+                                                        }
                                                         Log.d(TAG, "<< Created Peer >> " + peer);
 
                                                         // Peer id sent update peer form there.
@@ -951,6 +974,14 @@ public class WooSocket {
         mSocket.on("kickout", args -> {
             if (args != null) {
                 Log.d(TAG, "<< ON EVENT Kickout From Admin >>> " + args[0]);
+            }
+        });
+
+        mSocket.on("newAdmin", args -> {
+            if (args != null) {
+                if (args.length > 0) {
+                    Log.d(TAG, "<<< Event newAdmin with payload -> " + args[0]);
+                }
             }
         });
     }
@@ -1250,6 +1281,30 @@ public class WooSocket {
         mSocket.emit("kickout", memberSocketId);
     }
 
+    /**
+     *
+     * @param accountUniqueId
+     * @param username
+     * @param email
+     * @param picture
+     */
+    public void emitNewAdmin(@NonNull String accountUniqueId,
+                             @NonNull String username,
+                             @NonNull String email,
+                             @Nullable String picture) throws JSONException {
+        if (mMeetingClient != null) {
+            JSONObject obj = new JSONObject();
+            obj.put("meetingId", mMeetingClient.getMeetingId());
+            JSONObject newAdmin = new JSONObject();
+            newAdmin.put("accountUniqueId", accountUniqueId);
+            newAdmin.put("username", username);
+            newAdmin.put("email", email);
+            newAdmin.put("picture", picture != null ? picture : "");
+            obj.put("newAdmin", newAdmin);
+            Log.d(TAG, "Emitting newAdmin with payload >>> " + obj);
+            mSocket.emit("newAdmin", obj);
+        }
+    }
     // End Emitters
 
     /**

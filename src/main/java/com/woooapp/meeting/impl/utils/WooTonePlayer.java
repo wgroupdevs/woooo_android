@@ -46,4 +46,8 @@ public class WooTonePlayer {
         mediaPlayer.start();
     }
 
+    public void release() {
+        mediaPlayer.release();
+    }
+
 } /** end class. */

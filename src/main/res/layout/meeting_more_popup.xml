@@ -287,15 +287,43 @@
 
     </LinearLayout>
 
-    <!-- ROW 3 -->
+    <!-- ROW 4 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:weightSum="3"
-        android:layout_marginTop="15sp">
+        android:gravity="center"
+        android:layout_marginTop="15sp"
+        android:padding="12sp"
+        android:clipChildren="false">
 
+        <LinearLayout
+            android:id="@+id/morePopupPassword"
+            android:layout_width="90sp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:clipChildren="false">
 
+            <ImageView
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:src="@drawable/ic_key" />
+
+            <TextView
+                android:id="@+id/tvPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8sp"
+                android:text="Security options"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

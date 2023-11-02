@@ -1,12 +1,14 @@
 package com.woooapp.meeting.net;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.fasterxml.jackson.databind.util.JSONPObject;
 
+import org.bouncycastle.cert.ocsp.Req;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -61,15 +63,19 @@ public final class ApiManager {
      * @param apiResultCallback
      */
     public void fetchCreatePreMeeting(@NonNull String jsonBody, @NonNull ApiResult2 apiResultCallback) {
+        String url = BASE_URL + EP_CREATE;
         OkHttpClient client = new OkHttpClient.Builder().build();
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(jsonBody, mediaType);
         okhttp3.Request request = new okhttp3.Request.Builder()
-                .url(BASE_URL + EP_CREATE)
+                .url(url)
                 .method("POST", body)
                 .addHeader("Content-Type", "application/json")
                 .addHeader("User-Agent", USER_AGENT)
                 .build();
+
+        Log.v(TAG, "[POST] : " + url);
+
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -88,12 +94,16 @@ public final class ApiManager {
      * @param apiResultCallback
      */
     public void fetchRoomData2(@NonNull String meetingId, @NonNull ApiResult2 apiResultCallback) {
+        final String url = BASE_URL + EP_GET_ROOM_DATA + meetingId;
         OkHttpClient client = new OkHttpClient.Builder().build();
         okhttp3.Request request = new okhttp3.Request.Builder()
-                .url(BASE_URL + EP_GET_ROOM_DATA + meetingId)
+                .url(url)
                 .addHeader("Content-Type", "application/json")
                 .addHeader("User-Agent", USER_AGENT)
                 .build();
+
+        Log.v(TAG, "[GET] : " + url);
+
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -113,15 +123,19 @@ public final class ApiManager {
      * @param apiResultCallback
      */
     public void putMembersData(@NonNull String jsonBody, @NonNull String meetingId, @NonNull ApiResult2 apiResultCallback) {
+        final String url = String.format("%s/meeting/%s", BASE_URL, meetingId);
         OkHttpClient client = new OkHttpClient.Builder().build();
         MediaType mediaType = MediaType.parse("application/json");
         RequestBody body = RequestBody.create(jsonBody, mediaType);
         okhttp3.Request request = new okhttp3.Request.Builder()
-                .url(String.format("%s/meeting/%s", BASE_URL, meetingId))
+                .url(url)
                 .method("PUT", body)
                 .addHeader("Content-Type", "application/json")
                 .addHeader("User-Agent", USER_AGENT)
                 .build();
+
+        Log.v(TAG, "[PUT] : " + url);
+
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -142,6 +156,7 @@ public final class ApiManager {
      * @param callback
      */
     public void putStates(@NonNull String url, @NonNull String meetingId, @NonNull String socketId, @Nullable ApiResult2 callback) {
+        final String url2 = String.format("%s/%s", url, meetingId);
         OkHttpClient client = new OkHttpClient.Builder().build();
         MediaType mediaType = MediaType.parse("application/json");
         try {
@@ -150,11 +165,13 @@ public final class ApiManager {
 
             RequestBody body = RequestBody.create(String.valueOf(obj), mediaType);
             Request request = new Request.Builder()
-                    .url(String.format("%s/s", url, meetingId))
+                    .url(url2)
                     .method("PUT", body)
                     .addHeader("Content-Type", "application/json")
                     .addHeader("User-Agent", USER_AGENT)
                     .build();
+
+            Log.v(TAG, "[PUT] : " + url2);
 
             client.newCall(request).enqueue(new Callback() {
                 @Override
@@ -195,6 +212,8 @@ public final class ApiManager {
                     .addHeader("User-Agent", USER_AGENT)
                     .build();
 
+            Log.v(TAG, "[POST] : " + URL_CHAT_TRANSLATION);
+
             client.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
@@ -210,6 +229,121 @@ public final class ApiManager {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     *
+     * @param meetingId
+     * @param password
+     * @param callback
+     */
+    public void applyPassword(@NonNull String meetingId,
+                              @NonNull String password,
+                              @Nullable ApiResult2 callback) {
+        final String url = String.format("%s/meeting/password/%s", BASE_URL, meetingId);
+        OkHttpClient client = new OkHttpClient.Builder().build();
+        MediaType mediaType = MediaType.parse("application/json");
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("password", password);
+
+            RequestBody body = RequestBody.create(String.valueOf(obj), mediaType);
+
+            Request request = new Request.Builder()
+                    .url(url)
+                    .method("PUT", body)
+                    .addHeader("Content-Type", "application/json")
+                    .addHeader("User-Agent", USER_AGENT)
+                    .build();
+
+            Log.v(TAG, "[PUT] : " + url);
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    if (callback != null) callback.onFailure(call, e.getMessage());
+                }
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    if (callback != null) callback.onResult(call, response);
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     *
+     * @param meetingId
+     * @param callback
+     */
+    public void checkForPassword(@NonNull String meetingId, @Nullable ApiResult2 callback) {
+        final String url = String.format("%s/meeting/checkPass/%s", BASE_URL, meetingId);
+        OkHttpClient client = new OkHttpClient.Builder().build();
+        Request request = new Request.Builder()
+                .url(url)
+                .addHeader("Content-Type", "application/json")
+                .addHeader("User-Agent", USER_AGENT)
+                .build();
+
+        Log.v(TAG, "[GET] : " + url);
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                if (callback != null) callback.onFailure(call, e.getMessage());
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (callback != null) callback.onResult(call, response);
+            }
+        });
+    }
+
+    /**
+     *
+     * @param meetingId
+     * @param password
+     * @param callback
+     */
+    public void confirmPassword(@NonNull String meetingId,
+                                @NonNull String password,
+                                @Nullable ApiResult2 callback) {
+       try {
+           final String url = String.format("%s/meeting/confirmPass/%s", BASE_URL, meetingId);
+           JSONObject obj = new JSONObject();
+           obj.put("password", password);
+
+           OkHttpClient client = new OkHttpClient.Builder().build();
+           MediaType mediaType = MediaType.parse("application/json");
+
+           RequestBody body = RequestBody.create(String.valueOf(obj), mediaType);
+
+           Request request = new Request.Builder()
+                   .url(url)
+                   .method("POST", body)
+                   .addHeader("Content-Type", "application/json")
+                   .addHeader("User-Agent", USER_AGENT)
+                   .build();
+
+           Log.v(TAG, "[POST] : " + url);
+
+           client.newCall(request).enqueue(new Callback() {
+               @Override
+               public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                   if (callback != null) callback.onFailure(call, e.getMessage());
+               }
+
+               @Override
+               public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    if (callback != null) callback.onResult(call, response);
+               }
+           });
+       } catch (JSONException ex) {
+           ex.printStackTrace();
+       }
     }
 
     public interface ApiResult2 {

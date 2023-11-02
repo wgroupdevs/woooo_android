@@ -47,6 +47,7 @@ public final class MeetingClient extends RoomMessageHandler {
     private boolean voiceTranslationOn = false;
     private String selectedLanguage = "English";
     private String selectedLanguageCode = "en";
+    private boolean passwordSet = false;
     private Role role = Role.USER;
 
     public enum ConnectionState {
@@ -427,6 +428,15 @@ public final class MeetingClient extends RoomMessageHandler {
             }
         }
     }
+
+    public boolean isPasswordSet() {
+        return passwordSet;
+    }
+
+    public void setPasswordSet(boolean passwordSet) {
+        this.passwordSet = passwordSet;
+    }
+
     /**
      *
      * @return

@@ -35,6 +35,7 @@ import java.util.List;
 
 import eu.siacs.conversations.BuildConfig;
 import eu.siacs.conversations.R;
+import eu.siacs.conversations.ui.HomeActivity;
 
 /**
  * @author muneebahmad (ahmadgallian@yahoo.com)
@@ -149,10 +150,10 @@ public final class UIManager {
                                  boolean cancellable,
                                  @NonNull Class<?> intentClass) {
         Intent intent = new Intent(activity, intentClass);
-        intent.addFlags(Intent.FLAG_ACTIVITY_RETAIN_IN_RECENTS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra("notification", true);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(activity);
-        stackBuilder.addParentStack(intentClass);
+        stackBuilder.addParentStack(HomeActivity.class);
         stackBuilder.addNextIntent(intent);
         PendingIntent pendingIntent = stackBuilder.getPendingIntent(0x9f, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
@@ -166,7 +167,7 @@ public final class UIManager {
         builder.setContentTitle("Woooo Meeting in Progress");
         builder.setStyle(inboxStyle);
         builder.setContentIntent(pendingIntent);
-        builder.setAutoCancel(false);
+        builder.setAutoCancel(cancellable);
         builder.setCategory(Notification.CATEGORY_CALL);
         NotificationManagerCompat nm = NotificationManagerCompat.from(activity);
 
