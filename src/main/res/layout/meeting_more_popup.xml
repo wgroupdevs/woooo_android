@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:background="@drawable/bg_rounded_dark_transulecent"
     android:orientation="vertical"
-    android:clipChildren="false">
+    android:clipChildren="false"
+    android:layout_margin="10sp">
 
     <!-- ROW 1 -->
     <LinearLayout
@@ -124,13 +125,41 @@
             <ImageView
                 android:layout_width="40sp"
                 android:layout_height="40sp"
-                android:src="@drawable/ic_wallpaper" />
+                android:src="@drawable/ic_send_picture_offline_white" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5sp"
-                android:text="Select background"
+                android:text="Select Background"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/morePopupPassword"
+            android:layout_width="90sp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:clipChildren="false">
+
+            <ImageView
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:src="@drawable/ic_key" />
+
+            <TextView
+                android:id="@+id/tvPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8sp"
+                android:text="Security options"
                 android:textColor="@android:color/white"
                 android:textSize="13sp"
                 android:textStyle="bold"
@@ -166,126 +195,98 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/morePopupButtonDisableCam"
-            android:layout_width="90sp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5sp"
-            android:foreground="?attr/selectableItemBackground"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/morePopupIvCam"
-                android:layout_width="40sp"
-                android:layout_height="40sp"
-                android:src="@drawable/ic_video_camera_white" />
-
-            <TextView
-                android:id="@+id/morePopupTvCam"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5sp"
-                android:text="Disable Everyone's camera"
-                android:textColor="@android:color/white"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:gravity="center_horizontal"/>
-
-        </LinearLayout>
-
     </LinearLayout>
 
     <!-- ROW 3 -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_marginTop="15sp"
-        android:padding="12sp"
-        android:clipChildren="false">
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:gravity="center"-->
+<!--        android:layout_marginTop="15sp"-->
+<!--        android:padding="12sp"-->
+<!--        android:clipChildren="false">-->
 
-        <LinearLayout
-            android:id="@+id/morePopupButtonCloseMemberVideo"
-            android:layout_width="90sp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5sp"
-            android:foreground="?attr/selectableItemBackground"
-            android:gravity="center"
-            android:orientation="vertical">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/morePopupButtonCloseMemberVideo"-->
+<!--            android:layout_width="90sp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="5sp"-->
+<!--            android:foreground="?attr/selectableItemBackground"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="vertical">-->
 
-            <ImageView
-                android:layout_width="40sp"
-                android:layout_height="40sp"
-                android:src="@drawable/ic_camera_off_white" />
+<!--            <ImageView-->
+<!--                android:layout_width="40sp"-->
+<!--                android:layout_height="40sp"-->
+<!--                android:src="@drawable/ic_camera_off_white" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5sp"
-                android:text="Close Member's Video"
-                android:textColor="@android:color/white"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:gravity="center_horizontal"/>
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="5sp"-->
+<!--                android:text="Close Member's Video"-->
+<!--                android:textColor="@android:color/white"-->
+<!--                android:textSize="13sp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:gravity="center_horizontal"/>-->
 
-        </LinearLayout>
+<!--        </LinearLayout>-->
 
-        <LinearLayout
-            android:id="@+id/morePopupButtonMuteMember"
-            android:layout_width="90sp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5sp"
-            android:foreground="?attr/selectableItemBackground"
-            android:gravity="center"
-            android:orientation="vertical">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/morePopupButtonMuteMember"-->
+<!--            android:layout_width="90sp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="5sp"-->
+<!--            android:foreground="?attr/selectableItemBackground"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="vertical">-->
 
-            <ImageView
-                android:layout_width="32sp"
-                android:layout_height="32sp"
-                android:src="@drawable/ic_shut_up_white" />
+<!--            <ImageView-->
+<!--                android:layout_width="32sp"-->
+<!--                android:layout_height="32sp"-->
+<!--                android:src="@drawable/ic_shut_up_white" />-->
 
-            <TextView
-                android:layout_width="120sp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="18sp"
-                android:text="Mute Member"
-                android:textColor="@android:color/white"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:gravity="center_horizontal"/>
+<!--            <TextView-->
+<!--                android:layout_width="120sp"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="18sp"-->
+<!--                android:text="Mute Member"-->
+<!--                android:textColor="@android:color/white"-->
+<!--                android:textSize="13sp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:gravity="center_horizontal"/>-->
 
-        </LinearLayout>
+<!--        </LinearLayout>-->
 
-        <LinearLayout
-            android:id="@+id/morePopupButtonKickMember"
-            android:layout_width="90sp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5sp"
-            android:foreground="?attr/selectableItemBackground"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clipChildren="false">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/morePopupButtonKickMember"-->
+<!--            android:layout_width="90sp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="5sp"-->
+<!--            android:foreground="?attr/selectableItemBackground"-->
+<!--            android:gravity="center"-->
+<!--            android:orientation="vertical"-->
+<!--            android:clipChildren="false">-->
 
-            <ImageView
-                android:layout_width="40sp"
-                android:layout_height="40sp"
-                android:src="@drawable/ic_kick_out_white" />
+<!--            <ImageView-->
+<!--                android:layout_width="40sp"-->
+<!--                android:layout_height="40sp"-->
+<!--                android:src="@drawable/ic_kick_out_white" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8sp"
-                android:text="Kick Out Member"
-                android:textColor="@android:color/white"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:gravity="center_horizontal"/>
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="8sp"-->
+<!--                android:text="Kick Out Member"-->
+<!--                android:textColor="@android:color/white"-->
+<!--                android:textSize="13sp"-->
+<!--                android:textStyle="bold"-->
+<!--                android:gravity="center_horizontal"/>-->
 
-        </LinearLayout>
+<!--        </LinearLayout>-->
 
-    </LinearLayout>
+<!--    </LinearLayout>-->
 
     <!-- ROW 4 -->
     <LinearLayout
@@ -297,33 +298,6 @@
         android:padding="12sp"
         android:clipChildren="false">
 
-        <LinearLayout
-            android:id="@+id/morePopupPassword"
-            android:layout_width="90sp"
-            android:layout_height="wrap_content"
-            android:layout_margin="5sp"
-            android:foreground="?attr/selectableItemBackground"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clipChildren="false">
-
-            <ImageView
-                android:layout_width="40sp"
-                android:layout_height="40sp"
-                android:src="@drawable/ic_key" />
-
-            <TextView
-                android:id="@+id/tvPassword"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8sp"
-                android:text="Security options"
-                android:textColor="@android:color/white"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                android:gravity="center_horizontal"/>
-
-        </LinearLayout>
 
     </LinearLayout>
 

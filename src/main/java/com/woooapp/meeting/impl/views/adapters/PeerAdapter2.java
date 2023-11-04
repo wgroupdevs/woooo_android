@@ -402,6 +402,7 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
                 case WooEvents.EVENT_PEER_HAND_RAISED:
                 case WooEvents.EVENT_PEER_MIC_MUTED:
                 case WooEvents.EVENT_PEER_MIC_UNMUTED:
+                case WooEvents.EVENT_PEER_ADAPTER_NOTIFY:
                     if (msg.obj != null) {
                         notifyDataSetChanged();
                     }

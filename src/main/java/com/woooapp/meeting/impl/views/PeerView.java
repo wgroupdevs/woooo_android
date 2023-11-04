@@ -5,13 +5,16 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
@@ -28,6 +31,7 @@ import com.woooapp.meeting.lib.PeerConnectionUtils;
 import com.woooapp.meeting.lib.model.Peer;
 import com.woooapp.meeting.net.models.RoomData;
 
+import org.json.JSONException;
 import org.webrtc.MediaStreamTrack;
 
 import java.net.MalformedURLException;
@@ -125,6 +129,49 @@ public class PeerView extends RelativeLayout {
         this.props = props;
         // set view model into included layout
         mBinding.wooPeerView.setWooPeerViewProps(props);
+
+        if (meetingClient != null) {
+            if (meetingClient.getRole() == MeetingClient.Role.ADMIN) {
+                if (props.getPeer() != null) {
+                    Peer p = (Peer) props.getPeer().get();
+                    if (p != null) {
+                        mBinding.peerInfoMore.setVisibility(View.VISIBLE);
+                        mBinding.peerInfoMore.setOnClickListener(view -> {
+                            PopupMenu menu = new PopupMenu(getContext(), view);
+                            menu.getMenuInflater().inflate(R.menu.meeting_admin_peer_popup, menu.getMenu());
+                            menu.setOnMenuItemClickListener(item -> {
+                                switch (item.getItemId()) {
+                                    case R.id.menuItemMute:
+                                        meetingClient.muteMember(p.getId());
+                                        return true;
+                                    case R.id.menuItemCam:
+                                        meetingClient.turnMemberCamOff(p.getId());
+                                        return true;
+                                    case R.id.menuItemKickout:
+                                        meetingClient.kickoutMember(p.getId());
+                                        return true;
+                                    case R.id.menuItemMakeAdmin:
+                                        try {
+                                            meetingClient.makeNewAdmin(p);
+                                            return true;
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        return false;
+                                }
+                                return false;
+                            });
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                                menu.setForceShowIcon(true);
+                            }
+                            menu.show();
+                        });
+                    }
+                }
+            } else {
+                mBinding.peerInfoMore.setVisibility(View.GONE);
+            }
+        }
 
         if (props.getPeer() != null) {
             Peer p = (Peer) props.getPeer().get();

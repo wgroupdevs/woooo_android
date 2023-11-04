@@ -82,6 +82,14 @@
                     android:src="@drawable/ic_camera_off_gray"
                     android:visibility="gone"/>
 
+                <ImageView
+                    android:id="@+id/peerInfoMore"
+                    android:layout_width="22sp"
+                    android:layout_height="22sp"
+                    android:src="@drawable/ic_menu_dots_vertical_white"
+                    android:layout_marginLeft="5sp"
+                    android:layout_marginRight="5sp"/>
+
             </LinearLayout>
 
             <LinearLayout

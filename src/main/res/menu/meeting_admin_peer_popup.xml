@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menuItemMute"
+        android:title="Mute"
+        android:icon="@drawable/ic_speaker_off"
+        android:iconTint="@color/white"/>
+
+    <item
+        android:id="@+id/menuItemCam"
+        android:title="Turn Off Camera"
+        android:icon="@drawable/ic_camera_off_white"
+        android:iconTint="@color/white"/>
+
+    <item
+        android:id="@+id/menuItemKickout"
+        android:title="Remove"
+        android:icon="@drawable/ic_kick_out_white"
+        android:iconTint="@color/white"/>
+
+    <item
+        android:id="@+id/menuItemMakeAdmin"
+        android:title="Add Admin"
+        android:icon="@drawable/ic_add_white_24dp"
+        android:iconTint="@color/white"/>
+
+</menu>

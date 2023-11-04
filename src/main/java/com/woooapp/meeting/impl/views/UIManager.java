@@ -138,6 +138,38 @@ public final class UIManager {
 
     /**
      *
+     * @param context
+     * @param title
+     * @param message
+     * @param callback
+     */
+    public static void showInfoDialog(@NonNull Context context,
+                               @NonNull String title,
+                               @NonNull String message,
+                               @Nullable DialogCallback callback) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.TransparentBgDialogStyle);
+        View v = LayoutInflater.from(context).inflate(R.layout.layout_dialog_info, null);
+        TextView tvTitle = v.findViewById(R.id.tvTitle);
+        TextView tvMessage = v.findViewById(R.id.tvMessage);
+        Button buttonOk = v.findViewById(R.id.buttonOk);
+
+        tvTitle.setText(title);
+        tvMessage.setText(message);
+        builder.setView(v);
+        final AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+        buttonOk.setOnClickListener(view -> {
+            if (callback != null) {
+                callback.onPositiveButton(view, null);
+            }
+        });
+    }
+
+    /**
+     *
      * @param activity
      * @param title
      * @param messages

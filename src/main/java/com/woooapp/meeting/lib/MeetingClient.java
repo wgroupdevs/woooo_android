@@ -9,11 +9,14 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.woooapp.meeting.impl.utils.WooDirector;
 import com.woooapp.meeting.impl.utils.WooEvents;
 import com.woooapp.meeting.impl.views.UIManager;
 import com.woooapp.meeting.lib.lv.RoomStore;
+import com.woooapp.meeting.lib.model.Peer;
 import com.woooapp.meeting.lib.socket.WooSocket;
 import com.woooapp.meeting.net.models.Message;
+import com.woooapp.meeting.net.models.RoomData;
 
 import org.json.JSONException;
 
@@ -67,7 +70,6 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     /**
-     *
      * @param context
      * @param roomStore
      * @param meetingId
@@ -90,7 +92,6 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     /**
-     *
      * If permissions in activity are granted, call this to start the socket
      * for meeting.
      */
@@ -134,7 +135,6 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     /**
-     *
      * @return
      */
     @Nullable
@@ -172,7 +172,6 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     /**
-     *
      * @param peerId
      */
     public void removeVideoConsumer(@NonNull String peerId) {
@@ -235,7 +234,6 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     /**
-     *
      * @param pId
      */
     public void pausePeerCam(@NonNull String pId) {
@@ -257,7 +255,6 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     /**
-     *
      * @param mute
      */
     public void setEveryonesAudioMuted(boolean mute) {
@@ -296,7 +293,6 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     /**
-     *
      * @param on
      */
     public void setTextTranslation(boolean on) {
@@ -311,7 +307,6 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     /**
-     *
      * @param on
      */
     public void setVoiceTranslation(boolean on) {
@@ -331,7 +326,6 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     /**
-     *
      * @return
      */
     public boolean isTextTranslationOn() {
@@ -339,7 +333,6 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     /**
-     *
      * @return
      */
     public boolean isVoiceTranslationOn() {
@@ -397,7 +390,6 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     /**
-     *
      * @param raised
      */
     public void setMeHandRaised(boolean raised) {
@@ -438,7 +430,51 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     /**
-     *
+     * @param peerId
+     */
+    public void muteMember(@NonNull String peerId) {
+        if (mSocket != null) {
+            mSocket.emitMuteMember(peerId);
+        }
+    }
+
+    /**
+     * @param peerId
+     */
+    public void turnMemberCamOff(@NonNull String peerId) {
+        if (mSocket != null) {
+            mSocket.emitCloseMemberVideo(peerId);
+        }
+    }
+
+    /**
+     * @param peerId
+     */
+    public void kickoutMember(@NonNull String peerId) {
+        if (mSocket != null) {
+            mSocket.emitKickOutMember(peerId);
+        }
+    }
+
+    /**
+     * @param peer
+     */
+    public void makeNewAdmin(@NonNull Peer peer) throws JSONException {
+        if (mSocket != null) {
+            Log.d(TAG, "Adding new Admin ...");
+            if (WooDirector.getInstance().getRoomData() != null) {
+                if (WooDirector.getInstance().getRoomData().getMembers() != null) {
+                    for (RoomData.Member member : WooDirector.getInstance().getRoomData().getMembers()) {
+                        if (member.getSocketId().equals(peer.getId())) {
+                            mSocket.emitNewAdmin(member.getAccountUniqueId(), member.getUsername(), member.getEmail(), "");
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * @return
      */
     public boolean isClosed() {
@@ -465,4 +501,6 @@ public final class MeetingClient extends RoomMessageHandler {
         }
     }
 
-} /** end class. */
+} /**
+ * end class.
+ */

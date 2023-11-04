@@ -70,9 +70,9 @@ public class MemberAdapter extends BaseAdapter {
         vh.ivThumb = convertView.findViewById(R.id.ivThumb);
         vh.tvName = convertView.findViewById(R.id.tvName);
         vh.tvRole = convertView.findViewById(R.id.tvRole);
-        vh.buttonMute = convertView.findViewById(R.id.buttonMute);
-        vh.buttonCam = convertView.findViewById(R.id.buttonCam);
-        vh.buttonKickout = convertView.findViewById(R.id.buttonKickout);
+//        vh.buttonMute = convertView.findViewById(R.id.buttonMute);
+//        vh.buttonCam = convertView.findViewById(R.id.buttonCam);
+//        vh.buttonKickout = convertView.findViewById(R.id.buttonKickout);
 
         vh.tvName.setText(members.get(position).getName());
         vh.tvRole.setText(members.get(position).getRole() == MeetingClient.Role.ADMIN ? "ADMIN" : "MEMBER");
@@ -80,12 +80,11 @@ public class MemberAdapter extends BaseAdapter {
         if (role == MeetingClient.Role.ADMIN) {
             vh.tvRole.setBackgroundResource(R.drawable.bg_red_stroke);
             vh.tvRole.setTextColor(Color.parseColor("#ffd700"));
-            vh.buttonMute.setVisibility(View.GONE);
-            vh.buttonCam.setVisibility(View.GONE);
-            vh.buttonKickout.setVisibility(View.GONE);
+//            vh.buttonMute.setVisibility(View.GONE);
+//            vh.buttonCam.setVisibility(View.GONE);
+//            vh.buttonKickout.setVisibility(View.GONE);
         } else {
-            vh.tvRole.setBackgroundResource(R.drawable.bg_white_stroke);
-            vh.tvRole.setTextColor(Color.WHITE);
+            vh.tvRole.setVisibility(View.GONE);
         }
         if (members.get(position).getPicture() != null) {
             try {
@@ -125,9 +124,9 @@ public class MemberAdapter extends BaseAdapter {
         ImageView ivThumb;
         TextView tvName;
         TextView tvRole;
-        LinearLayout buttonMute;
-        LinearLayout buttonCam;
-        LinearLayout buttonKickout;
+//        LinearLayout buttonMute;
+//        LinearLayout buttonCam;
+//        LinearLayout buttonKickout;
     }
 
 } /**

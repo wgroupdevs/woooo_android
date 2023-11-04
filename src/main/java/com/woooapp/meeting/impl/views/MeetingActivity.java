@@ -5,10 +5,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
@@ -42,6 +44,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationChannelCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -90,6 +95,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -107,11 +113,17 @@ import okhttp3.Response;
 public class MeetingActivity extends AppCompatActivity implements Handler.Callback {
     private static final String TAG = MeetingActivity.class.getSimpleName() + ".java";
     private static final int PERMISSIONS_REQ_CODE = 0x7b;
+    private static final int MEETING_NOTIFICATION_ID = 0x9f;
     private final String[] permissions = new String[]{
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.CAMERA,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.POST_NOTIFICATIONS
+    };
+    private final String[] permissions2 = new String[]{
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
     //    private ActivityMeetingBinding mBinding;
     private MeetingClient mMeetingClient;
@@ -184,6 +196,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private boolean memberAdded = false;
     private boolean morePopupVisible = false;
     private View mutingView;
+    private NotificationManagerCompat notificationManager;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -201,6 +214,8 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         this.droidAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         this.droidAudioManager.setSpeakerphoneOn(true);
 
+        this.notificationManager = NotificationManagerCompat.from(this);
+
         progressDialog = WooProgressDialog.make(this, "Setting up ...");
         progressDialog.show();
         createDrawer();
@@ -213,7 +228,11 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkForPermissions(permissions, PERMISSIONS_REQ_CODE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                checkForPermissions(permissions, PERMISSIONS_REQ_CODE);
+            } else {
+                checkForPermissions(permissions2, PERMISSIONS_REQ_CODE);
+            }
         } else {
             setup();
         }
@@ -1144,26 +1163,43 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
      * @param permissions
      * @param reqCode
      */
-    @TargetApi(Build.VERSION_CODES.M)
     private void checkForPermissions(String[] permissions, int reqCode) {
-        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED &&
-                checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED &&
-                checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            sendRequest(permissions, reqCode);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED &&
+                    checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED &&
+                    checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+                    checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                sendRequest(permissions, reqCode);
+            } else {
+                setup();
+            }
         } else {
-            setup();
+            if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED &&
+                    checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED &&
+                    checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                sendRequest(permissions2, reqCode);
+            } else {
+                setup();
+            }
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
     private void sendRequest(String[] permissions, int reqCode) {
-        if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE) &&
-                shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) &&
-                shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO) &&
-                shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE) &&
+                    shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) &&
+                    shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO) &&
+                    shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
+            } else {
+                requestPermissions(permissions, reqCode);
+            }
         } else {
-            requestPermissions(permissions, reqCode);
+            if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE) &&
+                    shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) &&
+                    shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
+            } else {
+                requestPermissions(permissions2, reqCode);
+            }
         }
     }
 
@@ -1180,25 +1216,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 checkForPermissions(permissions, PERMISSIONS_REQ_CODE);
             }
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        if (uiManager != null) {
-//            uiManager.cancelNotification(this);
-//        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-//        sendBackgroundNotification();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
     }
 
     @Override
@@ -1284,9 +1301,11 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 return true;
             case WooEvents.EVENT_TYPE_CONSUMER_CREATED:
                 Log.d(TAG, "<< Handler Event CONSUMER CREATED [" + msg.obj + "]");
+                fetchRoomData2();
                 return true;
             case WooEvents.EVENT_TYPE_CONSUME_BACK_CREATED:
                 Log.d(TAG, "<< Handler Event CONSUME BACK CREATED [" + msg.obj + "]");
+                fetchRoomData2();
                 return true;
             case WooEvents.EVENT_TYPE_PEER_DISCONNECTED:
                 Log.d(TAG, "<< Handler Event Peer Disconnected with name >> " + msg.obj);
@@ -1599,6 +1618,117 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     ex.printStackTrace();
                 }
                 return true;
+            case WooEvents.EVENT_RECEIVED_MUTE_EVERYONE:
+                if (mMeetingClient != null) {
+                    if (mMeetingClient.isMicOn()) {
+                        mMeetingClient.setMicOn(false);
+                    }
+                    try {
+                        runOnUiThread(() -> {
+                            showCommonPopup("Admin has muted everyone! Your mic has been turned off.", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                        });
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    return true;
+                }
+                return false;
+            case WooEvents.EVENT_RECEIVED_MUTE_MEMBER:
+                if (mMeetingClient != null) {
+                    if (mMeetingClient.isMicOn()) {
+                        mMeetingClient.setMicOn(false);
+                    }
+                    runOnUiThread(() -> {
+                        try {
+                            showCommonPopup("You have been muted by admin.", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    });
+                    return true;
+                }
+                return false;
+            case WooEvents.EVENT_RECEIVED_CAM_OFF_MEMBER:
+                if (mMeetingClient != null) {
+                    if (mMeetingClient.isCamOn()) {
+                        mMeetingClient.setCamOn(false);
+                    }
+                    runOnUiThread(() -> {
+                        try {
+                            showCommonPopup("Your camera has been turned off by admin.", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    });
+                    return true;
+                }
+                return false;
+            case WooEvents.EVENT_RECEIVED_KICKOUT:
+                if (mMeetingClient != null) {
+                    runOnUiThread(() -> {
+                        try {
+                            UIManager.showInfoDialog(MeetingActivity.this,
+                                    "Removed",
+                                    "You have been removed from meeting by admin.",
+                                    new UIManager.DialogCallback() {
+                                        @Override
+                                        public void onPositiveButton(@Nullable Object sender, @Nullable Object data) {
+                                            destroyMeeting();
+                                        }
+
+                                        @Override
+                                        public void onNeutralButton(@Nullable Object sender, @Nullable Object data) {
+
+                                        }
+
+                                        @Override
+                                        public void onNegativeButton(@Nullable Object sender, @Nullable Object data) {
+
+                                        }
+                                    });
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    });
+                    return true;
+                }
+                return false;
+            case WooEvents.EVENT_NEW_ADMIN_CREATED:
+                fetchRoomData2();
+                try {
+                    runOnUiThread(() -> {
+                        showCommonPopup("New Admin added successfully", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                    });
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                return true;
+            case WooEvents.EVENT_ON_NEW_ADMIN:
+                JSONObject obj = (JSONObject) msg.obj;
+                if (obj != null) {
+                    try {
+                        String accountUniqueId = obj.getString("accountUniqueId");
+                        if (accountUniqueId.equals(this.accountUniqueId)) {
+                            if (mMeetingClient != null) {
+                                if (mMeetingClient.getRole() != MeetingClient.Role.ADMIN) {
+                                    mMeetingClient.setRole(MeetingClient.Role.ADMIN);
+                                    try {
+                                        runOnUiThread(() -> {
+                                            showCommonPopup("You have been made admin", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                                        });
+                                        fetchRoomData2();
+                                        WooEvents.getInstance().notify(WooEvents.EVENT_PEER_ADAPTER_NOTIFY, "Update");
+                                    } catch (Exception ex) {
+                                        ex.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return true;
             default:
                 return false;
         }
@@ -1874,12 +2004,30 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     }
 
     private void sendBackgroundNotification() {
-        if (uiManager != null) {
-            List<String> messages = new LinkedList<>();
-            messages.add("Meeting in progress");
-            messages.add("Click to go back to rooom");
-            uiManager.sendNotification(this, "Meeting", messages, false, getClass());
+        String channelId = "Woooo_Meeting";
+        NotificationChannelCompat channelCompat =
+                new NotificationChannelCompat.Builder(channelId, NotificationManagerCompat.IMPORTANCE_HIGH)
+                        .setName("Woooo Meeting")
+                        .setDescription("Meeting in progress")
+                        .build();
+        notificationManager.createNotificationChannel(channelCompat);
+
+        Intent intent = new Intent(getApplicationContext(), MeetingActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0x9a, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.woooo_logo)
+                .setContentTitle("Woooo Meeting in progress")
+                .setContentText("Tap to go back to room")
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.woooo_logo))
+                .setOngoing(true)
+                .setContentIntent(pendingIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
         }
+        notificationManager.notify(MEETING_NOTIFICATION_ID, builder.build());
     }
 
     private void hideKeyboard() {
@@ -1934,9 +2082,43 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (notificationManager != null) {
+            notificationManager.cancel(MEETING_NOTIFICATION_ID);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        if (notificationManager != null && !isFinishing()) {
+//            moveTaskToBack(false);
+//            sendBackgroundNotification();
+//        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (notificationManager != null && !isFinishing()) {
+            moveTaskToBack(false);
+            sendBackgroundNotification();
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         destroyMeeting();
         super.onDestroy();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent != null) {
+            Log.d(TAG, "New Intent Received!");
+        }
     }
 
     @Override
@@ -1944,7 +2126,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         if (mSideMenuOpened) {
             closeDrawer();
         } else {
-            sendBackgroundNotification();
+            if (notificationManager != null && !isFinishing()) {
+                moveTaskToBack(false);
+                sendBackgroundNotification();
+            }
         }
     }
 

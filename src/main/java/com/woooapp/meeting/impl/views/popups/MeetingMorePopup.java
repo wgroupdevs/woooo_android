@@ -128,45 +128,45 @@ public final class MeetingMorePopup extends RelativeLayout {
             buttonMuteEveryone.setVisibility(View.GONE);
         }
 
-        View buttonDisableCam = mContentView.findViewById(R.id.morePopupButtonDisableCam);
-        if (mClient.getRole() == MeetingClient.Role.ADMIN) {
-            ImageView ivCam = mContentView.findViewById(R.id.morePopupIvCam);
-            TextView tvCam = mContentView.findViewById(R.id.morePopupTvCam);
-            if (mClient.isEveryoneCamOn()) {
-                ivCam.setImageResource(R.drawable.ic_camera_off_gray);
-                tvCam.setText("Disable Everyone's Camera");
-            } else {
-                ivCam.setImageResource(R.drawable.ic_video_camera_white);
-                tvCam.setText("Enable Everyone's Camera");
-            }
-            buttonDisableCam.setOnClickListener(view -> {
-                mClient.setEveryoneCamOn(!mClient.isEveryoneCamOn());
-                dismiss();
-            });
-        } else {
-            buttonDisableCam.setVisibility(View.GONE);
-        }
+//        View buttonDisableCam = mContentView.findViewById(R.id.morePopupButtonDisableCam);
+//        if (mClient.getRole() == MeetingClient.Role.ADMIN) {
+//            ImageView ivCam = mContentView.findViewById(R.id.morePopupIvCam);
+//            TextView tvCam = mContentView.findViewById(R.id.morePopupTvCam);
+//            if (mClient.isEveryoneCamOn()) {
+//                ivCam.setImageResource(R.drawable.ic_camera_off_gray);
+//                tvCam.setText("Disable Everyone's Camera");
+//            } else {
+//                ivCam.setImageResource(R.drawable.ic_video_camera_white);
+//                tvCam.setText("Enable Everyone's Camera");
+//            }
+//            buttonDisableCam.setOnClickListener(view -> {
+//                mClient.setEveryoneCamOn(!mClient.isEveryoneCamOn());
+//                dismiss();
+//            });
+//        } else {
+//            buttonDisableCam.setVisibility(View.GONE);
+//        }
 
-        View buttonCloseMemberVideo = mContentView.findViewById(R.id.morePopupButtonCloseMemberVideo);
-        if (mClient.getRole() == MeetingClient.Role.ADMIN) {
-            // TODO
-        } else {
-            buttonCloseMemberVideo.setVisibility(View.GONE);
-        }
+//        View buttonCloseMemberVideo = mContentView.findViewById(R.id.morePopupButtonCloseMemberVideo);
+//        if (mClient.getRole() == MeetingClient.Role.ADMIN) {
+//            // TODO
+//        } else {
+//            buttonCloseMemberVideo.setVisibility(View.GONE);
+//        }
 
-        View buttonMuteMember = mContentView.findViewById(R.id.morePopupButtonMuteMember);
-        if (mClient.getRole() == MeetingClient.Role.ADMIN) {
-            // TODO
-        } else {
-            buttonMuteMember.setVisibility(View.GONE);
-        }
+//        View buttonMuteMember = mContentView.findViewById(R.id.morePopupButtonMuteMember);
+//        if (mClient.getRole() == MeetingClient.Role.ADMIN) {
+//            // TODO
+//        } else {
+//            buttonMuteMember.setVisibility(View.GONE);
+//        }
 
-        View buttonKickOut = mContentView.findViewById(R.id.morePopupButtonKickMember);
-        if (mClient.getRole() == MeetingClient.Role.ADMIN) {
-            // TODO
-        } else {
-            buttonKickOut.setVisibility(View.GONE);
-        }
+//        View buttonKickOut = mContentView.findViewById(R.id.morePopupButtonKickMember);
+//        if (mClient.getRole() == MeetingClient.Role.ADMIN) {
+//            // TODO
+//        } else {
+//            buttonKickOut.setVisibility(View.GONE);
+//        }
 
         View buttonPassword = mContentView.findViewById(R.id.morePopupPassword);
         TextView tvPassword = mContentView.findViewById(R.id.tvPassword);

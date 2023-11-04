@@ -96,7 +96,7 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
             val username = account!!.displayName
             Log.d(TAG, "Account >> MeetingId[$meetingId], Email[$email], AccountUniqueID[$accountUniqueId], Picture[$picture], Username[$username]")
             intent = Intent(context, MeetingActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
             intent.putExtra("email", email)
             intent.putExtra("accountUniqueId", accountUniqueId)
             intent.putExtra("picture", picture)

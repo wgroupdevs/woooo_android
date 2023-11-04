@@ -59,74 +59,74 @@
 
         </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/buttonMute"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1"
-            android:gravity="center">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/buttonMute"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical"-->
+<!--            android:layout_weight="1"-->
+<!--            android:gravity="center">-->
 
-            <ImageView
-                android:id="@+id/ic_mute"
-                android:layout_width="match_parent"
-                android:layout_height="27sp"
-                android:src="@drawable/icon_mic_white_off" />
+<!--            <ImageView-->
+<!--                android:id="@+id/ic_mute"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="27sp"-->
+<!--                android:src="@drawable/icon_mic_white_off" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Mute"
-                android:textColor="@color/white"
-                android:textStyle="bold"/>
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Mute"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textStyle="bold"/>-->
 
-        </LinearLayout>
+<!--        </LinearLayout>-->
 
-        <LinearLayout
-            android:id="@+id/buttonCam"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1"
-            android:gravity="center">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/buttonCam"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical"-->
+<!--            android:layout_weight="1"-->
+<!--            android:gravity="center">-->
 
-        <ImageView
-            android:id="@+id/ic_cam"
-            android:layout_width="match_parent"
-            android:layout_height="27sp"
-            android:src="@drawable/ic_camera_off_white" />
+<!--        <ImageView-->
+<!--            android:id="@+id/ic_cam"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="27sp"-->
+<!--            android:src="@drawable/ic_camera_off_white" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Turn Off Camera"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:gravity="center"/>
-        </LinearLayout>
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Turn Off Camera"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textStyle="bold"-->
+<!--                android:gravity="center"/>-->
+<!--        </LinearLayout>-->
 
-        <LinearLayout
-            android:id="@+id/buttonKickout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1"
-            android:gravity="center">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/buttonKickout"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="vertical"-->
+<!--            android:layout_weight="1"-->
+<!--            android:gravity="center">-->
 
-        <ImageView
-            android:id="@+id/ic_kickout"
-            android:layout_width="match_parent"
-            android:layout_height="27sp"
-            android:src="@drawable/ic_kick_out_white" />
+<!--        <ImageView-->
+<!--            android:id="@+id/ic_kickout"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="27sp"-->
+<!--            android:src="@drawable/ic_kick_out_white" />-->
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Kickout"
-                android:textColor="@color/white"
-                android:textStyle="bold"/>
+<!--            <TextView-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="Kickout"-->
+<!--                android:textColor="@color/white"-->
+<!--                android:textStyle="bold"/>-->
 
-        </LinearLayout>
+<!--        </LinearLayout>-->
 
     </LinearLayout>
 

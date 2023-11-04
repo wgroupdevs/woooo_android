@@ -42,8 +42,10 @@ import org.webrtc.CameraVideoCapturer;
 import org.webrtc.VideoTrack;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -59,6 +61,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 
+import io.socket.emitter.Emitter;
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -164,69 +167,69 @@ public class WooSocket {
         if (mSocket != null && mSocket.isActive()) {
 //            if (disposeTransport()) {
 //                mWorkHandler.postDelayed(() -> {
-                    this.disposeCamMic();
+            this.disposeCamMic();
 
-                    // Remove the peer
-                    for (Map.Entry<String, String> entry : producerSockIds.entrySet()) {
-                        mStore.removePeer(entry.getValue());
-                    }
+            // Remove the peer
+            for (Map.Entry<String, String> entry : producerSockIds.entrySet()) {
+                mStore.removePeer(entry.getValue());
+            }
 
-                    disposeTransport();
+            disposeTransport();
 
-                    // dispose audio track.
-                    if (mLocalAudioTrack != null) {
-                        try {
-                            mLocalAudioTrack.setEnabled(false);
-                            mLocalAudioTrack.dispose();
-                            mLocalAudioTrack = null;
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
+            // dispose audio track.
+            if (mLocalAudioTrack != null) {
+                try {
+                    mLocalAudioTrack.setEnabled(false);
+                    mLocalAudioTrack.dispose();
+                    mLocalAudioTrack = null;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
 
-                    // dispose video track.
-                    try {
-                        if (mLocalVideoTrack != null) {
-                            mLocalVideoTrack.setEnabled(false);
-                            mLocalVideoTrack.dispose();
-                            mLocalVideoTrack = null;
-                        }
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
+            // dispose video track.
+            try {
+                if (mLocalVideoTrack != null) {
+                    mLocalVideoTrack.setEnabled(false);
+                    mLocalVideoTrack.dispose();
+                    mLocalVideoTrack = null;
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
 
-                    try {
-                        this.mPeerConnectionUtils.dispose();
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
+            try {
+                this.mPeerConnectionUtils.dispose();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
 
-                    this.audioProducersIds.clear();
-                    this.videoProducerId = null;
+            this.audioProducersIds.clear();
+            this.videoProducerId = null;
 
-                    if (mMediaSoupDevice != null) {
-                        try {
-                            mMediaSoupDevice.dispose();
-                            mMediaSoupDevice = null;
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
+            if (mMediaSoupDevice != null) {
+                try {
+                    mMediaSoupDevice.dispose();
+                    mMediaSoupDevice = null;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
 
-                    mMainHandler.post(Logger::freeHandler);
-                    mRecvTransports.clear();
+            mMainHandler.post(Logger::freeHandler);
+            mRecvTransports.clear();
 
-                    destroyed = true;
-                    sInstance = null;
+            destroyed = true;
+            sInstance = null;
 
-                    mSocket.disconnect();
-                    mSocketId = null;
-                    mConnected = false;
-                    Log.d(TAG, "<< Socket Disconnected! >>");
-                    WooEvents.getInstance().notify(WooEvents.EVENT_TYPE_SOCKET_DISCONNECTED, mSocketId);
+            mSocket.disconnect();
+            mSocketId = null;
+            mConnected = false;
+            Log.d(TAG, "<< Socket Disconnected! >>");
+            WooEvents.getInstance().notify(WooEvents.EVENT_TYPE_SOCKET_DISCONNECTED, mSocketId);
 
-                    // Deliberate call to GC
-                    Runtime.getRuntime().gc();
+            // Deliberate call to GC
+            Runtime.getRuntime().gc();
 //                }, 2000);
 //            }
         }
@@ -955,32 +958,33 @@ public class WooSocket {
         // ADMIN EVENTS
         mSocket.on("muteEveryone", args -> {
             if (args != null) {
-                Log.d(TAG, "<< ON EVENT Mute Everyone From Admin >>> " + args[0]);
+                Log.d(TAG, "<<< ON EVENT MUTE EVERYONE >>> " + args.toString());
+                WooEvents.getInstance().notify(WooEvents.EVENT_RECEIVED_MUTE_EVERYONE, true);
             }
         });
 
         mSocket.on("muteMember", args -> {
-            if (args != null) {
-                Log.d(TAG, "<< ON EVENT Mute Member from Admin >>> " + args[0]);
-            }
+            WooEvents.getInstance().notify(WooEvents.EVENT_RECEIVED_MUTE_MEMBER, true);
         });
 
         mSocket.on("CloseMemberVideo", args -> {
-            if (args != null) {
-                Log.d(TAG, "<< On EVENT Close Member Video from Admin >>> " + args[0]);
-            }
+            WooEvents.getInstance().notify(WooEvents.EVENT_RECEIVED_CAM_OFF_MEMBER, true);
         });
 
         mSocket.on("kickout", args -> {
-            if (args != null) {
-                Log.d(TAG, "<< ON EVENT Kickout From Admin >>> " + args[0]);
-            }
+            WooEvents.getInstance().notify(WooEvents.EVENT_RECEIVED_KICKOUT, true);
         });
 
         mSocket.on("newAdmin", args -> {
             if (args != null) {
                 if (args.length > 0) {
                     Log.d(TAG, "<<< Event newAdmin with payload -> " + args[0]);
+                    try {
+                        JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                        WooEvents.getInstance().notify(WooEvents.EVENT_ON_NEW_ADMIN, obj);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -1282,7 +1286,6 @@ public class WooSocket {
     }
 
     /**
-     *
      * @param accountUniqueId
      * @param username
      * @param email
@@ -1303,6 +1306,7 @@ public class WooSocket {
             obj.put("newAdmin", newAdmin);
             Log.d(TAG, "Emitting newAdmin with payload >>> " + obj);
             mSocket.emit("newAdmin", obj);
+            WooEvents.getInstance().notify(WooEvents.EVENT_NEW_ADMIN_CREATED, true);
         }
     }
     // End Emitters

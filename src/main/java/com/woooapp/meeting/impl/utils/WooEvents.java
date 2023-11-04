@@ -57,6 +57,14 @@ public final class WooEvents {
     public static final int EVENT_NETWORK_CONNECTIVITY_CHANGED    = 0x27;
     public static final int EVENT_VOICE_TRANSLATION_RECEIVED      = 0x28;
     public static final int EVENT_ADD_PASSWORD                    = 0x29;
+    public static final int EVENT_RECEIVED_MUTE_EVERYONE          = 0x30;
+    public static final int EVENT_RECEIVED_MUTE_MEMBER            = 0x31;
+    public static final int EVENT_RECEIVED_CAM_OFF_MEMBER         = 0x32;
+    public static final int EVENT_RECEIVED_KICKOUT                = 0x33;
+//    public static final int EVENT_CREATED_NEW_ADMIN               = 0x34;
+    public static final int EVENT_NEW_ADMIN_CREATED               = 0x35;
+    public static final int EVENT_ON_NEW_ADMIN                    = 0x36;
+    public static final int EVENT_PEER_ADAPTER_NOTIFY             = 0x3b;
 
     private WooEvents() {
         Log.d(TAG, "WooEvents Initialized ...");
