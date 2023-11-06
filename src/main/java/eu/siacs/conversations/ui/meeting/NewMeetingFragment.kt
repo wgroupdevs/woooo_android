@@ -1,8 +1,11 @@
 package eu.siacs.conversations.ui.meeting
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -13,14 +16,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.woooapp.meeting.impl.utils.ClipboardCopy
 import com.woooapp.meeting.impl.utils.WooEvents
 import com.woooapp.meeting.impl.views.MeetingActivity
+import com.woooapp.meeting.impl.views.UIManager
+import com.woooapp.meeting.impl.views.UIManager.DialogCallback
 import com.woooapp.meeting.lib.Utils
 import eu.siacs.conversations.R
 import eu.siacs.conversations.databinding.FragmentNewMeetingBinding
@@ -39,6 +46,10 @@ private const val ARG_PARAM2 = "param2"
  */
 class NewMeetingFragment : Fragment(), Handler.Callback {
     // TODO: Rename and change types of parameters
+    private val PERMISSION_MIC_CODE = 0x01
+    private val PERMISSION_CAM_CODE = 0x02;
+    private val PERMISSION_NOTIFICATION_CODE = 0x03;
+
     private var param1: String? = null
     private var param2: String? = null
 
@@ -49,8 +60,11 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
 
     private var vibrator: Vibrator? = null
     private val handler: Handler = Handler(this)
-    private var camEnabled = true
+    private var camEnabled = false
     private var micEnabled = true
+
+    var micPermissionGranted = false;
+    var notificationPermissionGranted = false;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,8 +96,14 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         this.initComponents()
+
+        micPermissionGranted = if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            askForPermission(Manifest.permission.RECORD_AUDIO, PERMISSION_MIC_CODE)
+            false
+        } else {
+            true
+        }
 
         var intent: Intent? = null
         if (account != null) {
@@ -107,53 +127,68 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
 
         // Start Meeting
         mBinding?.startMeetingBtn?.setOnClickListener {
-            if (mBinding?.meetingNameEt?.text.toString() != null) {
-                if (mBinding?.meetingNameEt?.text.toString().isNotEmpty()) {
-                    if (intent != null) {
-                        intent.putExtra("meetingName", mBinding?.meetingNameEt?.text.toString())
-                        intent.putExtra("meetingId", meetingId)
-                        intent.putExtra("joining", false)
-                        startActivity(intent)
-                        mBinding?.meetingNameEt?.text = Editable.Factory.getInstance().newEditable("")
+            if (micPermissionGranted) {
+                if (mBinding?.meetingNameEt?.text.toString() != null) {
+                    if (mBinding?.meetingNameEt?.text.toString().isNotEmpty()) {
+                        if (intent != null) {
+                            intent.putExtra("meetingName", mBinding?.meetingNameEt?.text.toString())
+                            intent.putExtra("meetingId", meetingId)
+                            intent.putExtra("joining", false)
+                            startActivity(intent)
+                            mBinding?.meetingNameEt?.text =
+                                Editable.Factory.getInstance().newEditable("")
+                        }
+                    } else {
+                        meetingEtEmptyError()
                     }
                 } else {
                     meetingEtEmptyError()
                 }
             } else {
-                meetingEtEmptyError()
+                askForPermission(Manifest.permission.RECORD_AUDIO, PERMISSION_MIC_CODE)
             }
         }
 
         // Join Meeting
         mBinding?.joinMeetingBtn?.setOnClickListener {
-            var dialog: AlertDialog? = null;
-            val builder = context?.let { it1 -> AlertDialog.Builder(it1, R.style.TransparentBgDialogStyle) }
-            val dialogView: View = LayoutInflater.from(context).inflate(R.layout.layout_join_meeting_dialog, null);
-            var etMeetingId = dialogView.findViewById<AppCompatEditText>(R.id.etDialog)
-            val buttonJoin = dialogView.findViewById<Button>(R.id.btnOkDialog)
-            val buttonCancel = dialogView.findViewById<Button>(R.id.btnCancelDialog)
-            builder?.setView(dialogView)
+            if (micPermissionGranted) {
+                var dialog: AlertDialog? = null;
+                val builder = context?.let { it1 ->
+                    AlertDialog.Builder(
+                        it1,
+                        R.style.TransparentBgDialogStyle
+                    )
+                }
+                val dialogView: View =
+                    LayoutInflater.from(context).inflate(R.layout.layout_join_meeting_dialog, null);
+                var etMeetingId = dialogView.findViewById<AppCompatEditText>(R.id.etDialog)
+                val buttonJoin = dialogView.findViewById<Button>(R.id.btnOkDialog)
+                val buttonCancel = dialogView.findViewById<Button>(R.id.btnCancelDialog)
+                builder?.setView(dialogView)
 
-            buttonJoin.setOnClickListener {
-                if (intent != null) {
-                    meetingId = etMeetingId.text.toString()
-                    if (meetingId!!.isEmpty()) {
-                        etMeetingId.hint = "Meeting ID is required"
-                        etMeetingId.setHintTextColor(Color.parseColor("#ff0000"))
-                    } else {
-                        intent.putExtra("meetingId", meetingId)
-                        intent.putExtra("joining", true)
-                        startActivity(intent)
-                        dialog?.dismiss()
+                buttonJoin.setOnClickListener {
+                    if (intent != null) {
+                        meetingId = etMeetingId.text.toString()
+                        if (meetingId!!.isEmpty()) {
+                            etMeetingId.hint = "Meeting ID is required"
+                            etMeetingId.setHintTextColor(Color.parseColor("#ff0000"))
+                        } else {
+                            intent.putExtra("meetingId", meetingId)
+                            intent.putExtra("joining", true)
+                            startActivity(intent)
+                            dialog?.dismiss()
+                        }
                     }
                 }
-            }
 
-            buttonCancel.setOnClickListener {
-                dialog?.dismiss()
+                buttonCancel.setOnClickListener {
+                    dialog?.dismiss()
+                }
+                dialog = builder?.create()
+                dialog?.show()
+            } else {
+                askForPermission(Manifest.permission.RECORD_AUDIO, PERMISSION_MIC_CODE)
             }
-            dialog = builder?.create()
-            dialog?.show()
         }
 
         // Copy Button
@@ -233,6 +268,60 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
             return true
         }
         return false
+    }
+
+    @SuppressWarnings("deprecation")
+    fun askForPermission(permission: String, reqCode: Int) {
+        if (shouldShowRequestPermissionRationale(permission)) {
+            val dialogCallback: DialogCallback = object : DialogCallback {
+                override fun onPositiveButton(sender: Any?, data: Any?) {
+                    requestPermissions(arrayOf(permission), reqCode)
+                }
+
+                override fun onNeutralButton(sender: Any?, data: Any?) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onNegativeButton(sender: Any?, data: Any?) {
+                    TODO("Not yet implemented")
+                }
+
+            }
+            UIManager.showInfoDialog(requireContext(),
+                "Permission Required",
+                "Meeting requires at least mic permission to start up. You can turn off mic later on from with in. Kindly grant it to continue.",
+                dialogCallback)
+        } else {
+            requestPermissions(arrayOf(permission), reqCode);
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            PERMISSION_MIC_CODE -> {
+                if (grantResults.isNotEmpty()) {
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        micPermissionGranted = true
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            askForPermission(Manifest.permission.POST_NOTIFICATIONS, PERMISSION_NOTIFICATION_CODE)
+                        }
+                    }
+                }
+            }
+            PERMISSION_NOTIFICATION_CODE -> {
+                if (grantResults.isNotEmpty()) {
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        notificationPermissionGranted = true
+                    }
+                }
+            }
+        }
     }
 
     override fun onStop() {

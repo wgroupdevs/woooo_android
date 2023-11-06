@@ -162,6 +162,7 @@ public final class UIManager {
         dialog.show();
 
         buttonOk.setOnClickListener(view -> {
+            dialog.dismiss();
             if (callback != null) {
                 callback.onPositiveButton(view, null);
             }

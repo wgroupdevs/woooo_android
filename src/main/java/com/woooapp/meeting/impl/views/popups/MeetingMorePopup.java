@@ -91,7 +91,7 @@ public final class MeetingMorePopup extends RelativeLayout {
 
         View buttonBackground = mContentView.findViewById(R.id.morePopupButtonSelectBackground);
         buttonBackground.setOnClickListener(view -> {
-            WooEvents.getInstance().notify(WooEvents.EVENT_SELECT_BACKGROUND, null);
+//            WooEvents.getInstance().notify(WooEvents.EVENT_SELECT_BACKGROUND, null);
             dismiss();
         });
 

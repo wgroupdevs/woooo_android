@@ -1099,6 +1099,12 @@ public class WooSocket {
         }
     }
 
+    /**
+     *
+     * @param producerId
+     * @param producerSockId
+     * @throws JSONException
+     */
     private void emitCreateBackConsumeTransport(@NonNull String producerId,
                                                 @NonNull String producerSockId) throws JSONException {
         JSONObject obj = new JSONObject();
@@ -1110,6 +1116,11 @@ public class WooSocket {
         mSocket.emit("createBackConsumeTransport", obj);
     }
 
+    /**
+     *
+     * @param dtlsParams
+     * @throws JSONException
+     */
     private void emitConsumeTransportConnectBack(@NonNull String dtlsParams) throws JSONException {
         JSONObject dtls = new JSONObject(dtlsParams);
         JSONObject obj = new JSONObject();
@@ -1120,6 +1131,13 @@ public class WooSocket {
         mSocket.emit("consumeTransportConnectBack", obj);
     }
 
+    /**
+     *
+     * @param producerId
+     * @param producerSockId
+     * @throws JSONException
+     * @throws MediasoupException
+     */
     private void emitStartConsumingBack(@NonNull String producerId,
                                         @NonNull String producerSockId) throws JSONException, MediasoupException {
         JSONObject rtpCaps = new JSONObject(mMediaSoupDevice.getRtpCapabilities());
@@ -1254,6 +1272,11 @@ public class WooSocket {
         mSocket.emit("handLowered", obj);
     }
 
+    /**
+     *
+     * @param langCode
+     * @throws JSONException
+     */
     public void emitUpdateLanguage(@NonNull String langCode) throws JSONException {
         JSONObject obj = new JSONObject();
         obj.put("socketId", mSocketId);
@@ -1270,16 +1293,28 @@ public class WooSocket {
         mSocket.emit("muteEveryone", obj);
     }
 
+    /**
+     *
+     * @param memberSocketId
+     */
     public void emitMuteMember(@NonNull String memberSocketId) {
         Log.d(TAG, "Emitting Mute Member >>> " + memberSocketId);
         mSocket.emit("muteMember", memberSocketId);
     }
 
+    /**
+     *
+     * @param memberSocketId
+     */
     public void emitCloseMemberVideo(@NonNull String memberSocketId) {
         Log.d(TAG, "Emitting Close Member Video >>> " + memberSocketId);
         mSocket.emit("CloseMemberVideo", memberSocketId);
     }
 
+    /**
+     *
+     * @param memberSocketId
+     */
     public void emitKickOutMember(@NonNull String memberSocketId) {
         Log.d(TAG, "Emitting Kick Out Memeber >>> " + memberSocketId);
         mSocket.emit("kickout", memberSocketId);
