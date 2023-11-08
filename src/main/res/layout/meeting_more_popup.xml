@@ -140,6 +140,73 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/morePopupButtonSpeakerPhone"
+            android:layout_width="90sp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/morePopupIvSpeaker"
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:src="@drawable/ic_speaker_white_34" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5sp"
+                android:text="Speaker Phone"
+                android:textColor="@android:color/white"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/morePopupButtonHeadset"
+            android:layout_width="90sp"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/morePopupIvHeadset"
+                android:layout_width="40sp"
+                android:layout_height="40sp"
+                android:src="@drawable/ic_headset_mic_dk_gray_34" />
+
+            <TextView
+                android:id="@+id/morePopupTvHeadset"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5sp"
+                android:text="No Headset"
+                android:textColor="#aaaaaa"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:gravity="center_horizontal"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- ROW 3 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="15sp"
+        android:padding="12sp"
+        android:clipChildren="false">
+
+        <LinearLayout
             android:id="@+id/morePopupPassword"
             android:layout_width="90sp"
             android:layout_height="wrap_content"
@@ -180,7 +247,7 @@
                 android:id="@+id/morePopupIvMute"
                 android:layout_width="40sp"
                 android:layout_height="40sp"
-                android:src="@drawable/ic_speaker_off" />
+                android:src="@drawable/ic_shut_up_white" />
 
             <TextView
                 android:id="@+id/morePopupTvMute"
@@ -195,98 +262,9 @@
 
         </LinearLayout>
 
+
+
     </LinearLayout>
-
-    <!-- ROW 3 -->
-<!--    <LinearLayout-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:orientation="horizontal"-->
-<!--        android:gravity="center"-->
-<!--        android:layout_marginTop="15sp"-->
-<!--        android:padding="12sp"-->
-<!--        android:clipChildren="false">-->
-
-<!--        <LinearLayout-->
-<!--            android:id="@+id/morePopupButtonCloseMemberVideo"-->
-<!--            android:layout_width="90sp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_margin="5sp"-->
-<!--            android:foreground="?attr/selectableItemBackground"-->
-<!--            android:gravity="center"-->
-<!--            android:orientation="vertical">-->
-
-<!--            <ImageView-->
-<!--                android:layout_width="40sp"-->
-<!--                android:layout_height="40sp"-->
-<!--                android:src="@drawable/ic_camera_off_white" />-->
-
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="5sp"-->
-<!--                android:text="Close Member's Video"-->
-<!--                android:textColor="@android:color/white"-->
-<!--                android:textSize="13sp"-->
-<!--                android:textStyle="bold"-->
-<!--                android:gravity="center_horizontal"/>-->
-
-<!--        </LinearLayout>-->
-
-<!--        <LinearLayout-->
-<!--            android:id="@+id/morePopupButtonMuteMember"-->
-<!--            android:layout_width="90sp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_margin="5sp"-->
-<!--            android:foreground="?attr/selectableItemBackground"-->
-<!--            android:gravity="center"-->
-<!--            android:orientation="vertical">-->
-
-<!--            <ImageView-->
-<!--                android:layout_width="32sp"-->
-<!--                android:layout_height="32sp"-->
-<!--                android:src="@drawable/ic_shut_up_white" />-->
-
-<!--            <TextView-->
-<!--                android:layout_width="120sp"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="18sp"-->
-<!--                android:text="Mute Member"-->
-<!--                android:textColor="@android:color/white"-->
-<!--                android:textSize="13sp"-->
-<!--                android:textStyle="bold"-->
-<!--                android:gravity="center_horizontal"/>-->
-
-<!--        </LinearLayout>-->
-
-<!--        <LinearLayout-->
-<!--            android:id="@+id/morePopupButtonKickMember"-->
-<!--            android:layout_width="90sp"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_margin="5sp"-->
-<!--            android:foreground="?attr/selectableItemBackground"-->
-<!--            android:gravity="center"-->
-<!--            android:orientation="vertical"-->
-<!--            android:clipChildren="false">-->
-
-<!--            <ImageView-->
-<!--                android:layout_width="40sp"-->
-<!--                android:layout_height="40sp"-->
-<!--                android:src="@drawable/ic_kick_out_white" />-->
-
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:layout_marginTop="8sp"-->
-<!--                android:text="Kick Out Member"-->
-<!--                android:textColor="@android:color/white"-->
-<!--                android:textSize="13sp"-->
-<!--                android:textStyle="bold"-->
-<!--                android:gravity="center_horizontal"/>-->
-
-<!--        </LinearLayout>-->
-
-<!--    </LinearLayout>-->
 
     <!-- ROW 4 -->
     <LinearLayout

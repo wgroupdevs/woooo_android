@@ -63,8 +63,12 @@ public final class WooEvents {
     public static final int EVENT_RECEIVED_KICKOUT                = 0x33;
 //    public static final int EVENT_CREATED_NEW_ADMIN               = 0x34;
     public static final int EVENT_NEW_ADMIN_CREATED               = 0x35;
-    public static final int EVENT_ON_NEW_ADMIN                    = 0x36;
+    public static final int EVENT_ON_NEW_ADMIN                    = 0x3a;
     public static final int EVENT_PEER_ADAPTER_NOTIFY             = 0x3b;
+    public static final int EVENT_CONNECTION_STATE_FAILED         = 0x3c;
+    public static final int EVENT_CONNECTION_STATE_CONNECTED      = 0x3d;
+    public static final int EVENT_CONNECTION_STATE_CONNECTING     = 0x3e;
+    public static final int EVENT_DESTROY                         = 0x3f;
 
     private WooEvents() {
         Log.d(TAG, "WooEvents Initialized ...");

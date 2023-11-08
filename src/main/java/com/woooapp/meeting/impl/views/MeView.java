@@ -274,6 +274,7 @@ public class MeView extends RelativeLayout {
         props = null;
         mBinding.setWooMeProps(null);
         mBinding.wooPeerView.wooVideoRenderer.release();
+        Log.d(TAG, "Disposed EGL Surface Renderer ...");
     }
 
 } /**

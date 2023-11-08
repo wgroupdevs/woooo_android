@@ -496,7 +496,10 @@ public final class MeetingClient extends RoomMessageHandler {
             } catch (Exception ex) {
                 ex.printStackTrace();
             } finally {
-//                mWorkerHandler.getLooper().quit();
+                new Handler().postDelayed(() -> {
+                    Log.d(TAG, "Quitting Worker thread ...");
+                    mWorkerHandler.getLooper().quit();
+                }, 5000);
             }
         }
     }

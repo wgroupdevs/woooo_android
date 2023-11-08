@@ -70,6 +70,7 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
     private MeProps meProp;
     private PeerProps peer1Prop;
     private final Map<String, PeerProps> propsMap = new LinkedHashMap<>();
+    private boolean destroy = false;
 
     /**
      * @param mContext
@@ -137,7 +138,6 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
             }
 
             vhm.meView = convertView.findViewById(R.id.cellMeView);
-
             if (meProp == null) {
                 meProp = new MeProps(((AppCompatActivity) mContext).getApplication(), mStore);
             }
@@ -198,6 +198,7 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
             if (propsMap.get(p1.getId()) == null) {
                 PeerProps props1 = new PeerProps(((AppCompatActivity) mContext).getApplication(), mStore);
                 props1.connect(mLifecycleOwner, p1.getId());
+                propsMap.put(p1.getId(), props1);
                 vhpp.peerView1.setProps(props1, mMeetingClient);
             } else {
                 vhpp.peerView1.setProps(propsMap.get(p1.getId()), mMeetingClient);
@@ -225,6 +226,7 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
             if (propsMap.get(p2.getId()) == null) {
                 PeerProps props2 = new PeerProps(((AppCompatActivity) mContext).getApplication(), mStore);
                 props2.connect(mLifecycleOwner, p2.getId());
+                propsMap.put(p2.getId(), props2);
                 vhpp.peerView2.setProps(props2, mMeetingClient);
             } else {
                 vhpp.peerView2.setProps(propsMap.get(p2.getId()), mMeetingClient);
@@ -406,6 +408,11 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
                     if (msg.obj != null) {
                         notifyDataSetChanged();
                     }
+                    return true;
+                case WooEvents.EVENT_DESTROY:
+                    destroy = true;
+                    peerList.clear();
+                    notifyDataSetChanged();
                     return true;
                 default:
                     return false;

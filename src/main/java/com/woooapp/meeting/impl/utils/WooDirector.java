@@ -6,12 +6,14 @@ import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 
+import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.net.models.RoomData;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -112,6 +114,26 @@ public final class WooDirector {
      */
     public void setRoomData(RoomData roomData) {
         this.roomData = roomData;
+    }
+
+    /**
+     *
+     * @param client
+     * @param accountUniqueId
+     */
+    public void updateRole(@NonNull MeetingClient client, @NonNull String accountUniqueId) {
+       if (this.roomData != null) {
+           List<RoomData.Admin> admins = roomData.getAdmins();
+           if (admins != null) {
+               for (RoomData.Admin admin : roomData.getAdmins()) {
+                   if (admin.getAccountUniqueId().equals(accountUniqueId)) {
+                       client.setRole(MeetingClient.Role.ADMIN);
+                       WooEvents.getInstance().notify(WooEvents.EVENT_PEER_ADAPTER_NOTIFY, true);
+                       break;
+                   }
+               }
+           }
+       }
     }
 
     /**

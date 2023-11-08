@@ -1,6 +1,8 @@
 package com.woooapp.meeting.impl.views;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -15,8 +17,10 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -30,6 +34,9 @@ import androidx.renderscript.Allocation;
 import androidx.renderscript.Element;
 import androidx.renderscript.RenderScript;
 import androidx.renderscript.ScriptIntrinsicBlur;
+
+import com.bumptech.glide.Glide;
+import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
 
 import java.util.List;
 
@@ -46,6 +53,9 @@ public final class UIManager {
 
     private static final String TAG = UIManager.class.getSimpleName() + ".java";
     private final Context mContext;
+
+    private View loadingPopup;
+    private RelativeLayout loadingBackground;
 
     private UIManager(Context context) {
         this.mContext = context;
@@ -167,6 +177,76 @@ public final class UIManager {
                 callback.onPositiveButton(view, null);
             }
         });
+    }
+
+    /**
+     *
+     * @param context
+     * @param parent
+     * @param iconResId
+     * @param message
+     */
+    public void showLoadingPopup(@NonNull Context context,
+                                        @NonNull RelativeLayout parent,
+                                        int iconResId,
+                                        @NonNull String message,
+                                        boolean showProgress) {
+        if (loadingPopup == null) {
+            loadingPopup = LayoutInflater.from(context).inflate(R.layout.layout_popup_info_notification, null);
+            ImageView ivClose = loadingPopup.findViewById(R.id.ivClose);
+            ImageView ivThumb = loadingPopup.findViewById(R.id.ivThumb);
+            TextView tvMessage = loadingPopup.findViewById(R.id.tvMessage);
+
+            tvMessage.setText(message);
+            if (showProgress) {
+                Glide.with(loadingPopup).asGif().load(R.drawable.ic_gif_wooo).into(ivThumb);
+            } else {
+                if (iconResId > 0) {
+                    ivThumb.setImageResource(iconResId);
+                }
+            }
+
+            RelativeLayout.LayoutParams bgParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+            loadingBackground = new RelativeLayout(context);
+            loadingBackground.setBackgroundColor(Color.parseColor("#44000000"));
+            loadingBackground.setLayoutParams(bgParams);
+
+            RelativeLayout.LayoutParams childParams = (RelativeLayout.LayoutParams) loadingPopup.getLayoutParams();
+            if (childParams == null) return;
+
+            childParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE);
+            childParams.setMargins(10, 100, 10, 0);
+            loadingBackground.addView(loadingPopup, childParams);
+
+            parent.addView(loadingBackground, bgParams);
+            WooAnimationUtil.showView(loadingBackground, null);
+
+            ivClose.setOnClickListener(v -> {
+                WooAnimationUtil.hideView(loadingBackground, new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        parent.removeView(loadingBackground);
+                    }
+                });
+            });
+        }
+    }
+
+    /**
+     *
+     * @param parent
+     */
+    public void dismissLoadingPopup(@NonNull RelativeLayout parent) {
+        if (loadingPopup != null && loadingBackground != null) {
+            WooAnimationUtil.hideView(loadingBackground, new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    parent.removeView(loadingBackground);
+                    loadingBackground = null;
+                    loadingPopup = null;
+                }
+            });
+        }
     }
 
     /**

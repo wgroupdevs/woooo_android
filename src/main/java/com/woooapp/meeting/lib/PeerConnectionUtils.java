@@ -72,7 +72,7 @@ public class PeerConnectionUtils {
         AudioDeviceModule adm = createJavaAudioDevice(context);
         VideoEncoderFactory encoderFactory =
                 new DefaultVideoEncoderFactory(
-                        mEglBase.getEglBaseContext(), true /* enableIntelVp8Encoder */, false);
+                        mEglBase.getEglBaseContext(), true, true);
         VideoDecoderFactory decoderFactory =
                 new DefaultVideoDecoderFactory(mEglBase.getEglBaseContext());
 

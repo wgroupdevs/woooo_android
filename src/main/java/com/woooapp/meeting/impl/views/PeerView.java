@@ -125,6 +125,11 @@ public class PeerView extends RelativeLayout {
         }
     }
 
+    /**
+     *
+     * @param props
+     * @param meetingClient
+     */
     public void setProps(PeerProps props, MeetingClient meetingClient) {
         this.props = props;
         // set view model into included layout
@@ -178,50 +183,8 @@ public class PeerView extends RelativeLayout {
             if (p != null) {
                 setMicState(p.isMicOn());
                 setHandRaisedState(p.isHandRaised());
-//                setVideoState(WooDirector.getInstance().isCameraOn(p.getId()));
-//
-//                if (props.getVideoTrack() == null) {
-//                    setVideoState(false);
-//                } else {
-//                    setVideoState(true);
-//                }
             }
         }
-
-
-//        if (props.getPeer() != null) {
-//            Peer p = (Peer) props.getPeer().get();
-//            if (p != null) {
-//                setHandRaisedState(p.isHandRaised());
-//                setCameraState(p.isCamOn());
-//                setMicState(p.isMicOn());
-//            }
-//        }
-//        Info info = props.getPeer().get();
-//        if (info != null) {
-//            String name = info.getDisplayName();
-//            if (name != null) {
-//                if (!name.isEmpty()) {
-//                    mBinding.tvPeerName.setText(name);
-//                } else {
-//                    mBinding.tvPeerName.setText("Empty");
-//                }
-//            } else {
-//                mBinding.tvPeerName.setText("Null");
-//            }
-//        }
-
-//        // register click listener.
-//        mBinding.peerView.info.setOnClickListener(
-//                view -> {
-//                    Boolean showInfo = props.getShowInfo().get();
-//                    props.getShowInfo().set(showInfo != null && showInfo ? Boolean.FALSE : Boolean.TRUE);
-//                });
-//
-//        mBinding.peerView.stats.setOnClickListener(
-//                view -> {
-//                    // TODO Handle inner click event;
-//                });
 
         // set view model
         mBinding.setWooPeerProps(props);
@@ -322,8 +285,8 @@ public class PeerView extends RelativeLayout {
 
     @Override
     protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
         dispose();
+        super.onDetachedFromWindow();
     }
 
     public void dispose() {

@@ -49,6 +49,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.woooapp.meeting.device.Display;
@@ -896,6 +897,9 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     String json = response.body().string();
                     roomData = RoomData.fromJson(json);
                     WooDirector.getInstance().setRoomData(roomData);
+                    if (mMeetingClient != null && accountUniqueId != null) {
+                        WooDirector.getInstance().updateRole(mMeetingClient, accountUniqueId);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -1354,14 +1358,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 return true;
             case WooEvents.EVENT_TYPE_PRODUCER_CREATED:
                 Log.d(TAG, "<< Handler Event PRODUCER CREATED [" + msg.obj + "]");
-                if (mMeetingClient != null) {
-                    if (!isCamEnabled && mMeetingClient.isCamOn()) {
-                        mMeetingClient.setCamOn(false);
-                    }
-                    if (!isMicEnabled && mMeetingClient.isMicOn()) {
-                        mMeetingClient.setMicOn(false);
-                    }
-                }
                 return true;
             case WooEvents.EVENT_TYPE_CONSUMER_CREATED:
                 Log.d(TAG, "<< Handler Event CONSUMER CREATED [" + msg.obj + "]");
@@ -1731,13 +1727,15 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 if (mMeetingClient != null) {
                     runOnUiThread(() -> {
                         try {
+                            kickmeOutImpl();
                             UIManager.showInfoDialog(MeetingActivity.this,
                                     "Removed",
                                     "You have been removed from meeting by admin.",
                                     new UIManager.DialogCallback() {
                                         @Override
                                         public void onPositiveButton(@Nullable Object sender, @Nullable Object data) {
-                                            destroyMeeting();
+                                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                                            finish();
                                         }
 
                                         @Override
@@ -1790,6 +1788,24 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                    }
+                }
+                return true;
+            case WooEvents.EVENT_CONNECTION_STATE_FAILED:
+                if (uiManager != null) {
+                    try {
+                        showCommonPopup("Network not available ...", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                return true;
+            case WooEvents.EVENT_CONNECTION_STATE_CONNECTING:
+                if (uiManager != null) {
+                    try {
+                        showCommonPopup("Connecting ...", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                 }
                 return true;
@@ -2081,10 +2097,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         notificationManager.createNotificationChannel(channelCompat);
 
         Intent intent = new Intent(getApplicationContext(), MeetingActivity.class);
-//        intent.putExtra("meetingId", mMeetingId);
-//        if (mMeetingClient != null) {
-//            intent.putExtra("isAdmin", mMeetingClient.getRole() == MeetingClient.Role.ADMIN);
-//        }
+        intent.putExtra("meetingId", mMeetingId);
+        if (mMeetingClient != null) {
+            intent.putExtra("isAdmin", mMeetingClient.getRole() == MeetingClient.Role.ADMIN);
+        }
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0x9a, intent,
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -2133,6 +2149,23 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         WooEvents.getInstance().removeHandler(this.callbackHandler);
     }
 
+    public void kickmeOutImpl() {
+        if (this.mMeetingClient != null) {
+            this.mMeetingClient.close();
+            this.mMeetingClient = null;
+        }
+        if (mRoomStore != null) {
+            mRoomStore = null;
+        }
+        chatList.clear();
+        WooDirector.getInstance().dispose();
+        destroyCallbackHandler();
+        if (droidAudioManager != null) {
+            droidAudioManager.setSpeakerphoneOn(false);
+            droidAudioManager.setMode(AudioManager.MODE_NORMAL);
+        }
+    }
+
     public void destroyMeeting() {
         if (this.mMeetingClient != null) {
             this.mMeetingClient.close();
@@ -2165,10 +2198,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     @Override
     protected void onPause() {
         super.onPause();
-//        if (notificationManager != null && !isFinishing()) {
-//            moveTaskToBack(false);
-//            sendBackgroundNotification();
-//        }
     }
 
     @Override
@@ -2182,7 +2211,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
     @Override
     protected void onDestroy() {
-        destroyMeeting();
+//        destroyMeeting();
         super.onDestroy();
     }
 
@@ -2191,6 +2220,8 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         super.onNewIntent(intent);
         if (intent != null) {
             Log.d(TAG, "New Intent Received!");
+            Log.d(TAG, "Meeting ID -> " + intent.getStringExtra("meetingId"));
+            Log.d(TAG, "isAdmin -> " + intent.getBooleanExtra("isAdmin", false));
             isNewIntent = true;
         }
     }
