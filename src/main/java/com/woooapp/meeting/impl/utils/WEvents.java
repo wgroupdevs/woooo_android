@@ -12,11 +12,11 @@ import java.util.Set;
 /**
  * @author muneebahmad (ahmadgallian@yahoo.com)
  * Created On 10:25 am 25/09/2023
- * <code>class</code> WooEvents.java
+ * <code>class</code> WEvents.java
  */
-public final class WooEvents {
-    private static final String TAG = WooEvents.class.getSimpleName() + ".java";
-    private static WooEvents sInstance = null;
+public final class WEvents {
+    private static final String TAG = WEvents.class.getSimpleName() + ".java";
+    private static WEvents sInstance = null;
     private final Set<Handler> mHandlers = new HashSet<>();
     public static final int EVENT_TYPE_SOCKET_CONNECTED           = 0x01;
     public static final int EVENT_TYPE_SOCKET_DISCONNECTED        = 0x02;
@@ -70,7 +70,7 @@ public final class WooEvents {
     public static final int EVENT_CONNECTION_STATE_CONNECTING     = 0x3e;
     public static final int EVENT_DESTROY                         = 0x3f;
 
-    private WooEvents() {
+    private WEvents() {
         Log.d(TAG, "WooEvents Initialized ...");
         mHandlers.clear();
     }
@@ -126,12 +126,12 @@ public final class WooEvents {
 
     /**
      *
-     * @return {@link WooEvents} as a Singleton
+     * @return {@link WEvents} as a Singleton
      */
-    public static WooEvents getInstance() {
-        synchronized (WooEvents.class) {
+    public static WEvents getInstance() {
+        synchronized (WEvents.class) {
             if (sInstance == null) {
-                sInstance = new WooEvents();
+                sInstance = new WEvents();
             }
             return sInstance;
         }

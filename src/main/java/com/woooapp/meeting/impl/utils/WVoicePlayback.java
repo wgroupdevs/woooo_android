@@ -8,11 +8,11 @@ import androidx.annotation.NonNull;
 /**
  * @author muneebahmad (ahmadgallian@yahoo.com)
  * Created On 11:16 am 31/10/2023
- * <code>class</code> WooVoicePlayback.java
+ * <code>class</code> WVoicePlayback.java
  */
-public class WooVoicePlayback {
+public class WVoicePlayback {
 
-    private static final String TAG = WooVoicePlayback.class.getSimpleName() + ".java";
+    private static final String TAG = WVoicePlayback.class.getSimpleName() + ".java";
     private final VoiceDataSource dataSource;
     private final MediaPlayer mediaPlayer;
 
@@ -20,7 +20,7 @@ public class WooVoicePlayback {
      *
      * @param dataSource
      */
-    public WooVoicePlayback(@NonNull VoiceDataSource dataSource) {
+    public WVoicePlayback(@NonNull VoiceDataSource dataSource) {
         this.dataSource = dataSource;
         this.mediaPlayer = new MediaPlayer();
         try {

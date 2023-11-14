@@ -38,7 +38,7 @@ public class MeetingPagerAdapter extends FragmentPagerAdapter {
     private final LifecycleOwner mLifecycleOwner;
     private final RoomStore mStore;
     private final MeetingClient mClient;
-    private List<MeetingPageFragment> fragments = new LinkedList<>();
+    private List<MeetingPageFragment2> fragments = new LinkedList<>();
 
     /**
      * @param fm
@@ -83,7 +83,7 @@ public class MeetingPagerAdapter extends FragmentPagerAdapter {
      */
     public void setBottomBarHeight(int bottomBarHeight) {
         for (int i = 0; i < pageList.size(); i++) {
-            MeetingPageFragment f = (MeetingPageFragment) getItem(i);
+            MeetingPageFragment2 f = (MeetingPageFragment2) getItem(i);
             f.setBottomBarHeight(bottomBarHeight);
         }
     }
@@ -106,7 +106,7 @@ public class MeetingPagerAdapter extends FragmentPagerAdapter {
         notifyDataSetChanged();
     }
 
-    public void replaceFragments(@NonNull List<MeetingPageFragment> fragments, @NonNull List<MeetingPage> pageList) {
+    public void replaceFragments(@NonNull List<MeetingPageFragment2> fragments) {
         this.fragments = fragments;
 //        for (int i = 0; i < fragments.size(); i++) {
 //            Log.v(TAG, "Replacing page for page no. >>> ");

@@ -18,8 +18,8 @@ public class Consumers {
     public static class ConsumerWrapper {
 
         private String mType;
-        private boolean mLocallyPaused;
-        private boolean mRemotelyPaused;
+        public boolean mLocallyPaused;
+        public boolean mRemotelyPaused;
         private int mSpatialLayer;
         private int mTemporalLayer;
         private Consumer mConsumer;
@@ -27,7 +27,7 @@ public class Consumers {
         private int mPreferredSpatialLayer;
         private int mPreferredTemporalLayer;
 
-        ConsumerWrapper(String type, boolean remotelyPaused, Consumer consumer) {
+        public ConsumerWrapper(String type, boolean remotelyPaused, Consumer consumer) {
             mType = type;
             mLocallyPaused = false;
             mRemotelyPaused = remotelyPaused;

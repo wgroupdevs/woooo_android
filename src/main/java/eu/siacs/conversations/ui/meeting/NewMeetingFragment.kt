@@ -16,7 +16,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
@@ -24,7 +23,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.woooapp.meeting.impl.utils.ClipboardCopy
-import com.woooapp.meeting.impl.utils.WooEvents
+import com.woooapp.meeting.impl.utils.WEvents
 import com.woooapp.meeting.impl.views.MeetingActivity
 import com.woooapp.meeting.impl.views.UIManager
 import com.woooapp.meeting.impl.views.UIManager.DialogCallback
@@ -73,7 +72,7 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
             param2 = it.getString(ARG_PARAM2)
         }
 
-        WooEvents.getInstance().addHandler(handler)
+        WEvents.getInstance().addHandler(handler)
 
         // Database backend
         Log.d(TAG, "<< Initializing DatabaseBackend and fetching accounts")
@@ -261,7 +260,7 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
     }
 
     override fun handleMessage(msg: Message): Boolean {
-        if (msg.what == WooEvents.EVENT_TYPE_SOCKET_DISCONNECTED) {
+        if (msg.what == WEvents.EVENT_TYPE_SOCKET_DISCONNECTED) {
             meetingId = Utils.getNumericString(9);
             mBinding?.meetingUrlEt?.text = Editable.Factory.getInstance()
                 .newEditable("https://cc.watchblock.net/meeting/$meetingId")
@@ -326,7 +325,7 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
 
     override fun onStop() {
         super.onStop()
-        WooEvents.getInstance().removeHandler(handler)
+        WEvents.getInstance().removeHandler(handler)
     }
 
     override fun onDestroy() {

@@ -18,7 +18,7 @@ import androidx.annotation.Nullable;
 
 import com.android.volley.toolbox.ImageRequest;
 import com.woooapp.meeting.impl.utils.ClipboardCopy;
-import com.woooapp.meeting.impl.utils.WooEvents;
+import com.woooapp.meeting.impl.utils.WEvents;
 import com.woooapp.meeting.impl.views.UIManager;
 import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
 import com.woooapp.meeting.lib.MeetingClient;
@@ -97,13 +97,13 @@ public final class MeetingMorePopup extends RelativeLayout {
 
         View buttonLanguage = mContentView.findViewById(R.id.morePopupButtonSelectLang);
         buttonLanguage.setOnClickListener(v -> {
-            WooEvents.getInstance().notify(WooEvents.EVENT_CLICKED_LANGUAGE_SELECT, null);
+            WEvents.getInstance().notify(WEvents.EVENT_CLICKED_LANGUAGE_SELECT, null);
             dismiss();
         });
 
         View buttonMembers = mContentView.findViewById(R.id.morePopupButtonParticipants);
         buttonMembers.setOnClickListener(view -> {
-            WooEvents.getInstance().notify(WooEvents.EVENT_SHOW_MEMBERS, null);
+            WEvents.getInstance().notify(WEvents.EVENT_SHOW_MEMBERS, null);
             dismiss();
         });
 
@@ -184,7 +184,7 @@ public final class MeetingMorePopup extends RelativeLayout {
                 tvPassword.setText("Change Password");
             }
             buttonPassword.setOnClickListener(view -> {
-                WooEvents.getInstance().notify(WooEvents.EVENT_ADD_PASSWORD, true);
+                WEvents.getInstance().notify(WEvents.EVENT_ADD_PASSWORD, true);
                 dismiss();
             });
 

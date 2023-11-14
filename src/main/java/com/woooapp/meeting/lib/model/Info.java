@@ -9,14 +9,18 @@ package com.woooapp.meeting.lib.model;
  */
 public class Info {
 
+    protected String mId;
     private boolean micOn = true;
     private boolean camOn = false;
     private boolean handRaised = false;
 
     private String displayPicture;
 
+    public Info() {
+    }
+
     public String getId() {
-        return "";
+        return mId;
     }
 
     public String getDisplayName() {
@@ -58,6 +62,7 @@ public class Info {
     public void setDisplayPicture(String displayPicture) {
         this.displayPicture = displayPicture;
     }
+
 } /**
  * end class [Info]
  */

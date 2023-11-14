@@ -16,7 +16,6 @@ import java.util.Set;
  */
 public class Peer extends Info {
 
-    private String mId;
     private String mDisplayName;
     private DeviceInfo mDevice;
     private Set<String> mConsumers;
@@ -24,6 +23,7 @@ public class Peer extends Info {
     private boolean videoOn = false;
 
     public Peer(@NonNull JSONObject info) {
+        super();
         mId = info.optString("id");
         mDisplayName = info.optString("displayName");
         JSONObject deviceInfo = info.optJSONObject("device");
@@ -42,7 +42,7 @@ public class Peer extends Info {
 
     @Override
     public String getId() {
-        return mId;
+        return super.getId();
     }
 
     @Override

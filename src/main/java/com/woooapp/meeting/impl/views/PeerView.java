@@ -5,38 +5,33 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
-import androidx.databinding.Observable;
 
 import com.bumptech.glide.Glide;
-import com.woooapp.meeting.impl.utils.WooDirector;
+import com.woooapp.meeting.impl.utils.WDirector;
 import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
 import com.woooapp.meeting.impl.vm.PeerProps;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.PeerConnectionUtils;
+import com.woooapp.meeting.lib.model.Info;
 import com.woooapp.meeting.lib.model.Peer;
 import com.woooapp.meeting.net.models.RoomData;
 
 import org.json.JSONException;
-import org.webrtc.MediaStreamTrack;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Objects;
 
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.databinding.WooViewPeerBinding;
@@ -55,7 +50,9 @@ public class PeerView extends RelativeLayout {
 
     private static final String TAG = PeerView.class.getSimpleName() + ".java";
     private boolean handRaised = false;
+    private boolean peerVisibilityUpdateRequired = false;
     private PeerProps props;
+    private MeetingClient meetingClient;
 
     public PeerView(@NonNull Context context) {
         super(context);
@@ -92,6 +89,7 @@ public class PeerView extends RelativeLayout {
     public void setName(@Nullable String name) {
         if (name != null) {
             mBinding.tvPeerName.setText(name);
+            peerVisibilityUpdateRequired = false;
         }
     }
 
@@ -123,22 +121,14 @@ public class PeerView extends RelativeLayout {
             mBinding.peerInfoMic.setImageResource(R.drawable.icon_mic_white_off);
             stopAudioEffects();
         }
+        peerVisibilityUpdateRequired = false;
     }
 
-    /**
-     *
-     * @param props
-     * @param meetingClient
-     */
-    public void setProps(PeerProps props, MeetingClient meetingClient) {
-        this.props = props;
-        // set view model into included layout
-        mBinding.wooPeerView.setWooPeerViewProps(props);
-
+    public void setAdminStatus() {
         if (meetingClient != null) {
             if (meetingClient.getRole() == MeetingClient.Role.ADMIN) {
                 if (props.getPeer() != null) {
-                    Peer p = (Peer) props.getPeer().get();
+                    Info p = props.getPeer().get();
                     if (p != null) {
                         mBinding.peerInfoMore.setVisibility(View.VISIBLE);
                         mBinding.peerInfoMore.setOnClickListener(view -> {
@@ -157,7 +147,7 @@ public class PeerView extends RelativeLayout {
                                         return true;
                                     case R.id.menuItemMakeAdmin:
                                         try {
-                                            meetingClient.makeNewAdmin(p);
+                                            meetingClient.makeNewAdmin(p.getId());
                                             return true;
                                         } catch (JSONException e) {
                                             e.printStackTrace();
@@ -166,9 +156,6 @@ public class PeerView extends RelativeLayout {
                                 }
                                 return false;
                             });
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                                menu.setForceShowIcon(true);
-                            }
                             menu.show();
                         });
                     }
@@ -177,14 +164,30 @@ public class PeerView extends RelativeLayout {
                 mBinding.peerInfoMore.setVisibility(View.GONE);
             }
         }
+    }
 
-        if (props.getPeer() != null) {
-            Peer p = (Peer) props.getPeer().get();
-            if (p != null) {
-                setMicState(p.isMicOn());
-                setHandRaisedState(p.isHandRaised());
-            }
-        }
+
+    /**
+     *
+     * @param props
+     * @param meetingClient
+     */
+    public void setProps(PeerProps props, MeetingClient meetingClient) {
+        this.props = props;
+        this.meetingClient = meetingClient;
+        // set view model into included layout
+        mBinding.wooPeerView.setWooPeerViewProps(props);
+
+        setAdminStatus();
+
+
+//        if (props.getPeer() != null) {
+//            Peer p = (Peer) props.getPeer().get();
+//            if (p != null) {
+//                setMicState(p.isMicOn());
+//                setHandRaisedState(p.isHandRaised());
+//            }
+//        }
 
         // set view model
         mBinding.setWooPeerProps(props);
@@ -204,6 +207,7 @@ public class PeerView extends RelativeLayout {
             mBinding.peerInfoHand.clearAnimation();
             mBinding.peerInfoHand.setImageResource(R.drawable.ic_front_hand_white_34);
         }
+        peerVisibilityUpdateRequired = false;
     }
 
     private void playAudioEffects() {
@@ -232,9 +236,9 @@ public class PeerView extends RelativeLayout {
      * @param pId
      */
     public void setImageForPeer(@NonNull String pId) {
-        if (WooDirector.getInstance().getRoomData() != null) {
-            if (WooDirector.getInstance().getRoomData().getMembers() != null) {
-                for (RoomData.Member m : WooDirector.getInstance().getRoomData().getMembers()) {
+        if (WDirector.getInstance().getRoomData() != null) {
+            if (WDirector.getInstance().getRoomData().getMembers() != null) {
+                for (RoomData.Member m : WDirector.getInstance().getRoomData().getMembers()) {
                     if (m != null) {
                         if (m.getSocketId().equals(pId)) {
                             if (m.getPicture() != null) {
@@ -274,6 +278,15 @@ public class PeerView extends RelativeLayout {
                 }
             }
         }
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Nullable
+    public PeerProps getProps() {
+        return this.props;
     }
 
     /**

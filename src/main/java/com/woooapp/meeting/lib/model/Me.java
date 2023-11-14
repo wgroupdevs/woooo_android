@@ -26,6 +26,10 @@ public class Me extends Info {
     private boolean mAudioMuted;
     private boolean mRestartIceInProgress;
 
+    public Me() {
+        super();
+    }
+
     @Override
     public String getId() {
         return mId;

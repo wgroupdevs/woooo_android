@@ -1,64 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/tableLayout"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/flowLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center">
 
-    <TableRow android:id="@+id/row1">
+    <!-- Dynamic content -->
 
-        <com.woooapp.meeting.impl.views.PeerView
-            android:id="@+id/peerView1"
-            android:layout_margin="2sp"
-            android:padding="0sp"
-            android:visibility="gone"
-            />
-
-        <com.woooapp.meeting.impl.views.MeView
-            android:id="@+id/meView"
-            android:layout_margin="2sp"
-            android:padding="0sp"
-            />
-
-        <com.woooapp.meeting.impl.views.PeerView
-            android:id="@+id/peerView3"
-            android:layout_margin="2sp"
-            android:padding="0sp"
-            />
-
-    </TableRow>
-
-    <TableRow android:id="@+id/row2">
-
-        <com.woooapp.meeting.impl.views.PeerView
-            android:id="@+id/peerView2"
-            android:layout_margin="2sp"
-            android:padding="0sp"
-            android:visibility="gone"
-            />
-
-        <com.woooapp.meeting.impl.views.PeerView
-            android:id="@+id/peerView4"
-            android:layout_margin="2sp"
-            android:padding="0sp"
-            />
-
-    </TableRow>
-
-    <TableRow android:id="@+id/row3">
-
-        <com.woooapp.meeting.impl.views.PeerView
-            android:id="@+id/peerView5"
-            android:layout_margin="2sp"
-            android:padding="0sp"
-            android:visibility="gone"
-            />
-
-        <com.woooapp.meeting.impl.views.PeerView
-            android:id="@+id/peerView6"
-            android:layout_margin="2sp"
-            android:padding="0sp"
-            />
-
-    </TableRow>
-
-</TableLayout>
+</FrameLayout>

@@ -2,6 +2,8 @@ package com.woooapp.meeting.impl.views.models;
 
 import androidx.annotation.NonNull;
 
+import com.woooapp.meeting.impl.vm.MeProps;
+import com.woooapp.meeting.impl.vm.PeerProps;
 import com.woooapp.meeting.lib.model.Peer;
 
 /**
@@ -16,6 +18,8 @@ public class GridPeer {
 
     private int viewType = VIEW_TYPE_PEER;
     private Peer peer;
+    private MeProps meProps;
+    private PeerProps peerProps;
 
     /**
      *
@@ -41,6 +45,22 @@ public class GridPeer {
 
     public void setViewType(int viewType) {
         this.viewType = viewType;
+    }
+
+    public MeProps getMeProps() {
+        return meProps;
+    }
+
+    public void setMeProps(MeProps meProps) {
+        this.meProps = meProps;
+    }
+
+    public PeerProps getPeerProps() {
+        return peerProps;
+    }
+
+    public void setPeerProps(PeerProps peerProps) {
+        this.peerProps = peerProps;
     }
 
 } /** end class. */

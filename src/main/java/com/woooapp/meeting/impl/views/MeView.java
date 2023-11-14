@@ -264,6 +264,14 @@ public class MeView extends RelativeLayout {
         });
     }
 
+    /**
+     *
+     * @return
+     */
+    public MeProps getProps() {
+        return props;
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();

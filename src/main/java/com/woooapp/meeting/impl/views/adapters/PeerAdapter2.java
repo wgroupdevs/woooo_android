@@ -1,9 +1,6 @@
 package com.woooapp.meeting.impl.views.adapters;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -11,15 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.woooapp.meeting.device.Display;
-import com.woooapp.meeting.impl.utils.WooDirector;
-import com.woooapp.meeting.impl.utils.WooEvents;
+import com.woooapp.meeting.impl.utils.WDirector;
+import com.woooapp.meeting.impl.utils.WEvents;
 import com.woooapp.meeting.impl.views.MeView;
 import com.woooapp.meeting.impl.views.PeerView;
 import com.woooapp.meeting.impl.views.models.ListGridPeer;
@@ -28,24 +24,17 @@ import com.woooapp.meeting.impl.vm.PeerProps;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.lv.RoomStore;
 import com.woooapp.meeting.lib.model.Peer;
-import com.woooapp.meeting.net.models.RoomData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.webrtc.MediaStreamTrack;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import eu.siacs.conversations.R;
-import pk.muneebahmad.lib.graphics.CircleDrawable;
 import pk.muneebahmad.lib.graphics.SP;
-import pk.muneebahmad.lib.net.Http;
-import pk.muneebahmad.lib.net.HttpImageAdapter;
 
 /**
  * @author muneebahmad (ahmadgallian@yahoo.com)
@@ -91,7 +80,7 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
         this.mMeetingClient = mMeetingClient;
 
         this.handler = new Handler(this);
-        WooEvents.getInstance().addHandler(handler);
+        WEvents.getInstance().addHandler(handler);
 
         this.mDeviceWidth = Display.getDisplayWidth(mContext) - 40;
         this.mDeviceHeight = Display.getDisplayHeight(mContext) - (int) SP.valueOf(mContext, 80);
@@ -156,7 +145,7 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
                     vhm.peerView.setProps(propsMap.get(p3.getId()), mMeetingClient);
                 }
                 vhm.peerView.setName(p3.getDisplayName());
-                if (WooDirector.getInstance().isCameraOn(p3.getId())) {
+                if (WDirector.getInstance().isCameraOn(p3.getId())) {
                     vhm.peerView.setVideoState2(true);
                 } else {
                     vhm.peerView.setVideoState2(false);
@@ -204,7 +193,7 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
                 vhpp.peerView1.setProps(propsMap.get(p1.getId()), mMeetingClient);
             }
             vhpp.peerView1.setName(p1.getDisplayName());
-            if (WooDirector.getInstance().isCameraOn(p1.getId())) {
+            if (WDirector.getInstance().isCameraOn(p1.getId())) {
                 vhpp.peerView1.setVideoState2(true);
             } else {
                 vhpp.peerView1.setVideoState2(false);
@@ -232,7 +221,7 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
                 vhpp.peerView2.setProps(propsMap.get(p2.getId()), mMeetingClient);
             }
             vhpp.peerView2.setName(p2.getDisplayName());
-            if (WooDirector.getInstance().isCameraOn(p2.getId())) {
+            if (WDirector.getInstance().isCameraOn(p2.getId())) {
                 vhpp.peerView2.setVideoState2(true);
             } else {
                 vhpp.peerView2.setVideoState2(false);
@@ -342,7 +331,7 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
 
     public void dispose() {
         if (this.handler != null) {
-            WooEvents.getInstance().removeHandler(handler);
+            WEvents.getInstance().removeHandler(handler);
             meProp = null;
             propsMap.clear();
             this.peerList = new LinkedList<>();
@@ -360,24 +349,24 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
     public boolean handleMessage(@NonNull Message msg) {
         if (peerList.size() > 0) {
             switch (msg.what) {
-                case WooEvents.EVENT_ME_CAM_TURNED_ON:
-                case WooEvents.EVENT_ME_CAM_TURNED_OFF:
-                case WooEvents.EVENT_ME_MIC_TURNED_ON:
-                case WooEvents.EVENT_ME_MIC_TURNED_OFF:
-                case WooEvents.EVENT_ME_HAND_RAISED:
-                case WooEvents.EVENT_ME_HAND_LOWERED:
+                case WEvents.EVENT_ME_CAM_TURNED_ON:
+                case WEvents.EVENT_ME_CAM_TURNED_OFF:
+                case WEvents.EVENT_ME_MIC_TURNED_ON:
+                case WEvents.EVENT_ME_MIC_TURNED_OFF:
+                case WEvents.EVENT_ME_HAND_RAISED:
+                case WEvents.EVENT_ME_HAND_LOWERED:
                     if (mPageNo == 1) {
                         notifyDataSetChanged();
                         return true;
                     }
                     return false;
-                case WooEvents.EVENT_PEER_CAM_TURNED_ON:
+                case WEvents.EVENT_PEER_CAM_TURNED_ON:
                     if (mMeetingClient != null) {
                         JSONObject obj = (JSONObject) msg.obj;
                         if (obj != null) {
                             try {
                                 String pId = obj.getString("socketId");
-                                WooDirector.getInstance().addPeerVideoState(pId, true);
+                                WDirector.getInstance().addPeerVideoState(pId, true);
                                 notifyDataSetChanged();
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -385,13 +374,13 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
                         }
                     }
                     return true;
-                case WooEvents.EVENT_PEER_CAM_TURNED_OFF:
+                case WEvents.EVENT_PEER_CAM_TURNED_OFF:
                     if (mMeetingClient != null) {
                         JSONObject obj = (JSONObject) msg.obj;
                         if (obj != null) {
                             try {
                                 String pId = obj.getString("socketId");
-                                WooDirector.getInstance().addPeerVideoState(pId, false);
+                                WDirector.getInstance().addPeerVideoState(pId, false);
                                 notifyDataSetChanged();
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -400,16 +389,16 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
                     }
                     notifyDataSetChanged();
                     return true;
-                case WooEvents.EVENT_PEER_HAND_LOWERED:
-                case WooEvents.EVENT_PEER_HAND_RAISED:
-                case WooEvents.EVENT_PEER_MIC_MUTED:
-                case WooEvents.EVENT_PEER_MIC_UNMUTED:
-                case WooEvents.EVENT_PEER_ADAPTER_NOTIFY:
+                case WEvents.EVENT_PEER_HAND_LOWERED:
+                case WEvents.EVENT_PEER_HAND_RAISED:
+                case WEvents.EVENT_PEER_MIC_MUTED:
+                case WEvents.EVENT_PEER_MIC_UNMUTED:
+                case WEvents.EVENT_PEER_ADAPTER_NOTIFY:
                     if (msg.obj != null) {
                         notifyDataSetChanged();
                     }
                     return true;
-                case WooEvents.EVENT_DESTROY:
+                case WEvents.EVENT_DESTROY:
                     destroy = true;
                     peerList.clear();
                     notifyDataSetChanged();

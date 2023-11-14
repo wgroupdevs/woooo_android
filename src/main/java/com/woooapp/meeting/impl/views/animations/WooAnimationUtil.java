@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
@@ -277,6 +278,57 @@ public final class WooAnimationUtil {
         anim.setRepeatCount(0);
         if (listener != null) anim.setAnimationListener(listener);
         view.startAnimation(anim);
+    }
+
+    /**
+     *
+     * @param view
+     * @param delay
+     * @param listener
+     */
+    public static void showViewSimple(@NonNull View view, long delay, @Nullable Animation.AnimationListener listener) {
+        AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1.0f);
+        alphaAnimation.setStartOffset(delay);
+        alphaAnimation.setRepeatCount(0);
+        alphaAnimation.setDuration(500);
+        if (listener != null) alphaAnimation.setAnimationListener(listener);
+        view.startAnimation(alphaAnimation);
+    }
+
+    /**
+     *
+     * @param view
+     * @param delay
+     * @param listener
+     */
+    public static void hideViewSimple(@NonNull View view, long delay, @Nullable Animation.AnimationListener listener) {
+       AlphaAnimation alphaAnimation = new AlphaAnimation(1f, 0f);
+       alphaAnimation.setStartOffset(delay);
+       alphaAnimation.setDuration(500);
+       alphaAnimation.setRepeatCount(0);
+       if (listener != null) alphaAnimation.setAnimationListener(listener);
+       view.startAnimation(alphaAnimation);
+    }
+
+    /**
+     *
+     * @param view
+     * @param fromX
+     * @param toX
+     * @param fromY
+     * @param toY
+     * @param adapter
+     */
+    public static void resetLocation(@NonNull View view, float fromX, float toX, float fromY, float toY, AnimatorListenerAdapter adapter) {
+        view.clearAnimation();
+        ValueAnimator y = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, fromY, toY);
+        ValueAnimator x = ObjectAnimator.ofFloat(view, View.TRANSLATION_X, fromX, toX);
+        y.setDuration(400);
+        x.setDuration(400);
+        AnimatorSet set = new AnimatorSet();
+        if (adapter != null) set.addListener(adapter);
+        set.play(x).with(y);
+        set.start();
     }
 
 } /**

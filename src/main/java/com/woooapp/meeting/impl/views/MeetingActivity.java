@@ -3,7 +3,6 @@ package com.woooapp.meeting.impl.views;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -14,7 +13,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,7 +37,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
@@ -49,15 +46,14 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.viewpager.widget.ViewPager;
 
-import com.bumptech.glide.Glide;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.woooapp.meeting.device.Display;
 import com.woooapp.meeting.impl.utils.VoiceDataSource;
-import com.woooapp.meeting.impl.utils.WooDirector;
-import com.woooapp.meeting.impl.utils.WooEvents;
-import com.woooapp.meeting.impl.utils.WooTonePlayer;
-import com.woooapp.meeting.impl.utils.WooVoicePlayback;
+import com.woooapp.meeting.impl.utils.WDirector;
+import com.woooapp.meeting.impl.utils.WEvents;
+import com.woooapp.meeting.impl.utils.WTonePlayer;
+import com.woooapp.meeting.impl.utils.WVoicePlayback;
 import com.woooapp.meeting.impl.views.adapters.LangSelectionAdapter;
 import com.woooapp.meeting.impl.views.adapters.MeetingChatAdapter;
 import com.woooapp.meeting.impl.views.adapters.MeetingPagerAdapter;
@@ -66,6 +62,7 @@ import com.woooapp.meeting.impl.views.adapters.MemberAdapter;
 import com.woooapp.meeting.impl.views.adapters.PeerAdapter2;
 import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
 import com.woooapp.meeting.impl.views.fragments.MeetingPageFragment;
+import com.woooapp.meeting.impl.views.fragments.MeetingPageFragment2;
 import com.woooapp.meeting.impl.views.models.Chat;
 import com.woooapp.meeting.impl.views.models.GridPeer;
 import com.woooapp.meeting.impl.views.models.Languages;
@@ -78,7 +75,6 @@ import com.woooapp.meeting.impl.views.popups.WooCommonPopup;
 import com.woooapp.meeting.impl.views.popups.WooProgressDialog;
 import com.woooapp.meeting.impl.vm.RoomProps;
 import com.woooapp.meeting.lib.MeetingClient;
-import com.woooapp.meeting.lib.RoomMessageHandler;
 import com.woooapp.meeting.lib.RoomOptions;
 import com.woooapp.meeting.lib.Utils;
 import com.woooapp.meeting.lib.lv.RoomStore;
@@ -96,7 +92,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -189,8 +184,8 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private Account account;
     private Languages langs;
     private WooProgressDialog progressDialog;
-    private List<MeetingPageFragment> pageFragments = new LinkedList<>();
-    private WooTonePlayer notificationSound;
+    private List<MeetingPageFragment2> pageFragments = new LinkedList<>();
+    private WTonePlayer notificationSound;
     private LinearLayout pageControlLayout;
     private LinearLayout translationLayout;
     private TextView tvTransOriginal;
@@ -213,7 +208,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         if (!isNewIntent) {
             this.uiManager = UIManager.getUIManager(this);
-            WooEvents.getInstance().addHandler(callbackHandler);
+            WEvents.getInstance().addHandler(callbackHandler);
             deviceWidthDp = Display.getDisplayWidth(this) - 50;
             deviceHeightDp = Display.getDisplayHeight(this);
             this.initComponents();
@@ -228,7 +223,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             progressDialog.show();
             createDrawer();
 
-            this.langsJson = WooDirector.getInstance().readFileFromAssets(getAssets(), "languages.json");
+            this.langsJson = WDirector.getInstance().readFileFromAssets(getAssets(), "languages.json");
             try {
                 this.langs = Languages.fromJson(langsJson);
             } catch (IOException e) {
@@ -291,9 +286,9 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     if (mMeetingClient != null) {
                         mMeetingClient.setTextTranslation(!mMeetingClient.isTextTranslationOn());
                         if (mMeetingClient.isTextTranslationOn()) {
-                            WooEvents.getInstance().notify(WooEvents.EVENT_TRANSLATION_ENABLED, null);
+                            WEvents.getInstance().notify(WEvents.EVENT_TRANSLATION_ENABLED, null);
                         } else {
-                            WooEvents.getInstance().notify(WooEvents.EVENT_TRANSLATION_DISABLED, null);
+                            WEvents.getInstance().notify(WEvents.EVENT_TRANSLATION_DISABLED, null);
                         }
                         if (mMeetingClient.isTextTranslationOn() || mMeetingClient.isVoiceTranslationOn()) {
                             buttonAI.setImageResource(R.drawable.ic_lang_enabled);
@@ -419,7 +414,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
         this.meetingBackground.setOnTouchListener((view, motionEvent) -> true);
 
-        this.notificationSound = new WooTonePlayer(getResources().openRawResourceFd(R.raw.meet_sound));
+        this.notificationSound = new WTonePlayer(getResources().openRawResourceFd(R.raw.meet_sound));
         this.notificationSound.setVolume(0.5f);
     }
 
@@ -741,7 +736,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             if (!langSelected) {
                 buttonLangSelect.setImageResource(R.drawable.ic_lang_enabled);
                 langSelected = true;
-                WooDirector.getInstance().setChatTranslationEnabled(true);
+                WDirector.getInstance().setChatTranslationEnabled(true);
 
                 try {
                     this.showLanguageSelectionSheet();
@@ -750,7 +745,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 }
             } else {
                 langSelected = false;
-                WooDirector.getInstance().setChatTranslationEnabled(false);
+                WDirector.getInstance().setChatTranslationEnabled(false);
                 buttonLangSelect.setImageResource(R.drawable.ic_lang_disable);
             }
         });
@@ -848,7 +843,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
             tvNone.setOnClickListener(view3 -> {
                 langSelected = false;
-                WooDirector.getInstance().setChatTranslationEnabled(false);
+                WDirector.getInstance().setChatTranslationEnabled(false);
                 buttonLangSelect.setImageResource(R.drawable.ic_lang_disable);
                 sheet.dismiss();
             });
@@ -871,7 +866,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                             String resp = response.body().string();
                             Log.d(TAG, "ROOM DATA RESPONSE >>> " + resp);
                             roomData = RoomData.fromJson(resp);
-                            WooDirector.getInstance().setRoomData(roomData);
+                            WDirector.getInstance().setRoomData(roomData);
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
@@ -896,9 +891,9 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 try {
                     String json = response.body().string();
                     roomData = RoomData.fromJson(json);
-                    WooDirector.getInstance().setRoomData(roomData);
+                    WDirector.getInstance().setRoomData(roomData);
                     if (mMeetingClient != null && accountUniqueId != null) {
-                        WooDirector.getInstance().updateRole(mMeetingClient, accountUniqueId);
+                        WDirector.getInstance().updateRole(mMeetingClient, accountUniqueId);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -1030,16 +1025,28 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             }
         });
 
-        final MeetingPageFragment f1 = new MeetingPageFragment(1, this, mRoomStore, mMeetingClient, this);
-        pageFragments.add(f1);
-        final MeetingPageFragment f2 = new MeetingPageFragment(2, this, mRoomStore, mMeetingClient, this);
-        final MeetingPageFragment f3 = new MeetingPageFragment(3, this, mRoomStore, mMeetingClient, this);
-        final MeetingPageFragment f4 = new MeetingPageFragment(4, this, mRoomStore, mMeetingClient, this);
-        final MeetingPageFragment f5 = new MeetingPageFragment(5, this, mRoomStore, mMeetingClient, this);
-        final MeetingPageFragment f6 = new MeetingPageFragment(6, this, mRoomStore, mMeetingClient, this);
-        final MeetingPageFragment f7 = new MeetingPageFragment(7, this, mRoomStore, mMeetingClient, this);
-        final MeetingPageFragment f8 = new MeetingPageFragment(8, this, mRoomStore, mMeetingClient, this);  // 48 including ME
+//        final MeetingPageFragment f1 = new MeetingPageFragment(1, this, mRoomStore, mMeetingClient, this);
+//        pageFragments.add(f1);
+//        final MeetingPageFragment f2 = new MeetingPageFragment(2, this, mRoomStore, mMeetingClient, this);
+//        final MeetingPageFragment f3 = new MeetingPageFragment(3, this, mRoomStore, mMeetingClient, this);
+//        final MeetingPageFragment f4 = new MeetingPageFragment(4, this, mRoomStore, mMeetingClient, this);
+//        final MeetingPageFragment f5 = new MeetingPageFragment(5, this, mRoomStore, mMeetingClient, this);
+//        final MeetingPageFragment f6 = new MeetingPageFragment(6, this, mRoomStore, mMeetingClient, this);
+//        final MeetingPageFragment f7 = new MeetingPageFragment(7, this, mRoomStore, mMeetingClient, this);
+//        final MeetingPageFragment f8 = new MeetingPageFragment(8, this, mRoomStore, mMeetingClient, this);  // 48 including ME
 
+        final MeetingPageFragment2 f1 = new MeetingPageFragment2(this, 1, this, mRoomStore, mMeetingClient);
+        pageFragments.add(f1);
+        peersPagerAdapter.notifyDataSetChanged();
+        final MeetingPageFragment2 f2 = new MeetingPageFragment2(this, 2, this, mRoomStore, mMeetingClient);
+        final MeetingPageFragment2 f3 = new MeetingPageFragment2(this, 3, this, mRoomStore, mMeetingClient);
+        final MeetingPageFragment2 f4 = new MeetingPageFragment2(this, 4, this, mRoomStore, mMeetingClient);
+        final MeetingPageFragment2 f5 = new MeetingPageFragment2(this, 5, this, mRoomStore, mMeetingClient);
+        final MeetingPageFragment2 f6 = new MeetingPageFragment2(this, 6, this, mRoomStore, mMeetingClient);
+        final MeetingPageFragment2 f7 = new MeetingPageFragment2(this, 7, this, mRoomStore, mMeetingClient);
+        final MeetingPageFragment2 f8 = new MeetingPageFragment2(this, 8, this, mRoomStore, mMeetingClient);
+        final MeetingPageFragment2 f9 = new MeetingPageFragment2(this, 9, this, mRoomStore, mMeetingClient);
+        final MeetingPageFragment2 f10 = new MeetingPageFragment2(this, 10, this, mRoomStore, mMeetingClient);
 
         mRoomStore
                 .getPeers()
@@ -1047,77 +1054,137 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                         this,
                         peers -> {
                             peersList = peers.getAllPeers();
-                            listGridPeer = new LinkedList<>();
-                            List<MeetingPage> pageList = new LinkedList<>();
-                            if (peersList.size() <= 5) {
-                                List<ListGridPeer> pl1 = createListGridPeers(peersList, true);
-                                MeetingPage page1 = new MeetingPage(1, pl1);
-                                pageList.add(page1);
-                                pageFragments.get(0).replacePage(page1);
-                                if (pageFragments.size() > 1) {
-                                    for (int i = 0; i < pageFragments.size(); i++) {
-                                        if (i > 0) {
-                                            pageFragments.remove(i);
+                            List<List<Peer>> paginatedList = WDirector.getInstance().getPeerPaginatedLists(peersList);
+                            Log.d(TAG, "<<< Paginated List size >>> " + paginatedList.size());
+                            if (paginatedList.size() > 0) {
+                                for (int i = 0; i < paginatedList.size(); i++) {
+                                    if (i == 0) {
+                                        List<Peer> pList = paginatedList.get(0);
+                                        List<GridPeer> gList = createGridPeers2(pList, true);
+                                        for (GridPeer g : gList) {
+                                            f1.addPeerItem(g);
+                                        }
+                                    } else {
+                                        if (pageFragments.size() == 1) {
+                                            if (i == 1) {
+                                                pageFragments.add(f2);
+                                                List<Peer> pList2 = paginatedList.get(1);
+                                                List<GridPeer> gList2 = createGridPeers2(pList2, false);
+                                                for (GridPeer g : gList2) {
+                                                    f2.addPeerItem(g);
+                                                }
+                                            } else {
+                                                pageFragments.add(f3);
+                                                peersPagerAdapter.notifyDataSetChanged();
+                                            }
                                         }
                                     }
                                 }
-                            } else if (peersList.size() > 5 && peersList.size() <= 12) {
-                                List<ListGridPeer> pl2 = createListGridPeers(peersList.subList(0, 5), true);
-                                List<ListGridPeer> pl3 = new ArrayList<>();
-                                if (peersList.size() == 6) {
-                                    pl3.add(new ListGridPeer(ListGridPeer.VIEW_TYPE_PEER_PEER, peersList.get(5), null));
-                                } else {
-                                    pl3 = createListGridPeers(peersList.subList(5, peersList.size()), false);
-                                }
-                                MeetingPage page1 = new MeetingPage(1, pl2);
-                                MeetingPage page2 = new MeetingPage(2, pl3);
-                                pageList.add(page1);
-                                pageList.add(page2);
-                                pageFragments.get(0).replacePage(page1);
-                                if (pageFragments.size() < 2) {
-                                    pageFragments.add(f2);
-                                    f2.replacePage(page2);
-                                } else {
-                                    pageFragments.get(1).replacePage(page2);
-                                }
-                                if (pageFragments.size() > 2) {
-                                    for (int i = 0; i < pageFragments.size(); i++) {
-                                        if (i > 1) {
-                                            pageFragments.remove(i);
-                                        }
-                                    }
-                                }
-                            } else if (peersList.size() > 11 && peersList.size() <= 18) {
-                                List<ListGridPeer> pl4 = createListGridPeers(peersList.subList(0, 5), true);
-                                List<ListGridPeer> pl5 = createListGridPeers(peersList.subList(6, 11), false);
-                                List<ListGridPeer> pl6 = new ArrayList<>();
-                                if (peersList.size() == 12) {
-                                    pl6.add(new ListGridPeer(ListGridPeer.VIEW_TYPE_PEER_PEER, peersList.get(11), null));
-                                } else {
-                                    pl6 = createListGridPeers(peersList.subList(11, peersList.size() - 1), false);
-                                }
-                                MeetingPage page1 = new MeetingPage(1, pl4);
-                                MeetingPage page2 = new MeetingPage(2, pl5);
-                                MeetingPage page3 = new MeetingPage(3, pl6);
-                                pageList.add(page1);
-                                pageList.add(page2);
-                                pageList.add(page3);
-                                pageFragments.get(0).replacePage(page1);
-                                pageFragments.get(1).replacePage(page2);
-                                if (pageFragments.size() < 3) {
-                                    pageFragments.add(f3);
-                                    f3.replacePage(page3);
-                                } else {
-                                    pageFragments.get(2).replacePage(page3);
-                                }
+//                                switch (paginatedList.size()) {
+//                                    case 1:
+//                                    List<Peer> pList = paginatedList.get(0);
+//                                    List<GridPeer> gList = createGridPeers2(pList, true);
+//                                    for (GridPeer g : gList) {
+//                                        Log.d(TAG, "Added GridPeer of type " + (g.getViewType() == GridPeer.VIEW_TYPE_ME ? " Me" : " Peer"));
+//                                        f1.addPeerItem(g);
+//                                    }
+//                                    break;
+//                                    case 2:
+//                                        if (pageFragments.size() == 1) {
+//                                            pageFragments.add(f2);
+//                                            peersPagerAdapter.notifyDataSetChanged();
+//                                        }
+//                                        List<Peer> pList1 = paginatedList.get(0);
+//                                        List<GridPeer> gList1 = createGridPeers2(pList1, true);
+//                                        for (GridPeer g : gList1) {
+//                                            Log.d(TAG, "Added GridPeer of type " + (g.getViewType() == GridPeer.VIEW_TYPE_ME ? " Me" : " Peer"));
+//                                            f1.addPeerItem(g);
+//                                        }
+//                                        List<Peer> pList2 = paginatedList.get(1);
+//                                        List<GridPeer> gList2 = createGridPeers2(pList2, false);
+//                                        for (GridPeer g : gList2) {
+//                                            Log.d(TAG, "Added GridPeer of type " + (g.getViewType() == GridPeer.VIEW_TYPE_ME ? " Me" : " Peer"));
+//                                            f2.addPeerItem(g);
+//                                        }
+//                                        break;
+//                                    default:
+//                                        break;
+//                                }
                             }
-                            Log.d(TAG, "Peer list size[" + peersList.size() + "]");
-                            Log.d(TAG, "Pages Size >>> " + pageList.size());
-                            peersPagerAdapter.replaceFragments(pageFragments, pageList);
-                            updatePageControl(0);
 
+
+//                            listGridPeer = new LinkedList<>();
+//                            List<MeetingPage> pageList = new LinkedList<>();
+//                            if (peersList.size() <= 5) {
+//                                List<ListGridPeer> pl1 = createListGridPeers(peersList, true);
+//                                MeetingPage page1 = new MeetingPage(1, pl1);
+//                                pageList.add(page1);
+//                                pageFragments.get(0).replacePage(page1);
+//                                if (pageFragments.size() > 1) {
+//                                    for (int i = 0; i < pageFragments.size(); i++) {
+//                                        if (i > 0) {
+//                                            pageFragments.remove(i);
+//                                        }
+//                                    }
+//                                }
+//                            } else if (peersList.size() > 5 && peersList.size() <= 12) {
+//                                List<ListGridPeer> pl2 = createListGridPeers(peersList.subList(0, 5), true);
+//                                List<ListGridPeer> pl3 = new ArrayList<>();
+//                                if (peersList.size() == 6) {
+//                                    pl3.add(new ListGridPeer(ListGridPeer.VIEW_TYPE_PEER_PEER, peersList.get(5), null));
+//                                } else {
+//                                    pl3 = createListGridPeers(peersList.subList(5, peersList.size()), false);
+//                                }
+//                                MeetingPage page1 = new MeetingPage(1, pl2);
+//                                MeetingPage page2 = new MeetingPage(2, pl3);
+//                                pageList.add(page1);
+//                                pageList.add(page2);
+//                                pageFragments.get(0).replacePage(page1);
+//                                if (pageFragments.size() < 2) {
+//                                    pageFragments.add(f2);
+//                                    f2.replacePage(page2);
+//                                } else {
+//                                    pageFragments.get(1).replacePage(page2);
+//                                }
+//                                if (pageFragments.size() > 2) {
+//                                    for (int i = 0; i < pageFragments.size(); i++) {
+//                                        if (i > 1) {
+//                                            pageFragments.remove(i);
+//                                        }
+//                                    }
+//                                }
+//                            } else if (peersList.size() > 11 && peersList.size() <= 18) {
+//                                List<ListGridPeer> pl4 = createListGridPeers(peersList.subList(0, 5), true);
+//                                List<ListGridPeer> pl5 = createListGridPeers(peersList.subList(6, 11), false);
+//                                List<ListGridPeer> pl6 = new ArrayList<>();
+//                                if (peersList.size() == 12) {
+//                                    pl6.add(new ListGridPeer(ListGridPeer.VIEW_TYPE_PEER_PEER, peersList.get(11), null));
+//                                } else {
+//                                    pl6 = createListGridPeers(peersList.subList(11, peersList.size() - 1), false);
+//                                }
+//                                MeetingPage page1 = new MeetingPage(1, pl4);
+//                                MeetingPage page2 = new MeetingPage(2, pl5);
+//                                MeetingPage page3 = new MeetingPage(3, pl6);
+//                                pageList.add(page1);
+//                                pageList.add(page2);
+//                                pageList.add(page3);
+//                                pageFragments.get(0).replacePage(page1);
+//                                pageFragments.get(1).replacePage(page2);
+//                                if (pageFragments.size() < 3) {
+//                                    pageFragments.add(f3);
+//                                    f3.replacePage(page3);
+//                                } else {
+//                                    pageFragments.get(2).replacePage(page3);
+//                                }
+//                            }
+//                            Log.d(TAG, "Peer list size[" + peersList.size() + "]");
+//                            Log.d(TAG, "Pages Size >>> " + pageList.size());
+                            peersPagerAdapter.replaceFragments(pageFragments);
+
+                            // Page Control
                             if (pageFragments.size() > 1) {
                                 createPageControl(0);
+                                updatePageControl(0);
                             } else {
                                 hidePageControl();
                             }
@@ -1133,6 +1200,23 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         List<GridPeer> peers = new LinkedList<>();
         peers.add(new GridPeer(GridPeer.VIEW_TYPE_ME, null));
         for (Peer p : peerList) {
+            peers.add(new GridPeer(GridPeer.VIEW_TYPE_PEER, p));
+        }
+        return peers;
+    }
+
+    /**
+     *
+     * @param peersList
+     * @param includeMe
+     * @return
+     */
+    private List<GridPeer> createGridPeers2(@NonNull List<Peer> peersList, boolean includeMe) {
+        List<GridPeer> peers = new LinkedList<>();
+        if (includeMe) {
+            peers.add(new GridPeer(GridPeer.VIEW_TYPE_ME, null));
+        }
+        for (Peer p : peersList) {
             peers.add(new GridPeer(GridPeer.VIEW_TYPE_PEER, p));
         }
         return peers;
@@ -1284,7 +1368,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     public boolean handleMessage(@NonNull Message msg) {
         Log.d(TAG, "<< Handler Event >>> " + msg.what);
         switch (msg.what) {
-            case WooEvents.EVENT_TYPE_SOCKET_ID:
+            case WEvents.EVENT_TYPE_SOCKET_ID:
                 Log.d(TAG, "<< Handler Event SOCKET_ID Received >> " + msg.obj);
                 // Drawer
                 runOnUiThread(() -> {
@@ -1356,24 +1440,33 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     }
                 }
                 return true;
-            case WooEvents.EVENT_TYPE_PRODUCER_CREATED:
+            case WEvents.EVENT_TYPE_PRODUCER_CREATED:
                 Log.d(TAG, "<< Handler Event PRODUCER CREATED [" + msg.obj + "]");
                 return true;
-            case WooEvents.EVENT_TYPE_CONSUMER_CREATED:
+            case WEvents.EVENT_TYPE_CONSUMER_CREATED:
                 Log.d(TAG, "<< Handler Event CONSUMER CREATED [" + msg.obj + "]");
                 fetchRoomData2();
                 return true;
-            case WooEvents.EVENT_TYPE_CONSUME_BACK_CREATED:
+            case WEvents.EVENT_TYPE_CONSUME_BACK_CREATED:
                 Log.d(TAG, "<< Handler Event CONSUME BACK CREATED [" + msg.obj + "]");
                 fetchRoomData2();
                 return true;
-            case WooEvents.EVENT_TYPE_PEER_DISCONNECTED:
-                Log.d(TAG, "<< Handler Event Peer Disconnected with name >> " + msg.obj);
-                runOnUiThread(() -> {
-                    showCommonPopup(msg.obj + " left", true, WooCommonPopup.VERTICAL_POSITION_TOP);
-                });
-                return true;
-            case WooEvents.EVENT_TYPE_SOCKET_DISCONNECTED:
+            case WEvents.EVENT_TYPE_PEER_DISCONNECTED:
+                if (msg.obj != null) {
+                    JSONObject p = (JSONObject) msg.obj;
+                    try {
+                        String username = p.getString("username");
+                        Log.d(TAG, "<< Handler Event Peer Disconnected with name >> " + username);
+                        runOnUiThread(() -> {
+                            showCommonPopup(username + " left", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    return true;
+                }
+                return false;
+            case WEvents.EVENT_TYPE_SOCKET_DISCONNECTED:
                 Log.d(TAG, "<< Handler Event Socket disconnected with socket id: [" + msg.obj + "]");
                 runOnUiThread(() -> {
                     if (droidAudioManager != null) {
@@ -1386,7 +1479,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 //                    onBackPressed();
 //                }
                 return true;
-            case WooEvents.EVENT_RECEIVED_MESSAGE:
+            case WEvents.EVENT_RECEIVED_MESSAGE:
                 Log.d(TAG, "<< Handler Event : Chat Message Received in handler");
                 com.woooapp.meeting.net.models.Message message = (com.woooapp.meeting.net.models.Message) msg.obj;
                 if (message != null) {
@@ -1403,7 +1496,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     setChatTranslation(message);
                 }
                 return true;
-            case WooEvents.EVENT_SENT_MESSAGE:
+            case WEvents.EVENT_SENT_MESSAGE:
                 Log.d(TAG, "Message " + msg.obj + " Sent successfully");
                 com.woooapp.meeting.net.models.Message message1 = (com.woooapp.meeting.net.models.Message) msg.obj;
                 if (message1 != null) {
@@ -1413,11 +1506,11 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     });
                 }
                 return true;
-            case WooEvents.EVENT_FAILURE_MESSAGE:
+            case WEvents.EVENT_FAILURE_MESSAGE:
                 Log.w(TAG, "Failed to send chat message " + msg.obj);
 
                 return true;
-            case WooEvents.EVENT_ME_MIC_TURNED_ON:
+            case WEvents.EVENT_ME_MIC_TURNED_ON:
                 runOnUiThread(() -> {
                     buttonMic.setImageResource(R.drawable.baseline_mic_34);
                 });
@@ -1446,7 +1539,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     }
                 }
                 return true;
-            case WooEvents.EVENT_ME_MIC_TURNED_OFF:
+            case WEvents.EVENT_ME_MIC_TURNED_OFF:
                 runOnUiThread(() -> {
                     buttonMic.setImageResource(R.drawable.icon_mic_white_off);
                 });
@@ -1477,7 +1570,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     });
                 }
                 return true;
-            case WooEvents.EVENT_ME_CAM_TURNED_ON:
+            case WEvents.EVENT_ME_CAM_TURNED_ON:
                 runOnUiThread(() -> {
                     buttonCam.setImageResource(R.drawable.ic_video_camera_white);
                 });
@@ -1489,7 +1582,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     }
                 }
                 return true;
-            case WooEvents.EVENT_ME_CAM_TURNED_OFF:
+            case WEvents.EVENT_ME_CAM_TURNED_OFF:
                 runOnUiThread(() -> {
                     buttonCam.setImageResource(R.drawable.ic_camera_off_gray);
                 });
@@ -1501,34 +1594,50 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     }
                 }
                 return true;
-            case WooEvents.EVENT_ON_TEXT_TRANSLATION_RECV:
+            case WEvents.EVENT_ON_TEXT_TRANSLATION_RECV:
                 if (msg.obj != null) {
                     try {
                         JSONObject obj = new JSONObject(String.valueOf(msg.obj));
                         String translation = obj.getString("translation");
                         String original = obj.getString("original");
-                        String producerId = obj.getString("producerId");
+                        String socketId = obj.getString("socketId");
+                        boolean isFinal = obj.getBoolean("isFinal");
 
-                        Transcript transcript = new Transcript(translation, original, producerId);
-                        transcriptList.add(transcript);
-                        if (transcriptAdapter != null)
-                            transcriptAdapter.replaceList(transcriptList);
-                        if (mMeetingClient.isTextTranslationOn()) {
-                            onTranslation(original, translation);
+                        Transcript transcript = new Transcript(translation, original, socketId);
+                        if (mRoomStore != null) {
+                            mRoomStore.getPeers().postValue(peers -> {
+                                if (peers.getPeer(socketId) != null) {
+                                    transcript.setSenderName(peers.getPeer(socketId).getDisplayName());
+                                }
+
+                                transcriptList.add(transcript);
+                                if (transcriptAdapter != null)
+                                    transcriptAdapter.replaceList(transcriptList);
+                                if (mMeetingClient.isTextTranslationOn()) {
+                                    onTranslation(original, translation);
+                                }
+                            });
+                        } else {
+                            transcriptList.add(transcript);
+                            if (transcriptAdapter != null)
+                                transcriptAdapter.replaceList(transcriptList);
+                            if (mMeetingClient.isTextTranslationOn()) {
+                                onTranslation(original, translation);
+                            }
                         }
                     } catch (JSONException ex) {
                         ex.printStackTrace();
                     }
                 }
                 return true;
-            case WooEvents.EVENT_VOICE_TRANSLATION_RECEIVED:
+            case WEvents.EVENT_VOICE_TRANSLATION_RECEIVED:
                 if (msg.obj != null) {
                     byte[] bytes = (byte[]) msg.obj;
                     runOnUiThread(() -> {
                         try {
                             VoiceDataSource dataSource = new VoiceDataSource(bytes);
-                            final WooVoicePlayback playback = new WooVoicePlayback(dataSource);
-                            playback.play();
+                            final WVoicePlayback playback = new WVoicePlayback(dataSource);
+//                            playback.play();
 //                            playback.setCompletionListener(mp -> playback.release());
                         } catch (Exception ex) {
                             ex.printStackTrace();
@@ -1536,10 +1645,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     });
                 }
                 return true;
-            case WooEvents.EVENT_CLICKED_LANGUAGE_SELECT:
+            case WEvents.EVENT_CLICKED_LANGUAGE_SELECT:
                 showLanguageSelectionSheet();
                 return true;
-            case WooEvents.EVENT_NEW_PEER_JOINED:
+            case WEvents.EVENT_NEW_PEER_JOINED:
                 if (msg.obj != null) {
                     runOnUiThread(() -> {
 //                        showCommonPopup(msg.obj + " joined", true, WooCommonPopup.VERTICAL_POSITION_TOP);
@@ -1551,7 +1660,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     });
                 }
                 return true;
-            case WooEvents.EVENT_PEER_EXITED:
+            case WEvents.EVENT_PEER_EXITED:
                 if (msg.obj != null) {
                     runOnUiThread(() -> {
                         showCommonPopup(String.valueOf(msg.obj) + " left!", true, WooCommonPopup.VERTICAL_POSITION_TOP);
@@ -1564,7 +1673,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     return true;
                 }
                 return false;
-            case WooEvents.EVENT_ME_HAND_RAISED:
+            case WEvents.EVENT_ME_HAND_RAISED:
                 if (mMeetingClient != null) {
                     if (mMeetingClient.getSocketId() != null) {
                         ApiManager.build(this).putStates(ApiManager.URL_HAND_RAISED, mMeetingId, mMeetingClient.getSocketId(), new ApiManager.ApiResult2() {
@@ -1592,7 +1701,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     }
                 }
                 return false;
-            case WooEvents.EVENT_ME_HAND_LOWERED:
+            case WEvents.EVENT_ME_HAND_LOWERED:
                 if (mMeetingClient != null) {
                     if (mMeetingClient.getSocketId() != null) {
                         ApiManager.build(this).putStates(ApiManager.URL_HAND_LOWERED, mMeetingId, mMeetingClient.getSocketId(), new ApiManager.ApiResult2() {
@@ -1620,13 +1729,13 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     }
                 }
                 return false;
-            case WooEvents.EVENT_TRANSLATION_ENABLED:
+            case WEvents.EVENT_TRANSLATION_ENABLED:
                 enableTranslations();
                 return true;
-            case WooEvents.EVENT_TRANSLATION_DISABLED:
+            case WEvents.EVENT_TRANSLATION_DISABLED:
                 disableTranslation();
                 return true;
-            case WooEvents.EVENT_PEER_HAND_LOWERED:
+            case WEvents.EVENT_PEER_HAND_LOWERED:
                 JSONObject handLowered = (JSONObject) msg.obj;
                 if (handLowered != null) {
                     mRoomStore.getPeers().postValue(peers -> {
@@ -1641,7 +1750,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     });
                 }
                 return true;
-            case WooEvents.EVENT_PEER_HAND_RAISED:
+            case WEvents.EVENT_PEER_HAND_RAISED:
                 JSONObject handRaised = (JSONObject) msg.obj;
                 if (handRaised != null) {
                     mRoomStore.getPeers().postValue(peers -> {
@@ -1656,13 +1765,13 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     });
                 }
                 return true;
-            case WooEvents.EVENT_SELECT_BACKGROUND:
+            case WEvents.EVENT_SELECT_BACKGROUND:
                 openImageChooser();
                 return true;
-            case WooEvents.EVENT_SHOW_MEMBERS:
+            case WEvents.EVENT_SHOW_MEMBERS:
                 showMembersSheet();
                 return true;
-            case WooEvents.EVENT_NETWORK_CONNECTIVITY_CHANGED:
+            case WEvents.EVENT_NETWORK_CONNECTIVITY_CHANGED:
                 if (msg.obj != null) {
                     Intent intent = (Intent) msg.obj;
                     if (intent != null) {
@@ -1671,14 +1780,14 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     }
                 }
                 return true;
-            case WooEvents.EVENT_ADD_PASSWORD:
+            case WEvents.EVENT_ADD_PASSWORD:
                 try {
                     setPassword();
                 } catch (Exception ex) {
                     ex.printStackTrace();
                 }
                 return true;
-            case WooEvents.EVENT_RECEIVED_MUTE_EVERYONE:
+            case WEvents.EVENT_RECEIVED_MUTE_EVERYONE:
                 if (mMeetingClient != null) {
                     if (mMeetingClient.isMicOn()) {
                         mMeetingClient.setMicOn(false);
@@ -1693,7 +1802,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     return true;
                 }
                 return false;
-            case WooEvents.EVENT_RECEIVED_MUTE_MEMBER:
+            case WEvents.EVENT_RECEIVED_MUTE_MEMBER:
                 if (mMeetingClient != null) {
                     if (mMeetingClient.isMicOn()) {
                         mMeetingClient.setMicOn(false);
@@ -1708,7 +1817,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     return true;
                 }
                 return false;
-            case WooEvents.EVENT_RECEIVED_CAM_OFF_MEMBER:
+            case WEvents.EVENT_RECEIVED_CAM_OFF_MEMBER:
                 if (mMeetingClient != null) {
                     if (mMeetingClient.isCamOn()) {
                         mMeetingClient.setCamOn(false);
@@ -1723,7 +1832,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     return true;
                 }
                 return false;
-            case WooEvents.EVENT_RECEIVED_KICKOUT:
+            case WEvents.EVENT_RECEIVED_KICKOUT:
                 if (mMeetingClient != null) {
                     runOnUiThread(() -> {
                         try {
@@ -1755,7 +1864,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     return true;
                 }
                 return false;
-            case WooEvents.EVENT_NEW_ADMIN_CREATED:
+            case WEvents.EVENT_NEW_ADMIN_CREATED:
                 fetchRoomData2();
                 try {
                     runOnUiThread(() -> {
@@ -1765,7 +1874,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     ex.printStackTrace();
                 }
                 return true;
-            case WooEvents.EVENT_ON_NEW_ADMIN:
+            case WEvents.EVENT_ON_NEW_ADMIN:
                 JSONObject obj = (JSONObject) msg.obj;
                 if (obj != null) {
                     try {
@@ -1779,7 +1888,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                                             showCommonPopup("You have been made admin", true, WooCommonPopup.VERTICAL_POSITION_TOP);
                                         });
                                         fetchRoomData2();
-                                        WooEvents.getInstance().notify(WooEvents.EVENT_PEER_ADAPTER_NOTIFY, "Update");
+                                        WEvents.getInstance().notify(WEvents.EVENT_PEER_ADAPTER_NOTIFY, "Update");
                                     } catch (Exception ex) {
                                         ex.printStackTrace();
                                     }
@@ -1791,7 +1900,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     }
                 }
                 return true;
-            case WooEvents.EVENT_CONNECTION_STATE_FAILED:
+            case WEvents.EVENT_CONNECTION_STATE_FAILED:
                 if (uiManager != null) {
                     try {
                         showCommonPopup("Network not available ...", true, WooCommonPopup.VERTICAL_POSITION_TOP);
@@ -1800,7 +1909,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     }
                 }
                 return true;
-            case WooEvents.EVENT_CONNECTION_STATE_CONNECTING:
+            case WEvents.EVENT_CONNECTION_STATE_CONNECTING:
                 if (uiManager != null) {
                     try {
                         showCommonPopup("Connecting ...", true, WooCommonPopup.VERTICAL_POSITION_TOP);
@@ -1845,12 +1954,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 ex.printStackTrace();
             }
         });
-    }
-
-    private void updatePageFragments() {
-        for (MeetingPageFragment f : pageFragments) {
-            f.notifyUpdate();
-        }
     }
 
     private void openImageChooser() {
@@ -1980,7 +2083,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private void enableTranslations() {
         if (translationLayout.getVisibility() == View.GONE) {
             translationLayout.setVisibility(View.VISIBLE);
-            for (MeetingPageFragment fragment : pageFragments) {
+            for (MeetingPageFragment2 fragment : pageFragments) {
                 fragment.enableTranslation();
             }
             showCommonPopup("Translation turned on", true, WooCommonPopup.VERTICAL_POSITION_CENTER);
@@ -1995,7 +2098,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             tvTransOriginal.setBackgroundResource(android.R.color.transparent);
             ;
             translationLayout.setVisibility(View.GONE);
-            for (MeetingPageFragment fragment : pageFragments) {
+            for (MeetingPageFragment2 fragment : pageFragments) {
                 fragment.disableTranslation();
             }
             showCommonPopup("Translation turned off", true, WooCommonPopup.VERTICAL_POSITION_CENTER);
@@ -2146,7 +2249,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     });
 
     private void destroyCallbackHandler() {
-        WooEvents.getInstance().removeHandler(this.callbackHandler);
+        WEvents.getInstance().removeHandler(this.callbackHandler);
     }
 
     public void kickmeOutImpl() {
@@ -2158,7 +2261,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             mRoomStore = null;
         }
         chatList.clear();
-        WooDirector.getInstance().dispose();
+        WDirector.getInstance().dispose();
         destroyCallbackHandler();
         if (droidAudioManager != null) {
             droidAudioManager.setSpeakerphoneOn(false);
@@ -2175,7 +2278,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             mRoomStore = null;
         }
         chatList.clear();
-        WooDirector.getInstance().dispose();
+        WDirector.getInstance().dispose();
         destroyCallbackHandler();
         if (droidAudioManager != null) {
             droidAudioManager.setSpeakerphoneOn(false);

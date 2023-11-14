@@ -9,12 +9,12 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.woooapp.meeting.impl.utils.WooDirector;
-import com.woooapp.meeting.impl.utils.WooEvents;
+import com.woooapp.meeting.impl.utils.WDirector;
+import com.woooapp.meeting.impl.utils.WEvents;
 import com.woooapp.meeting.impl.views.UIManager;
 import com.woooapp.meeting.lib.lv.RoomStore;
 import com.woooapp.meeting.lib.model.Peer;
-import com.woooapp.meeting.lib.socket.WooSocket;
+import com.woooapp.meeting.lib.socket.WSocket;
 import com.woooapp.meeting.net.models.Message;
 import com.woooapp.meeting.net.models.RoomData;
 
@@ -34,7 +34,7 @@ public final class MeetingClient extends RoomMessageHandler {
     private static final String TAG = MeetingClient.class.getSimpleName() + ".java";
     private final Context mContext;
     private final Handler mWorkerHandler;
-    private WooSocket mSocket;
+    private WSocket mSocket;
     private boolean mStarted = false;
     private final RoomStore mRoomStore;
     private final String mMeetingId;
@@ -97,7 +97,7 @@ public final class MeetingClient extends RoomMessageHandler {
      */
     public void start() {
         this.mWorkerHandler.post(() -> {
-            mSocket = WooSocket.create(
+            mSocket = WSocket.create(
                     mContext,
                     mRoomStore,
                     mWorkerHandler,
@@ -394,9 +394,9 @@ public final class MeetingClient extends RoomMessageHandler {
      */
     public void setMeHandRaised(boolean raised) {
         if (!raised) {
-            WooEvents.getInstance().notify(WooEvents.EVENT_ME_HAND_RAISED, true);
+            WEvents.getInstance().notify(WEvents.EVENT_ME_HAND_RAISED, true);
         } else {
-            WooEvents.getInstance().notify(WooEvents.EVENT_ME_HAND_LOWERED, true);
+            WEvents.getInstance().notify(WEvents.EVENT_ME_HAND_LOWERED, true);
         }
     }
 
@@ -459,14 +459,19 @@ public final class MeetingClient extends RoomMessageHandler {
     /**
      * @param peer
      */
-    public void makeNewAdmin(@NonNull Peer peer) throws JSONException {
+    public void makeNewAdmin(@NonNull String peerId) throws JSONException {
         if (mSocket != null) {
             Log.d(TAG, "Adding new Admin ...");
-            if (WooDirector.getInstance().getRoomData() != null) {
-                if (WooDirector.getInstance().getRoomData().getMembers() != null) {
-                    for (RoomData.Member member : WooDirector.getInstance().getRoomData().getMembers()) {
-                        if (member.getSocketId().equals(peer.getId())) {
-                            mSocket.emitNewAdmin(member.getAccountUniqueId(), member.getUsername(), member.getEmail(), "");
+            if (mStore.getPeers() != null) {
+                if (mStore.getPeers().getValue() != null) {
+                    Peer peer = mStore.getPeers().getValue().getPeer(peerId);
+                    if (WDirector.getInstance().getRoomData() != null && peer != null) {
+                        if (WDirector.getInstance().getRoomData().getMembers() != null) {
+                            for (RoomData.Member member : WDirector.getInstance().getRoomData().getMembers()) {
+                                if (member.getSocketId().equals(peer.getId())) {
+                                    mSocket.emitNewAdmin(member.getAccountUniqueId(), member.getUsername(), member.getEmail(), "");
+                                }
+                            }
                         }
                     }
                 }
