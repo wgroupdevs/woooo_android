@@ -2,9 +2,7 @@ package eu.siacs.conversations.ui
 
 import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
 import android.app.ProgressDialog
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -15,40 +13,18 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener
-import dagger.hilt.android.AndroidEntryPoint
 import eu.siacs.conversations.R
 import eu.siacs.conversations.databinding.FragmentWalletMainBinding
 import eu.siacs.conversations.http.model.wallet.Currency
 import eu.siacs.conversations.http.model.wallet.Wallet
-import eu.siacs.conversations.ui.MainActivity.Companion.walletViewModel
-import eu.siacs.conversations.ui.adapter.ChainAdapter
-import eu.siacs.conversations.ui.wallet.SendReceiveCurrencyActivity
-import eu.siacs.conversations.ui.wallet.WalletTransactionActivity
-import eu.siacs.conversations.ui.wallet.WalletViewModel
-import kotlinx.coroutines.launch
 
 
 class WalletMainFragment : XmppFragment() {
@@ -91,8 +67,6 @@ class WalletMainFragment : XmppFragment() {
         this.activity?.binding?.toolbar?.toolbarSearch?.visibility = View.GONE
         this.activity?.binding?.toolbar?.walletMainAppBar?.visibility = View.VISIBLE
 
-        updateAppBar()
-
     }
 
     override fun refresh() {
@@ -108,10 +82,6 @@ class WalletMainFragment : XmppFragment() {
         if (activity is ConversationsActivity) {
             this.activity = activity
 
-            if (!walletViewModel.isWalletConnected) {
-
-//                showWalletNotConnectedDialog(requireActivity())
-            }
 
         } else {
             throw IllegalStateException("Trying to attach fragment to activity that is not an XmppActivity")
@@ -126,45 +96,9 @@ class WalletMainFragment : XmppFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.transactionBtn.setOnClickListener {
-            val transactionIntent = Intent(getActivity(), WalletTransactionActivity::class.java)
-            startActivity(transactionIntent)
-        }
-        observeWalletConnection()
         piChartViewSettings()
         populateCurrencyDropDown()
 
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                walletViewModel.walletOverviewData.collect {
-                    // New location! Update the map
-                    Log.d(TAG, "currency Count... ${it.currency.size}")
-                    Log.d(TAG, "wallet Count... ${it.wallet.size}")
-                    if (it.wallet.isNotEmpty()) {
-                        populatePIChart()
-                        if (progressDialog?.isShowing == true) {
-                            progressDialog?.hide()
-                        }
-                    } else {
-                        showEmptyPiChart()
-                        showProgressDialog()
-                    }
-                    if (it.currency.isNotEmpty()) {
-                        refreshCurrencyView()
-                    }
-                    updateAppBar()
-                }
-            }
-        }
-
-        this.activity?.binding?.toolbar?.qrCodeScanner?.setOnClickListener {
-            if (walletViewModel.isWalletConnected) {
-                scaneQR()
-            } else {
-                showWalletNotConnectedDialog(requireActivity())
-            }
-        }
 
 //        apply-font to pi chart
         val tf = Typeface.createFromAsset(resources.assets, "nasalization.otf")
@@ -172,118 +106,6 @@ class WalletMainFragment : XmppFragment() {
     }
 
 
-    private fun observeWalletConnection() {
-        walletViewModel.ethereumState.observe(viewLifecycleOwner) { states ->
-            run {
-                Log.d(TAG, "CURRENT CHAIN ID : ${walletViewModel.getChainID()}")
-                Log.d(TAG, "ETHEREUM STATES : $states")
-                if (states.selectedAddress.isBlank()) {
-                    this.activity?.binding?.toolbar?.connectWalletView?.visibility = View.VISIBLE
-                    this.activity?.binding?.toolbar?.currentChainView?.visibility = View.GONE
-                    this.activity?.binding?.toolbar?.connectWalletView?.setOnClickListener {
-                        walletViewModel.connect(
-                            onSuccess = {
-                                Log.d(TAG, "Wallet connected successfully $it")
-                            },
-                            onError = { msg ->
-                                Log.d(TAG, "Wallet Connection Error $msg")
-                            })
-                    }
-
-                } else {
-
-                    walletViewModel.isWalletConnected = true
-                    this.activity?.binding?.toolbar?.connectWalletView?.visibility = View.GONE
-                    this.activity?.binding?.toolbar?.currentChainView?.visibility = View.VISIBLE
-                }
-
-
-            }
-        }
-    }
-
-
-    private fun updateAppBar() {
-        currentChain =
-            walletViewModel.walletOverviewData.value.currency.firstOrNull { it.hexId == walletViewModel.getChainID() }
-        currentChain?.let {
-            this.activity?.binding?.toolbar?.currentChainView?.setOnClickListener {
-                showSelectChainDialog(this.requireActivity())
-            }
-            this.activity?.binding?.toolbar?.chainName?.text = it.name
-            this.activity?.binding?.toolbar?.chainIc?.let { imageView ->
-                Glide.with(this).load(it.imgURL ?: "").into(
-                    imageView
-                )
-            }
-        }
-    }
-
-    private fun populatePIChart() {
-        val pieChart: PieChart = binding.pieChart
-        val entries = ArrayList<PieEntry>()
-        val colorList = ArrayList<Int>()
-
-        for (wallet in walletViewModel.walletOverviewData.value.wallet) {
-            var walletBalance = wallet.balance ?: 0.0
-            if (walletBalance == 0.0) {
-                continue
-            }
-            if (wallet.currency == "WOO") {
-                selectedWallet = wallet
-            }
-            entries.add(PieEntry(walletBalance.toFloat(), "", wallet.currency))
-            colorList.add(Color.parseColor(wallet.colorCode))
-            walletViewModel.walletOverviewData.value.currency.firstOrNull {
-                wallet.currency == it.code
-            }?.let { currency ->
-                if (currency.code == "WOO") {
-                    selectedCurrency = currency
-                }
-            }
-        }
-
-        if (entries.isNotEmpty()) {
-            //attach click listener
-            pieChart?.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
-                override fun onValueSelected(e: Entry?, h: Highlight?) {
-
-                    if (e != null && h != null) {
-
-                        val currency = e.data ?: "WOO"
-                        selectedWallet =
-                            walletViewModel.walletOverviewData.value.wallet.firstOrNull { it.currency == currency }
-                        selectedCurrency =
-                            walletViewModel.walletOverviewData.value.currency.firstOrNull { it.code == currency }
-
-                        if (selectedCurrency == null || selectedWallet == null)
-                            return
-
-                        updatePIChart()
-                    }
-                }
-
-                override fun onNothingSelected() {
-                    // Handle when nothing is selected (e.g., deselect)
-                }
-            })
-            // Create a PieDataSet
-            val dataSet = PieDataSet(entries, "Wallet")
-            dataSet.valueTextSize = 0f
-            dataSet.colors = colorList
-            dataSet.valueTextSize = 12f
-            dataSet.setDrawValues(false)
-            // Create a PieData object
-            val data = PieData(dataSet)
-            pieChart.data = data
-            // Refresh the chart to apply changes
-            updatePIChart()
-        } else {
-            showEmptyPiChart()
-        }
-
-
-    }
 
 
     private fun piChartViewSettings() {
@@ -381,79 +203,6 @@ class WalletMainFragment : XmppFragment() {
     }
 
 
-    private fun showSelectChainDialog(context: Context) {
-        val alertDialogBuilder = AlertDialog.Builder(context, R.style.popup_dialog_theme)
-        // Inflate the custom layout
-        val inflater = LayoutInflater.from(context)
-        val customView = inflater.inflate(R.layout.switch_chain_dialog, null)
-        val recycler = customView.findViewById<RecyclerView>(R.id.chainRecyclerview)
-
-        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        recycler.layoutManager = layoutManager
-
-        val chainAdapter = ChainAdapter(
-            context = context,
-            chainID = walletViewModel.getChainID(),
-            showOnDialog = true,
-            chainList = walletViewModel.walletOverviewData.value.currency
-        )
-        recycler.adapter = chainAdapter
-
-
-        recycler.addItemDecoration(
-            DividerItemDecoration(
-                context,
-                layoutManager.orientation
-            )
-        )
-
-        // Set the custom layout to the dialog
-        alertDialogBuilder.setView(customView)
-
-        // Create and show the AlertDialog
-        val alertDialog = alertDialogBuilder.create()
-        chainAdapter.onItemClick = { chain ->
-            chain.hexId?.let {
-                walletViewModel.switchChain(
-                    it,
-                    onSuccess = { result ->
-                        Log.d(TAG, "SWITCH CHAIN onSuccess : $result")
-                    },
-                    onError = { message, action ->
-                        Log.d(TAG, "SWITCH CHAIN onError : $message")
-                    })
-            }
-            alertDialog.cancel()
-
-        }
-        val layoutParams = WindowManager.LayoutParams()
-        layoutParams.copyFrom(alertDialog.window!!.attributes)
-        layoutParams.width = (resources.displayMetrics.widthPixels * 0.5).toInt()
-        layoutParams.height = (resources.displayMetrics.heightPixels * 0.7).toInt()
-        alertDialog.window!!.attributes = layoutParams
-        alertDialog.show()
-
-    }
-
-    private fun refreshCurrencyView() {
-
-        val chainAdapter = ChainAdapter(
-            context = this.requireActivity(),
-            showOnDialog = false,
-            chainList = walletViewModel.walletOverviewData.value.currency
-        )
-        binding.chainRecyclerview.adapter = chainAdapter
-        chainAdapter.onItemClick = { chain ->
-            run {
-                val transactionIntent =
-                    Intent(getActivity(), SendReceiveCurrencyActivity::class.java)
-                SendReceiveCurrencyActivity.chain = chain
-                startActivity(transactionIntent)
-            }
-        }
-    }
-
-
     private fun scaneQR() {
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || ContextCompat.checkSelfPermission(
@@ -474,21 +223,6 @@ class WalletMainFragment : XmppFragment() {
     }
 
 
-    private fun handleWalletAddress(result: String) {
-        Log.d(TAG, "REQUEST_SCAN_QR_CODE : $result")
-        if (isValidCryptoAddress(result)) {
-
-            val transactionIntent =
-                Intent(getActivity(), SendReceiveCurrencyActivity::class.java)
-            SendReceiveCurrencyActivity.chain = selectedCurrency!!
-            SendReceiveCurrencyActivity.receiverWalletAddress = result
-            startActivity(transactionIntent)
-
-
-        }
-
-
-    }
 
     private fun isValidCryptoAddress(address: String): Boolean {
         // Bitcoin addresses start with '1', '3', or 'bc1'
@@ -523,61 +257,7 @@ class WalletMainFragment : XmppFragment() {
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_SCAN_QR_CODE && resultCode == Activity.RESULT_OK) {
-            val result: String? = data?.getStringExtra(ScanActivity.INTENT_EXTRA_RESULT)
-            handleWalletAddress(result ?: "")
-        }
 
-    }
-
-
-    private fun showWalletNotConnectedDialog(context: Context) {
-        val alertDialogBuilder = AlertDialog.Builder(context, R.style.popup_dialog_theme)
-        // Inflate the custom layout
-        val inflater = LayoutInflater.from(context)
-        val customView = inflater.inflate(R.layout.title_des_ok_dialog, null)
-
-        val okButton = customView.findViewById<Button>(R.id.okay_btn)
-        val titleTV = customView.findViewById<TextView>(R.id.signup_title)
-        val desTV = customView.findViewById<TextView>(R.id.signup_description)
-
-        titleTV.text = "Not Connected"
-        desTV.text = "To proceed, please connect to MetaMask."
-
-
-        // Set the custom layout to the dialog
-        alertDialogBuilder.setView(customView)
-
-        // Create and show the AlertDialog
-        val alertDialog = alertDialogBuilder.create()
-
-        okButton.setOnClickListener {
-
-            alertDialog.cancel()
-
-            walletViewModel.connect(
-                onSuccess = {
-                    Log.d(TAG, "Wallet connected successfully $it")
-                },
-                onError = { msg ->
-                    Log.d(TAG, "Wallet Connection Error $msg")
-                })
-
-
-        }
-
-        val layoutParams = WindowManager.LayoutParams()
-
-        layoutParams.copyFrom(alertDialog.window!!.attributes)
-        layoutParams.width = (resources.displayMetrics.widthPixels * 0.5).toInt()
-        layoutParams.height = (resources.displayMetrics.heightPixels * 0.7).toInt()
-        alertDialog.window!!.attributes = layoutParams
-        alertDialog.show()
-
-
-    }
 
 
 }

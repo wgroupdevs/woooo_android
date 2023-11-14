@@ -3,17 +3,15 @@ package eu.siacs.conversations.ui
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.viewModels
 import androidx.lifecycle.ViewModelProvider
+import com.alphawallet.app.viewmodel.CustomNetworkViewModel
+import com.alphawallet.app.viewmodel.WalletConnectViewModel
+import com.alphawallet.app.viewmodel.WalletHomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import eu.siacs.conversations.entities.Account
 import eu.siacs.conversations.http.services.WooAPIService
 import eu.siacs.conversations.persistance.WOOPrefManager
 import eu.siacs.conversations.services.XmppConnectionService.OnAccountUpdate
-import eu.siacs.conversations.ui.wallet.WalletViewModel
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.Date
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -57,11 +55,11 @@ class MainActivity : XmppActivity(), OnAccountUpdate {
 
                 mAccount?.let {
                     account = mAccount!!
-                    val viewModel: WalletViewModel by viewModels()
-                    walletViewModel = viewModel
                 }
+//                init Wallet
+                inItWalletHomeViewModel()
 
-                val homeIntent = Intent(this@MainActivity, HomeActivity::class.java)
+                val homeIntent = Intent(this@MainActivity, WooHomeActivity::class.java)
                 startNewActivity(homeIntent)
             }
 
@@ -79,8 +77,50 @@ class MainActivity : XmppActivity(), OnAccountUpdate {
 
 
     companion object {
-        lateinit var walletViewModel: WalletViewModel
-        lateinit var account: Account
+        lateinit var viewModelWH: WalletHomeViewModel
+        lateinit var viewModelWC: WalletConnectViewModel
+        var account: Account? = null
+    }
+
+
+    private fun inItWalletHomeViewModel() {
+        viewModelWH = ViewModelProvider(this)[WalletHomeViewModel::class.java]
+        viewModelWC = ViewModelProvider(this)[WalletConnectViewModel::class.java]
+        viewModelWH.identify()
+        viewModelWH.setWalletStartup()
+        viewModelWH.setCurrencyAndLocale(this)
+        viewModelWH.prepare(this)
+        viewModelWH.getWalletName(this)
+
+    }
+
+
+    private fun saveWooNetwork() {
+
+        val customNetworkViewModel = ViewModelProvider(this)
+            .get<CustomNetworkViewModel>(CustomNetworkViewModel::class.java)
+
+        Log.d(TAG, "saveWooNetwork");
+
+        customNetworkViewModel.saveNetwork(
+            false,
+            "Woooo",
+            "https://dataseed.woooo.world",
+            2064,
+            "WOO",
+            "https://scan.woooo.world/",
+            "https://block.woooo.world/api-docs",
+            false,
+            null
+        )
+
+//        val list = arrayListOf<Long>(2064)
+//
+//        val networkToggleViewModel: NetworkToggleViewModel = ViewModelProvider(this)
+//            .get<NetworkToggleViewModel>(NetworkToggleViewModel::class.java)
+//
+//        networkToggleViewModel.setFilterNetworks(list, true, false)
+
     }
 
 

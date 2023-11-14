@@ -45,7 +45,11 @@ import androidx.appcompat.app.AlertDialog.Builder;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.alphawallet.app.viewmodel.CreateWalletViewModel;
+import com.alphawallet.app.viewmodel.CustomNetworkViewModel;
+import com.alphawallet.app.viewmodel.NetworkToggleViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hbb20.CountryCodePicker;
 
@@ -99,6 +103,7 @@ import eu.siacs.conversations.utils.Resolver;
 import eu.siacs.conversations.utils.SignupUtils;
 import eu.siacs.conversations.utils.TorServiceUtils;
 import eu.siacs.conversations.utils.UIHelper;
+import eu.siacs.conversations.utils.WOONetwork;
 import eu.siacs.conversations.utils.XmppUri;
 import eu.siacs.conversations.xml.Element;
 import eu.siacs.conversations.xmpp.Jid;
@@ -192,6 +197,9 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         startActivity(intent);
     };
     private ProgressDialog progressDialog;
+
+    private CustomNetworkViewModel customNetworkViewModel;
+    private CreateWalletViewModel createWalletViewModel;
 
     public void showProgressDialog(Context context) {
         progressDialog = new ProgressDialog(context);
@@ -591,12 +599,45 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
     }
 
+
+    private void saveWooNetwork() {
+
+
+        Log.d(TAG, "saveWooNetwork");
+
+        customNetworkViewModel.saveNetwork(
+                false,
+                WOONetwork.WOO_NAME,
+                WOONetwork.WOO_RPC_URL,
+                WOONetwork.WOO_NET_ID,
+                WOONetwork.WOO_SYMBOL,
+                WOONetwork.WOO_EXP_URL,
+                WOONetwork.WOO_EXP_API_URL,
+                false,
+                null
+        );
+
+        createWalletViewModel.setDefaultBrowser();
+
+
+        List<Long> enabledIds = new ArrayList<>();
+        enabledIds.add(2064L);
+
+        NetworkToggleViewModel networkToggleViewModel = new ViewModelProvider(this)
+                .get(NetworkToggleViewModel.class);
+
+        networkToggleViewModel.setFilterNetworks(enabledIds, true, false);
+
+    }
+
+
     protected void finishInitialSetup(final Avatar avatar) {
         runOnUiThread(() -> {
             SoftKeyboardUtils.hideSoftKeyboard(EditAccountActivity.this);
             final Intent intent;
             final XmppConnection connection = mAccount.getXmppConnection();
             if (mInitMode) {
+                saveWooNetwork();
                 // get Woaa Contacts Api
                 getContactsFromServer();
             }
@@ -840,6 +881,12 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         if (!hasPermissions(PERMISSIONS)) {
             ActivityCompat.requestPermissions((Activity) context, PERMISSIONS, REQUEST_CODE_READ_CONTACTS);
         }
+
+
+        customNetworkViewModel = new ViewModelProvider(this)
+                .get(CustomNetworkViewModel.class);
+        createWalletViewModel = new ViewModelProvider(this)
+                .get(CreateWalletViewModel.class);
 
     }
 
@@ -1335,13 +1382,6 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
     }
 
-    private String getUserModeDomain() {
-        if (mAccount != null && mAccount.getJid().getDomain() != null) {
-            return mAccount.getServer();
-        } else {
-            return Config.DOMAIN_LOCK;
-        }
-    }
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {

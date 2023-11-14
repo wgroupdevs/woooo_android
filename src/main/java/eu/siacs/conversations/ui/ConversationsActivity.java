@@ -35,9 +35,6 @@ import static eu.siacs.conversations.ui.ConversationFragment.REQUEST_DECRYPT_PGP
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-
-import androidx.fragment.app.Fragment;
-
 import android.app.FragmentManager;
 import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
@@ -65,9 +62,10 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 
+import com.alphawallet.app.ui.WalletHomeActivity;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialView;
 
@@ -79,8 +77,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import eu.siacs.conversations.Config;
@@ -106,7 +102,6 @@ import eu.siacs.conversations.ui.util.ActivityResult;
 import eu.siacs.conversations.ui.util.ConversationMenuConfigurator;
 import eu.siacs.conversations.ui.util.MenuDoubleTabUtil;
 import eu.siacs.conversations.ui.util.PendingItem;
-import eu.siacs.conversations.ui.wallet.WalletViewModel;
 import eu.siacs.conversations.utils.AccountUtils;
 import eu.siacs.conversations.utils.ExceptionHelper;
 import eu.siacs.conversations.utils.SignupUtils;
@@ -114,6 +109,7 @@ import eu.siacs.conversations.utils.XmppUri;
 import eu.siacs.conversations.xmpp.Jid;
 import eu.siacs.conversations.xmpp.OnUpdateBlocklist;
 
+@AndroidEntryPoint
 public class ConversationsActivity extends XmppActivity implements OnConversationSelected, OnConversationArchived, OnConversationsListItemUpdated, OnConversationRead, XmppConnectionService.OnAccountUpdate, XmppConnectionService.OnConversationUpdate, XmppConnectionService.OnRosterUpdate, OnUpdateBlocklist, XmppConnectionService.OnShowErrorToast, XmppConnectionService.OnAffiliationChanged, CreatePrivateGroupChatDialog.CreateConferenceDialogListener, WooAPIService.OnGetAccountByJidAPiResult {
 
 
@@ -513,7 +509,10 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
                         replaceFragment(new MeetingMainFragment());
                         break;
                     case R.id.nav_wallet_btn: {
-                        replaceFragment(new WalletMainFragment());
+
+                        Intent newIntent = new Intent(getApplicationContext(), WalletHomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        startActivity(newIntent);
+//                        replaceFragment(new WalletFragment());
                         break;
                     }
 
@@ -546,7 +545,10 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
                 }
                 case 2: {
                     this.binding.navigation.setSelectedItemId(R.id.nav_wallet_btn);
-                    replaceFragment(new WalletMainFragment());
+//                    replaceFragment(new WalletFragment());
+                    Intent newIntent = new Intent(getApplicationContext(), WalletHomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                    startActivity(newIntent);
+
                     break;
                 }
                 case 3: {
@@ -568,9 +570,6 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
             pendingViewIntent.push(intent);
             setIntent(createLauncherIntent(this));
         }
-
-
-//
 
         inflateFab(binding.speedDial, R.menu.conversation_overview_fab_menu);
 

@@ -13,7 +13,7 @@
             android:id="@+id/account_image"
             android:layout_width="@dimen/_100sdp"
             android:layout_height="@dimen/_100sdp"
-            android:background="@drawable/woooo_logo"
+            android:background="@drawable/app_logo"
             android:contentDescription="@string/account_image_description"
             app:riv_corner_radius="@dimen/_15sdp" />
 

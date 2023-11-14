@@ -110,7 +110,8 @@ public class WooAPIService {
     }
 
     public void signUp(SignUpRequestModel user, OnSignUpAPiResult listener) {
-        Log.d(TAG, "SIGNUP STARTED...");
+        Log.d(TAG, "SIGNUP STARTED..." + user);
+
         final Call<SignUpModel> signUpResultCall = wooService.signUp(user);
         signUpResultCall.enqueue(new Callback<SignUpModel>() {
             @Override

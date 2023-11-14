@@ -28,5 +28,5 @@ data class SignUpRequestModel(
     val password: String = "",
     val phoneNumber: String = "",
     val userReferralCode: String = "",
-    val walletAddress: String = ""
+    var walletAddress: String = ""
 )

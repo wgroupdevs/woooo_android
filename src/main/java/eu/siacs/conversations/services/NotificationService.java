@@ -1148,7 +1148,7 @@ public class NotificationService {
         mBuilder.setGroupSummary(true);
         mBuilder.setGroup(MESSAGES_GROUP);
         mBuilder.setDeleteIntent(createDeleteIntent(null));
-        mBuilder.setSmallIcon(R.drawable.woooo_logo);
+        mBuilder.setSmallIcon(R.drawable.app_logo);
         return mBuilder;
     }
 
@@ -1290,7 +1290,7 @@ public class NotificationService {
                 }
             }
             mBuilder.setWhen(conversation.getLatestMessage().getTimeSent());
-            mBuilder.setSmallIcon(R.drawable.woooo_logo);
+            mBuilder.setSmallIcon(R.drawable.app_logo);
             mBuilder.setDeleteIntent(createDeleteIntent(conversation));
             mBuilder.setContentIntent(createContentIntent(conversation));
         }
@@ -1744,7 +1744,7 @@ public class NotificationService {
         }
         mBuilder.setWhen(0)
                 .setPriority(Notification.PRIORITY_MIN)
-                .setSmallIcon(R.drawable.woooo_logo)
+                .setSmallIcon(R.drawable.app_logo)
                 .setLocalOnly(true)
                 .setVisibility(Notification.VISIBILITY_SECRET)
                 .setOngoing(false);

@@ -28,7 +28,7 @@
                 android:id="@+id/ivThumbTranscript"
                 android:layout_width="30sp"
                 android:layout_height="30sp"
-                android:src="@drawable/woooo_logo"/>
+                android:src="@drawable/app_logo"/>
 
             <TextView
                 android:id="@+id/tvTranscriptMessage"

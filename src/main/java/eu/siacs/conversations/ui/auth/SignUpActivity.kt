@@ -1,6 +1,7 @@
 package eu.siacs.conversations.ui.auth
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -13,6 +14,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import com.alphawallet.app.C
+import com.alphawallet.app.entity.CreateWalletCallbackInterface
+import com.alphawallet.app.entity.Operation
+import com.alphawallet.app.entity.Wallet
+import com.alphawallet.app.service.KeyService.AuthenticationLevel
+import com.alphawallet.app.viewmodel.CreateWalletViewModel
+import com.alphawallet.app.widget.SignTransactionDialog
 import com.hbb20.CountryCodePicker
 import dagger.hilt.android.AndroidEntryPoint
 import eu.siacs.conversations.R
@@ -24,19 +32,17 @@ import eu.siacs.conversations.http.services.WooAPIService
 import eu.siacs.conversations.ui.EditAccountActivity
 import eu.siacs.conversations.ui.util.PrDialog
 import eu.siacs.conversations.ui.util.isValidEmail
-import eu.siacs.conversations.ui.wallet.WalletViewModel
 
 
 @AndroidEntryPoint
-class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult {
+class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult,
+    CreateWalletCallbackInterface {
 
     private lateinit var binding: ActivitySignUpBinding
     private lateinit var codePicker: CountryCodePicker
     private val TAG = "SignUpActivity_TAG"
-    private var walletAddress = ""
-
-    lateinit var walletViewModel: WalletViewModel
-
+    private var createWallet: CreateWalletViewModel? = null
+    private var userSignUpRequest: SignUpRequestModel? = null;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
@@ -47,33 +53,22 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult {
             finish()
         }
         binding.signUpBtn.setOnClickListener {
-            if (walletAddress.isBlank()) {
-                connectWallet()
-                return@setOnClickListener
-            }
+
             validateSignUpForm()
         }
-        walletViewModel = ViewModelProvider(this)[WalletViewModel::class.java]
+
+        //detect previous launch
+        createWallet = ViewModelProvider(this)[CreateWalletViewModel::class.java]
+        createWallet?.cleanAuxData(applicationContext)
+
+        createWallet!!.wallets().observe(this, this::onWallets)
+
     }
 
     override fun onResume() {
         super.onResume()
-        if (walletAddress.isBlank()) {
-            connectWallet()
-        }
     }
 
-    private fun connectWallet() {
-        if (walletViewModel.isWalletConnected) {
-            walletAddress = walletViewModel.ethereumState.value?.selectedAddress.toString()
-            return
-        }
-        walletViewModel.showWalletNotConnectedDialog(this, title = "Configure Wallet", onSuccess = {
-            walletAddress = it
-        }, onError = {
-            Toast.makeText(this, "Connection Failed", Toast.LENGTH_LONG).show()
-        })
-    }
 
     private fun passwordTextWatcher() {
         binding.passwordEt.addTextChangedListener(object : TextWatcher {
@@ -184,21 +179,20 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult {
         phoneNumber = countryCode.plus(phoneNumber)
 
 
-        val userSignUpRequest = SignUpRequestModel(
+//        Create Wallet
+        createWallet?.createNewWallet(this, this)
+
+        userSignUpRequest = SignUpRequestModel(
             firstName = fName,
             lastName = lName,
             email = email,
             phoneNumber = phoneNumber,
             password = password,
             userReferralCode = referralCode,
-            walletAddress = walletAddress
         )
-
-        val wooAuthService = WooAPIService.getInstance()
 
         PrDialog.show(this)
 
-        wooAuthService.signUp(userSignUpRequest, this@SignUpActivity)
     }
 
 
@@ -271,6 +265,60 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult {
                     Log.d(EditAccountActivity.TAG, "ECEPTION FOUND... $result")
                 }
             }
+        }
+    }
+
+
+    private fun onWallets(wallets: Array<Wallet>) {
+
+        if (wallets.isNotEmpty()) {
+            val wallet = wallets.first()
+            val wooAuthService = WooAPIService.getInstance()
+            userSignUpRequest?.walletAddress = wallet.address;
+            wooAuthService.signUp(userSignUpRequest, this@SignUpActivity)
+            createWallet?.doWalletStartupActions(wallet)
+
+            Log.d(TAG, "onWallets WALLET-DATA FOUND ")
+
+        } else {
+            Log.d(TAG, "NO WALLET-DATA FOUND")
+        }
+
+
+    }
+
+
+    override fun HDKeyCreated(address: String?, ctx: Context?, level: AuthenticationLevel?) {
+        Log.d(TAG, "HDKeyCreated WALLET-DATA : $address")
+        createWallet?.StoreHDKey(address, level)
+
+    }
+
+    override fun keyFailure(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        runOnUiThread {
+            PrDialog.hide()
+
+        }
+    }
+
+    override fun cancelAuthentication() {}
+
+    override fun fetchMnemonic(mnemonic: String?) {}
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode >= SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS && requestCode <= SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS + 10) {
+            val taskCode =
+                Operation.values()[requestCode - SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS]
+            if (resultCode == RESULT_OK) {
+                createWallet?.completeAuthentication(taskCode)
+            } else {
+                createWallet?.failedAuthentication(taskCode)
+            }
+        } else if (requestCode == C.IMPORT_REQUEST_CODE) {
+            createWallet?.fetchWallets()
         }
     }
 

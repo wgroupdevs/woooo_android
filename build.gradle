@@ -4,10 +4,6 @@ buildscript {
     ext {
         kotlinVersion = "1.8.21"
         coroutinesVersion = "1.7.0"
-//        composeCompilerVersion = "1.4.7"
-//        composeBomVersion = "2023.05.01"
-//        composeNavigationVersion = "2.5.3"
-//        composeViewModelVersion = "2.6.1"
         lifecycleVersion = "2.6.1"
         navVersion = "2.5.3"
         retrofitVersion = "2.9.0"
@@ -15,6 +11,15 @@ buildscript {
         appCompatVersion = "1.6.1"
         materialVersion = "1.9.0"
         coilVersion = "2.3.0"
+    }
+    allprojects {
+        repositories {
+            google()
+            mavenCentral()
+            maven { url = uri("https://jitpack.io") }
+        }
+
+
     }
 
     repositories {
@@ -26,14 +31,20 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.4.2'
+        classpath 'com.google.gms:google-services:4.4.0'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath 'com.google.dagger:hilt-android-gradle-plugin:2.48.1'
+        classpath "io.realm:realm-gradle-plugin:10.16.1"
+
+
     }
 }
 
 plugins {
     id 'com.google.devtools.ksp' version '1.8.21-1.0.11'
-    id 'org.jetbrains.kotlin.android' version '1.8.21' apply false// Depends on your kotlin version
+    id 'org.jetbrains.kotlin.android' version '1.8.21' apply false
+    id "org.jetbrains.kotlin.kapt" version "1.8.21" apply false
     id 'com.google.dagger.hilt.android' version '2.48.1' apply false
     id 'org.jetbrains.kotlin.plugin.serialization' version '1.5.0'
 
@@ -41,15 +52,27 @@ plugins {
 
 
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.google.dagger.hilt.android'
+apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'realm-android'
+
+
 repositories {
     google()
     jcenter()
     mavenCentral()
     maven { url = 'https://jitpack.io' }
+    maven {
+        url = uri("https://maven.pkg.github.com/trustwallet/wallet-core")
+        credentials {
+            username = getGitHubUsername() as String ?: System.getenv("GITHUB_USER")
+            password = getPAT() as String ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
 }
 
 configurations {
@@ -61,8 +84,10 @@ configurations {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.aar'], dir: 'libs')
     implementation 'androidx.viewpager:viewpager:1.0.0'
+//    implementation 'org.jetbrains:annotations:23.0.0'
 
     implementation 'com.github.open-keychain.open-keychain:openpgp-api:v5.7.1'
     implementation("com.github.CanHub:Android-Image-Cropper:2.0.0")
@@ -70,7 +95,7 @@ dependencies {
     implementation 'androidx.exifinterface:exifinterface:1.3.6'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.google.android.material:material:1.9.0'
 
     implementation "androidx.emoji2:emoji2:1.2.0"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -108,7 +133,7 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:4.10.0"
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.10.0'
     implementation "com.squareup.okhttp3:logging-interceptor:4.10.0"
-    implementation 'com.google.guava:guava:31.1-android'
+    implementation group: 'com.google.guava', name: 'guava', version: '30.1.1-android'
     quicksyImplementation 'io.michaelrocks:libphonenumber-android:8.12.49'
 //     implementation 'im.conversations.webrtc:webrtc-android:104.0.0'
 
@@ -141,6 +166,8 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
 
     implementation 'com.github.bumptech.glide:glide:4.16.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
+
 
     // charts
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
@@ -161,12 +188,56 @@ dependencies {
     implementation 'com.google.dagger:hilt-android:2.48.1'
     kapt 'com.google.dagger:hilt-compiler:2.48.1'
 
-//    META_MASK
-    implementation 'io.metamask.androidsdk:metamask-android-sdk:0.2.1'
+
+//    PUT-NEW-DEPENDENCY-HERE
+    implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
+    implementation 'androidx.biometric:biometric:1.1.0'
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
+
+
+
+    implementation("com.trustwallet:wallet-core:3.2.18", {
+        exclude group: 'com.google.protobuf', module: '*'
+    })
+    implementation 'com.github.florent37:TutoShowcase:d8b91be8a2'
+    implementation 'com.github.google:flexbox-layout:2.0.1'
+    implementation 'com.github.salomonbrys.kotson:kotson:2.5.0'
+    implementation 'com.github.mailchimp:mailchimp-sdk-android:1.0.0'
+
+    //Timber
+    implementation 'com.jakewharton.timber:timber:5.0.1'
+
+    implementation platform('com.walletconnect:android-bom:1.13.1')
+    implementation("com.walletconnect:android-core", {
+        exclude group: 'org.web3j', module: '*'
+    })
+    implementation("com.walletconnect:web3wallet", {
+        exclude group: 'org.web3j', module: '*'
+    })
+
+    runtimeOnly 'androidx.work:work-runtime-ktx:2.8.1'
+
+
+    // Bar code scanning
+    implementation 'com.journeyapps:zxing-android-embedded:4.3.0'
+    // Keyboard visibility
+    implementation 'net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:3.0.0-RC3'
+
+
+
+
+    //Analytics
+
+    implementation 'com.google.android.play:core:1.10.3'
+    implementation 'com.google.firebase:firebase-analytics:21.3.0'
+    implementation 'com.mixpanel.android:mixpanel-android:5.8.4'
+    implementation 'com.google.firebase:firebase-crashlytics:18.4.3'
+    implementation 'com.google.firebase:firebase-messaging:21.1.0'
+
+
 
 
 }
-
 ext {
     preDexEnabled = System.getProperty("pre-dex", "true")
     abiCodes = ['armeabi-v7a': 1, 'x86': 2, 'x86_64': 3, 'arm64-v8a': 4]
@@ -177,7 +248,7 @@ android {
     compileSdkVersion 33
 
     defaultConfig {
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 33
         versionCode 30
         versionName "1.3.0"
@@ -191,6 +262,42 @@ android {
 
         renderscriptTargetApi 21
         renderscriptSupportModeEnabled true
+
+
+        testInstrumentationRunnerArguments clearPackageData: 'true'
+        def XInfuraAPI = "XInfuraAPI"
+        //Put your Infura key here, NB with over 30 - 40 users this API key will rate limit, it's only here for bootstrapping a free build
+        def DEFAULT_INFURA_API_KEY = "\"da3717f25f824cc1baa32d812386d93f\""
+        def DEFAULT_OPENSEA_API_KEY = "\"...\"";
+        //Put your OpenSea developer API key in here, otherwise you are reliant on the backup NFT fetch method (which usually works ok)
+        def DEFAULT_POLYGONSCAN_API_KEY = "\"...\"";
+        //Put your Polygonscan developer API key in here to get access to Polygon/Mumbai token discovery and transactions
+        def DEFUALT_WALLETCONNECT_PROJECT_ID = "\"40c6071febfd93f4fe485c232a8a4cd9\""
+        def DEFAULT_AURORA_API_KEY = "\"HFDDY5BNKGXBB82DE2G8S64C3C41B76PYI\"";
+        //Put your Aurorascan.dev API key here - this one will rate limit as it is common
+
+        buildConfigField 'int', 'DB_VERSION', '01'
+
+        buildConfigField "String", XInfuraAPI, DEFAULT_INFURA_API_KEY
+        buildConfigField "String", "WALLETCONNECT_PROJECT_ID", DEFUALT_WALLETCONNECT_PROJECT_ID
+
+        buildConfigField "String", "NOTIFICATION_API_BASE_URL", NOTIFICATION_API_BASE_URL
+
+
+        externalNativeBuild {
+            cmake {
+                cFlags "-DIFKEY=" + DEFAULT_INFURA_API_KEY + ""
+                cFlags "-DOSKEY=" + DEFAULT_OPENSEA_API_KEY + ""
+                cFlags "-DPSKEY=" + DEFAULT_POLYGONSCAN_API_KEY + ""
+                cFlags "-DASKEY=" + DEFAULT_AURORA_API_KEY + ""
+                cFlags "-DWCKEY=" + DEFUALT_WALLETCONNECT_PROJECT_ID + ""
+            }
+            cmake {
+                cFlags "-Wno-dev"
+            }
+        }
+
+
     }
 
     splits {
@@ -201,7 +308,7 @@ android {
     }
 
     configurations {
-        implementation.exclude group: 'org.jetbrains', module: 'annotations'
+        implementation.exclude group: 'com.intellij', module: 'annotations'
     }
 
     dataBinding {
@@ -209,13 +316,18 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlinOptions {
         tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-            kotlinOptions.jvmTarget = "11"
+            kotlinOptions.jvmTarget = "17"
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
         }
     }
     kapt { correctErrorTypes = true }
@@ -224,10 +336,11 @@ android {
     buildFeatures {
 //        compose true
         viewBinding true
+        buildConfig = true
+
     }
-//    composeOptions {
-//        kotlinCompilerExtensionVersion = "1.4.7"
-//    }
+
+
 
     applicationVariants.all { variant ->
         kotlin.sourceSets {
@@ -240,6 +353,7 @@ android {
     kapt {
         correctErrorTypes true
     }
+
     flavorDimensions("mode", "distribution")
 
     productFlavors {
@@ -327,11 +441,21 @@ android {
 
         }
     }
+
+
+
     packagingOptions {
+        jniLibs {
+            excludes += ['solidity/*']
+            useLegacyPackaging true
+        }
         resources {
-            excludes += ['META-INF/BCKEY.DSA', 'META-INF/BCKEY.SF']
+            excludes += ['META-INF/NOTICE', 'META-INF/LICENSE', 'META-INF/LICENSE.md', 'META-INF/NOTICE.md', 'META-INF/LICENSE-notice.md', 'solidity/ens/build/*.bin', 'solidity/ens/*.sol', 'solidity/ens/build/*.abi', 'en-mnemonic-word-list.txt', 'solidity/*']
         }
     }
+
+
+
     lint {
         disable 'MissingTranslation', 'InvalidPackage', 'AppCompatResource', 'ExtraTranslation'
     }
@@ -347,4 +471,17 @@ android {
 //        }
 //
 //    }
+
+    ndkVersion '25.1.8937393'
+
+}
+
+private String getGitHubUsername() {
+    project.findProperty("gpr.user")
+}
+
+private String getPAT() {
+    def encodedToken = project.findProperty("gpr.key")
+    def firstEncode = new String(encodedToken.decodeBase64())
+    new String(firstEncode.decodeBase64())
 }

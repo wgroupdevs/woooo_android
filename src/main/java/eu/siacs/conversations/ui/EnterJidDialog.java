@@ -323,7 +323,7 @@ public class EnterJidDialog extends DialogFragment implements OnBackendConnected
                         Log.d("SEARCH_ACCOUNT_API ", " Account Found : " + apiResponse.Data.jid);
 
 
-                        String jid = HomeActivity.Companion.getMAccount().getJid().asBareJid().toString();
+                        String jid = WooHomeActivity.Companion.getMAccount().getJid().asBareJid().toString();
                         Log.d("SEARCH_ACCOUNT_API ", "My Account Found : " + jid);
 
                         handleEnter(mAccountJid, apiResponse.Data.jid);

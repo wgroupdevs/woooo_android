@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "642913222446",
+    "project_id": "wooo-mobile-app",
+    "storage_bucket": "wooo-mobile-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:642913222446:android:949065d17dd8dc2f7804bf",
+        "android_client_info": {
+          "package_name": "com.wgroup.woooo_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "642913222446-tg6eb1p6ceg6r0hf6k1pn44slm8frf4o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0Xv_57vUSodltrJvg80qhWW-gTW16ovA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "642913222446-tg6eb1p6ceg6r0hf6k1pn44slm8frf4o.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "642913222446-r38c488s92r2kv4tvad4b0s0qt3850f3.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.wgroup.wooflutter"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

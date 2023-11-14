@@ -53,7 +53,6 @@ import com.woooapp.meeting.impl.views.adapters.MemberAdapter;
 import com.woooapp.meeting.impl.views.adapters.PeerAdapter2;
 import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
 import com.woooapp.meeting.impl.views.fragments.MeetingPageFragment;
-import com.woooapp.meeting.impl.views.fragments.MeetingPageFragment2;
 import com.woooapp.meeting.impl.views.models.Chat;
 import com.woooapp.meeting.impl.views.models.GridPeer;
 import com.woooapp.meeting.impl.views.models.Languages;
@@ -87,7 +86,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import eu.siacs.conversations.R;
-import eu.siacs.conversations.WooApplication;
+import eu.siacs.conversations.WooApp;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.persistance.DatabaseBackend;
 import okhttp3.Call;
@@ -682,7 +681,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     }
 
     private void initViewModel() {
-        EdiasProps.Factory factory = new EdiasProps.Factory(WooApplication.Companion.getSharedInstance(), mRoomStore);
+        EdiasProps.Factory factory = new EdiasProps.Factory(WooApp.Companion.getInstance(), mRoomStore);
 
         RoomProps roomProps = new ViewModelProvider(this, factory).get(RoomProps.class);
         roomProps.connect(this);

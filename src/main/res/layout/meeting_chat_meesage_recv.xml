@@ -26,7 +26,7 @@
                 android:id="@+id/meetingMsgRecvIvThumb"
                 android:layout_width="40sp"
                 android:layout_height="40sp"
-                android:src="@drawable/woooo_logo"
+                android:src="@drawable/app_logo"
                 />
 
 
