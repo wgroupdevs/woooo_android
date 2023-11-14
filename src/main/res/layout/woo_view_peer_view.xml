@@ -33,6 +33,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:gravity="center"
+            android:background="@color/blue_primaryDarker"
             android:visibility="gone"
             bind:edias_render_empty="@{wooPeerViewProps.videoTrack}">
 

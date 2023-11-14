@@ -38,19 +38,6 @@ public class ServiceManager {
     }
 
     /**
-     * UNIMPLEMENTED
-     *
-     * @param asyncTask
-     * @param <P>
-     * @param <T>
-     * @param <R>
-     */
-    @Deprecated
-    public <P, T, R> void execute(AsyncTask<P, T, R> asyncTask) {
-        asyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, null);
-    }
-
-    /**
      *
      * @return
      */

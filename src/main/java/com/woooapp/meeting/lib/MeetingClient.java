@@ -9,12 +9,14 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.woooapp.meeting.impl.utils.WooDirector;
-import com.woooapp.meeting.impl.utils.WooEvents;
+import com.woooapp.meeting.impl.utils.WDirector;
+import com.woooapp.meeting.impl.utils.WEvents;
 import com.woooapp.meeting.impl.views.UIManager;
 import com.woooapp.meeting.lib.lv.RoomStore;
-import com.woooapp.meeting.lib.socket.WooSocket;
+import com.woooapp.meeting.lib.model.Peer;
+import com.woooapp.meeting.lib.socket.WSocket;
 import com.woooapp.meeting.net.models.Message;
+import com.woooapp.meeting.net.models.RoomData;
 
 import org.json.JSONException;
 
@@ -32,7 +34,7 @@ public final class MeetingClient extends RoomMessageHandler {
     private static final String TAG = MeetingClient.class.getSimpleName() + ".java";
     private final Context mContext;
     private final Handler mWorkerHandler;
-    private WooSocket mSocket;
+    private WSocket mSocket;
     private boolean mStarted = false;
     private final RoomStore mRoomStore;
     private final String mMeetingId;
@@ -41,13 +43,14 @@ public final class MeetingClient extends RoomMessageHandler {
     private String accountUniqueId;
     private String picture;
     private boolean micOn = true;
-    private boolean camOn = true;
+    private boolean camOn = false;
     private boolean everyoneCamOn = true;
     private boolean audioMuted = false;
     private boolean textTranslationOn = false;
     private boolean voiceTranslationOn = false;
     private String selectedLanguage = "English";
     private String selectedLanguageCode = "en";
+    private boolean passwordSet = false;
     private Role role = Role.USER;
 
     public enum ConnectionState {
@@ -67,7 +70,6 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     /**
-     *
      * @param context
      * @param roomStore
      * @param meetingId
@@ -90,13 +92,12 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     /**
-     *
      * If permissions in activity are granted, call this to start the socket
      * for meeting.
      */
     public void start() {
         this.mWorkerHandler.post(() -> {
-            mSocket = WooSocket.create(
+            mSocket = WSocket.create(
                     mContext,
                     mRoomStore,
                     mWorkerHandler,
@@ -134,7 +135,6 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     /**
-     *
      * @return
      */
     @Nullable
@@ -169,6 +169,15 @@ public final class MeetingClient extends RoomMessageHandler {
     @NonNull
     public Map<String, ConsumerHolder> getConsumers() {
         return mConsumers;
+    }
+
+    /**
+     * @param peerId
+     */
+    public void removeVideoConsumer(@NonNull String peerId) {
+        if (mSocket != null) {
+            mSocket.removeVideoConsumer(peerId);
+        }
     }
 
     public String getEmail() {
@@ -224,6 +233,15 @@ public final class MeetingClient extends RoomMessageHandler {
         this.everyoneCamOn = everyoneCamOn;
     }
 
+    /**
+     * @param pId
+     */
+    public void pausePeerCam(@NonNull String pId) {
+        if (mSocket != null) {
+//            mSocket.pauseVideo(pId);
+        }
+    }
+
     public void updateTranslationLanguage(@NonNull String langCode) {
         try {
             mSocket.emitUpdateLanguage(langCode);
@@ -237,7 +255,6 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     /**
-     *
      * @param mute
      */
     public void setEveryonesAudioMuted(boolean mute) {
@@ -255,14 +272,33 @@ public final class MeetingClient extends RoomMessageHandler {
 //        this.audioMuted = mute;
     }
 
+    public void muteEveryoneLocally() {
+        if (mSocket != null) {
+            try {
+                mSocket.muteAudio();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public void unMuteEveryoneLocally() {
+        if (mSocket != null) {
+            try {
+                mSocket.unmuteAudio();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
     /**
-     *
      * @param on
      */
     public void setTextTranslation(boolean on) {
         if (mSocket.isConnected()) {
             try {
-                mSocket.emitTextTranslation(on);
+                mSocket.emitTextTranslation(on, false);
                 textTranslationOn = on;
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -270,12 +306,26 @@ public final class MeetingClient extends RoomMessageHandler {
         }
     }
 
+    /**
+     * @param on
+     */
     public void setVoiceTranslation(boolean on) {
-        // TODO
+        if (mSocket.isConnected()) {
+            try {
+                mSocket.emitTextTranslation(on, true);
+                voiceTranslationOn = on;
+                if (on) {
+                    muteEveryoneLocally();
+                } else {
+                    unMuteEveryoneLocally();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
-     *
      * @return
      */
     public boolean isTextTranslationOn() {
@@ -283,7 +333,6 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     /**
-     *
      * @return
      */
     public boolean isVoiceTranslationOn() {
@@ -324,14 +373,14 @@ public final class MeetingClient extends RoomMessageHandler {
             if (!camOn && this.camOn) {
                 mSocket.disableCam();
                 try {
-                    mSocket.emitVideoOpen();
+                    mSocket.emitVideoClose();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             } else {
                 mSocket.enableCam();
                 try {
-                    mSocket.emitVideoClose();
+                    mSocket.emitVideoOpen();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -341,14 +390,13 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     /**
-     *
      * @param raised
      */
     public void setMeHandRaised(boolean raised) {
         if (!raised) {
-            WooEvents.getInstance().notify(WooEvents.EVENT_ME_HAND_RAISED, true);
+            WEvents.getInstance().notify(WEvents.EVENT_ME_HAND_RAISED, true);
         } else {
-            WooEvents.getInstance().notify(WooEvents.EVENT_ME_HAND_LOWERED, true);
+            WEvents.getInstance().notify(WEvents.EVENT_ME_HAND_LOWERED, true);
         }
     }
 
@@ -372,8 +420,66 @@ public final class MeetingClient extends RoomMessageHandler {
             }
         }
     }
+
+    public boolean isPasswordSet() {
+        return passwordSet;
+    }
+
+    public void setPasswordSet(boolean passwordSet) {
+        this.passwordSet = passwordSet;
+    }
+
     /**
-     *
+     * @param peerId
+     */
+    public void muteMember(@NonNull String peerId) {
+        if (mSocket != null) {
+            mSocket.emitMuteMember(peerId);
+        }
+    }
+
+    /**
+     * @param peerId
+     */
+    public void turnMemberCamOff(@NonNull String peerId) {
+        if (mSocket != null) {
+            mSocket.emitCloseMemberVideo(peerId);
+        }
+    }
+
+    /**
+     * @param peerId
+     */
+    public void kickoutMember(@NonNull String peerId) {
+        if (mSocket != null) {
+            mSocket.emitKickOutMember(peerId);
+        }
+    }
+
+    /**
+     * @param peer
+     */
+    public void makeNewAdmin(@NonNull String peerId) throws JSONException {
+        if (mSocket != null) {
+            Log.d(TAG, "Adding new Admin ...");
+            if (mStore.getPeers() != null) {
+                if (mStore.getPeers().getValue() != null) {
+                    Peer peer = mStore.getPeers().getValue().getPeer(peerId);
+                    if (WDirector.getInstance().getRoomData() != null && peer != null) {
+                        if (WDirector.getInstance().getRoomData().getMembers() != null) {
+                            for (RoomData.Member member : WDirector.getInstance().getRoomData().getMembers()) {
+                                if (member.getSocketId().equals(peer.getId())) {
+                                    mSocket.emitNewAdmin(member.getAccountUniqueId(), member.getUsername(), member.getEmail(), "");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * @return
      */
     public boolean isClosed() {
@@ -384,16 +490,25 @@ public final class MeetingClient extends RoomMessageHandler {
         if (mStarted) {
             try {
                 this.mWorkerHandler.post(() -> {
-                    mSocket.disconnect();
-                    mSocket = null;
-                    mStarted = false;
+                    try {
+                        mSocket.disconnect();
+                        mSocket = null;
+                        mStarted = false;
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                 });
             } catch (Exception ex) {
                 ex.printStackTrace();
             } finally {
-//                mWorkerHandler.getLooper().quit();
+                new Handler().postDelayed(() -> {
+                    Log.d(TAG, "Quitting Worker thread ...");
+                    mWorkerHandler.getLooper().quit();
+                }, 5000);
             }
         }
     }
 
-} /** end class. */
+} /**
+ * end class.
+ */

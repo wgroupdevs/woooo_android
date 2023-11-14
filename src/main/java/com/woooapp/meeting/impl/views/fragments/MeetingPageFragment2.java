@@ -1,13 +1,16 @@
 package com.woooapp.meeting.impl.views.fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TableLayout;
-import android.widget.TableRow;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,26 +19,34 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 
 import com.woooapp.meeting.device.Display;
+import com.woooapp.meeting.impl.utils.WEvents;
 import com.woooapp.meeting.impl.views.MeView;
 import com.woooapp.meeting.impl.views.PeerView;
-import com.woooapp.meeting.impl.views.models.ListGridPeer;
+import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
+import com.woooapp.meeting.impl.views.models.GridPeer;
 import com.woooapp.meeting.impl.vm.MeProps;
 import com.woooapp.meeting.impl.vm.PeerProps;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.lv.RoomStore;
+import com.woooapp.meeting.lib.model.Peer;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.LinkedList;
 import java.util.List;
 
 import eu.siacs.conversations.R;
+import okhttp3.internal.http2.Http2Reader;
 import pk.muneebahmad.lib.graphics.SP;
+import pk.muneebahmad.lib.views.containers.FlowLayout;
 
 /**
  * @author muneebahmad (ahmadgallian@yahoo.com)
  * Created On 4:44 pm 19/10/2023
  * <code>class</code> MeetingPageFragment2.java
  */
-public class MeetingPageFragment2 extends Fragment {
+public class MeetingPageFragment2 extends Fragment implements Handler.Callback {
 
     private static final String TAG = MeetingPageFragment2.class.getSimpleName() + ".java";
     private final int pageNo;
@@ -47,22 +58,12 @@ public class MeetingPageFragment2 extends Fragment {
     private int mDeviceHeight;
     private int mBottomBarHeight = 90;
     private boolean translationEnabled = false;
-    private List<ListGridPeer> peerList = new LinkedList<>();
+    private FrameLayout mFrameLayout;
+    private List<GridPeer> peerList = new LinkedList<>();
+    private final Handler handler;
     private MeView meView;
-    private PeerView peerView1;
-    private PeerView peerView2;
-    private PeerView peerView3;
-    private PeerView peerView4;
-    private PeerView peerView5;
-    private PeerView peerView6;
-    private TableLayout tableLayout;
-    private TableRow row1;
-    private TableRow row2;
-    private TableRow row3;
-    boolean loaded = false;
 
     /**
-     *
      * @param context
      * @param pageNo
      * @param lifecycleOwner
@@ -80,7 +81,10 @@ public class MeetingPageFragment2 extends Fragment {
         this.mStore = store;
         this.mMeetingClient = meetingClient;
 
-        this.mDeviceWidth = Display.getDisplayWidth(mContext) - 40;
+        this.handler = new Handler(this);
+        WEvents.getInstance().addHandler(handler);
+
+        this.mDeviceWidth = Display.getDisplayWidth(mContext);
         this.mDeviceHeight = Display.getDisplayHeight(mContext) - mBottomBarHeight;
     }
 
@@ -97,141 +101,22 @@ public class MeetingPageFragment2 extends Fragment {
     }
 
     /**
-     *
      * @param view
      */
     private void initComponents(@NonNull View view) {
-        this.tableLayout = view.findViewById(R.id.tableLayout);
+        this.mFrameLayout = view.findViewById(R.id.flowLayout);
 
-        this.row1 = view.findViewById(R.id.row1);
-        this.row2 = view.findViewById(R.id.row2);
-        this.row3 = view.findViewById(R.id.row3);
-
-        this.meView = view.findViewById(R.id.meView);
-        this.peerView1 = view.findViewById(R.id.peerView1);
-        this.peerView2 = view.findViewById(R.id.peerView2);
-        this.peerView3 = view.findViewById(R.id.peerView3);
-        this.peerView4 = view.findViewById(R.id.peerView4);
-        this.peerView5 = view.findViewById(R.id.peerView5);
-        this.peerView6 = view.findViewById(R.id.peerView6);
-
-        if (pageNo == 1) {
-            this.peerView1.setVisibility(View.GONE);
-            this.meView.setVisibility(View.VISIBLE);
-        } else {
-            this.meView.setVisibility(View.GONE);
-            this.peerView1.setVisibility(View.VISIBLE);
-        }
-        loaded = true;
-    }
-
-    private void updateDimensions() {
-        if (meView != null && peerView1 != null && peerView2 != null && peerView3 != null && peerView4 != null && peerView5 != null && peerView6 != null) {
-            if (meView.getLayoutParams() != null) meView.getLayoutParams().height = getRowHeight();
-            if (peerView1.getLayoutParams() != null)
-                peerView1.getLayoutParams().height = getRowHeight();
-            if (peerView2.getLayoutParams() != null)
-                peerView2.getLayoutParams().height = getRowHeight();
-            if (peerView3.getLayoutParams() != null)
-                peerView3.getLayoutParams().height = getRowHeight();
-            if (peerView4.getLayoutParams() != null)
-                peerView4.getLayoutParams().height = getRowHeight();
-            if (peerView5.getLayoutParams() != null)
-                peerView5.getLayoutParams().height = getRowHeight();
-            if (peerView6.getLayoutParams() != null)
-                peerView6.getLayoutParams().height = getRowHeight();
-        }
-    }
-
-    private void updateVisibility() {
-        if (meView != null && peerView1 != null && peerView2 != null && peerView3 != null && peerView4 != null && peerView5 != null && peerView6 != null) {
-            switch (peerList.size()) {
-                case 1:
-                    if (peerList.get(0).getPeer2() != null) {
-                        peerView3.setVisibility(View.VISIBLE);
-                    } else {
-                        peerView3.setVisibility(View.GONE);
-                    }
-                    peerView2.setVisibility(View.GONE);
-                case 2:
-                    peerView2.setVisibility(View.VISIBLE);
-                    if (peerList.get(1).getPeer2() != null) {
-                        peerView4.setVisibility(View.VISIBLE);
-                    } else {
-                        peerView4.setVisibility(View.GONE);
-                    }
-                    peerView5.setVisibility(View.GONE);
-                    peerView6.setVisibility(View.GONE);
-                    break;
-                case 3:
-                    peerView5.setVisibility(View.VISIBLE);
-                    if (peerList.get(2).getPeer2() != null) {
-                        peerView6.setVisibility(View.VISIBLE);
-                    } else {
-                        peerView6.setVisibility(View.GONE);
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    private void updatePeers() {
-        for (int i = 0; i < peerList.size(); i++) {
-            if (i == 0) {
-                if (pageNo == 1) {
-                    MeProps meProps = new MeProps(getActivity().getApplication(), mStore);
-                    meProps.connect(lifecycleOwner);
-                    meView.setProps(meProps, mMeetingClient);
-                } else {
-                    if (peerList.get(i).getPeer1() != null) {
-                        PeerProps p1 = new PeerProps(getActivity().getApplication(), mStore);
-                        p1.connect(lifecycleOwner, peerList.get(i).getPeer1().getId());
-                        peerView1.setProps(p1, mMeetingClient);
-                        peerView1.setName(peerList.get(i).getPeer1().getDisplayName());
-                    }
-                }
-                if (peerList.get(i).getPeer2() != null) {
-                    PeerProps p2 = new PeerProps(getActivity().getApplication(), mStore);
-                    p2.connect(lifecycleOwner, peerList.get(i).getPeer2().getId());
-                    peerView2.setProps(p2, mMeetingClient);
-                    peerView2.setName(peerList.get(i).getPeer2().getDisplayName());
-                }
-            } else if (i == 1) {
-                if (peerList.get(i).getPeer1() != null) {
-                    PeerProps p3 = new PeerProps(getActivity().getApplication(), mStore);
-                    p3.connect(lifecycleOwner, peerList.get(i).getPeer1().getId());
-                    peerView3.setProps(p3, mMeetingClient);
-                    peerView3.setName(peerList.get(i).getPeer1().getDisplayName());
-                }
-                if (peerList.get(i).getPeer2() != null) {
-                    PeerProps p4 = new PeerProps(getActivity().getApplication(), mStore);
-                    p4.connect(lifecycleOwner, peerList.get(i).getPeer2().getId());
-                    peerView4.setProps(p4, mMeetingClient);
-                    peerView4.setName(peerList.get(i).getPeer2().getDisplayName());
-                }
-            } else if (i == 3) {
-                if (peerList.get(i).getPeer1() != null) {
-                    PeerProps p5 = new PeerProps(getActivity().getApplication(), mStore);
-                    p5.connect(lifecycleOwner, peerList.get(i).getPeer1().getId());
-                    peerView5.setProps(p5, mMeetingClient);
-                    peerView5.setName(peerList.get(i).getPeer1().getDisplayName());
-                }
-                if (peerList.get(i).getPeer2() != null) {
-                    PeerProps p6 = new PeerProps(getActivity().getApplication(), mStore);
-                    p6.connect(lifecycleOwner, peerList.get(i).getPeer2().getId());
-                    peerView6.setProps(p6, mMeetingClient);
-                    peerView6.setName(peerList.get(i).getPeer2().getDisplayName());
-                }
+        if (peerList.size() > 0 && pageNo == 1) {
+            if (peerList.get(0).getViewType() == GridPeer.VIEW_TYPE_ME) {
+                addMeView();
             }
         }
     }
 
     private int getRowHeight() {
-        if (peerList.size() == 2) {
+        if (peerList.size() == 2 || peerList.size() == 3 || peerList.size() == 4) {
             return getRowHeight(2);
-        } else if (peerList.size() == 3) {
+        } else if (peerList.size() == 5 || peerList.size() == 6) {
             return getRowHeight(3);
         }
         return getRowHeight(1);
@@ -244,26 +129,141 @@ public class MeetingPageFragment2 extends Fragment {
     private int getRowHeight(int rowCount) {
         switch (rowCount) {
             case 2:
-                if (translationEnabled) return (mDeviceHeight / 2) - (int) SP.valueOf(mContext, 150);
+                if (translationEnabled)
+                    return (mDeviceHeight / 2) - (int) SP.valueOf(mContext, 150);
                 return (mDeviceHeight / 2) - 40;
             case 3:
-                if (translationEnabled) return (mDeviceHeight / 3) - (int) SP.valueOf(mContext, 100);
+                if (translationEnabled)
+                    return (mDeviceHeight / 3) - (int) SP.valueOf(mContext, 100);
                 return (mDeviceHeight / 3) - 40;
             default:
                 if (translationEnabled) return mDeviceHeight - (int) SP.valueOf(mContext, 250);
-                return mDeviceHeight - 50;
+                return mDeviceHeight - (int) SP.valueOf(mContext, 32.5f);
         }
     }
 
     /**
-     * @param colCount
      * @return
      */
-    private int getColumnWidth(int colCount) {
-        if (colCount == 2) {
-            return mDeviceWidth / 2;
+    private int getColumnWidth(int index) {
+        Log.d(TAG, "Peer List size >> " + peerList.size());
+        switch (peerList.size()) {
+            case 3:
+                if (index == 2) {
+                    return mDeviceWidth;
+                } else {
+                    return mDeviceWidth / 2;
+                }
+            case 4:
+            case 5:
+                if (index == 0 || index == 1 || index == 2 || index == 3) {
+                    return mDeviceWidth / 2;
+                } else {
+                    return mDeviceWidth;
+                }
+            case 6:
+                return mDeviceWidth / 2;
+            default:
+                return mDeviceWidth;
         }
-        return mDeviceWidth;
+    }
+
+    /**
+     * @param index
+     */
+    private void resetLocation(int index) {
+        View child = mFrameLayout.getChildAt(index);
+        switch (peerList.size()) {
+            case 2:
+                if (index == 1) {
+                    if (child != null) {
+                        WooAnimationUtil.resetLocation(child,
+                                0,
+                                0,
+                                mDeviceHeight,
+                                child.getLayoutParams().height + 5,
+                                null);
+                    }
+                }
+                break;
+            case 3:
+                if (index == 1) {
+                    if (child != null) {
+                        WooAnimationUtil.resetLocation(child,
+                                0,
+                                child.getLayoutParams().width,
+                                mDeviceHeight,
+                                mFrameLayout.getChildAt(0).getY(),
+                                null);
+                    }
+                } else if (index == 2) {
+                    if (child != null) {
+                        WooAnimationUtil.resetLocation(child,
+                                0,
+                                0,
+                                mDeviceHeight,
+                                child.getLayoutParams().height + 5,
+                                null);
+                    }
+                }
+                break;
+            case 4:
+                if (index == 3) {
+                    if (child != null) {
+                        WooAnimationUtil.resetLocation(child,
+                                0,
+                                child.getLayoutParams().width,
+                                mDeviceHeight,
+                                mFrameLayout.getChildAt(2).getY(),
+                                null);
+                    }
+                }
+                break;
+            case 5:
+                if (index == 4) {
+                    if (child != null) {
+                        WooAnimationUtil.resetLocation(mFrameLayout.getChildAt(2),
+                                mFrameLayout.getChildAt(2).getX(),
+                                mFrameLayout.getChildAt(2).getX(),
+                                mFrameLayout.getChildAt(2).getY(),
+                                mFrameLayout.getChildAt(0).getY() + mFrameLayout.getChildAt(2).getLayoutParams().height + 5,
+                                null);
+
+                        WooAnimationUtil.resetLocation(mFrameLayout.getChildAt(3),
+                                mFrameLayout.getChildAt(3).getX(),
+                                mFrameLayout.getChildAt(3).getX(),
+                                mFrameLayout.getChildAt(3).getY(),
+                                mFrameLayout.getChildAt(0).getY() + mFrameLayout.getChildAt(3).getLayoutParams().height + 5,
+                                new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        super.onAnimationEnd(animation);
+                                        WooAnimationUtil.resetLocation(child,
+                                                0,
+                                                0,
+                                                mDeviceHeight,
+                                                mFrameLayout.getChildAt(3).getY() + child.getLayoutParams().height + 5,
+                                                null);
+                                    }
+                                });
+                    }
+                }
+                break;
+            case 6:
+                if (index == 5) {
+                    if (child != null) {
+                        WooAnimationUtil.resetLocation(child,
+                                0,
+                                child.getLayoutParams().width,
+                                mDeviceHeight,
+                                mFrameLayout.getChildAt(4).getY(),
+                                null);
+                    }
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     /**
@@ -281,43 +281,319 @@ public class MeetingPageFragment2 extends Fragment {
     }
 
     /**
-     *
-     * @param newCount
-     * @return
+     * @param peerId
      */
-    private boolean shouldUpdateView(int newCount) {
-        return peerList.size() != newCount;
-    }
-
-    /**
-     * @param peerList
-     */
-    public void replaceList(final @NonNull List<ListGridPeer> peerList) {
-        this.peerList = peerList;
-        Log.v(TAG, "Reloading peers anyway ... for size >> " + peerList.size());
-        notifyDataSetChanged();
-        if (shouldUpdateView(peerList.size())) {
-            updatePeers();
+    private void updateViewOnNewPeer(@NonNull String peerId) {
+        for (int i = 0; i < peerList.size(); i++) {
+            GridPeer gridPeer = peerList.get(i);
+            if (gridPeer != null) {
+                if (gridPeer.getViewType() == GridPeer.VIEW_TYPE_PEER) {
+                    if (gridPeer.getPeer().getId().equals(peerId)) {
+                        FrameLayout.LayoutParams childParams = new FrameLayout.LayoutParams(getColumnWidth(i), getRowHeight());
+                        childParams.setMargins(1, 1, 1, 1);
+                        PeerView p = new PeerView(mContext);
+                        p.setTag(peerId);
+                        if (p.getProps() == null) {
+                            PeerProps props = new PeerProps(((AppCompatActivity) mContext).getApplication(), mStore);
+                            p.setProps(props, mMeetingClient);
+                            mStore.getPeers().postValue(peers -> {
+                                Peer peer = peers.getPeer(peerId);
+                                if (peer != null) {
+                                    p.setName(peer.getDisplayName());
+                                }
+                            });
+                            mFrameLayout.addView(p, childParams);
+                            props.connect(lifecycleOwner, peerId);
+                        }
+                        updateCanvas();
+                        break;
+                    }
+                }
+            }
         }
     }
 
-    public void notifyDataSetChanged() {
-        updateDimensions();
-        updateVisibility();
+    private void addMeView() {
+        FrameLayout.LayoutParams childParams = new FrameLayout.LayoutParams(getColumnWidth(0), getRowHeight());
+        childParams.setMargins(1, 1, 1, 1);
+        meView = new MeView(mContext);
+        MeProps props = new MeProps(((AppCompatActivity) mContext).getApplication(), mStore);
+        meView.setProps(props, mMeetingClient);
+        meView.setLayoutParams(childParams);
+        meView.setTag("me");
+        mFrameLayout.addView(meView, childParams);
+        props.connect(lifecycleOwner);
+        Log.d(TAG, "Added Me View 2 ...");
+        updateCanvas();
+    }
+
+    private void updateCanvas() {
+        if (mFrameLayout != null) {
+            for (int i = 0; i < mFrameLayout.getChildCount(); i++) {
+                View child = mFrameLayout.getChildAt(i);
+                Log.d(TAG, "Updated Canvas View at index " + i);
+                if (child != null) {
+                    if (child.getLayoutParams() != null) {
+                        child.getLayoutParams().width = getColumnWidth(i);
+                        Log.d(TAG, "Set width of peer to " + child.getLayoutParams().width);
+                        child.getLayoutParams().height = getRowHeight();
+                        resetLocation(i);
+//                    child.invalidate();
+                    }
+                }
+            }
+        }
+//        mFlowLayout.invalidate();
+    }
+
+    /**
+     * @param peerId
+     */
+    private void removeView(@NonNull String peerId) {
+        for (int i = 0; i < mFrameLayout.getChildCount(); i++) {
+            View child = mFrameLayout.getChildAt(i);
+            if (child != null) {
+                if (child.getTag() != null) {
+                    if (child.getTag().equals(peerId)) {
+                        WooAnimationUtil.hideView(child, new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+                                mFrameLayout.removeView(child);
+                                updateCanvas();
+                            }
+                        });
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @param gridPeer
+     */
+    public void addPeerItem(@NonNull GridPeer gridPeer) {
+        if (peerList.size() > 0) {
+            if (gridPeer.getViewType() == GridPeer.VIEW_TYPE_PEER) {
+                for (GridPeer p : peerList) {
+                    if (p.getViewType() == GridPeer.VIEW_TYPE_PEER) {
+                        if (p.getPeer().getId() != null) {
+                            if (p.getPeer().getId().equals(gridPeer.getPeer().getId())) {
+                                Log.w(TAG, "<< View already exists for Peer with ID >> " + gridPeer.getPeer().getId() + " >> Skipping this one ...");
+                                return;
+                            }
+                        }
+                    }
+                }
+                peerList.add(gridPeer);
+                updateViewOnNewPeer(gridPeer.getPeer().getId());
+            }
+        } else {
+            if (meView == null) {
+                peerList.add(gridPeer);
+                Log.d(TAG, "Added a new peer to list ...");
+            }
+        }
+    }
+
+    /**
+     * @param peerId
+     * @return
+     */
+    public boolean removePeerItem(@NonNull String peerId) {
+        for (int i = 0; i < peerList.size(); i++) {
+            if (peerList.get(i).getViewType() == GridPeer.VIEW_TYPE_PEER) {
+                if (peerList.get(i).getPeer().getId().equals(peerId)) {
+                    try {
+                        peerList.remove(i);
+                        Log.d(TAG, "<< Peer List size >>> " + peerList.size());
+                        removeView(peerId);
+                        return true;
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     *
+     * @param socketId
+     * @return
+     */
+    @Nullable
+    private PeerView getPeerView(@NonNull String socketId) {
+        if (mFrameLayout != null) {
+            for (int i = 0; i < mFrameLayout.getChildCount(); i++) {
+                if (mFrameLayout.getChildAt(i).getTag() != null) {
+                    if (mFrameLayout.getChildAt(i).getTag().equals(socketId)) {
+                        return (PeerView) mFrameLayout.getChildAt(i);
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public void enableTranslation() {
         this.translationEnabled = true;
-        if (loaded) {
-            updateDimensions();
-        }
+        // TODO
     }
 
     public void disableTranslation() {
         this.translationEnabled = false;
-        if (loaded) {
-            updateDimensions();
-        }
+        // TODO
     }
 
-} /** end class. */
+    public void dispose() {
+        if (this.handler != null) {
+            WEvents.getInstance().removeHandler(handler);
+        }
+        this.mFrameLayout.removeAllViews();
+        this.peerList.clear();
+    }
+
+
+    @Override
+    public boolean handleMessage(@NonNull Message msg) {
+        switch (msg.what) {
+            case WEvents.EVENT_ME_CAM_TURNED_ON:
+                if (pageNo == 1) {
+                    if (meView != null) {
+                        meView.setCamEnabled(true);
+                    }
+                    return true;
+                }
+                return false;
+            case WEvents.EVENT_ME_CAM_TURNED_OFF:
+                if (pageNo == 1) {
+                    if (meView != null) {
+                        meView.setCamEnabled(false);
+                    }
+                    return true;
+                }
+                return false;
+            case WEvents.EVENT_ME_MIC_TURNED_ON:
+                if (pageNo == 1) {
+                    if (meView != null) {
+                        meView.setMicEnabled(true);
+                    }
+                    return true;
+                }
+                return false;
+            case WEvents.EVENT_ME_MIC_TURNED_OFF:
+                if (pageNo == 1) {
+                    if (meView != null) {
+                        meView.setMicEnabled(false);
+                    }
+                    return true;
+                }
+                return false;
+            case WEvents.EVENT_ME_HAND_RAISED:
+                if (pageNo == 1) {
+                    if (meView != null) {
+                        meView.setHandRaisedState(true);
+                    }
+                    return true;
+                }
+                return false;
+            case WEvents.EVENT_ME_HAND_LOWERED:
+                if (pageNo == 1) {
+                    if (meView != null) {
+                        meView.setHandRaisedState(false);
+                    }
+                    return true;
+                }
+                return false;
+            case WEvents.EVENT_TYPE_PEER_DISCONNECTED:
+                JSONObject p = (JSONObject) msg.obj;
+                try {
+                    String pId = p.getString("id");
+                    removePeerItem(pId);
+                    return true;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return false;
+            case WEvents.EVENT_PEER_HAND_LOWERED:
+                if (msg.obj != null) {
+                    JSONObject obj = (JSONObject) msg.obj;
+                    try {
+                        String socketId = obj.getString("socketId");
+                        PeerView pv = getPeerView(socketId);
+                        if (pv != null) {
+                            pv.setHandRaisedState(false);
+                        }
+                        return true;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return false;
+            case WEvents.EVENT_PEER_HAND_RAISED:
+                if (msg.obj != null) {
+                    JSONObject obj = (JSONObject) msg.obj;
+                    try {
+                        String socketId = obj.getString("socketId");
+                        PeerView pv = getPeerView(socketId);
+                        if (pv != null) {
+                            pv.setHandRaisedState(true);
+                        }
+                        return true;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return false;
+            case WEvents.EVENT_PEER_MIC_MUTED:
+                if (msg.obj != null) {
+                    JSONObject obj = (JSONObject) msg.obj;
+                    try {
+                        String socketId = obj.getString("socketId");
+                        PeerView pv = getPeerView(socketId);
+                        if (pv != null) {
+                            pv.setMicState(false);
+                        }
+                        return true;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return false;
+            case WEvents.EVENT_PEER_MIC_UNMUTED:
+                if (msg.obj != null) {
+                    JSONObject obj = (JSONObject) msg.obj;
+                    try {
+                        String socketId = obj.getString("socketId");
+                        PeerView pv = getPeerView(socketId);
+                        if (pv != null) {
+                            pv.setMicState(true);
+                        }
+                        return true;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return false;
+            case WEvents.EVENT_ON_NEW_ADMIN:
+                if (mFrameLayout != null) {
+                    for (int i = 0; i < mFrameLayout.getChildCount(); i++) {
+                        PeerView pv = (PeerView) mFrameLayout.getChildAt(i);
+                        if (pv != null) {
+                            pv.setAdminStatus();
+                        }
+                    }
+                }
+                return false;
+            case WEvents.EVENT_DESTROY:
+                dispose();
+                return true;
+            default:
+                return false;
+        }
+    }
+} /**
+ * end class.
+ */

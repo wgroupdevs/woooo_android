@@ -57,7 +57,7 @@
                 android:layout_height="22sp"
                 android:layout_marginLeft="5sp"
                 android:layout_marginRight="5sp"
-                android:src="@drawable/ic_video_camera_white"/>
+                android:src="@drawable/ic_camera_off_white"/>
 
         </LinearLayout>
 

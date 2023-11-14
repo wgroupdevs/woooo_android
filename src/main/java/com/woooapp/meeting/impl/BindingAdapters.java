@@ -214,11 +214,13 @@ public class BindingAdapters {
 
     @BindingAdapter({"edias_render_empty"})
     public static void renderEmpty(View renderer, VideoTrack track) {
-        Log.d(TAG, "edias_render_empty: " + (track != null));
+        Log.d(TAG, "edias_render_empty for view : " + renderer.getId() + " >> " + (track != null));
         if (track == null) {
             renderer.setVisibility(View.VISIBLE);
+            Log.d(TAG, "edias_render_empty -> PLACE_HOLDER_VISIBILITY : VISIBLE");
         } else {
             renderer.setVisibility(View.GONE);
+            Log.d(TAG, "edias_render_empty -> PLACE_HOLDER_VISIBILITY : GONE");
         }
     }
 

@@ -12,7 +12,21 @@
 
 -keep class org.openintents.openpgp.*
 -keep class org.webrtc.** { *; }
+-keep class org.mediasoup.droid.* { *; }
+-keepclassmembers class org.mediasoup.droid.*
+-keep class com.woooapp.meeting.** { *; }
+-keepclassmembers class com.woooapp.meeting.**
+-keep class pk.muneebahmad.lib.** { *; }
+-keepclassmembers class pk.muneebahmad.lib.**
+-keep class androidx.renderscript.**
+-keepclassmembers class androidx.renderscript.** { *; }
 
+-keepclasseswithmembernames class * {
+native <methods>;
+}
+
+-dontwarn java.beans.ConstructorProperties
+-dontwarn java.beans.Transient
 -dontwarn javax.mail.internet.MimeMessage
 -dontwarn javax.mail.internet.MimeBodyPart
 -dontwarn javax.mail.internet.SharedInputStream

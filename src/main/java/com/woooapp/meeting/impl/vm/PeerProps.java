@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer;
 
 import com.woooapp.meeting.lib.lv.RoomStore;
 import com.woooapp.meeting.lib.model.Consumers;
+import com.woooapp.meeting.lib.model.Me;
 import com.woooapp.meeting.lib.model.Peer;
 import com.woooapp.meeting.lib.model.Peers;
 

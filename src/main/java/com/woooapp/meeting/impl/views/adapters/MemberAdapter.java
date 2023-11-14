@@ -70,9 +70,9 @@ public class MemberAdapter extends BaseAdapter {
         vh.ivThumb = convertView.findViewById(R.id.ivThumb);
         vh.tvName = convertView.findViewById(R.id.tvName);
         vh.tvRole = convertView.findViewById(R.id.tvRole);
-        vh.buttonMute = convertView.findViewById(R.id.buttonMute);
-        vh.buttonCam = convertView.findViewById(R.id.buttonCam);
-        vh.buttonKickout = convertView.findViewById(R.id.buttonKickout);
+//        vh.buttonMute = convertView.findViewById(R.id.buttonMute);
+//        vh.buttonCam = convertView.findViewById(R.id.buttonCam);
+//        vh.buttonKickout = convertView.findViewById(R.id.buttonKickout);
 
         vh.tvName.setText(members.get(position).getName());
         vh.tvRole.setText(members.get(position).getRole() == MeetingClient.Role.ADMIN ? "ADMIN" : "MEMBER");
@@ -80,41 +80,42 @@ public class MemberAdapter extends BaseAdapter {
         if (role == MeetingClient.Role.ADMIN) {
             vh.tvRole.setBackgroundResource(R.drawable.bg_red_stroke);
             vh.tvRole.setTextColor(Color.parseColor("#ffd700"));
-            vh.buttonMute.setVisibility(View.GONE);
-            vh.buttonCam.setVisibility(View.GONE);
-            vh.buttonKickout.setVisibility(View.GONE);
+//            vh.buttonMute.setVisibility(View.GONE);
+//            vh.buttonCam.setVisibility(View.GONE);
+//            vh.buttonKickout.setVisibility(View.GONE);
         } else {
-            vh.tvRole.setBackgroundResource(R.drawable.bg_white_stroke);
-            vh.tvRole.setTextColor(Color.WHITE);
+            vh.tvRole.setVisibility(View.GONE);
         }
-        try {
-            URL url = new URL(members.get(position).getPicture());
-            ViewHolder finalVh = vh;
-            Http.build().getImage((Activity) mContext, true, members.get(position).getPicture(), new HttpImageAdapter() {
-                @Override
-                public void connected(String resource) {
+        if (members.get(position).getPicture() != null) {
+            try {
+                URL url = new URL(members.get(position).getPicture());
+                ViewHolder finalVh = vh;
+                Http.build().getImage((Activity) mContext, true, members.get(position).getPicture(), new HttpImageAdapter() {
+                    @Override
+                    public void connected(String resource) {
 
-                }
+                    }
 
-                @Override
-                public void failed(String resource, String reasonPhrase) {
+                    @Override
+                    public void failed(String resource, String reasonPhrase) {
 
-                }
+                    }
 
-                @Override
-                public void done(String resource, Bitmap bitmap) {
-                    ((Activity) mContext).runOnUiThread(() -> {
-                        try {
-                            CircleDrawable cd = new CircleDrawable(bitmap);
-                            finalVh.ivThumb.setImageDrawable(cd);
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    });
-                }
-            });
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
+                    @Override
+                    public void done(String resource, Bitmap bitmap) {
+                        ((Activity) mContext).runOnUiThread(() -> {
+                            try {
+                                CircleDrawable cd = new CircleDrawable(bitmap);
+                                finalVh.ivThumb.setImageDrawable(cd);
+                            } catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                        });
+                    }
+                });
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
         }
         return convertView;
     }
@@ -123,9 +124,11 @@ public class MemberAdapter extends BaseAdapter {
         ImageView ivThumb;
         TextView tvName;
         TextView tvRole;
-        LinearLayout buttonMute;
-        LinearLayout buttonCam;
-        LinearLayout buttonKickout;
+//        LinearLayout buttonMute;
+//        LinearLayout buttonCam;
+//        LinearLayout buttonKickout;
     }
 
-} /** end class. */
+} /**
+ * end class.
+ */

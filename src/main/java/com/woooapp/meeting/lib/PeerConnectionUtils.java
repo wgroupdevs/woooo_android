@@ -71,8 +71,7 @@ public class PeerConnectionUtils {
 
         AudioDeviceModule adm = createJavaAudioDevice(context);
         VideoEncoderFactory encoderFactory =
-                new DefaultVideoEncoderFactory(
-                        mEglBase.getEglBaseContext(), true /* enableIntelVp8Encoder */, false);
+                new DefaultVideoEncoderFactory(mEglBase.getEglBaseContext(), true, false);
         VideoDecoderFactory decoderFactory =
                 new DefaultVideoDecoderFactory(mEglBase.getEglBaseContext());
 
@@ -266,23 +265,39 @@ public class PeerConnectionUtils {
         Logger.w(TAG, "dispose()");
         mThreadChecker.checkIsOnValidThread();
         if (mCamCapture != null) {
-            mCamCapture.dispose();
-            mCamCapture = null;
+            try {
+                mCamCapture.dispose();
+                mCamCapture = null;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
 
         if (mVideoSource != null) {
-            mVideoSource.dispose();
-            mVideoSource = null;
+            try {
+                mVideoSource.dispose();
+                mVideoSource = null;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
 
         if (mAudioSource != null) {
-            mAudioSource.dispose();
-            mAudioSource = null;
+            try {
+                mAudioSource.dispose();
+                mAudioSource = null;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
 
         if (mPeerConnectionFactory != null) {
-            mPeerConnectionFactory.dispose();
-            mPeerConnectionFactory = null;
+            try {
+                mPeerConnectionFactory.dispose();
+                mPeerConnectionFactory = null;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

@@ -12,11 +12,11 @@ import java.util.Set;
 /**
  * @author muneebahmad (ahmadgallian@yahoo.com)
  * Created On 10:25 am 25/09/2023
- * <code>class</code> WooEvents.java
+ * <code>class</code> WEvents.java
  */
-public final class WooEvents {
-    private static final String TAG = WooEvents.class.getSimpleName() + ".java";
-    private static WooEvents sInstance = null;
+public final class WEvents {
+    private static final String TAG = WEvents.class.getSimpleName() + ".java";
+    private static WEvents sInstance = null;
     private final Set<Handler> mHandlers = new HashSet<>();
     public static final int EVENT_TYPE_SOCKET_CONNECTED           = 0x01;
     public static final int EVENT_TYPE_SOCKET_DISCONNECTED        = 0x02;
@@ -55,8 +55,22 @@ public final class WooEvents {
     public static final int EVENT_SELECT_BACKGROUND               = 0x2e;
     public static final int EVENT_SHOW_MEMBERS                    = 0x2f;
     public static final int EVENT_NETWORK_CONNECTIVITY_CHANGED    = 0x27;
+    public static final int EVENT_VOICE_TRANSLATION_RECEIVED      = 0x28;
+    public static final int EVENT_ADD_PASSWORD                    = 0x29;
+    public static final int EVENT_RECEIVED_MUTE_EVERYONE          = 0x30;
+    public static final int EVENT_RECEIVED_MUTE_MEMBER            = 0x31;
+    public static final int EVENT_RECEIVED_CAM_OFF_MEMBER         = 0x32;
+    public static final int EVENT_RECEIVED_KICKOUT                = 0x33;
+//    public static final int EVENT_CREATED_NEW_ADMIN               = 0x34;
+    public static final int EVENT_NEW_ADMIN_CREATED               = 0x35;
+    public static final int EVENT_ON_NEW_ADMIN                    = 0x3a;
+    public static final int EVENT_PEER_ADAPTER_NOTIFY             = 0x3b;
+    public static final int EVENT_CONNECTION_STATE_FAILED         = 0x3c;
+    public static final int EVENT_CONNECTION_STATE_CONNECTED      = 0x3d;
+    public static final int EVENT_CONNECTION_STATE_CONNECTING     = 0x3e;
+    public static final int EVENT_DESTROY                         = 0x3f;
 
-    private WooEvents() {
+    private WEvents() {
         Log.d(TAG, "WooEvents Initialized ...");
         mHandlers.clear();
     }
@@ -112,12 +126,12 @@ public final class WooEvents {
 
     /**
      *
-     * @return {@link WooEvents} as a Singleton
+     * @return {@link WEvents} as a Singleton
      */
-    public static WooEvents getInstance() {
-        synchronized (WooEvents.class) {
+    public static WEvents getInstance() {
+        synchronized (WEvents.class) {
             if (sInstance == null) {
-                sInstance = new WooEvents();
+                sInstance = new WEvents();
             }
             return sInstance;
         }

@@ -2,37 +2,42 @@ package com.woooapp.meeting.impl.views;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
 import android.content.Context;
-import android.os.Build;
+import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.databinding.DataBindingUtil;
 
 import com.bumptech.glide.Glide;
+import com.woooapp.meeting.impl.utils.WDirector;
 import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
 import com.woooapp.meeting.impl.vm.PeerProps;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.PeerConnectionUtils;
-import com.woooapp.meeting.lib.RoomClient;
 import com.woooapp.meeting.lib.model.Info;
 import com.woooapp.meeting.lib.model.Peer;
+import com.woooapp.meeting.net.models.RoomData;
 
-import org.webrtc.MediaStreamTrack;
+import org.json.JSONException;
 
-import java.util.Objects;
-import java.util.Random;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.databinding.WooViewPeerBinding;
+import pk.muneebahmad.lib.graphics.CircleDrawable;
+import pk.muneebahmad.lib.net.Http;
+import pk.muneebahmad.lib.net.HttpImageAdapter;
 
 /**
  * @author Muneeb Ahmad
@@ -45,7 +50,9 @@ public class PeerView extends RelativeLayout {
 
     private static final String TAG = PeerView.class.getSimpleName() + ".java";
     private boolean handRaised = false;
+    private boolean peerVisibilityUpdateRequired = false;
     private PeerProps props;
+    private MeetingClient meetingClient;
 
     public PeerView(@NonNull Context context) {
         super(context);
@@ -77,20 +84,32 @@ public class PeerView extends RelativeLayout {
     }
 
     /**
-     *
      * @param name
      */
     public void setName(@Nullable String name) {
         if (name != null) {
             mBinding.tvPeerName.setText(name);
+            peerVisibilityUpdateRequired = false;
         }
     }
 
-    public void setCameraState(boolean on) {
+    public void setVideoState(boolean on) {
         if (on) {
-            mBinding.peerInfoCam.setImageResource(R.drawable.ic_video_camera_white);
+//            mBinding.peerInfoCam.setImageResource(R.drawable.ic_video_camera_white);
+//            mBinding.wooPeerView.videoHidden.setVisibility(View.GONE);
+//            mBinding.wooPeerView.wooVideoRenderer.setVisibility(View.VISIBLE);
         } else {
-            mBinding.peerInfoCam.setImageResource(R.drawable.ic_camera_off_gray);
+//            mBinding.peerInfoCam.setImageResource(R.drawable.ic_camera_off_gray);
+//            mBinding.wooPeerView.videoHidden.setVisibility(View.VISIBLE);
+//            mBinding.wooPeerView.wooVideoRenderer.setVisibility(View.GONE);
+        }
+    }
+
+    public void setVideoState2(boolean on) {
+        if (on) {
+            mBinding.videoHidden1.setVisibility(View.GONE);
+        } else {
+            mBinding.videoHidden1.setVisibility(View.VISIBLE);
         }
     }
 
@@ -99,56 +118,82 @@ public class PeerView extends RelativeLayout {
             mBinding.peerInfoMic.setImageResource(R.drawable.ic_mic_white_48dp);
             playAudioEffects();
         } else {
-            mBinding.peerInfoMic.setImageResource(R.drawable.ic_mic_off_gray);
+            mBinding.peerInfoMic.setImageResource(R.drawable.icon_mic_white_off);
             stopAudioEffects();
+        }
+        peerVisibilityUpdateRequired = false;
+    }
+
+    public void setAdminStatus() {
+        if (meetingClient != null) {
+            if (meetingClient.getRole() == MeetingClient.Role.ADMIN) {
+                if (props.getPeer() != null) {
+                    Info p = props.getPeer().get();
+                    if (p != null) {
+                        mBinding.peerInfoMore.setVisibility(View.VISIBLE);
+                        mBinding.peerInfoMore.setOnClickListener(view -> {
+                            PopupMenu menu = new PopupMenu(getContext(), view);
+                            menu.getMenuInflater().inflate(R.menu.meeting_admin_peer_popup, menu.getMenu());
+                            menu.setOnMenuItemClickListener(item -> {
+                                switch (item.getItemId()) {
+                                    case R.id.menuItemMute:
+                                        meetingClient.muteMember(p.getId());
+                                        return true;
+                                    case R.id.menuItemCam:
+                                        meetingClient.turnMemberCamOff(p.getId());
+                                        return true;
+                                    case R.id.menuItemKickout:
+                                        meetingClient.kickoutMember(p.getId());
+                                        return true;
+                                    case R.id.menuItemMakeAdmin:
+                                        try {
+                                            meetingClient.makeNewAdmin(p.getId());
+                                            return true;
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        return false;
+                                }
+                                return false;
+                            });
+                            menu.show();
+                        });
+                    }
+                }
+            } else {
+                mBinding.peerInfoMore.setVisibility(View.GONE);
+            }
         }
     }
 
+
+    /**
+     *
+     * @param props
+     * @param meetingClient
+     */
     public void setProps(PeerProps props, MeetingClient meetingClient) {
         this.props = props;
+        this.meetingClient = meetingClient;
         // set view model into included layout
         mBinding.wooPeerView.setWooPeerViewProps(props);
+
+        setAdminStatus();
+
 
 //        if (props.getPeer() != null) {
 //            Peer p = (Peer) props.getPeer().get();
 //            if (p != null) {
-//                setHandRaisedState(p.isHandRaised());
-//                setCameraState(p.isCamOn());
 //                setMicState(p.isMicOn());
+//                setHandRaisedState(p.isHandRaised());
 //            }
 //        }
-//        Info info = props.getPeer().get();
-//        if (info != null) {
-//            String name = info.getDisplayName();
-//            if (name != null) {
-//                if (!name.isEmpty()) {
-//                    mBinding.tvPeerName.setText(name);
-//                } else {
-//                    mBinding.tvPeerName.setText("Empty");
-//                }
-//            } else {
-//                mBinding.tvPeerName.setText("Null");
-//            }
-//        }
-
-//        // register click listener.
-//        mBinding.peerView.info.setOnClickListener(
-//                view -> {
-//                    Boolean showInfo = props.getShowInfo().get();
-//                    props.getShowInfo().set(showInfo != null && showInfo ? Boolean.FALSE : Boolean.TRUE);
-//                });
-//
-//        mBinding.peerView.stats.setOnClickListener(
-//                view -> {
-//                    // TODO Handle inner click event;
-//                });
 
         // set view model
         mBinding.setWooPeerProps(props);
     }
 
     /**
-     *
      * @param raised
      */
     public void setHandRaisedState(boolean raised) {
@@ -162,29 +207,18 @@ public class PeerView extends RelativeLayout {
             mBinding.peerInfoHand.clearAnimation();
             mBinding.peerInfoHand.setImageResource(R.drawable.ic_front_hand_white_34);
         }
+        peerVisibilityUpdateRequired = false;
     }
 
     private void playAudioEffects() {
-        if (props != null) {
-            if (mBinding.audioPeerLayout.getVisibility() == View.GONE) {
-                if (props.getAudioTrack() != null) {
-                    if (props.getAudioTrack().get() != null) {
-                        if (Objects.requireNonNull(props.getAudioTrack().get()).state() == MediaStreamTrack.State.LIVE) {
-                            mBinding.audioPeerLayout.setVisibility(View.VISIBLE);
-                            WooAnimationUtil.showView(mBinding.audioPeerLayout, new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    super.onAnimationEnd(animation);
-                                    Glide.with(PeerView.this).asGif().load(R.drawable.ic_audio_giphy).into(mBinding.audioPeerGif);
-                                }
-                            });
-                        } else {
-                            stopAudioEffects();
-                        }
-                    }
-                }
+        mBinding.audioPeerLayout.setVisibility(View.VISIBLE);
+        WooAnimationUtil.showView(mBinding.audioPeerLayout, new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                Glide.with(PeerView.this).asGif().load(R.drawable.ic_audio_giphy).into(mBinding.audioPeerGif);
             }
-        }
+        });
     }
 
     private void stopAudioEffects() {
@@ -199,6 +233,63 @@ public class PeerView extends RelativeLayout {
 
     /**
      *
+     * @param pId
+     */
+    public void setImageForPeer(@NonNull String pId) {
+        if (WDirector.getInstance().getRoomData() != null) {
+            if (WDirector.getInstance().getRoomData().getMembers() != null) {
+                for (RoomData.Member m : WDirector.getInstance().getRoomData().getMembers()) {
+                    if (m != null) {
+                        if (m.getSocketId().equals(pId)) {
+                            if (m.getPicture() != null) {
+                                String displayPic = m.getPicture();
+                                if (displayPic.isEmpty()) {
+                                    displayPic = "https://picsum.photos/200";
+                                }
+                                try {
+                                    URL u = new URL(displayPic);
+                                    Http.build().getImage(getContext(), true, displayPic, new HttpImageAdapter() {
+                                        @Override
+                                        public void connected(String resource) {}
+
+                                        @Override
+                                        public void failed(String resource, String reasonPhrase) {}
+
+                                        @Override
+                                        public void done(String resource, Bitmap bitmap) {
+                                            if (bitmap != null) {
+                                                try {
+                                                    ((Activity) getContext()).runOnUiThread(() -> {
+                                                        CircleDrawable cd = new CircleDrawable(bitmap);
+                                                        mBinding.wooPeerThumbIv1.setImageDrawable(cd);
+                                                    });
+                                                } catch (Exception ex) {
+                                                    ex.printStackTrace();
+                                                }
+                                            }
+                                        }
+                                    });
+                                } catch (MalformedURLException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Nullable
+    public PeerProps getProps() {
+        return this.props;
+    }
+
+    /**
      * @param resId
      */
     public void setTitleBgDrawable(int resId) {
@@ -207,8 +298,8 @@ public class PeerView extends RelativeLayout {
 
     @Override
     protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
         dispose();
+        super.onDetachedFromWindow();
     }
 
     public void dispose() {
@@ -217,4 +308,6 @@ public class PeerView extends RelativeLayout {
         mBinding.wooPeerView.wooVideoRenderer.release();
     }
 
-} /** end class [PeerView] */
+} /**
+ * end class [PeerView]
+ */

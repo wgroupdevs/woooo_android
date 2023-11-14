@@ -16,16 +16,14 @@ import java.util.Set;
  */
 public class Peer extends Info {
 
-    private String mId;
     private String mDisplayName;
     private DeviceInfo mDevice;
-    private boolean handRaised = false;
-    private boolean camOn = true;
-    private boolean micOn = true;
     private Set<String> mConsumers;
     private Set<String> mDataConsumers;
+    private boolean videoOn = false;
 
     public Peer(@NonNull JSONObject info) {
+        super();
         mId = info.optString("id");
         mDisplayName = info.optString("displayName");
         JSONObject deviceInfo = info.optJSONObject("device");
@@ -44,7 +42,7 @@ public class Peer extends Info {
 
     @Override
     public String getId() {
-        return mId;
+        return super.getId();
     }
 
     @Override
@@ -65,28 +63,12 @@ public class Peer extends Info {
         this.mDevice = device;
     }
 
-    public boolean isHandRaised() {
-        return handRaised;
+    public boolean isVideoOn() {
+        return videoOn;
     }
 
-    public void setHandRaised(boolean handRaised) {
-        this.handRaised = handRaised;
-    }
-
-    public boolean isCamOn() {
-        return camOn;
-    }
-
-    public void setCamOn(boolean camOn) {
-        this.camOn = camOn;
-    }
-
-    public boolean isMicOn() {
-        return micOn;
-    }
-
-    public void setMicOn(boolean micOn) {
-        this.micOn = micOn;
+    public void setVideoOn(boolean videoOn) {
+        this.videoOn = videoOn;
     }
 
     public Set<String> getConsumers() {

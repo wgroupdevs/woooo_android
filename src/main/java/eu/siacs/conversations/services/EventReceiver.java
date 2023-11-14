@@ -8,7 +8,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.common.base.Strings;
-import com.woooapp.meeting.impl.utils.WooEvents;
+import com.woooapp.meeting.impl.utils.WEvents;
 
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.utils.Compatibility;
@@ -34,7 +34,7 @@ public class EventReceiver extends BroadcastReceiver {
         }
 
 
-        WooEvents.getInstance().notify(WooEvents.EVENT_NETWORK_CONNECTIVITY_CHANGED, originalIntent);
+        WEvents.getInstance().notify(WEvents.EVENT_NETWORK_CONNECTIVITY_CHANGED, originalIntent);
     }
 
     public static boolean hasEnabledAccounts(final Context context) {

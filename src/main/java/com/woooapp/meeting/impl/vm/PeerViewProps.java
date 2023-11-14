@@ -7,6 +7,8 @@ import androidx.databinding.ObservableField;
 
 import com.woooapp.meeting.lib.lv.RoomStore;
 import com.woooapp.meeting.lib.model.Info;
+import com.woooapp.meeting.lib.model.Me;
+import com.woooapp.meeting.lib.model.Peer;
 
 import org.json.JSONArray;
 import org.webrtc.AudioTrack;
@@ -51,7 +53,7 @@ public abstract class PeerViewProps extends EdiasProps {
         super(application, roomStore);
         // Add default value to avoid null check in layout.
         mShowInfo = new ObservableField<>(Boolean.FALSE);
-        mPeer = new ObservableField<>(new Info());
+        mPeer = new ObservableField<Info>(new Info());
         mAudioProducerId = new ObservableField<>();
         mVideoProducerId = new ObservableField<>();
         mAudioConsumerId = new ObservableField<>();

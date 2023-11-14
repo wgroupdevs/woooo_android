@@ -80,13 +80,11 @@ public class MeetingPageFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        if (adapter != null) adapter.dispose();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (adapter != null) adapter.dispose();
     }
 
     @Override

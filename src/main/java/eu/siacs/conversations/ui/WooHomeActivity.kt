@@ -30,7 +30,7 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private var pieChart: PieChart? = null
     private var circleIndex = 0
-    private var crashChecker: CrashChecker? = null
+//    private var crashChecker: CrashChecker? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
@@ -42,8 +42,8 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
         binding.appBarHome.toolbar.toolbarNotification.visibility = View.VISIBLE
 
 
-        crashChecker = CrashChecker(this)
-        crashChecker?.checkForCrash()
+//        crashChecker = CrashChecker(this)
+//        crashChecker?.checkForCrash()
 
         binding.appBarHome.toolbar.toolbarProfilePhoto.setOnClickListener {
             binding.drawerLayout.open()

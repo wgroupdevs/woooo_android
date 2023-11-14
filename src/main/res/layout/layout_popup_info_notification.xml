@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rounded_default"
+    android:layout_margin="15sp"
+    android:padding="10sp"
+    android:clipChildren="true"
+    android:elevation="15sp">
+
+    <ImageView
+        android:id="@+id/ivClose"
+        android:layout_width="32sp"
+        android:layout_height="32sp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10sp"
+        android:src="@drawable/baseline_clear_24"/>
+
+    <LinearLayout
+        android:layout_below="@+id/ivClose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="5sp">
+
+        <ImageView
+            android:id="@+id/ivThumb"
+            android:layout_width="62sp"
+            android:layout_height="62sp"
+            android:padding="5sp"
+            android:src="@drawable/woooo_logo"/>
+
+        <TextView
+            android:id="@+id/tvMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10sp"
+            android:text="Woooo Popup"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:padding="5sp"
+            />
+
+    </LinearLayout>
+
+</RelativeLayout>

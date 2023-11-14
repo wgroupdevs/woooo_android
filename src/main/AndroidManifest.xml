@@ -30,6 +30,8 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+
     <uses-permission
         android:name="android.permission.READ_PHONE_STATE"
         android:maxSdkVersion="22" />
@@ -395,21 +397,19 @@
             android:autoRemoveFromRecents="true"
             android:launchMode="singleInstance"
             android:supportsPictureInPicture="true" /> <!-- MEETING -->
-        <activity
-            android:name="com.woooapp.meeting.impl.views.SettingsActivity"
-            android:exported="false"
-            android:label="Meeting Settings" />
 
-        <activity
-            android:name="com.woooapp.meeting.impl.views.RoomActivity"
-            android:label="@string/title_activity_room_meet"
-            android:launchMode="singleInstance"
-            android:screenOrientation="portrait" />
         <activity
             android:name="com.woooapp.meeting.impl.views.MeetingActivity"
             android:label="Meeting"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
+            android:turnScreenOn="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="COM.WOOAPP.MEETING.IMPL.VIEWS.MEETINGACTIVITY" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
             android:turnScreenOn="true" />
 
 

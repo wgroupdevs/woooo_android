@@ -61,11 +61,17 @@ public class MeetingTranscriptAdapter extends BaseAdapter {
             vh = (ViewHolder) convertView.getTag();
         }
 
+        vh.tvOriginal = convertView.findViewById(R.id.tvTranscriptOriginal);
         vh.tvMessage = convertView.findViewById(R.id.tvTranscriptMessage);
         vh.tvTime = convertView.findViewById(R.id.tvTranscriptTime);
         vh.tvName = convertView.findViewById(R.id.tvTranscriptName);
 
-        vh.tvMessage.setText(transcriptList.get(position).getTranslation());
+        if (transcriptList.get(position).getTranslation() != null) {
+            vh.tvMessage.setText(transcriptList.get(position).getTranslation());
+        }
+        if (transcriptList.get(position).getOriginal() != null) {
+            vh.tvOriginal.setText(transcriptList.get(position).getOriginal());
+        }
         vh.tvTime.setText(DateUtils.getCurrentTime());
         if (transcriptList.get(position).getSenderName() != null) {
             vh.tvName.setText(transcriptList.get(position).getSenderName());
@@ -86,6 +92,7 @@ public class MeetingTranscriptAdapter extends BaseAdapter {
     }
 
     static class ViewHolder {
+        TextView tvOriginal;
         TextView tvMessage;
         TextView tvTime;
         TextView tvName;

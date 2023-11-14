@@ -11,7 +11,7 @@ public class Transcript {
 
     private String translation;
     private String original;
-    private String producerId;
+    private String socketId;
     private String senderName;
 
     /**
@@ -20,10 +20,10 @@ public class Transcript {
      * @param original
      * @param producerId
      */
-    public Transcript(String translation, String original, String producerId) {
+    public Transcript(String translation, String original, String socketId) {
         this.translation = translation;
         this.original = original;
-        this.producerId = producerId;
+        this.socketId = socketId;
     }
 
     public String getTranslation() {
@@ -42,12 +42,12 @@ public class Transcript {
         this.original = original;
     }
 
-    public String getProducerId() {
-        return producerId;
+    public String getSocketId() {
+        return socketId;
     }
 
-    public void setProducerId(String producerId) {
-        this.producerId = producerId;
+    public void setSocketId(String socketId) {
+        this.socketId = socketId;
     }
 
     @Nullable

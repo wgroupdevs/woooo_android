@@ -45,7 +45,11 @@ public class WooProgressDialog {
     }
 
     public void show() {
-        dialog.show();
+        try {
+            dialog.show();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void dismiss() {

@@ -1,7 +1,6 @@
 package com.woooapp.meeting.impl.views.adapters;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.woooapp.meeting.impl.utils.WDirector;
 import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
 import com.woooapp.meeting.impl.views.models.Chat;
 
@@ -109,6 +109,17 @@ public class MeetingChatAdapter extends BaseAdapter {
             rvh.tvTime = view.findViewById(R.id.meetingChatRecvTimeTv);
             rvh.tvTime.setText(DateUtils.getCurrentTime());
             rvh.ivThumb = view.findViewById(R.id.meetingMsgRecvIvThumb);
+            rvh.tvTranslation = view.findViewById(R.id.meetingMsgRecvTransTv);
+
+            if (WDirector.getInstance().isChatTranslationEnabled()) {
+                if (chatList.get(i).getTranslation() != null) {
+                    rvh.tvTranslation.setVisibility(View.VISIBLE);
+                    rvh.tvTranslation.setText(chatList.get(i).getTranslation());
+                }
+            } else {
+                rvh.tvTranslation.setVisibility(View.GONE);
+            }
+
             String u = chatList.get(i).getMessage().getProfileImage();
             if (u != null) {
                 try {
@@ -135,6 +146,10 @@ public class MeetingChatAdapter extends BaseAdapter {
                     });
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
+                    RecvViewHolder finalRvh1 = rvh;
+                    mContext.runOnUiThread(() -> {
+                        finalRvh1.ivThumb.setImageResource(R.drawable.buddy2);
+                    });
                 }
             }
             WooAnimationUtil.showView(view, null);
@@ -152,6 +167,7 @@ public class MeetingChatAdapter extends BaseAdapter {
         TextView tvName;
         TextView tvMessage;
         TextView tvTime;
+        TextView tvTranslation;
         ImageView ivThumb;
     }
 

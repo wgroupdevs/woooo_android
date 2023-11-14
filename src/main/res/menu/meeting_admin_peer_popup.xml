@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menuItemMute"
+        android:title="Mute"
+        android:iconTint="@color/white"/>
+
+    <item
+        android:id="@+id/menuItemCam"
+        android:title="Turn Off Camera"
+        android:iconTint="@color/white"/>
+
+    <item
+        android:id="@+id/menuItemKickout"
+        android:title="Remove"
+        android:iconTint="@color/white"/>
+
+    <item
+        android:id="@+id/menuItemMakeAdmin"
+        android:title="Add Admin"
+        android:iconTint="@color/white"/>
+
+</menu>

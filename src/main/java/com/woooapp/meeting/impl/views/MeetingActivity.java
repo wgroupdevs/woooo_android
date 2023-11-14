@@ -3,12 +3,13 @@ package com.woooapp.meeting.impl.views;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
@@ -28,6 +29,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -35,16 +37,23 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationChannelCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.woooapp.meeting.device.Display;
-import com.woooapp.meeting.impl.utils.WooDirector;
-import com.woooapp.meeting.impl.utils.WooEvents;
-import com.woooapp.meeting.impl.utils.WooMediaPlayer;
+import com.woooapp.meeting.impl.utils.VoiceDataSource;
+import com.woooapp.meeting.impl.utils.WDirector;
+import com.woooapp.meeting.impl.utils.WEvents;
+import com.woooapp.meeting.impl.utils.WTonePlayer;
+import com.woooapp.meeting.impl.utils.WVoicePlayback;
 import com.woooapp.meeting.impl.views.adapters.LangSelectionAdapter;
 import com.woooapp.meeting.impl.views.adapters.MeetingChatAdapter;
 import com.woooapp.meeting.impl.views.adapters.MeetingPagerAdapter;
@@ -53,6 +62,7 @@ import com.woooapp.meeting.impl.views.adapters.MemberAdapter;
 import com.woooapp.meeting.impl.views.adapters.PeerAdapter2;
 import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
 import com.woooapp.meeting.impl.views.fragments.MeetingPageFragment;
+import com.woooapp.meeting.impl.views.fragments.MeetingPageFragment2;
 import com.woooapp.meeting.impl.views.models.Chat;
 import com.woooapp.meeting.impl.views.models.GridPeer;
 import com.woooapp.meeting.impl.views.models.Languages;
@@ -63,7 +73,6 @@ import com.woooapp.meeting.impl.views.models.Transcript;
 import com.woooapp.meeting.impl.views.popups.MeetingMorePopup;
 import com.woooapp.meeting.impl.views.popups.WooCommonPopup;
 import com.woooapp.meeting.impl.views.popups.WooProgressDialog;
-import com.woooapp.meeting.impl.vm.EdiasProps;
 import com.woooapp.meeting.impl.vm.RoomProps;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.RoomOptions;
@@ -71,6 +80,7 @@ import com.woooapp.meeting.lib.Utils;
 import com.woooapp.meeting.lib.lv.RoomStore;
 import com.woooapp.meeting.lib.model.Peer;
 import com.woooapp.meeting.net.ApiManager;
+import com.woooapp.meeting.net.models.ChatTranslation;
 import com.woooapp.meeting.net.models.CreateMeetingBody;
 import com.woooapp.meeting.net.models.CreateMeetingResponse;
 import com.woooapp.meeting.net.models.PutMembersDataBody;
@@ -86,7 +96,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import eu.siacs.conversations.R;
-import eu.siacs.conversations.WooApp;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.persistance.DatabaseBackend;
 import okhttp3.Call;
@@ -100,7 +109,19 @@ import okhttp3.Response;
 public class MeetingActivity extends AppCompatActivity implements Handler.Callback {
     private static final String TAG = MeetingActivity.class.getSimpleName() + ".java";
     private static final int PERMISSIONS_REQ_CODE = 0x7b;
+    private static final int PERMISSION_CAMERA_CODE = 0x7a;
+    private static final int PERMISSION_MIC_CODE = 0x7c;
+    private static final int PERMISSION_MIC_BUTTON_CODE = 0x7f;
+    private static final int PERMISSION_EXTERNAL_STORAGE_CODE = 0x7d;
+    private static final int PERMISSION_NOTIFICATION_CODE = 0x7e;
+    private static final int MEETING_NOTIFICATION_ID = 0x9f;
     private final String[] permissions = new String[]{
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.POST_NOTIFICATIONS
+    };
+    private final String[] permissions2 = new String[]{
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.CAMERA,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -121,7 +142,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private String meetingName;
     private MeetingPagerAdapter peersPagerAdapter;
     private List<Peer> peersList = new ArrayList<>();
-//    private List<GridPeer> gridPeerList = new ArrayList<>();
+    //    private List<GridPeer> gridPeerList = new ArrayList<>();
     private List<ListGridPeer> listGridPeer = new LinkedList<>();
     private Handler callbackHandler = new Handler(this);
     private int deviceWidthDp;
@@ -163,8 +184,8 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private Account account;
     private Languages langs;
     private WooProgressDialog progressDialog;
-    private List<MeetingPageFragment> pageFragments = new LinkedList<>();
-    private WooMediaPlayer notificationSound;
+    private List<MeetingPageFragment2> pageFragments = new LinkedList<>();
+    private WTonePlayer notificationSound;
     private LinearLayout pageControlLayout;
     private LinearLayout translationLayout;
     private TextView tvTransOriginal;
@@ -174,6 +195,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private boolean isMicEnabled;
     private AudioManager droidAudioManager;
     private boolean memberAdded = false;
+    private boolean morePopupVisible = false;
+    private View mutingView;
+    private NotificationManagerCompat notificationManager;
+    private boolean isNewIntent = false;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -181,132 +206,175 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meeting);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        this.uiManager = UIManager.getUIManager(this);
-        WooEvents.getInstance().addHandler(callbackHandler);
-        deviceWidthDp = Display.getDisplayWidth(this) - 50;
-        deviceHeightDp = Display.getDisplayHeight(this);
-        this.initComponents();
-        this.bottomBarMeeting.setVisibility(View.GONE);
+        if (!isNewIntent) {
+            this.uiManager = UIManager.getUIManager(this);
+            WEvents.getInstance().addHandler(callbackHandler);
+            deviceWidthDp = Display.getDisplayWidth(this) - 50;
+            deviceHeightDp = Display.getDisplayHeight(this);
+            this.initComponents();
+            this.bottomBarMeeting.setVisibility(View.GONE);
 
-        this.droidAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        this.droidAudioManager.setSpeakerphoneOn(true);
+            this.droidAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            this.droidAudioManager.setSpeakerphoneOn(true);
 
-        progressDialog = WooProgressDialog.make(this, "Setting up ...");
-        progressDialog.show();
-        createDrawer();
+            this.notificationManager = NotificationManagerCompat.from(this);
 
-        this.langsJson = WooDirector.getInstance().readFileFromAssets(getAssets(), "languages.json");
-        try {
-            this.langs = Languages.fromJson(langsJson);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            progressDialog = WooProgressDialog.make(this, "Setting up ...");
+            progressDialog.show();
+            createDrawer();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkForPermissions(permissions, PERMISSIONS_REQ_CODE);
-        } else {
-            setup();
-        }
-
-        this.buttonEnd.setOnClickListener(view -> {
-            onBackPressed();
-        });
-
-        this.drawerButton.setOnClickListener(view -> {
-            if (mSideMenuOpened) {
-                closeDrawer();
-            } else {
-                openDrawer();
-            }
-        });
-
-        this.buttonMoreMenu.setOnClickListener(view -> {
-            // More Button
+            this.langsJson = WDirector.getInstance().readFileFromAssets(getAssets(), "languages.json");
             try {
-                this.morePopup = new MeetingMorePopup(
-                        this, this.mainContainer,
-                        this.bottomBarMeeting.getHeight(),
-                        mMeetingClient);
-                morePopup.show();
-                fetchRoomData2();
-            } catch (Exception ex) {
-                ex.printStackTrace();
+                this.langs = Languages.fromJson(langsJson);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        });
 
-        this.buttonAI.setOnClickListener(view -> {
-            View contentView = LayoutInflater.from(this).inflate(R.layout.layout_bottom_sheet_translation, null);
-            View buttonTextTrans = contentView.findViewById(R.id.buttonTransSheetText);
-            ImageView ivText = contentView.findViewById(R.id.ivText);
-            ImageView ivVoice = contentView.findViewById(R.id.ivVoice);
-            if (mMeetingClient.isTextTranslationOn()) {
-                ivText.setVisibility(View.VISIBLE);
+            if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                askForPermission(Manifest.permission.RECORD_AUDIO, PERMISSION_MIC_CODE);
             } else {
-                ivText.setVisibility(View.GONE);
+                preSetup();
             }
-            View buttonVoiceTrans = contentView.findViewById(R.id.buttonTransSheetVoice);
-            Button buttonCancel = contentView.findViewById(R.id.buttonTransSheetCancel);
 
-            BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.SheetDialog);
-            dialog.setContentView(contentView);
-            dialog.show();
+            this.buttonEnd.setOnClickListener(view -> {
+                destroyMeeting();
+            });
 
-            buttonTextTrans.setOnClickListener(v -> {
-                if (mMeetingClient != null) {
-                    mMeetingClient.setTextTranslation(!mMeetingClient.isTextTranslationOn());
-                    if (mMeetingClient.isTextTranslationOn()) {
-                        WooEvents.getInstance().notify(WooEvents.EVENT_TRANSLATION_ENABLED, null);
-                    } else {
-                        WooEvents.getInstance().notify(WooEvents.EVENT_TRANSLATION_DISABLED, null);
+            this.drawerButton.setOnClickListener(view -> {
+                if (mSideMenuOpened) {
+                    closeDrawer();
+                } else {
+                    openDrawer();
+                }
+            });
+
+            this.buttonMoreMenu.setOnClickListener(view -> {
+                // More Button
+                if (!morePopupVisible) {
+                    morePopupVisible = true;
+                    try {
+                        this.morePopup = new MeetingMorePopup(
+                                this, this.mainContainer,
+                                this.bottomBarMeeting.getHeight(),
+                                mMeetingClient, () -> morePopupVisible = false);
+                        morePopup.show();
+                        fetchRoomData2();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        morePopupVisible = false;
                     }
                 }
-                dialog.dismiss();
             });
 
-            buttonVoiceTrans.setOnClickListener(v -> {
-                if (mMeetingClient != null) mMeetingClient.setVoiceTranslation(!mMeetingClient.isVoiceTranslationOn());
-                dialog.dismiss();
+            this.buttonAI.setOnClickListener(view -> {
+                View contentView = LayoutInflater.from(this).inflate(R.layout.layout_bottom_sheet_translation, null);
+                View buttonTextTrans = contentView.findViewById(R.id.buttonTransSheetText);
+                ImageView ivText = contentView.findViewById(R.id.ivText);
+                ImageView ivVoice = contentView.findViewById(R.id.ivVoice);
+                if (mMeetingClient != null) {
+                    ivText.setVisibility(mMeetingClient.isTextTranslationOn() ? View.VISIBLE : View.GONE);
+                    ivVoice.setVisibility(mMeetingClient.isVoiceTranslationOn() ? View.VISIBLE : View.GONE);
+                }
+                View buttonVoiceTrans = contentView.findViewById(R.id.buttonTransSheetVoice);
+                Button buttonCancel = contentView.findViewById(R.id.buttonTransSheetCancel);
+
+                BottomSheetDialog dialog = new BottomSheetDialog(this, R.style.SheetDialog);
+                dialog.setContentView(contentView);
+                dialog.show();
+
+                buttonTextTrans.setOnClickListener(v -> {
+                    if (mMeetingClient != null) {
+                        mMeetingClient.setTextTranslation(!mMeetingClient.isTextTranslationOn());
+                        if (mMeetingClient.isTextTranslationOn()) {
+                            WEvents.getInstance().notify(WEvents.EVENT_TRANSLATION_ENABLED, null);
+                        } else {
+                            WEvents.getInstance().notify(WEvents.EVENT_TRANSLATION_DISABLED, null);
+                        }
+                        if (mMeetingClient.isTextTranslationOn() || mMeetingClient.isVoiceTranslationOn()) {
+                            buttonAI.setImageResource(R.drawable.ic_lang_enabled);
+                        } else {
+                            buttonAI.setImageResource(R.drawable.ic_lang_disable);
+                        }
+                    }
+                    dialog.dismiss();
+                });
+
+                buttonVoiceTrans.setOnClickListener(v -> {
+                    if (mMeetingClient != null) {
+                        mMeetingClient.setVoiceTranslation(!mMeetingClient.isVoiceTranslationOn());
+//                    setVoiceTranslation(mMeetingClient.isVoiceTranslationOn());
+                        try {
+                            showCommonPopup(
+                                    "Voice Translation " + (mMeetingClient.isVoiceTranslationOn() ? " is enabled" : " is disabled"),
+                                    true,
+                                    WooCommonPopup.VERTICAL_POSITION_TOP);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                        if (mMeetingClient.isTextTranslationOn() || mMeetingClient.isVoiceTranslationOn()) {
+                            buttonAI.setImageResource(R.drawable.ic_lang_enabled);
+                        } else {
+                            buttonAI.setImageResource(R.drawable.ic_lang_disable);
+                        }
+
+                        mutingView.setVisibility(mMeetingClient.isVoiceTranslationOn() ? View.VISIBLE : View.GONE);
+                        new Handler().postDelayed(() -> {
+                            mutingView.setVisibility(View.GONE);
+                        }, 5000);
+                    }
+                    dialog.dismiss();
+                });
+
+                buttonCancel.setOnClickListener(v -> {
+                    dialog.dismiss();
+                });
             });
 
-            buttonCancel.setOnClickListener(v -> {
-                dialog.dismiss();
+            this.buttonMic.setOnClickListener(view -> {
+                // Mic
+                if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+                    askForPermission(Manifest.permission.RECORD_AUDIO, PERMISSION_MIC_BUTTON_CODE);
+                } else {
+                    if (mMeetingClient.isMicOn()) {
+                        mMeetingClient.setMicOn(false);
+                    } else {
+                        mMeetingClient.setMicOn(true);
+                    }
+                }
             });
-        });
 
-        this.buttonMic.setOnClickListener(view -> {
-            // Mic
-            if (mMeetingClient.isMicOn()) {
-                mMeetingClient.setMicOn(false);
-            } else {
-                mMeetingClient.setMicOn(true);
-            }
-        });
+            this.buttonCam.setOnClickListener(view -> {
+                // Cam
+                if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    askForPermission(Manifest.permission.CAMERA, PERMISSION_CAMERA_CODE);
+                } else {
+                    if (mMeetingClient.isCamOn()) {
+                        mMeetingClient.setCamOn(false);
+                    } else {
+                        mMeetingClient.setCamOn(true);
+                    }
+                }
+            });
 
-        this.buttonCam.setOnClickListener(view -> {
-            // Cam
-            if (mMeetingClient.isCamOn()) {
-                mMeetingClient.setCamOn(false);
-            } else {
-                mMeetingClient.setCamOn(true);
-            }
-        });
+            this.buttonChatSend.setOnClickListener(view -> {
+                if (!this.etChatInput.getText().toString().isEmpty()) {
+                    com.woooapp.meeting.net.models.Message message = new com.woooapp.meeting.net.models.Message();
+                    message.setSocketId(mMeetingClient.getSocketId());
+                    message.setProfileImage(this.picture);
+                    message.setName(this.username);
+                    message.setMeetingId(mMeetingId);
+                    message.setMessage(this.etChatInput.getText().toString());
+                    mMeetingClient.sendMessage(message);
 
-        this.buttonChatSend.setOnClickListener(view -> {
-            if (!this.etChatInput.getText().toString().isEmpty()) {
-                com.woooapp.meeting.net.models.Message message = new com.woooapp.meeting.net.models.Message();
-                message.setSocketId(mMeetingClient.getSocketId());
-                message.setProfileImage(this.picture);
-                message.setName(this.username);
-                message.setMeetingId(mMeetingId);
-                message.setMessage(this.etChatInput.getText().toString());
-                mMeetingClient.sendMessage(message);
-
-                this.etChatInput.setText("");
-            } else {
-                etChatInput.setHint("Empty Message");
-                etChatInput.setHintTextColor(Color.RED);
-            }
-        });
+                    this.etChatInput.setText("");
+                } else {
+                    etChatInput.setHint("Empty Message");
+                    etChatInput.setHintTextColor(Color.RED);
+                }
+            });
+        } else {
+            Log.d(TAG, "New Intent onCreate()");
+        }
     }
 
     private void initComponents() {
@@ -318,6 +386,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         this.buttonCam = findViewById(R.id.meetingButtonCam);
         this.buttonEnd = findViewById(R.id.meetingButtonEnd);
         this.drawerButton = findViewById(R.id.drawerButton);
+        this.drawerButton.setAlpha(0.4f);
 
         this.buttonChatSend = findViewById(R.id.buttonMeetingChatSend);
         this.etChatInput = findViewById(R.id.etMeetingChat);
@@ -341,9 +410,11 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         this.tvTransTrans = findViewById(R.id.tvTranslationTranslation);
         this.ivBg = findViewById(R.id.ivBg);
 
+        this.mutingView = findViewById(R.id.layoutMuting);
+
         this.meetingBackground.setOnTouchListener((view, motionEvent) -> true);
 
-        this.notificationSound = new WooMediaPlayer(getResources().openRawResourceFd(R.raw.meet_sound));
+        this.notificationSound = new WTonePlayer(getResources().openRawResourceFd(R.raw.meet_sound));
         this.notificationSound.setVolume(0.5f);
     }
 
@@ -373,6 +444,18 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         }
     }
 
+    private void preSetup() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                askForPermission(Manifest.permission.POST_NOTIFICATIONS, PERMISSION_NOTIFICATION_CODE);
+            } else {
+                setup();
+            }
+        } else {
+            setup();
+        }
+    }
+
     private void setup() {
 //        pd.show();
         this.isCamEnabled = getIntent().getBooleanExtra("camOn", true);
@@ -381,11 +464,8 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         this.accountUniqueId = getIntent().getStringExtra("accountUniqueId");
         this.username = getIntent().getStringExtra("username");
         this.picture = getIntent().getStringExtra("picture");
-        if (picture != null) {
-            if (picture.isEmpty())
-                picture = "https://picsum.photos/200";
-        } else {
-            picture = "https://picsum.photos/200";
+        if (picture == null) {
+            picture = "";
         }
         this.joining = getIntent().getBooleanExtra("joining", false);
         this.mMeetingId = getIntent().getStringExtra("meetingId");
@@ -399,29 +479,235 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         }
         meetingName = "WooooDroid-" + meetingName;
         Log.d(TAG, "<< MEETING ID [" + mMeetingId + "]");
-        if (!joining) {
-            CreateMeetingBody.Admin admin1 = new CreateMeetingBody.Admin();
-            admin1.setEmail(email);
-            admin1.setAccountUniqueId(accountUniqueId);
-            admin1.setUsername(username);
-            admin1.setPicture(picture);
-            List<CreateMeetingBody.Admin> admins = new LinkedList<>();
-            admins.add(admin1);
-            CreateMeetingBody body = new CreateMeetingBody();
-            body.setMeetingId(mMeetingId);
-            body.setMeetingName(meetingName);
-            body.setAdmins(admins);
+        if (mMeetingId != null) {
+            if (!joining) {
+                CreateMeetingBody.Admin admin1 = new CreateMeetingBody.Admin();
+                admin1.setEmail(email);
+                admin1.setAccountUniqueId(accountUniqueId);
+                admin1.setUsername(username);
+                admin1.setPicture(picture);
+                List<CreateMeetingBody.Admin> admins = new LinkedList<>();
+                admins.add(admin1);
+                CreateMeetingBody body = new CreateMeetingBody();
+                body.setMeetingId(mMeetingId);
+                body.setMeetingName(meetingName);
+                body.setAdmins(admins);
 
-            // Create new meeting
-            createMeeting(body);
+                // Create new meeting
+                createMeeting(body);
+            } else {
+                // Join Meeting
+                joinMeeting();
+            }
         } else {
-            // Join Meeting
-            joinMeeting();
+
         }
     }
 
     private void joinMeeting() {
-        initMeetingClient();
+        ApiManager.build(this).checkForPassword(mMeetingId, new ApiManager.ApiResult2() {
+            @Override
+            public void onResult(Call call, Response response) {
+                if (response != null) {
+                    try {
+                        String resp = response.body().string();
+                        Log.d(TAG, "<<< Check Password Response >>>> " + resp);
+                        JSONObject obj = new JSONObject(String.valueOf(resp));
+                        boolean value = obj.getBoolean("value");
+                        if (value) {
+                            runOnUiThread(() -> {
+                                try {
+                                    validatePassword();
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
+                            });
+                        } else {
+                            runOnUiThread(() -> {
+                                initMeetingClient();
+                            });
+                        }
+                    } catch (NullPointerException | IOException | JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, Object e) {
+                Log.d(TAG, "<<< Check Password call failed >>> " + e);
+            }
+        });
+    }
+
+    private void validatePassword() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.TransparentBgDialogStyle);
+        View v = LayoutInflater.from(this).inflate(R.layout.layout_dialog_meeting_password, null);
+        TextView tvMessage = v.findViewById(R.id.tvPassword);
+        final AppCompatEditText etPassword = v.findViewById(R.id.etPassword);
+        final Button buttonDone = v.findViewById(R.id.buttonOk);
+        final Button buttonCancel = v.findViewById(R.id.buttonCancel);
+        final ProgressBar progressBar = v.findViewById(R.id.progressBar);
+        tvMessage.setText("Meeting with id " + mMeetingId + " is protected by password. Kindly provide valid password to continue.");
+
+        builder.setView(v);
+
+        final AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+        buttonDone.setOnClickListener(view -> {
+            if (etPassword.getText().toString().isEmpty()) {
+                tvMessage.setText("Password is required");
+                tvMessage.setTextColor(Color.RED);
+            } else {
+                tvMessage.setText("Meeting with id " + mMeetingId + " is protected by password. Kindly provide valid password to continue.");
+                tvMessage.setTextColor(Color.WHITE);
+
+                buttonDone.setVisibility(View.GONE);
+                buttonCancel.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+                etPassword.setEnabled(false);
+
+                ApiManager.build(MeetingActivity.this).confirmPassword(mMeetingId, etPassword.getText().toString(), new ApiManager.ApiResult2() {
+                    @Override
+                    public void onResult(Call call, Response response) {
+                        if (response != null) {
+                            try {
+                                String resp = response.body().string();
+                                Log.d(TAG, "<< Confirm Password Response >>> " + resp);
+                                JSONObject obj = new JSONObject(resp);
+                                boolean value = obj.getBoolean("value");
+                                if (value) {
+                                    runOnUiThread(() -> {
+                                        initMeetingClient();
+                                        dialog.dismiss();
+                                    });
+                                } else {
+                                    runOnUiThread(() -> {
+                                        buttonDone.setVisibility(View.VISIBLE);
+                                        buttonCancel.setVisibility(View.VISIBLE);
+                                        progressBar.setVisibility(View.GONE);
+                                        etPassword.setEnabled(true);
+
+                                        tvMessage.setText("Provided password is incorrect. Kindly provide valid password");
+                                        tvMessage.setTextColor(Color.RED);
+                                    });
+                                }
+                            } catch (NullPointerException | JSONException | IOException e) {
+                                e.printStackTrace();
+                                runOnUiThread(() -> {
+                                    dialog.dismiss();
+                                    UIManager.showErrorDialog(MeetingActivity.this,
+                                            "Error",
+                                            "Failed to validate password from server. Please try again later.",
+                                            "Ok",
+                                            R.drawable.ic_warning,
+                                            null);
+                                });
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Object e) {
+                        runOnUiThread(() -> {
+                            dialog.dismiss();
+                            UIManager.showErrorDialog(MeetingActivity.this,
+                                    "Error",
+                                    "Failed to validate password from server. Please try again later.",
+                                    "Ok",
+                                    R.drawable.ic_warning,
+                                    null);
+                        });
+                    }
+                });
+            }
+        });
+
+        buttonCancel.setOnClickListener(view -> {
+            dialog.cancel();
+            finish();
+        });
+    }
+
+    private void setPassword() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.TransparentBgDialogStyle);
+        View v = LayoutInflater.from(this).inflate(R.layout.layout_dialog_meeting_add_password, null);
+        final AppCompatEditText etPassword = v.findViewById(R.id.etPassword);
+        final Button buttonOk = v.findViewById(R.id.buttonOk);
+        final Button buttonCancel = v.findViewById(R.id.buttonCancel);
+        final ProgressBar progressBar = v.findViewById(R.id.progressBar);
+
+        builder.setView(v);
+
+        AlertDialog dialog = builder.create();
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.show();
+
+        buttonOk.setOnClickListener(view -> {
+            if (etPassword.getText().toString().isEmpty()) {
+                etPassword.setHintTextColor(Color.RED);
+                etPassword.setHint("* Password is required");
+            } else {
+                etPassword.setEnabled(false);
+                buttonCancel.setVisibility(View.GONE);
+                buttonOk.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+
+                ApiManager.build(MeetingActivity.this).applyPassword(mMeetingId, etPassword.getText().toString(), new ApiManager.ApiResult2() {
+                    @Override
+                    public void onResult(Call call, Response response) {
+                        if (response != null) {
+                            try {
+                                String resp = response.body().string();
+                                Log.d(TAG, "<<< Add password response >>> " + resp);
+                                runOnUiThread(() -> {
+                                    progressBar.setVisibility(View.GONE);
+                                    dialog.dismiss();
+                                    try {
+                                        showCommonPopup("Password added successfully", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                                    } catch (Exception ex) {
+                                        ex.printStackTrace();
+                                    }
+                                    mMeetingClient.setPasswordSet(true);
+                                });
+                            } catch (NullPointerException | IOException e) {
+                                e.printStackTrace();
+                                runOnUiThread(() -> {
+                                    dialog.dismiss();
+                                    UIManager.showErrorDialog(MeetingActivity.this,
+                                            "Error",
+                                            "Failed to set password. Please try again later.",
+                                            "Ok",
+                                            R.drawable.ic_warning,
+                                            null);
+                                });
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call call, Object e) {
+                        runOnUiThread(() -> {
+                            dialog.dismiss();
+                            UIManager.showErrorDialog(MeetingActivity.this,
+                                    "Error",
+                                    "Failed to set password. Please try again later.",
+                                    "Ok",
+                                    R.drawable.ic_warning,
+                                    null);
+                        });
+                    }
+                });
+            }
+        });
+
+        buttonCancel.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
     }
 
     /**
@@ -450,8 +736,18 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             if (!langSelected) {
                 buttonLangSelect.setImageResource(R.drawable.ic_lang_enabled);
                 langSelected = true;
+                WDirector.getInstance().setChatTranslationEnabled(true);
+
+                try {
+                    this.showLanguageSelectionSheet();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                langSelected = false;
+                WDirector.getInstance().setChatTranslationEnabled(false);
+                buttonLangSelect.setImageResource(R.drawable.ic_lang_disable);
             }
-            this.showLanguageSelectionSheet();
         });
     }
 
@@ -497,6 +793,12 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     super.onAnimationStart(animation);
                     meetingBackground.setVisibility(View.GONE);
                 }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    drawerButton.setAlpha(0.4f);
+                }
             });
             mSideMenuOpened = false;
             hideKeyboard();
@@ -512,6 +814,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     Bitmap blurredBg = uiManager.blur(MeetingActivity.this, uiManager.createBitmap(mainContainer));
                     meetingBackground.setBackground(new BitmapDrawable(blurredBg));
                     meetingBackground.setVisibility(View.VISIBLE);
+                    drawerButton.setAlpha(1.0f);
                 }
             });
             mSideMenuOpened = true;
@@ -520,9 +823,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
     private void showLanguageSelectionSheet() {
         try {
-            closeDrawer();
+//            closeDrawer();
             View view = LayoutInflater.from(this).inflate(R.layout.layout_dialog_language_select, null);
             Button buttCancel = view.findViewById(R.id.buttonLangSelectCancel);
+            TextView tvNone = view.findViewById(R.id.tvLangNone);
             ListView listView = view.findViewById(R.id.listViewLangSelect);
             listView.setAdapter(new LangSelectionAdapter(this, langs.getLanguages(), selectedLanguageName));
 
@@ -534,6 +838,13 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 selectedLanguageName = langs.getLanguages().get(position).getName();
                 selectedLanguageCode = langs.getLanguages().get(position).getCode();
                 updateLanguage();
+                sheet.dismiss();
+            });
+
+            tvNone.setOnClickListener(view3 -> {
+                langSelected = false;
+                WDirector.getInstance().setChatTranslationEnabled(false);
+                buttonLangSelect.setImageResource(R.drawable.ic_lang_disable);
                 sheet.dismiss();
             });
 
@@ -555,6 +866,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                             String resp = response.body().string();
                             Log.d(TAG, "ROOM DATA RESPONSE >>> " + resp);
                             roomData = RoomData.fromJson(resp);
+                            WDirector.getInstance().setRoomData(roomData);
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
@@ -579,6 +891,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 try {
                     String json = response.body().string();
                     roomData = RoomData.fromJson(json);
+                    WDirector.getInstance().setRoomData(roomData);
+                    if (mMeetingClient != null && accountUniqueId != null) {
+                        WDirector.getInstance().updateRole(mMeetingClient, accountUniqueId);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -632,6 +948,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         body.setUsername(this.username);
         body.setPicture(this.picture);
         body.setSocketId(mMeetingClient.getSocketId());
+        body.setLanguage(this.selectedLanguageCode);
 
         Log.d(TAG, "<< PUT Member >>> " + body.toString());
 
@@ -681,21 +998,13 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     }
 
     private void initViewModel() {
-        EdiasProps.Factory factory = new EdiasProps.Factory(WooApp.Companion.getInstance(), mRoomStore);
-
-        RoomProps roomProps = new ViewModelProvider(this, factory).get(RoomProps.class);
+        RoomProps roomProps = new RoomProps(getApplication(), mRoomStore);
         roomProps.connect(this);
-
-//        mBinding.setMeetProps(roomProps);
 
         // Set Meeting ID Link
         this.tvMeetingId.setText(mMeetingId);
 
         // PeerView
-//        peerGridAdapter = new MeetingGridAdapter(this, this, mRoomStore, mMeetingClient);
-//        peerGridAdapter.setTabBarHeight(mBinding.bottomBarMeeting.getHeight());
-//        mBinding.gridViewMeeting.setAdapter(peerGridAdapter);
-//        mBinding.gridViewMeeting.setEnabled(false);
         this.peersPagerAdapter = new MeetingPagerAdapter(getSupportFragmentManager(), this, mRoomStore, mMeetingClient, this);
         this.peersPagerAdapter.setBottomBarHeight(bottomBarMeeting.getLayoutParams().height);
         this.viewPager.setAdapter(peersPagerAdapter);
@@ -716,10 +1025,28 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             }
         });
 
-        final MeetingPageFragment f1 = new MeetingPageFragment(1, this, mRoomStore, mMeetingClient, this);
+//        final MeetingPageFragment f1 = new MeetingPageFragment(1, this, mRoomStore, mMeetingClient, this);
+//        pageFragments.add(f1);
+//        final MeetingPageFragment f2 = new MeetingPageFragment(2, this, mRoomStore, mMeetingClient, this);
+//        final MeetingPageFragment f3 = new MeetingPageFragment(3, this, mRoomStore, mMeetingClient, this);
+//        final MeetingPageFragment f4 = new MeetingPageFragment(4, this, mRoomStore, mMeetingClient, this);
+//        final MeetingPageFragment f5 = new MeetingPageFragment(5, this, mRoomStore, mMeetingClient, this);
+//        final MeetingPageFragment f6 = new MeetingPageFragment(6, this, mRoomStore, mMeetingClient, this);
+//        final MeetingPageFragment f7 = new MeetingPageFragment(7, this, mRoomStore, mMeetingClient, this);
+//        final MeetingPageFragment f8 = new MeetingPageFragment(8, this, mRoomStore, mMeetingClient, this);  // 48 including ME
+
+        final MeetingPageFragment2 f1 = new MeetingPageFragment2(this, 1, this, mRoomStore, mMeetingClient);
         pageFragments.add(f1);
-        final MeetingPageFragment f2 = new MeetingPageFragment( 2, this, mRoomStore, mMeetingClient, this);
-        final MeetingPageFragment f3 = new MeetingPageFragment( 3, this, mRoomStore, mMeetingClient, this);
+        peersPagerAdapter.notifyDataSetChanged();
+        final MeetingPageFragment2 f2 = new MeetingPageFragment2(this, 2, this, mRoomStore, mMeetingClient);
+        final MeetingPageFragment2 f3 = new MeetingPageFragment2(this, 3, this, mRoomStore, mMeetingClient);
+        final MeetingPageFragment2 f4 = new MeetingPageFragment2(this, 4, this, mRoomStore, mMeetingClient);
+        final MeetingPageFragment2 f5 = new MeetingPageFragment2(this, 5, this, mRoomStore, mMeetingClient);
+        final MeetingPageFragment2 f6 = new MeetingPageFragment2(this, 6, this, mRoomStore, mMeetingClient);
+        final MeetingPageFragment2 f7 = new MeetingPageFragment2(this, 7, this, mRoomStore, mMeetingClient);
+        final MeetingPageFragment2 f8 = new MeetingPageFragment2(this, 8, this, mRoomStore, mMeetingClient);
+        final MeetingPageFragment2 f9 = new MeetingPageFragment2(this, 9, this, mRoomStore, mMeetingClient);
+        final MeetingPageFragment2 f10 = new MeetingPageFragment2(this, 10, this, mRoomStore, mMeetingClient);
 
         mRoomStore
                 .getPeers()
@@ -727,104 +1054,140 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                         this,
                         peers -> {
                             peersList = peers.getAllPeers();
-                            listGridPeer = new LinkedList<>();
-                            List<MeetingPage> pageList = new LinkedList<>();
-                            if (peersList.size() <= 5) {
-                                List<ListGridPeer> pl1 = createListGridPeers(peersList, true);
-                                MeetingPage page1 = new MeetingPage(1, pl1);
-                                pageList.add(page1);
-                                pageFragments.get(0).replacePage(page1);
-                                if (pageFragments.size() > 1) {
-                                    for (int i = 0; i < pageFragments.size(); i++) {
-                                        if (i > 0) {
-                                            pageFragments.remove(i);
+                            List<List<Peer>> paginatedList = WDirector.getInstance().getPeerPaginatedLists(peersList);
+                            Log.d(TAG, "<<< Paginated List size >>> " + paginatedList.size());
+                            if (paginatedList.size() > 0) {
+                                for (int i = 0; i < paginatedList.size(); i++) {
+                                    if (i == 0) {
+                                        List<Peer> pList = paginatedList.get(0);
+                                        List<GridPeer> gList = createGridPeers2(pList, true);
+                                        for (GridPeer g : gList) {
+                                            f1.addPeerItem(g);
+                                        }
+                                    } else {
+                                        if (pageFragments.size() == 1) {
+                                            if (i == 1) {
+                                                pageFragments.add(f2);
+                                                List<Peer> pList2 = paginatedList.get(1);
+                                                List<GridPeer> gList2 = createGridPeers2(pList2, false);
+                                                for (GridPeer g : gList2) {
+                                                    f2.addPeerItem(g);
+                                                }
+                                            } else {
+                                                pageFragments.add(f3);
+                                                peersPagerAdapter.notifyDataSetChanged();
+                                            }
                                         }
                                     }
                                 }
-                            } else if (peersList.size() > 5 && peersList.size() <= 12) {
-                                List<ListGridPeer> pl2 = createListGridPeers(peersList.subList(0, 5), true);
-                                List<ListGridPeer> pl3 = new ArrayList<>();
-                                if (peersList.size() == 6) {
-                                    pl3.add(new ListGridPeer(ListGridPeer.VIEW_TYPE_PEER_PEER, peersList.get(5), null));
-                                } else {
-                                    pl3 = createListGridPeers(peersList.subList(5, peersList.size()), false);
-                                }
-                                MeetingPage page1 = new MeetingPage(1, pl2);
-                                MeetingPage page2 = new MeetingPage(2, pl3);
-                                pageList.add(page1);
-                                pageList.add(page2);
-                                pageFragments.get(0).replacePage(page1);
-                                if (pageFragments.size() < 2) {
-                                    pageFragments.add(f2);
-                                    f2.replacePage(page2);
-                                } else {
-                                    pageFragments.get(1).replacePage(page2);
-                                }
-                                if (pageFragments.size() > 2) {
-                                    for (int i = 0; i < pageFragments.size(); i++) {
-                                        if (i > 1) {
-                                            pageFragments.remove(i);
-                                        }
-                                    }
-                                }
-                            } else if (peersList.size() > 11 && peersList.size() <= 18) {
-                                List<ListGridPeer> pl4 = createListGridPeers(peersList.subList(0, 5), true);
-                                List<ListGridPeer> pl5 = createListGridPeers(peersList.subList(6, 11), false);
-                                List<ListGridPeer> pl6 = new ArrayList<>();
-                                if (peersList.size() == 12) {
-                                    pl6.add(new ListGridPeer(ListGridPeer.VIEW_TYPE_PEER_PEER, peersList.get(11), null));
-                                } else {
-                                    pl6 = createListGridPeers(peersList.subList(11, peersList.size() - 1), false);
-                                }
-                                MeetingPage page1 = new MeetingPage(1, pl4);
-                                MeetingPage page2 = new MeetingPage(2, pl5);
-                                MeetingPage page3 = new MeetingPage(3, pl6);
-                                pageList.add(page1);
-                                pageList.add(page2);
-                                pageList.add(page3);
-                                pageFragments.get(0).replacePage(page1);
-                                pageFragments.get(1).replacePage(page2);
-                                if (pageFragments.size() < 3) {
-                                    pageFragments.add(f3);
-                                    f3.replacePage(page3);
-                                } else {
-                                    pageFragments.get(2).replacePage(page3);
-                                }
+//                                switch (paginatedList.size()) {
+//                                    case 1:
+//                                    List<Peer> pList = paginatedList.get(0);
+//                                    List<GridPeer> gList = createGridPeers2(pList, true);
+//                                    for (GridPeer g : gList) {
+//                                        Log.d(TAG, "Added GridPeer of type " + (g.getViewType() == GridPeer.VIEW_TYPE_ME ? " Me" : " Peer"));
+//                                        f1.addPeerItem(g);
+//                                    }
+//                                    break;
+//                                    case 2:
+//                                        if (pageFragments.size() == 1) {
+//                                            pageFragments.add(f2);
+//                                            peersPagerAdapter.notifyDataSetChanged();
+//                                        }
+//                                        List<Peer> pList1 = paginatedList.get(0);
+//                                        List<GridPeer> gList1 = createGridPeers2(pList1, true);
+//                                        for (GridPeer g : gList1) {
+//                                            Log.d(TAG, "Added GridPeer of type " + (g.getViewType() == GridPeer.VIEW_TYPE_ME ? " Me" : " Peer"));
+//                                            f1.addPeerItem(g);
+//                                        }
+//                                        List<Peer> pList2 = paginatedList.get(1);
+//                                        List<GridPeer> gList2 = createGridPeers2(pList2, false);
+//                                        for (GridPeer g : gList2) {
+//                                            Log.d(TAG, "Added GridPeer of type " + (g.getViewType() == GridPeer.VIEW_TYPE_ME ? " Me" : " Peer"));
+//                                            f2.addPeerItem(g);
+//                                        }
+//                                        break;
+//                                    default:
+//                                        break;
+//                                }
                             }
-                            Log.d(TAG, "Peer list size[" + peersList.size() + "]");
-                            Log.d(TAG, "Pages Size >>> " + pageList.size());
-                            peersPagerAdapter.replaceFragments(pageFragments, pageList);
-                            updatePageControl(0);
 
+
+//                            listGridPeer = new LinkedList<>();
+//                            List<MeetingPage> pageList = new LinkedList<>();
+//                            if (peersList.size() <= 5) {
+//                                List<ListGridPeer> pl1 = createListGridPeers(peersList, true);
+//                                MeetingPage page1 = new MeetingPage(1, pl1);
+//                                pageList.add(page1);
+//                                pageFragments.get(0).replacePage(page1);
+//                                if (pageFragments.size() > 1) {
+//                                    for (int i = 0; i < pageFragments.size(); i++) {
+//                                        if (i > 0) {
+//                                            pageFragments.remove(i);
+//                                        }
+//                                    }
+//                                }
+//                            } else if (peersList.size() > 5 && peersList.size() <= 12) {
+//                                List<ListGridPeer> pl2 = createListGridPeers(peersList.subList(0, 5), true);
+//                                List<ListGridPeer> pl3 = new ArrayList<>();
+//                                if (peersList.size() == 6) {
+//                                    pl3.add(new ListGridPeer(ListGridPeer.VIEW_TYPE_PEER_PEER, peersList.get(5), null));
+//                                } else {
+//                                    pl3 = createListGridPeers(peersList.subList(5, peersList.size()), false);
+//                                }
+//                                MeetingPage page1 = new MeetingPage(1, pl2);
+//                                MeetingPage page2 = new MeetingPage(2, pl3);
+//                                pageList.add(page1);
+//                                pageList.add(page2);
+//                                pageFragments.get(0).replacePage(page1);
+//                                if (pageFragments.size() < 2) {
+//                                    pageFragments.add(f2);
+//                                    f2.replacePage(page2);
+//                                } else {
+//                                    pageFragments.get(1).replacePage(page2);
+//                                }
+//                                if (pageFragments.size() > 2) {
+//                                    for (int i = 0; i < pageFragments.size(); i++) {
+//                                        if (i > 1) {
+//                                            pageFragments.remove(i);
+//                                        }
+//                                    }
+//                                }
+//                            } else if (peersList.size() > 11 && peersList.size() <= 18) {
+//                                List<ListGridPeer> pl4 = createListGridPeers(peersList.subList(0, 5), true);
+//                                List<ListGridPeer> pl5 = createListGridPeers(peersList.subList(6, 11), false);
+//                                List<ListGridPeer> pl6 = new ArrayList<>();
+//                                if (peersList.size() == 12) {
+//                                    pl6.add(new ListGridPeer(ListGridPeer.VIEW_TYPE_PEER_PEER, peersList.get(11), null));
+//                                } else {
+//                                    pl6 = createListGridPeers(peersList.subList(11, peersList.size() - 1), false);
+//                                }
+//                                MeetingPage page1 = new MeetingPage(1, pl4);
+//                                MeetingPage page2 = new MeetingPage(2, pl5);
+//                                MeetingPage page3 = new MeetingPage(3, pl6);
+//                                pageList.add(page1);
+//                                pageList.add(page2);
+//                                pageList.add(page3);
+//                                pageFragments.get(0).replacePage(page1);
+//                                pageFragments.get(1).replacePage(page2);
+//                                if (pageFragments.size() < 3) {
+//                                    pageFragments.add(f3);
+//                                    f3.replacePage(page3);
+//                                } else {
+//                                    pageFragments.get(2).replacePage(page3);
+//                                }
+//                            }
+//                            Log.d(TAG, "Peer list size[" + peersList.size() + "]");
+//                            Log.d(TAG, "Pages Size >>> " + pageList.size());
+                            peersPagerAdapter.replaceFragments(pageFragments);
+
+                            // Page Control
                             if (pageFragments.size() > 1) {
                                 createPageControl(0);
+                                updatePageControl(0);
                             } else {
                                 hidePageControl();
                             }
-
-//                            if (mBinding.meetingViewPager.findViewWithTag(pageList.get(0).getPageNo()) != null) {
-//                                peersPagerAdapter.notifyDataSetChanged();
-//                                mBinding.meetingViewPager.findViewWithTag(pageList.get(0).getPageNo()).invalidate();
-//                            }
-//                            PeersFragment fragment1 = new PeersFragment(MeetingActivity.this,
-//                                    MeetingActivity.this,
-//                                    mRoomStore,
-//                                    mMeetingClient);
-//                            View view = fragment1.createView(LayoutInflater.from(MeetingActivity.this), null);
-//                            fragment1.viewCreated(view);
-//                            mNavigationLayout.addView(view);
-//                            if (pageList.size() > 0) {
-//                                fragment1.replacePeers(pageList.get(0).getmPeers());
-//                            }
-//                            for (MeetingPage page : pageList) {
-//                                View view = fragment1.createView(LayoutInflater.from(MeetingActivity.this), null);
-//                                fragment1.viewCreated(view);
-//                                mNavigationLayout.addView(view);
-//
-//                                fragment1.replacePeers(page.getmPeers());
-//                            }
-//                            mNavigationLayout.invalidate();
-//                            mBinding.meetingFrameLayout.invalidate();
                         });
     }
 
@@ -837,6 +1200,23 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         List<GridPeer> peers = new LinkedList<>();
         peers.add(new GridPeer(GridPeer.VIEW_TYPE_ME, null));
         for (Peer p : peerList) {
+            peers.add(new GridPeer(GridPeer.VIEW_TYPE_PEER, p));
+        }
+        return peers;
+    }
+
+    /**
+     *
+     * @param peersList
+     * @param includeMe
+     * @return
+     */
+    private List<GridPeer> createGridPeers2(@NonNull List<Peer> peersList, boolean includeMe) {
+        List<GridPeer> peers = new LinkedList<>();
+        if (includeMe) {
+            peers.add(new GridPeer(GridPeer.VIEW_TYPE_ME, null));
+        }
+        for (Peer p : peersList) {
             peers.add(new GridPeer(GridPeer.VIEW_TYPE_PEER, p));
         }
         return peers;
@@ -897,84 +1277,98 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         return peers;
     }
 
-    /**
-     * @param permissions
-     * @param reqCode
-     */
-    @TargetApi(Build.VERSION_CODES.M)
-    private void checkForPermissions(String[] permissions, int reqCode) {
-        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED &&
-                checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED &&
-                checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            sendRequest(permissions, reqCode);
-        } else {
-            setup();
-        }
-    }
+    private void askForPermission(String permission, int reqCode) {
+        if (shouldShowRequestPermissionRationale(permission)) {
+            UIManager.showInfoDialog(this, "Permission Required", "Meeting requires " + permission + " to function properly. Kinldy grant it to continue",
+                    new UIManager.DialogCallback() {
+                        @Override
+                        public void onPositiveButton(@Nullable Object sender, @Nullable Object data) {
+                            requestPermissions(new String[]{permission}, reqCode);
+                        }
 
-    @TargetApi(Build.VERSION_CODES.M)
-    private void sendRequest(String[] permissions, int reqCode) {
-        if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE) &&
-                shouldShowRequestPermissionRationale(Manifest.permission.CAMERA) &&
-                shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
+                        @Override
+                        public void onNeutralButton(@Nullable Object sender, @Nullable Object data) {
 
+                        }
+
+                        @Override
+                        public void onNegativeButton(@Nullable Object sender, @Nullable Object data) {
+
+                        }
+                    });
         } else {
-            requestPermissions(permissions, reqCode);
+            requestPermissions(new String[]{permission}, reqCode);
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSIONS_REQ_CODE) {
-            if (grantResults.length >= 2) {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-                        grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    setup();
+        if (requestCode == PERMISSION_MIC_CODE) {
+            if (grantResults.length > 0) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    preSetup();
+                } else {
+                    UIManager.showInfoDialog(MeetingActivity.this,
+                            "Permission Required",
+                            "Meeting at least requires Record Audio Microphone permission to function properly." +
+                                    " Kindly grant it from settings to continue",
+                            new UIManager.DialogCallback() {
+                                @Override
+                                public void onPositiveButton(@Nullable Object sender, @Nullable Object data) {
+                                    finish();
+                                }
+
+                                @Override
+                                public void onNeutralButton(@Nullable Object sender, @Nullable Object data) {
+
+                                }
+
+                                @Override
+                                public void onNegativeButton(@Nullable Object sender, @Nullable Object data) {
+
+                                }
+                            });
                 }
-            } else {
-                checkForPermissions(permissions, PERMISSIONS_REQ_CODE);
+            }
+        } else if (requestCode == PERMISSION_CAMERA_CODE) {
+            if (grantResults.length > 0) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (mMeetingClient != null) {
+                        if (!mMeetingClient.isCamOn()) {
+                            mMeetingClient.setCamOn(true);
+                        }
+                    }
+                }
+            }
+        } else if (requestCode == PERMISSION_EXTERNAL_STORAGE_CODE) {
+            if (grantResults.length > 0) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    openImageChooser();
+                }
+            }
+        } else if (requestCode == PERMISSION_NOTIFICATION_CODE) {
+            if (grantResults.length > 0) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    preSetup();
+                }
+            }
+        } else if (requestCode == PERMISSION_MIC_BUTTON_CODE) {
+            if (grantResults.length > 0) {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (mMeetingClient != null) {
+                        mMeetingClient.setMicOn(true);
+                    }
+                }
             }
         }
-    }
-
-    public void destroyMeeting() {
-        if (this.mMeetingClient != null) {
-            this.mMeetingClient.close();
-            this.mMeetingClient = null;
-        }
-        if (mRoomStore != null) {
-            mRoomStore = null;
-        }
-//        mBinding.meView.dispose();
-        // TODO Mark check
-//        mBinding.peerView.dispose();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        this.callbackHandler = new Handler(this);
-//        WooEvents.getInstance().addHandler(this.callbackHandler);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        destroyCallbackHandler();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        destroyCallbackHandler();
     }
 
     @Override
     public boolean handleMessage(@NonNull Message msg) {
         Log.d(TAG, "<< Handler Event >>> " + msg.what);
         switch (msg.what) {
-            case WooEvents.EVENT_TYPE_SOCKET_ID:
+            case WEvents.EVENT_TYPE_SOCKET_ID:
                 Log.d(TAG, "<< Handler Event SOCKET_ID Received >> " + msg.obj);
                 // Drawer
                 runOnUiThread(() -> {
@@ -1046,24 +1440,33 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     }
                 }
                 return true;
-            case WooEvents.EVENT_TYPE_PRODUCER_CREATED:
+            case WEvents.EVENT_TYPE_PRODUCER_CREATED:
                 Log.d(TAG, "<< Handler Event PRODUCER CREATED [" + msg.obj + "]");
-//                if (joining) {
-//                }
                 return true;
-            case WooEvents.EVENT_TYPE_CONSUMER_CREATED:
+            case WEvents.EVENT_TYPE_CONSUMER_CREATED:
                 Log.d(TAG, "<< Handler Event CONSUMER CREATED [" + msg.obj + "]");
+                fetchRoomData2();
                 return true;
-            case WooEvents.EVENT_TYPE_CONSUME_BACK_CREATED:
+            case WEvents.EVENT_TYPE_CONSUME_BACK_CREATED:
                 Log.d(TAG, "<< Handler Event CONSUME BACK CREATED [" + msg.obj + "]");
+                fetchRoomData2();
                 return true;
-            case WooEvents.EVENT_TYPE_PEER_DISCONNECTED:
-                Log.d(TAG, "<< Handler Event Peer Disconnected with socket id >> " + msg.obj);
-                runOnUiThread(() -> {
-                    showCommonPopup(msg.obj + " left", true, WooCommonPopup.VERTICAL_POSITION_TOP);
-                });
-                return true;
-            case WooEvents.EVENT_TYPE_SOCKET_DISCONNECTED:
+            case WEvents.EVENT_TYPE_PEER_DISCONNECTED:
+                if (msg.obj != null) {
+                    JSONObject p = (JSONObject) msg.obj;
+                    try {
+                        String username = p.getString("username");
+                        Log.d(TAG, "<< Handler Event Peer Disconnected with name >> " + username);
+                        runOnUiThread(() -> {
+                            showCommonPopup(username + " left", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    return true;
+                }
+                return false;
+            case WEvents.EVENT_TYPE_SOCKET_DISCONNECTED:
                 Log.d(TAG, "<< Handler Event Socket disconnected with socket id: [" + msg.obj + "]");
                 runOnUiThread(() -> {
                     if (droidAudioManager != null) {
@@ -1071,12 +1474,12 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                         droidAudioManager.setMode(AudioManager.MODE_NORMAL);
                     }
                 });
-                if (peersList.isEmpty()) {
-                    // Destroy and finish()
-                    onBackPressed();
-                }
+//                if (peersList.isEmpty()) {
+//                    // Destroy and finish()
+//                    onBackPressed();
+//                }
                 return true;
-            case WooEvents.EVENT_RECEIVED_MESSAGE:
+            case WEvents.EVENT_RECEIVED_MESSAGE:
                 Log.d(TAG, "<< Handler Event : Chat Message Received in handler");
                 com.woooapp.meeting.net.models.Message message = (com.woooapp.meeting.net.models.Message) msg.obj;
                 if (message != null) {
@@ -1090,9 +1493,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                             e.printStackTrace();
                         }
                     });
+                    setChatTranslation(message);
                 }
                 return true;
-            case WooEvents.EVENT_SENT_MESSAGE:
+            case WEvents.EVENT_SENT_MESSAGE:
                 Log.d(TAG, "Message " + msg.obj + " Sent successfully");
                 com.woooapp.meeting.net.models.Message message1 = (com.woooapp.meeting.net.models.Message) msg.obj;
                 if (message1 != null) {
@@ -1102,11 +1506,11 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     });
                 }
                 return true;
-            case WooEvents.EVENT_FAILURE_MESSAGE:
+            case WEvents.EVENT_FAILURE_MESSAGE:
                 Log.w(TAG, "Failed to send chat message " + msg.obj);
 
                 return true;
-            case WooEvents.EVENT_ME_MIC_TURNED_ON:
+            case WEvents.EVENT_ME_MIC_TURNED_ON:
                 runOnUiThread(() -> {
                     buttonMic.setImageResource(R.drawable.baseline_mic_34);
                 });
@@ -1127,12 +1531,17 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
                             }
                         });
+                        if (mRoomStore.getMe() != null) {
+                            mRoomStore.getMe().postValue(me -> {
+                                me.setMicOn(true);
+                            });
+                        }
                     }
                 }
                 return true;
-            case WooEvents.EVENT_ME_MIC_TURNED_OFF:
+            case WEvents.EVENT_ME_MIC_TURNED_OFF:
                 runOnUiThread(() -> {
-                    buttonMic.setImageResource(R.drawable.ic_mic_off_gray);
+                    buttonMic.setImageResource(R.drawable.icon_mic_white_off);
                 });
                 if (mMeetingClient == null) {
                     return true;
@@ -1145,7 +1554,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     public void onResult(Call call, Response response) {
                         try {
                             Log.d(TAG, "<< MIC MUTED RESPONSE >>> " + response.body().string());
-                        } catch (IOException e) {
+                        } catch (NullPointerException | IOException e) {
                             e.printStackTrace();
                         }
                     }
@@ -1155,53 +1564,103 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
                     }
                 });
+                if (mRoomStore.getMe() != null) {
+                    mRoomStore.getMe().postValue(me -> {
+                        me.setMicOn(false);
+                    });
+                }
                 return true;
-            case WooEvents.EVENT_ME_CAM_TURNED_ON:
+            case WEvents.EVENT_ME_CAM_TURNED_ON:
                 runOnUiThread(() -> {
                     buttonCam.setImageResource(R.drawable.ic_video_camera_white);
                 });
+                if (mRoomStore != null) {
+                    if (mRoomStore.getMe() != null) {
+                        mRoomStore.getMe().postValue(me -> {
+                            me.setCamOn(true);
+                        });
+                    }
+                }
                 return true;
-            case WooEvents.EVENT_ME_CAM_TURNED_OFF:
+            case WEvents.EVENT_ME_CAM_TURNED_OFF:
                 runOnUiThread(() -> {
                     buttonCam.setImageResource(R.drawable.ic_camera_off_gray);
                 });
+                if (mRoomStore != null) {
+                    if (mRoomStore.getMe() != null) {
+                        mRoomStore.getMe().postValue(me -> {
+                            me.setCamOn(false);
+                        });
+                    }
+                }
                 return true;
-            case WooEvents.EVENT_ON_TEXT_TRANSLATION_RECV:
+            case WEvents.EVENT_ON_TEXT_TRANSLATION_RECV:
                 if (msg.obj != null) {
                     try {
                         JSONObject obj = new JSONObject(String.valueOf(msg.obj));
                         String translation = obj.getString("translation");
                         String original = obj.getString("original");
-                        String producerId = obj.getString("producerId");
+                        String socketId = obj.getString("socketId");
+                        boolean isFinal = obj.getBoolean("isFinal");
 
-                        Transcript transcript = new Transcript(translation, original, producerId);
-                        transcriptList.add(transcript);
-                        if (transcriptAdapter != null)
-                            transcriptAdapter.replaceList(transcriptList);
-                        if (mMeetingClient.isTextTranslationOn()) {
-                            onTranslation(original, translation);
+                        Transcript transcript = new Transcript(translation, original, socketId);
+                        if (mRoomStore != null) {
+                            mRoomStore.getPeers().postValue(peers -> {
+                                if (peers.getPeer(socketId) != null) {
+                                    transcript.setSenderName(peers.getPeer(socketId).getDisplayName());
+                                }
+
+                                transcriptList.add(transcript);
+                                if (transcriptAdapter != null)
+                                    transcriptAdapter.replaceList(transcriptList);
+                                if (mMeetingClient.isTextTranslationOn()) {
+                                    onTranslation(original, translation);
+                                }
+                            });
+                        } else {
+                            transcriptList.add(transcript);
+                            if (transcriptAdapter != null)
+                                transcriptAdapter.replaceList(transcriptList);
+                            if (mMeetingClient.isTextTranslationOn()) {
+                                onTranslation(original, translation);
+                            }
                         }
                     } catch (JSONException ex) {
                         ex.printStackTrace();
                     }
                 }
                 return true;
-            case WooEvents.EVENT_CLICKED_LANGUAGE_SELECT:
-                showLanguageSelectionSheet();
-                return true;
-            case WooEvents.EVENT_NEW_PEER_JOINED:
+            case WEvents.EVENT_VOICE_TRANSLATION_RECEIVED:
                 if (msg.obj != null) {
+                    byte[] bytes = (byte[]) msg.obj;
                     runOnUiThread(() -> {
-                        showCommonPopup(msg.obj + " joined", true, WooCommonPopup.VERTICAL_POSITION_TOP);
                         try {
-                            notificationSound.play();
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            VoiceDataSource dataSource = new VoiceDataSource(bytes);
+                            final WVoicePlayback playback = new WVoicePlayback(dataSource);
+//                            playback.play();
+//                            playback.setCompletionListener(mp -> playback.release());
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
                         }
                     });
                 }
                 return true;
-            case WooEvents.EVENT_PEER_EXITED:
+            case WEvents.EVENT_CLICKED_LANGUAGE_SELECT:
+                showLanguageSelectionSheet();
+                return true;
+            case WEvents.EVENT_NEW_PEER_JOINED:
+                if (msg.obj != null) {
+                    runOnUiThread(() -> {
+//                        showCommonPopup(msg.obj + " joined", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+////                        try {
+////                            notificationSound.play();
+////                        } catch (Exception e) {
+////                            e.printStackTrace();
+////                        }
+                    });
+                }
+                return true;
+            case WEvents.EVENT_PEER_EXITED:
                 if (msg.obj != null) {
                     runOnUiThread(() -> {
                         showCommonPopup(String.valueOf(msg.obj) + " left!", true, WooCommonPopup.VERTICAL_POSITION_TOP);
@@ -1211,51 +1670,72 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                             e.printStackTrace();
                         }
                     });
+                    return true;
                 }
-                return true;
-            case WooEvents.EVENT_ME_HAND_RAISED:
-                ApiManager.build(this).putStates(ApiManager.URL_HAND_RAISED, mMeetingId, mMeetingClient.getSocketId(), new ApiManager.ApiResult2() {
-                    @Override
-                    public void onResult(Call call, Response response) {
-                        try {
-                            Log.d(TAG, "<< ME HAND RAISED RESPONSE >>> " + response.body().string());
-                            mMeetingClient.emitHandRaisedState(true);
-                        } catch (IOException | JSONException e) {
-                            e.printStackTrace();
+                return false;
+            case WEvents.EVENT_ME_HAND_RAISED:
+                if (mMeetingClient != null) {
+                    if (mMeetingClient.getSocketId() != null) {
+                        ApiManager.build(this).putStates(ApiManager.URL_HAND_RAISED, mMeetingId, mMeetingClient.getSocketId(), new ApiManager.ApiResult2() {
+                            @Override
+                            public void onResult(Call call, Response response) {
+                                try {
+                                    Log.d(TAG, "<< ME HAND RAISED RESPONSE >>> " + response.body().string());
+                                    mMeetingClient.emitHandRaisedState(true);
+                                } catch (IOException | JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call call, Object e) {
+
+                            }
+                        });
+                        if (mRoomStore.getMe() != null) {
+                            mRoomStore.getMe().postValue(me -> {
+                                me.setHandRaised(true);
+                            });
                         }
+                        return true;
                     }
+                }
+                return false;
+            case WEvents.EVENT_ME_HAND_LOWERED:
+                if (mMeetingClient != null) {
+                    if (mMeetingClient.getSocketId() != null) {
+                        ApiManager.build(this).putStates(ApiManager.URL_HAND_LOWERED, mMeetingId, mMeetingClient.getSocketId(), new ApiManager.ApiResult2() {
+                            @Override
+                            public void onResult(Call call, Response response) {
+                                try {
+                                    Log.d(TAG, "<< ME HAND LOWERED RESPONSE >>> " + response.body().string());
+                                    mMeetingClient.emitHandRaisedState(false);
+                                } catch (IOException | JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
 
-                    @Override
-                    public void onFailure(Call call, Object e) {
+                            @Override
+                            public void onFailure(Call call, Object e) {
 
-                    }
-                });
-                return true;
-            case WooEvents.EVENT_ME_HAND_LOWERED:
-                ApiManager.build(this).putStates(ApiManager.URL_HAND_LOWERED, mMeetingId, mMeetingClient.getSocketId(), new ApiManager.ApiResult2() {
-                    @Override
-                    public void onResult(Call call, Response response) {
-                        try {
-                            Log.d(TAG, "<< ME HAND LOWERED RESPONSE >>> " + response.body().string());
-                            mMeetingClient.emitHandRaisedState(false);
-                        } catch (IOException | JSONException e) {
-                            e.printStackTrace();
+                            }
+                        });
+                        if (mRoomStore.getMe() != null) {
+                            mRoomStore.getMe().postValue(me -> {
+                                me.setHandRaised(false);
+                            });
                         }
+                        return true;
                     }
-
-                    @Override
-                    public void onFailure(Call call, Object e) {
-
-                    }
-                });
-                return true;
-            case WooEvents.EVENT_TRANSLATION_ENABLED:
+                }
+                return false;
+            case WEvents.EVENT_TRANSLATION_ENABLED:
                 enableTranslations();
                 return true;
-            case WooEvents.EVENT_TRANSLATION_DISABLED:
+            case WEvents.EVENT_TRANSLATION_DISABLED:
                 disableTranslation();
                 return true;
-            case WooEvents.EVENT_PEER_HAND_LOWERED:
+            case WEvents.EVENT_PEER_HAND_LOWERED:
                 JSONObject handLowered = (JSONObject) msg.obj;
                 if (handLowered != null) {
                     mRoomStore.getPeers().postValue(peers -> {
@@ -1270,7 +1750,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     });
                 }
                 return true;
-            case WooEvents.EVENT_PEER_HAND_RAISED:
+            case WEvents.EVENT_PEER_HAND_RAISED:
                 JSONObject handRaised = (JSONObject) msg.obj;
                 if (handRaised != null) {
                     mRoomStore.getPeers().postValue(peers -> {
@@ -1285,18 +1765,156 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     });
                 }
                 return true;
-            case WooEvents.EVENT_SELECT_BACKGROUND:
+            case WEvents.EVENT_SELECT_BACKGROUND:
                 openImageChooser();
                 return true;
-            case WooEvents.EVENT_SHOW_MEMBERS:
+            case WEvents.EVENT_SHOW_MEMBERS:
                 showMembersSheet();
                 return true;
-            case WooEvents.EVENT_NETWORK_CONNECTIVITY_CHANGED:
+            case WEvents.EVENT_NETWORK_CONNECTIVITY_CHANGED:
                 if (msg.obj != null) {
                     Intent intent = (Intent) msg.obj;
                     if (intent != null) {
                         String action = intent.getAction();
                         Log.d(TAG, "<< Receiver Action >>>> " + action);
+                    }
+                }
+                return true;
+            case WEvents.EVENT_ADD_PASSWORD:
+                try {
+                    setPassword();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                return true;
+            case WEvents.EVENT_RECEIVED_MUTE_EVERYONE:
+                if (mMeetingClient != null) {
+                    if (mMeetingClient.isMicOn()) {
+                        mMeetingClient.setMicOn(false);
+                    }
+                    try {
+                        runOnUiThread(() -> {
+                            showCommonPopup("Admin has muted everyone! Your mic has been turned off.", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                        });
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    return true;
+                }
+                return false;
+            case WEvents.EVENT_RECEIVED_MUTE_MEMBER:
+                if (mMeetingClient != null) {
+                    if (mMeetingClient.isMicOn()) {
+                        mMeetingClient.setMicOn(false);
+                    }
+                    runOnUiThread(() -> {
+                        try {
+                            showCommonPopup("You have been muted by admin.", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    });
+                    return true;
+                }
+                return false;
+            case WEvents.EVENT_RECEIVED_CAM_OFF_MEMBER:
+                if (mMeetingClient != null) {
+                    if (mMeetingClient.isCamOn()) {
+                        mMeetingClient.setCamOn(false);
+                    }
+                    runOnUiThread(() -> {
+                        try {
+                            showCommonPopup("Your camera has been turned off by admin.", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    });
+                    return true;
+                }
+                return false;
+            case WEvents.EVENT_RECEIVED_KICKOUT:
+                if (mMeetingClient != null) {
+                    runOnUiThread(() -> {
+                        try {
+                            kickmeOutImpl();
+                            UIManager.showInfoDialog(MeetingActivity.this,
+                                    "Removed",
+                                    "You have been removed from meeting by admin.",
+                                    new UIManager.DialogCallback() {
+                                        @Override
+                                        public void onPositiveButton(@Nullable Object sender, @Nullable Object data) {
+                                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+                                            finish();
+                                        }
+
+                                        @Override
+                                        public void onNeutralButton(@Nullable Object sender, @Nullable Object data) {
+
+                                        }
+
+                                        @Override
+                                        public void onNegativeButton(@Nullable Object sender, @Nullable Object data) {
+
+                                        }
+                                    });
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                        }
+                    });
+                    return true;
+                }
+                return false;
+            case WEvents.EVENT_NEW_ADMIN_CREATED:
+                fetchRoomData2();
+                try {
+                    runOnUiThread(() -> {
+                        showCommonPopup("New Admin added successfully", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                    });
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                return true;
+            case WEvents.EVENT_ON_NEW_ADMIN:
+                JSONObject obj = (JSONObject) msg.obj;
+                if (obj != null) {
+                    try {
+                        String accountUniqueId = obj.getString("accountUniqueId");
+                        if (accountUniqueId.equals(this.accountUniqueId)) {
+                            if (mMeetingClient != null) {
+                                if (mMeetingClient.getRole() != MeetingClient.Role.ADMIN) {
+                                    mMeetingClient.setRole(MeetingClient.Role.ADMIN);
+                                    try {
+                                        runOnUiThread(() -> {
+                                            showCommonPopup("You have been made admin", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                                        });
+                                        fetchRoomData2();
+                                        WEvents.getInstance().notify(WEvents.EVENT_PEER_ADAPTER_NOTIFY, "Update");
+                                    } catch (Exception ex) {
+                                        ex.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return true;
+            case WEvents.EVENT_CONNECTION_STATE_FAILED:
+                if (uiManager != null) {
+                    try {
+                        showCommonPopup("Network not available ...", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                return true;
+            case WEvents.EVENT_CONNECTION_STATE_CONNECTING:
+                if (uiManager != null) {
+                    try {
+                        showCommonPopup("Connecting ...", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
                 }
                 return true;
@@ -1338,17 +1956,53 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         });
     }
 
-    private void updatePageFragments() {
-        for (MeetingPageFragment f : pageFragments) {
-            f.notifyUpdate();
+    private void openImageChooser() {
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            askForPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, PERMISSION_EXTERNAL_STORAGE_CODE);
+        } else {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            launcher.launch(intent);
         }
     }
 
-    private void openImageChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        launcher.launch(intent);
+    private void setChatTranslation(@NonNull final com.woooapp.meeting.net.models.Message message) {
+        if (langSelected) {
+            ApiManager.build(this).getTranslation(message.getMessage(), selectedLanguageCode, new ApiManager.ApiResult2() {
+                @Override
+                public void onResult(Call call, Response response) {
+                    if (response != null) {
+                        try {
+                            String resp = response.body().string();
+                            Log.d(TAG, "<< Chat Translation Response >>> " + resp);
+                            if (resp != null) {
+                                ChatTranslation trans = ChatTranslation.fromJson(resp);
+                                if (trans != null) {
+                                    if (trans.isSuccess() && trans.getData() != null) {
+                                        for (int i = 0; i < chatList.size(); i++) {
+                                            if (chatList.get(i).getMessage().getMessage().equals(message.getMessage())) {
+                                                chatList.get(i).setTranslation(trans.getData().getText());
+                                                runOnUiThread(() -> {
+                                                    chatAdapter.notifyDataSetChanged();
+                                                });
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call call, Object e) {
+
+                }
+            });
+        }
     }
 
     private void showMembersSheet() {
@@ -1397,7 +2051,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     @Override
                     public void onPositiveButton(@Nullable Object sender, @Nullable Object data) {
                         if (finishOnDismiss) {
-                            onBackPressed();
+                            destroyMeeting();
                         }
                     }
 
@@ -1414,23 +2068,22 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     }
 
     /**
-     *
      * @param original
      * @param translation
      */
     private void onTranslation(@NonNull String original, @NonNull String translation) {
-       if (this.translationLayout.getVisibility() == View.VISIBLE) {
-           tvTransOriginal.setText(original);
-           tvTransOriginal.setBackgroundResource(R.drawable.bg_rounded_default);
-           tvTransTrans.setText(translation);
-           tvTransTrans.setBackgroundResource(R.drawable.bg_rounded_default);
-       }
+        if (this.translationLayout.getVisibility() == View.VISIBLE) {
+            tvTransOriginal.setText(original);
+            tvTransOriginal.setBackgroundResource(R.drawable.bg_rounded_default);
+            tvTransTrans.setText(translation);
+            tvTransTrans.setBackgroundResource(R.drawable.bg_rounded_default);
+        }
     }
 
     private void enableTranslations() {
         if (translationLayout.getVisibility() == View.GONE) {
             translationLayout.setVisibility(View.VISIBLE);
-            for (MeetingPageFragment fragment : pageFragments) {
+            for (MeetingPageFragment2 fragment : pageFragments) {
                 fragment.enableTranslation();
             }
             showCommonPopup("Translation turned on", true, WooCommonPopup.VERTICAL_POSITION_CENTER);
@@ -1442,9 +2095,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             tvTransOriginal.setText("");
             tvTransTrans.setText("");
             tvTransTrans.setBackgroundResource(android.R.color.transparent);
-            tvTransOriginal.setBackgroundResource(android.R.color.transparent);;
+            tvTransOriginal.setBackgroundResource(android.R.color.transparent);
+            ;
             translationLayout.setVisibility(View.GONE);
-            for (MeetingPageFragment fragment : pageFragments) {
+            for (MeetingPageFragment2 fragment : pageFragments) {
                 fragment.disableTranslation();
             }
             showCommonPopup("Translation turned off", true, WooCommonPopup.VERTICAL_POSITION_CENTER);
@@ -1466,27 +2120,27 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     }
 
     /**
-     *
      * @param selectedPosition
      */
     private void updatePageControl(int selectedPosition) {
-       if (pageFragments.size() > 1) {
-           for (int i = 0; i < pageFragments.size(); i++) {
-               if (pageControlLayout.getChildAt(i) != null) {
-                   if (i == selectedPosition) {
-                       if (pageControlLayout.getChildAt(i) != null) {
-                           pageControlLayout.getChildAt(i).setLayoutParams(getSelectedPageControlParams());
-                       }
-                   } else {
-                       pageControlLayout.getChildAt(i).setLayoutParams(getUnSelectedPageControlParams());
-                   }
-               }
-           }
+        if (pageFragments.size() > 1) {
+            for (int i = 0; i < pageFragments.size(); i++) {
+                if (pageControlLayout.getChildAt(i) != null) {
+                    if (i == selectedPosition) {
+                        if (pageControlLayout.getChildAt(i) != null) {
+                            pageControlLayout.getChildAt(i).setLayoutParams(getSelectedPageControlParams());
+                            pageControlLayout.getChildAt(i).setAlpha(0.6f);
+                        }
+                    } else {
+                        pageControlLayout.getChildAt(i).setLayoutParams(getUnSelectedPageControlParams());
+                        pageControlLayout.getChildAt(i).setAlpha(1.0f);
+                    }
+                }
+            }
         }
     }
 
     /**
-     *
      * @param selected
      * @param pageNo
      * @return
@@ -1499,13 +2153,12 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         if (selected) {
             v.setAlpha(1f);
         } else {
-            v.setAlpha(0.6f);
+            v.setAlpha(1f);
         }
         return v;
     }
 
     /**
-     *
      * @return
      */
     private LinearLayout.LayoutParams getSelectedPageControlParams() {
@@ -1515,7 +2168,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     }
 
     /**
-     *
      * @return
      */
     private LinearLayout.LayoutParams getUnSelectedPageControlParams() {
@@ -1525,7 +2177,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     }
 
     /**
-     *
      * @param message
      * @param autoDismiss
      * @param verticalAlignment
@@ -1537,6 +2188,38 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private void sendBackgroundNotification() {
+        String channelId = "Woooo_Meeting";
+        NotificationChannelCompat channelCompat =
+                new NotificationChannelCompat.Builder(channelId, NotificationManagerCompat.IMPORTANCE_HIGH)
+                        .setName("Woooo Meeting")
+                        .setDescription("Meeting in progress")
+                        .build();
+        notificationManager.createNotificationChannel(channelCompat);
+
+        Intent intent = new Intent(getApplicationContext(), MeetingActivity.class);
+        intent.putExtra("meetingId", mMeetingId);
+        if (mMeetingClient != null) {
+            intent.putExtra("isAdmin", mMeetingClient.getRole() == MeetingClient.Role.ADMIN);
+        }
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0x9a, intent,
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.woooo_logo)
+                .setContentTitle("Woooo Meeting in progress")
+                .setContentText("Tap to go back to room")
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.woooo_logo))
+                .setOngoing(true)
+                .setContentIntent(pendingIntent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+        }
+        notificationManager.notify(MEETING_NOTIFICATION_ID, builder.build());
     }
 
     private void hideKeyboard() {
@@ -1566,19 +2249,84 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     });
 
     private void destroyCallbackHandler() {
-        WooEvents.getInstance().removeHandler(this.callbackHandler);
+        WEvents.getInstance().removeHandler(this.callbackHandler);
     }
 
-    @Override
-    protected void onDestroy() {
-        destroyMeeting();
+    public void kickmeOutImpl() {
+        if (this.mMeetingClient != null) {
+            this.mMeetingClient.close();
+            this.mMeetingClient = null;
+        }
+        if (mRoomStore != null) {
+            mRoomStore = null;
+        }
         chatList.clear();
+        WDirector.getInstance().dispose();
         destroyCallbackHandler();
         if (droidAudioManager != null) {
             droidAudioManager.setSpeakerphoneOn(false);
             droidAudioManager.setMode(AudioManager.MODE_NORMAL);
         }
+    }
+
+    public void destroyMeeting() {
+        if (this.mMeetingClient != null) {
+            this.mMeetingClient.close();
+            this.mMeetingClient = null;
+        }
+        if (mRoomStore != null) {
+            mRoomStore = null;
+        }
+        chatList.clear();
+        WDirector.getInstance().dispose();
+        destroyCallbackHandler();
+        if (droidAudioManager != null) {
+            droidAudioManager.setSpeakerphoneOn(false);
+            droidAudioManager.setMode(AudioManager.MODE_NORMAL);
+        }
+        new Handler().postDelayed(() -> {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            finish();
+        }, 1000);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (notificationManager != null) {
+            notificationManager.cancel(MEETING_NOTIFICATION_ID);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (notificationManager != null && !isFinishing()) {
+            moveTaskToBack(false);
+            sendBackgroundNotification();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+//        destroyMeeting();
         super.onDestroy();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent != null) {
+            Log.d(TAG, "New Intent Received!");
+            Log.d(TAG, "Meeting ID -> " + intent.getStringExtra("meetingId"));
+            Log.d(TAG, "isAdmin -> " + intent.getBooleanExtra("isAdmin", false));
+            isNewIntent = true;
+        }
     }
 
     @Override
@@ -1586,13 +2334,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         if (mSideMenuOpened) {
             closeDrawer();
         } else {
-            new Handler().postDelayed(() -> {
-                destroyMeeting();
-                chatList.clear();
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-//                super.onBackPressed();
-                finish();
-            }, 1000);
+            if (notificationManager != null && !isFinishing()) {
+                moveTaskToBack(false);
+                sendBackgroundNotification();
+            }
         }
     }
 

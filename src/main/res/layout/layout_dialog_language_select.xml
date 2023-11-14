@@ -53,6 +53,18 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/tvLangNone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layoutToolbar"
+        android:text="None"
+        android:paddingTop="15sp"
+        android:paddingBottom="15sp"
+        android:paddingRight="15sp"
+        android:paddingLeft="25sp"
+        />
+
     <ListView
         android:id="@+id/listViewLangSelect"
         android:layout_width="match_parent"
@@ -60,7 +72,7 @@
         android:dividerHeight="1sp"
         android:padding="5sp"
         android:background="@android:color/transparent"
-        android:layout_below="@+id/layoutToolbar"
+        android:layout_below="@+id/tvLangNone"
         />
 
 </RelativeLayout>
