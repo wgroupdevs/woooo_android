@@ -9,7 +9,6 @@ package com.woooapp.meeting.lib.model;
  */
 public class Info {
 
-    protected String mId;
     private boolean micOn = true;
     private boolean camOn = false;
     private boolean handRaised = false;
@@ -20,7 +19,7 @@ public class Info {
     }
 
     public String getId() {
-        return mId;
+        return "";
     }
 
     public String getDisplayName() {

@@ -13,12 +13,15 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.AudioManager;
+import android.media.projection.MediaProjection;
+import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,6 +74,7 @@ import com.woooapp.meeting.impl.views.models.Transcript;
 import com.woooapp.meeting.impl.views.popups.MeetingMorePopup;
 import com.woooapp.meeting.impl.views.popups.WooCommonPopup;
 import com.woooapp.meeting.impl.views.popups.WooProgressDialog;
+import com.woooapp.meeting.impl.vm.PeerProps;
 import com.woooapp.meeting.impl.vm.RoomProps;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.RoomOptions;
@@ -87,6 +91,8 @@ import com.woooapp.meeting.net.models.RoomData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.webrtc.ScreenCapturerAndroid;
+import org.webrtc.VideoCapturer;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -113,18 +119,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private static final int PERMISSION_EXTERNAL_STORAGE_CODE = 0x7d;
     private static final int PERMISSION_NOTIFICATION_CODE = 0x7e;
     private static final int MEETING_NOTIFICATION_ID = 0x9f;
-    private final String[] permissions = new String[]{
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.POST_NOTIFICATIONS
-    };
-    private final String[] permissions2 = new String[]{
-            Manifest.permission.RECORD_AUDIO,
-            Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
-    //    private ActivityMeetingBinding mBinding;
+    private static final int PERMISSION_CAPTURE_RESULT_CODE = 0x99;
     private MeetingClient mMeetingClient;
     private CreateMeetingResponse createMeetingResponse;
     private PutMembersDataResponse putMembersDataResponse;
@@ -197,6 +192,16 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private View mutingView;
     private NotificationManagerCompat notificationManager;
     private boolean isNewIntent = false;
+    private MediaProjectionManager mediaProjectionManager;
+    private MediaProjection mediaProjection;
+    private Intent mMediaProjectionPermissionResultData;
+    private int mMediaProjectionPermissionResultCode;
+    private VideoCapturer capturer;
+    private LinearLayout layoutScreenShare;
+    private ImageView buttonStopScreenShare;
+    private RelativeLayout layoutPeerScreenShare;
+    private TextView tvPeerScreenShare;
+    private PeerView peerView;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -315,10 +320,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                             buttonAI.setImageResource(R.drawable.ic_lang_disable);
                         }
 
-                        mutingView.setVisibility(mMeetingClient.isVoiceTranslationOn() ? View.VISIBLE : View.GONE);
-                        new Handler().postDelayed(() -> {
-                            mutingView.setVisibility(View.GONE);
-                        }, 5000);
+//                        mutingView.setVisibility(mMeetingClient.isVoiceTranslationOn() ? View.VISIBLE : View.GONE);
+//                        new Handler().postDelayed(() -> {
+//                            mutingView.setVisibility(View.GONE);
+//                        }, 5000);
                     }
                     dialog.dismiss();
                 });
@@ -410,10 +415,28 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
         this.mutingView = findViewById(R.id.layoutMuting);
 
+        this.layoutScreenShare = findViewById(R.id.layoutPresenting);
+        this.buttonStopScreenShare = findViewById(R.id.buttonStop);
+        this.layoutPeerScreenShare = findViewById(R.id.layoutPeerScreenShare);
+        this.tvPeerScreenShare = findViewById(R.id.screenSharePeerTv);
+
         this.meetingBackground.setOnTouchListener((view, motionEvent) -> true);
 
         this.notificationSound = new WTonePlayer(getResources().openRawResourceFd(R.raw.meet_sound));
         this.notificationSound.setVolume(0.5f);
+    }
+
+    private void showScreenShareView() {
+        if (this.layoutScreenShare != null) {
+            layoutScreenShare.setVisibility(View.VISIBLE);
+            WooAnimationUtil.showView(layoutScreenShare, null);
+            buttonStopScreenShare.setOnClickListener(view -> {
+                if (mMeetingClient.isPresenting()) {
+                    mMeetingClient.shareScreen(false, null, null);
+                    disposeVideoCapturer();
+                }
+            });
+        }
     }
 
     private void initAccount() {
@@ -965,6 +988,8 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                                     } catch (IOException e) {
                                         e.printStackTrace();
                                         showNetworkErrorDialog();
+                                    } finally {
+                                        fetchRoomData2();
                                     }
                                 }
                             }
@@ -1204,7 +1229,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     }
 
     /**
-     *
      * @param peersList
      * @param includeMe
      * @return
@@ -1360,6 +1384,52 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 }
             }
         }
+    }
+
+    private void startScreenCapture() {
+        if (mediaProjectionManager == null) {
+            mediaProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
+        }
+        startActivityForResult(mediaProjectionManager.createScreenCaptureIntent(), PERMISSION_CAPTURE_RESULT_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "Request Code >>> [" + requestCode + "] ** Result Code [" + resultCode + "]");
+        if (requestCode != PERMISSION_CAPTURE_RESULT_CODE) {
+            return;
+        }
+        mMediaProjectionPermissionResultCode = resultCode;
+        mMediaProjectionPermissionResultData = data;
+
+        if (resultCode == Activity.RESULT_OK && mMeetingClient != null) {
+            DisplayMetrics dm = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getRealMetrics(dm);
+            if (this.capturer == null) {
+                capturer = createScreenCapturer();
+                if (capturer != null) {
+                    Log.d(TAG, "<<< Enabling Screen Share ...");
+                    mMeetingClient.shareScreen(true, capturer, dm);
+                }
+            } else {
+                Log.w(TAG, "Screen Share already working ...");
+            }
+        }
+    }
+
+    private VideoCapturer createScreenCapturer() {
+        if (mMediaProjectionPermissionResultCode != Activity.RESULT_OK) {
+            Log.d(TAG, "User didn't give permission to capture the screen.");
+            return null;
+        }
+        return new ScreenCapturerAndroid(mMediaProjectionPermissionResultData, new MediaProjection.Callback() {
+            @Override
+            public void onStop() {
+                super.onStop();
+                Log.w(TAG, "Media Projection stopped.");
+            }
+        });
     }
 
     @Override
@@ -1630,17 +1700,27 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 return true;
             case WEvents.EVENT_VOICE_TRANSLATION_RECEIVED:
                 if (msg.obj != null) {
-                    byte[] bytes = (byte[]) msg.obj;
-                    runOnUiThread(() -> {
+                    JSONObject obj = (JSONObject) msg.obj;
+                    if (obj != null) {
                         try {
-                            VoiceDataSource dataSource = new VoiceDataSource(bytes);
-                            final WVoicePlayback playback = new WVoicePlayback(dataSource);
-//                            playback.play();
-//                            playback.setCompletionListener(mp -> playback.release());
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
+                            byte[] translatedVoice = (byte[]) obj.get("translatedVoice");
+                            byte[] originalVoice = (byte[]) obj.get("originalVoice");
+                            String socketId = obj.getString("socketId");
+
+                            runOnUiThread(() -> {
+                                try {
+                                    new WVoicePlayback(new VoiceDataSource(translatedVoice), -1f);
+                                    new Handler().postDelayed(() -> {
+                                        new WVoicePlayback(new VoiceDataSource(originalVoice), 0.5f).setVolume(0.5f);
+                                    }, 1000);
+                                } catch (Exception ex) {
+                                    ex.printStackTrace();
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
-                    });
+                    }
                 }
                 return true;
             case WEvents.EVENT_CLICKED_LANGUAGE_SELECT:
@@ -1916,8 +1996,98 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     }
                 }
                 return true;
+            case WEvents.EVENT_ENABLE_SCREEN_SHARE:
+                if (mMeetingClient != null) {
+                    if (mMeetingClient.isPresenting()) {
+                        mMeetingClient.shareScreen(false, null, null);
+                    } else {
+                        startScreenCapture();
+                    }
+                }
+                return false;
+            case WEvents.EVENT_PRESENTING:
+                if (msg.obj != null) {
+                    boolean presenting = (boolean) msg.obj;
+                    if (presenting) {
+                        showScreenShareView();
+                    } else {
+                        disposeVideoCapturer();
+                    }
+                }
+                return false;
+            case WEvents.EVENT_REMOTE_SCREEN_SHARE_ON:
+                if (msg.obj != null && mMeetingClient != null) {
+                    JSONObject data = (JSONObject) msg.obj;
+                    try {
+                        String socketId = data.getString("socketId");
+                        runOnUiThread(() -> {
+                            showCommonPopup(username + " is Presenting now.", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                            createPeerScreenShareView(socketId);
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    return true;
+                }
+                return false;
+            case WEvents.EVENT_REMOTE_SCREEN_SHARE_OFF:
+                if (msg.obj != null && mMeetingClient != null) {
+                    try {
+                        JSONObject data = (JSONObject) msg.obj;
+                        final String socketId = data.getString("socketId");
+                        final String roomId = data.getString("roomId");
+                        final String username = data.getString("username");
+
+                        stopPeerScreenShare(socketId);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    return true;
+                }
+                return false;
             default:
                 return false;
+        }
+    }
+
+    /**
+     *
+     */
+    private void createPeerScreenShareView(@NonNull String peerId) {
+        if (mRoomStore.getPeers() != null) {
+            mRoomStore.getPeers().postValue(peers -> {
+                Peer peer = peers.getPeer(peerId);
+                if (layoutPeerScreenShare != null && mMeetingClient != null && peer != null) {
+                    layoutPeerScreenShare.setVisibility(View.VISIBLE);
+                    peerView = findViewById(R.id.screenSharePeerView);
+                    peerView.setScreenShare(true);
+                    if (peerView != null) {
+                        tvPeerScreenShare.setText(peer.getDisplayName() + " is Presenting");
+                        PeerProps props = new PeerProps(getApplication(), mRoomStore);
+                        peerView.setProps(props, mMeetingClient, peer.getId());
+                        props.connect(this, peer.getId());
+                    }
+                }
+            });
+        }
+    }
+
+    private void stopPeerScreenShare(@NonNull String peerId) {
+        if (mRoomStore.getPeers() != null) {
+            mRoomStore.getPeers().postValue(peers -> {
+                Peer peer = peers.getPeer(peerId);
+                if (layoutPeerScreenShare != null && mMeetingClient != null && peer != null) {
+                    WooAnimationUtil.hideView(layoutPeerScreenShare, new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            layoutPeerScreenShare.setVisibility(View.GONE);
+                            peerView.getProps().disconnect(MeetingActivity.this, peerId);
+//                            mMeetingClient.closeConsumer(peerId);
+                        }
+                    });
+                }
+            });
         }
     }
 
@@ -2267,6 +2437,33 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         }
     }
 
+    private void disposeVideoCapturer() {
+        if (capturer != null) {
+            try {
+                capturer.stopCapture();
+                capturer.dispose();
+                capturer = null;
+                Log.d(TAG, "<< Disposed VideoCapturer ...");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        runOnUiThread(() -> {
+            if (layoutScreenShare != null) {
+                if (layoutScreenShare.getVisibility() == View.VISIBLE) {
+                    WooAnimationUtil.hideView(layoutScreenShare, new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            layoutScreenShare.setVisibility(View.GONE);
+                            buttonStopScreenShare.setOnClickListener(null);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
     public void destroyMeeting() {
         if (this.mMeetingClient != null) {
             this.mMeetingClient.close();
@@ -2275,6 +2472,8 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         if (mRoomStore != null) {
             mRoomStore = null;
         }
+
+        disposeVideoCapturer();
         chatList.clear();
         WDirector.getInstance().dispose();
         destroyCallbackHandler();

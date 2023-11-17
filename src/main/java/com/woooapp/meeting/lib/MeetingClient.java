@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,8 @@ import com.woooapp.meeting.net.models.Message;
 import com.woooapp.meeting.net.models.RoomData;
 
 import org.json.JSONException;
+import org.mediasoup.droid.Consumer;
+import org.webrtc.VideoCapturer;
 
 import java.util.Map;
 
@@ -172,12 +175,63 @@ public final class MeetingClient extends RoomMessageHandler {
     }
 
     /**
+     *
+     * @param on
+     * @param capturer
+     * @param dm
+     */
+    public void shareScreen(boolean on, VideoCapturer capturer, DisplayMetrics dm) {
+       if (mSocket != null) {
+           if (on && capturer != null && dm != null) {
+               mSocket.enableScreenShare(capturer, dm);
+               mSocket.produceScreen();
+               try {
+                   mSocket.emitScreenShareOn();
+               } catch (JSONException e) {
+                   e.printStackTrace();
+               }
+           } else {
+               try {
+                   mSocket.disableScreenShare();
+               } catch (Exception e) {
+                   e.printStackTrace();
+               }
+           }
+       }
+    }
+
+    public void closeConsumer(@NonNull String peerId) {
+        if (mSocket != null) {
+            mSocket.closeVideoConsumer(peerId);
+        }
+    }
+
+    public boolean isPresenting() {
+        if (mSocket != null) {
+            return mSocket.isPresenting();
+        }
+        return false;
+    }
+
+    /**
      * @param peerId
      */
     public void removeVideoConsumer(@NonNull String peerId) {
         if (mSocket != null) {
             mSocket.removeVideoConsumer(peerId);
         }
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Nullable
+    public Consumer getScreenConsumer() {
+        if (mSocket != null) {
+            return mSocket.getScreenConsumer();
+        }
+        return null;
     }
 
     public String getEmail() {

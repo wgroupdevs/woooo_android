@@ -3,6 +3,8 @@ package com.woooapp.meeting.lib.lv;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
 import com.woooapp.meeting.lib.RoomClient;
@@ -11,6 +13,7 @@ import com.woooapp.meeting.lib.model.DataConsumers;
 import com.woooapp.meeting.lib.model.DeviceInfo;
 import com.woooapp.meeting.lib.model.Me;
 import com.woooapp.meeting.lib.model.Notify;
+import com.woooapp.meeting.lib.model.Peer;
 import com.woooapp.meeting.lib.model.Peers;
 import com.woooapp.meeting.lib.model.Producers;
 import com.woooapp.meeting.lib.model.RoomInfo;
@@ -34,6 +37,8 @@ import java.util.concurrent.atomic.AtomicReference;
 public class RoomStore {
 
     private static final String TAG = "RoomStore";
+
+    private Peer screenPeer;
 
     // room
     // mediasoup-demo/app/lib/redux/reducers/room.js
@@ -95,6 +100,26 @@ public class RoomStore {
 
     public void setRoomFaceDetection(boolean enable) {
         roomInfo.postValue(roomInfo -> roomInfo.setFaceDetection(enable));
+    }
+
+    /**
+     *
+     * @param peer
+     */
+    public void setScreenPeer(@NonNull Peer peer) {
+        this.screenPeer = peer;
+    }
+
+    @Nullable
+    public Peer getScreenPeer() {
+        return this.screenPeer;
+    }
+
+    public void removeScreenPeer() {
+        if (this.screenPeer != null) {
+            screenPeer = null;
+            Log.d(TAG, "<< Screen Peer Removed >>>");
+        }
     }
 
     public void setMe(String peerId, String displayName, DeviceInfo device) {

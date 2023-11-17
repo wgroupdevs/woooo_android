@@ -124,7 +124,7 @@ public class MeetingGridAdapter extends BaseAdapter {
                 Peer peer = ((GridPeer) getItem(position)).getPeer();
                 PeerProps peerProps = new PeerProps(((AppCompatActivity) mContext).getApplication(), mStore);
                 peerProps.connect(mLifecycleOwner, peer.getId());
-                vh.mPeerView.setProps(peerProps, mMeetingClient);
+                vh.mPeerView.setProps(peerProps, mMeetingClient, peer.getId());
                 if (peer.getDisplayName() != null) {
                     vh.mTvPeerName.setText(peer.getDisplayName().isEmpty() ? "Empty" : peer.getDisplayName());
                 }

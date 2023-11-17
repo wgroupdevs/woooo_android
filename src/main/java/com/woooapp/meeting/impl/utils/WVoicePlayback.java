@@ -19,16 +19,20 @@ public class WVoicePlayback {
     /**
      *
      * @param dataSource
+     * @param pitch
      */
-    public WVoicePlayback(@NonNull VoiceDataSource dataSource) {
+    public WVoicePlayback(@NonNull VoiceDataSource dataSource, float pitch) {
         this.dataSource = dataSource;
         this.mediaPlayer = new MediaPlayer();
         try {
             this.mediaPlayer.setDataSource(this.dataSource);
             this.mediaPlayer.setLooping(false);
             this.mediaPlayer.prepare();
+            if (pitch != -1f) {
+                this.mediaPlayer.getPlaybackParams().setPitch(pitch);
+            }
             this.mediaPlayer.setOnPreparedListener(mp -> {
-                Log.d(TAG, "Voice Translation Mediaplayer onPrepared(); ...");
+                Log.d(TAG, "Voice Translation Media player onPrepared(); ...");
                 mp.start();
             });
         } catch (Exception ex) {
