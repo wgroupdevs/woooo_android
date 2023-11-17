@@ -116,6 +116,12 @@ public final class MeetingMorePopup extends RelativeLayout {
         ImageView ivHeadset = mContentView.findViewById(R.id.morePopupIvHeadset);
         TextView tvHeadset = mContentView.findViewById(R.id.morePopupTvHeadset);
 
+        View buttonScreenShare = mContentView.findViewById(R.id.morePopupScreenShare);
+        TextView tvScreenShare = mContentView.findViewById(R.id.tvScreenShare);
+        buttonScreenShare.setOnClickListener(view -> {
+            WEvents.getInstance().notify(WEvents.EVENT_ENABLE_SCREEN_SHARE, null);
+            dismiss();
+        });
 
         // ADMIN ROLES
         View buttonMuteEveryone = mContentView.findViewById(R.id.morePopupButtonMuteEveryone);

@@ -16,16 +16,18 @@ import java.util.Set;
  */
 public class Peer extends Info {
 
+    private String mId;
     private String mDisplayName;
     private DeviceInfo mDevice;
     private Set<String> mConsumers;
     private Set<String> mDataConsumers;
     private boolean videoOn = false;
+    private boolean isScreenShareConsumer = false;
 
     public Peer(@NonNull JSONObject info) {
-        super();
         mId = info.optString("id");
         mDisplayName = info.optString("displayName");
+        isScreenShareConsumer = info.optBoolean("screenShare");
         JSONObject deviceInfo = info.optJSONObject("device");
         if (deviceInfo != null) {
             mDevice =
@@ -42,7 +44,7 @@ public class Peer extends Info {
 
     @Override
     public String getId() {
-        return super.getId();
+        return mId;
     }
 
     @Override
@@ -76,6 +78,14 @@ public class Peer extends Info {
     }
     public Set<String> getDataConsumers() {
         return mDataConsumers;
+    }
+
+    public boolean isScreenShareConsumer() {
+        return isScreenShareConsumer;
+    }
+
+    public void setScreenShareConsumer(boolean screenShareConsumer) {
+        isScreenShareConsumer = screenShareConsumer;
     }
 
 } /**

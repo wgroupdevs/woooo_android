@@ -1,6 +1,7 @@
 package com.woooapp.meeting.impl.vm;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.BaseObservable;
@@ -91,6 +92,15 @@ public class PeerProps extends PeerViewProps {
         mStateComposer.connect(owner, getRoomStore(), peerId);
     }
 
+    /**
+     *
+     * @param owner
+     * @param peerId
+     */
+    public void disconnect(@NonNull LifecycleOwner owner, @NonNull String peerId) {
+        mStateComposer.disconnect(owner, getRoomStore(), peerId);
+    }
+
     @Override
     public void connect(LifecycleOwner lifecycleOwner) {
         throw new IllegalAccessError("use connect with peer Id");
@@ -128,6 +138,13 @@ public class PeerProps extends PeerViewProps {
 
             store.getConsumers().removeObserver(mConsumersObserver);
             store.getConsumers().observe(owner, mConsumersObserver);
+        }
+
+        public void disconnect(@NonNull LifecycleOwner owner, RoomStore store, String peerId) {
+            mPeerId = peerId;
+            store.getPeers().removeObserver(mPeersObservable);
+            store.getConsumers().removeObserver(mConsumersObserver);
+            Log.d(TAG, "<< Disconnected StateComposer Observables ...");
         }
 
         Consumers.ConsumerWrapper getConsumer(String kind) {

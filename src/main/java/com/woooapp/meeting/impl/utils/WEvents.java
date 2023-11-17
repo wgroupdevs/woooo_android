@@ -68,7 +68,12 @@ public final class WEvents {
     public static final int EVENT_CONNECTION_STATE_FAILED         = 0x3c;
     public static final int EVENT_CONNECTION_STATE_CONNECTED      = 0x3d;
     public static final int EVENT_CONNECTION_STATE_CONNECTING     = 0x3e;
-    public static final int EVENT_DESTROY                         = 0x3f;
+    public static final int EVENT_PRESENTING                      = 0x3f;
+    public static final int EVENT_REMOTE_SCREEN_SHARE_ON          = 0x37;
+    public static final int EVENT_REMOTE_SCREEN_SHARE_OFF         = 0x40;
+    public static final int EVENT_ENABLE_SCREEN_SHARE             = 0x38;
+    public static final int EVENT_REMOTE_SCREEN_CONSUMER_CREATED  = 0x39;
+    public static final int EVENT_DESTROY                         = 0xdeadbed;
 
     private WEvents() {
         Log.d(TAG, "WooEvents Initialized ...");

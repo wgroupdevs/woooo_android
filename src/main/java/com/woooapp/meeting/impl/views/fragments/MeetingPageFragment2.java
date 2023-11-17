@@ -130,14 +130,14 @@ public class MeetingPageFragment2 extends Fragment implements Handler.Callback {
         switch (rowCount) {
             case 2:
                 if (translationEnabled)
-                    return (mDeviceHeight / 2) - (int) SP.valueOf(mContext, 150);
+                    return (mDeviceHeight / 2) - (int) SP.valueOf(mContext, 60);
                 return (mDeviceHeight / 2) - 40;
             case 3:
                 if (translationEnabled)
-                    return (mDeviceHeight / 3) - (int) SP.valueOf(mContext, 100);
+                    return (mDeviceHeight / 3) - (int) SP.valueOf(mContext, 40);
                 return (mDeviceHeight / 3) - 40;
             default:
-                if (translationEnabled) return mDeviceHeight - (int) SP.valueOf(mContext, 250);
+                if (translationEnabled) return mDeviceHeight - (int) SP.valueOf(mContext, 120);
                 return mDeviceHeight - (int) SP.valueOf(mContext, 32.5f);
         }
     }
@@ -146,7 +146,6 @@ public class MeetingPageFragment2 extends Fragment implements Handler.Callback {
      * @return
      */
     private int getColumnWidth(int index) {
-        Log.d(TAG, "Peer List size >> " + peerList.size());
         switch (peerList.size()) {
             case 3:
                 if (index == 2) {
@@ -169,9 +168,11 @@ public class MeetingPageFragment2 extends Fragment implements Handler.Callback {
     }
 
     /**
+     *
      * @param index
+     * @param addMargin
      */
-    private void resetLocation(int index) {
+    private void resetLocation(int index, boolean addMargin) {
         View child = mFrameLayout.getChildAt(index);
         switch (peerList.size()) {
             case 2:
@@ -181,7 +182,7 @@ public class MeetingPageFragment2 extends Fragment implements Handler.Callback {
                                 0,
                                 0,
                                 mDeviceHeight,
-                                child.getLayoutParams().height + 5,
+                                child.getLayoutParams().height + (addMargin ? 5 : 0),
                                 null);
                     }
                 }
@@ -202,19 +203,28 @@ public class MeetingPageFragment2 extends Fragment implements Handler.Callback {
                                 0,
                                 0,
                                 mDeviceHeight,
-                                child.getLayoutParams().height + 5,
+                                mFrameLayout.getChildAt(0).getY() + mFrameLayout.getChildAt(0).getLayoutParams().height + (addMargin ? 5 : 0),
                                 null);
                     }
                 }
                 break;
             case 4:
-                if (index == 3) {
+                if (index == 2) {
+                    if (child != null && !addMargin) {
+                        WooAnimationUtil.resetLocation(child,
+                                0,
+                                0,
+                                mDeviceHeight,
+                                mFrameLayout.getChildAt(0).getY() + mFrameLayout.getChildAt(0).getLayoutParams().height,
+                                null);
+                    }
+                } else if (index == 3) {
                     if (child != null) {
                         WooAnimationUtil.resetLocation(child,
                                 0,
-                                child.getLayoutParams().width,
+                                mFrameLayout.getChildAt(2).getX() + mFrameLayout.getChildAt(2).getLayoutParams().width,
                                 mDeviceHeight,
-                                mFrameLayout.getChildAt(2).getY(),
+                                mFrameLayout.getChildAt(0).getY() + mFrameLayout.getChildAt(0).getLayoutParams().height + (addMargin ? 5 : 0),
                                 null);
                     }
                 }
@@ -226,14 +236,14 @@ public class MeetingPageFragment2 extends Fragment implements Handler.Callback {
                                 mFrameLayout.getChildAt(2).getX(),
                                 mFrameLayout.getChildAt(2).getX(),
                                 mFrameLayout.getChildAt(2).getY(),
-                                mFrameLayout.getChildAt(0).getY() + mFrameLayout.getChildAt(2).getLayoutParams().height + 5,
+                                mFrameLayout.getChildAt(0).getY() + mFrameLayout.getChildAt(2).getLayoutParams().height + (addMargin ? 5 : 0),
                                 null);
 
                         WooAnimationUtil.resetLocation(mFrameLayout.getChildAt(3),
                                 mFrameLayout.getChildAt(3).getX(),
                                 mFrameLayout.getChildAt(3).getX(),
                                 mFrameLayout.getChildAt(3).getY(),
-                                mFrameLayout.getChildAt(0).getY() + mFrameLayout.getChildAt(3).getLayoutParams().height + 5,
+                                mFrameLayout.getChildAt(0).getY() + mFrameLayout.getChildAt(3).getLayoutParams().height + (addMargin ? 5 : 0),
                                 new AnimatorListenerAdapter() {
                                     @Override
                                     public void onAnimationEnd(Animator animation) {
@@ -242,7 +252,7 @@ public class MeetingPageFragment2 extends Fragment implements Handler.Callback {
                                                 0,
                                                 0,
                                                 mDeviceHeight,
-                                                mFrameLayout.getChildAt(3).getY() + child.getLayoutParams().height + 5,
+                                                mFrameLayout.getChildAt(3).getY() + child.getLayoutParams().height + (addMargin ? 5 : 0),
                                                 null);
                                     }
                                 });
@@ -250,14 +260,54 @@ public class MeetingPageFragment2 extends Fragment implements Handler.Callback {
                 }
                 break;
             case 6:
-                if (index == 5) {
-                    if (child != null) {
-                        WooAnimationUtil.resetLocation(child,
-                                0,
-                                child.getLayoutParams().width,
-                                mDeviceHeight,
-                                mFrameLayout.getChildAt(4).getY(),
-                                null);
+                if (!addMargin) {
+                    if (index == 2) {
+                        if (child != null) {
+                            WooAnimationUtil.resetLocation(child,
+                                    0,
+                                    0,
+                                    mDeviceHeight,
+                                    mFrameLayout.getChildAt(0).getY() + mFrameLayout.getChildAt(0).getLayoutParams().height,
+                                    null);
+                        }
+                    } else if (index == 3) {
+                        if (child != null) {
+                            WooAnimationUtil.resetLocation(child,
+                                    0,
+                                    mFrameLayout.getChildAt(0).getX() + mFrameLayout.getChildAt(0).getLayoutParams().width,
+                                    mDeviceHeight,
+                                    mFrameLayout.getChildAt(0).getY() + mFrameLayout.getChildAt(0).getLayoutParams().height,
+                                    null);
+                        }
+                    } else if (index == 4) {
+                        if (child != null) {
+                            WooAnimationUtil.resetLocation(child,
+                                    0,
+                                    0,
+                                    mDeviceHeight,
+                                    mFrameLayout.getChildAt(0).getY() + (child.getLayoutParams().height * 2),
+                                    null);
+                        }
+                    } else if (index == 5) {
+                        if (child != null) {
+                            WooAnimationUtil.resetLocation(child,
+                                    0,
+                                    child.getLayoutParams().width,
+                                    mDeviceHeight,
+                                    mFrameLayout.getChildAt(0).getY() + (child.getLayoutParams().height * 2),
+                                    null);
+                        }
+                    }
+                } else {
+                    if (index == 5) {
+                        if (child != null) {
+                            WooAnimationUtil.resetLocation(child,
+                                    0,
+                                    child.getLayoutParams().width,
+                                    mDeviceHeight,
+                                    mFrameLayout.getChildAt(4).getY(),
+                                    null);
+                        }
                     }
                 }
                 break;
@@ -292,10 +342,13 @@ public class MeetingPageFragment2 extends Fragment implements Handler.Callback {
                         FrameLayout.LayoutParams childParams = new FrameLayout.LayoutParams(getColumnWidth(i), getRowHeight());
                         childParams.setMargins(1, 1, 1, 1);
                         PeerView p = new PeerView(mContext);
+                        p.setElevation(15f);
                         p.setTag(peerId);
+                        p.setImageForPeer(gridPeer.getPeer().getId());
                         if (p.getProps() == null) {
                             PeerProps props = new PeerProps(((AppCompatActivity) mContext).getApplication(), mStore);
-                            p.setProps(props, mMeetingClient);
+                            p.setProps(props, mMeetingClient, gridPeer.getPeer().getId());
+                            int finalI = i;
                             mStore.getPeers().postValue(peers -> {
                                 Peer peer = peers.getPeer(peerId);
                                 if (peer != null) {
@@ -305,7 +358,7 @@ public class MeetingPageFragment2 extends Fragment implements Handler.Callback {
                             mFrameLayout.addView(p, childParams);
                             props.connect(lifecycleOwner, peerId);
                         }
-                        updateCanvas();
+                        updateCanvas(true);
                         break;
                     }
                 }
@@ -317,6 +370,7 @@ public class MeetingPageFragment2 extends Fragment implements Handler.Callback {
         FrameLayout.LayoutParams childParams = new FrameLayout.LayoutParams(getColumnWidth(0), getRowHeight());
         childParams.setMargins(1, 1, 1, 1);
         meView = new MeView(mContext);
+        meView.setElevation(10f);
         MeProps props = new MeProps(((AppCompatActivity) mContext).getApplication(), mStore);
         meView.setProps(props, mMeetingClient);
         meView.setLayoutParams(childParams);
@@ -324,26 +378,35 @@ public class MeetingPageFragment2 extends Fragment implements Handler.Callback {
         mFrameLayout.addView(meView, childParams);
         props.connect(lifecycleOwner);
         Log.d(TAG, "Added Me View 2 ...");
-        updateCanvas();
+        updateCanvas(false);
     }
 
-    private void updateCanvas() {
+    /**
+     *
+     * @param resetLocation
+     */
+    private void updateCanvas(boolean resetLocation) {
         if (mFrameLayout != null) {
             for (int i = 0; i < mFrameLayout.getChildCount(); i++) {
                 View child = mFrameLayout.getChildAt(i);
-                Log.d(TAG, "Updated Canvas View at index " + i);
+                Log.d(TAG, "Updating Canvas View at index " + i);
                 if (child != null) {
                     if (child.getLayoutParams() != null) {
                         child.getLayoutParams().width = getColumnWidth(i);
-                        Log.d(TAG, "Set width of peer to " + child.getLayoutParams().width);
                         child.getLayoutParams().height = getRowHeight();
-                        resetLocation(i);
-//                    child.invalidate();
+                        Log.d(TAG, "Set height of peer to " + child.getLayoutParams().height);
+                        child.invalidate();
+                        if (!resetLocation) {
+                            resetLocation(i, false);
+                        } else {
+                            resetLocation(i, true);
+                        }
                     }
                 }
             }
+            mFrameLayout.invalidate();
+            if (!resetLocation) mFrameLayout.requestLayout();
         }
-//        mFlowLayout.invalidate();
     }
 
     /**
@@ -351,18 +414,23 @@ public class MeetingPageFragment2 extends Fragment implements Handler.Callback {
      */
     private void removeView(@NonNull String peerId) {
         for (int i = 0; i < mFrameLayout.getChildCount(); i++) {
-            View child = mFrameLayout.getChildAt(i);
-            if (child != null) {
-                if (child.getTag() != null) {
-                    if (child.getTag().equals(peerId)) {
-                        WooAnimationUtil.hideView(child, new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                                mFrameLayout.removeView(child);
-                                updateCanvas();
-                            }
-                        });
+            if (!mFrameLayout.getChildAt(i).getTag().equals("me")) {
+                PeerView child = (PeerView) mFrameLayout.getChildAt(i);
+                if (child != null) {
+                    if (child.getTag() != null) {
+                        if (child.getTag().equals(peerId)) {
+                            WooAnimationUtil.hideView(child, new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    super.onAnimationEnd(animation);
+                                    if (child.getProps() != null) {
+                                        child.getProps().disconnect(lifecycleOwner, peerId);
+                                    }
+                                    mFrameLayout.removeView(child);
+                                    updateCanvas(true);
+                                }
+                            });
+                        }
                     }
                 }
             }
@@ -374,24 +442,28 @@ public class MeetingPageFragment2 extends Fragment implements Handler.Callback {
      */
     public void addPeerItem(@NonNull GridPeer gridPeer) {
         if (peerList.size() > 0) {
-            if (gridPeer.getViewType() == GridPeer.VIEW_TYPE_PEER) {
-                for (GridPeer p : peerList) {
-                    if (p.getViewType() == GridPeer.VIEW_TYPE_PEER) {
-                        if (p.getPeer().getId() != null) {
-                            if (p.getPeer().getId().equals(gridPeer.getPeer().getId())) {
-                                Log.w(TAG, "<< View already exists for Peer with ID >> " + gridPeer.getPeer().getId() + " >> Skipping this one ...");
-                                return;
+            if (gridPeer.getPeer() != null) {
+                if (!gridPeer.getPeer().isScreenShareConsumer()) {
+                    if (gridPeer.getViewType() == GridPeer.VIEW_TYPE_PEER) {
+                        for (GridPeer p : peerList) {
+                            if (p.getViewType() == GridPeer.VIEW_TYPE_PEER) {
+                                if (p.getPeer().getId() != null) {
+                                    if (p.getPeer().getId().equals(gridPeer.getPeer().getId())) {
+                                        Log.w(TAG, "<< View already exists for Peer with ID >> " + gridPeer.getPeer().getId() + " >> Skipping this one ...");
+                                        return;
+                                    }
+                                }
                             }
                         }
+                        peerList.add(gridPeer);
+                        updateViewOnNewPeer(gridPeer.getPeer().getId());
                     }
                 }
-                peerList.add(gridPeer);
-                updateViewOnNewPeer(gridPeer.getPeer().getId());
             }
         } else {
             if (meView == null) {
                 peerList.add(gridPeer);
-                Log.d(TAG, "Added a new peer to list ...");
+                Log.d(TAG, "Added a new me to list ...");
             }
         }
     }
@@ -406,7 +478,7 @@ public class MeetingPageFragment2 extends Fragment implements Handler.Callback {
                 if (peerList.get(i).getPeer().getId().equals(peerId)) {
                     try {
                         peerList.remove(i);
-                        Log.d(TAG, "<< Peer List size >>> " + peerList.size());
+                        Log.d(TAG, "<< Removed local peer at index >> " + i);
                         removeView(peerId);
                         return true;
                     } catch (Exception ex) {
@@ -439,12 +511,13 @@ public class MeetingPageFragment2 extends Fragment implements Handler.Callback {
 
     public void enableTranslation() {
         this.translationEnabled = true;
-        // TODO
+        Log.d(TAG, "<< Setting layout dimensions on translation enabled ...");
+        updateCanvas(false);
     }
 
     public void disableTranslation() {
         this.translationEnabled = false;
-        // TODO
+        updateCanvas(false);
     }
 
     public void dispose() {
@@ -580,9 +653,13 @@ public class MeetingPageFragment2 extends Fragment implements Handler.Callback {
             case WEvents.EVENT_ON_NEW_ADMIN:
                 if (mFrameLayout != null) {
                     for (int i = 0; i < mFrameLayout.getChildCount(); i++) {
-                        PeerView pv = (PeerView) mFrameLayout.getChildAt(i);
-                        if (pv != null) {
-                            pv.setAdminStatus();
+                        if (mFrameLayout.getChildAt(i).getTag() != null) {
+                            if (!mFrameLayout.getChildAt(i).getTag().equals("me")) {
+                                PeerView pv = (PeerView) mFrameLayout.getChildAt(i);
+                                if (pv != null) {
+                                    pv.setAdminStatus();
+                                }
+                            }
                         }
                     }
                 }

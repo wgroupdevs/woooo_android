@@ -29,23 +29,23 @@
                 android:layout_height="match_parent"
                 bind:wooPeerViewProps="@{wooPeerProps}" />
 
-            <LinearLayout
-                android:id="@+id/videoHidden1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:background="@color/blue_primaryDarker"
-                android:visibility="gone">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/videoHidden1"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:orientation="vertical"-->
+<!--                android:gravity="center"-->
+<!--                android:background="@color/blue_primaryDarker"-->
+<!--                android:visibility="gone">-->
 
-                <ImageView
-                    android:id="@+id/wooPeerThumbIv1"
-                    android:layout_width="100sp"
-                    android:layout_height="100sp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/buddy2" />
+<!--                <ImageView-->
+<!--                    android:id="@+id/wooPeerThumbIv1"-->
+<!--                    android:layout_width="100sp"-->
+<!--                    android:layout_height="100sp"-->
+<!--                    android:scaleType="fitCenter"-->
+<!--                    android:src="@drawable/buddy2" />-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
             <LinearLayout
                 android:id="@+id/peerInfoPanel"

@@ -23,14 +23,90 @@
             android:layout_height="match_parent"
             android:scaleType="centerCrop" />
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/meetingViewPager"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="5sp"
-            android:layout_marginBottom="70sp"
-            android:background="@android:color/transparent" />
+            android:orientation="vertical">
+
+            <!-- PEER SCREEN SHARE LAYOUT -->
+            <RelativeLayout
+                android:id="@+id/layoutPeerScreenShare"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_rounded_default"
+                android:gravity="center"
+                android:visibility="gone">
+
+                <com.woooapp.meeting.impl.views.PeerView
+                    android:id="@+id/screenSharePeerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="500sp"
+                    android:layout_margin="5sp"
+                    android:padding="0sp"
+                    android:layout_centerInParent="true"
+                    />
+
+                <TextView
+                    android:id="@+id/screenSharePeerTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Peer Name"
+                    android:padding="5sp"
+                    android:background="@drawable/bg_rounded_red"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginTop="470sp"
+                    android:layout_marginRight="15sp"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:textStyle="bold"/>
+
+            </RelativeLayout>
+
+            <!-- ME SCREEN SHARE POPUP LAYOUT -->
+            <LinearLayout
+                android:id="@+id/layoutPresenting"
+                android:layout_width="match_parent"
+                android:layout_height="80sp"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_rounded_default"
+                android:layout_margin="5sp"
+                android:gravity="center"
+                android:visibility="gone"
+                >
+
+                <ImageView
+                    android:layout_width="34sp"
+                    android:layout_height="34sp"
+                    android:src="@drawable/ic_screen_share_34"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="15sp"
+                    android:textColor="@color/white"
+                    android:text="You are now presenting"
+                    android:layout_marginLeft="15sp"/>
+
+                <ImageView
+                    android:id="@+id/buttonStop"
+                    android:layout_width="32sp"
+                    android:layout_height="32sp"
+                    android:src="@drawable/ic_stop"
+                    android:layout_marginLeft="15sp"
+                    android:elevation="15sp"/>
+
+            </LinearLayout>
+
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/meetingViewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="5sp"
+                android:layout_marginBottom="70sp"
+                android:background="@android:color/transparent" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tvMeetingId"
@@ -131,8 +207,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="90sp"
-            android:visibility="gone">
+            android:layout_marginBottom="70sp"
+            android:visibility="visible">
 
             <TextView
                 android:id="@+id/tvTranslationOriginal"

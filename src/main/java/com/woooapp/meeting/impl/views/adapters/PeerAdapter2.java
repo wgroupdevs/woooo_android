@@ -140,9 +140,9 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
                     PeerProps peerProp = new PeerProps(((AppCompatActivity) mContext).getApplication(), mStore);
                     peerProp.connect(mLifecycleOwner, p3.getId());
                     propsMap.put(p3.getId(), peerProp);
-                    vhm.peerView.setProps(peerProp, mMeetingClient);
+                    vhm.peerView.setProps(peerProp, mMeetingClient, p3.getId());
                 } else {
-                    vhm.peerView.setProps(propsMap.get(p3.getId()), mMeetingClient);
+                    vhm.peerView.setProps(propsMap.get(p3.getId()), mMeetingClient, p3.getId());
                 }
                 vhm.peerView.setName(p3.getDisplayName());
                 if (WDirector.getInstance().isCameraOn(p3.getId())) {
@@ -188,9 +188,9 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
                 PeerProps props1 = new PeerProps(((AppCompatActivity) mContext).getApplication(), mStore);
                 props1.connect(mLifecycleOwner, p1.getId());
                 propsMap.put(p1.getId(), props1);
-                vhpp.peerView1.setProps(props1, mMeetingClient);
+                vhpp.peerView1.setProps(props1, mMeetingClient, p1.getId());
             } else {
-                vhpp.peerView1.setProps(propsMap.get(p1.getId()), mMeetingClient);
+                vhpp.peerView1.setProps(propsMap.get(p1.getId()), mMeetingClient, p1.getId());
             }
             vhpp.peerView1.setName(p1.getDisplayName());
             if (WDirector.getInstance().isCameraOn(p1.getId())) {
@@ -216,9 +216,9 @@ public class PeerAdapter2 extends BaseAdapter implements Handler.Callback {
                 PeerProps props2 = new PeerProps(((AppCompatActivity) mContext).getApplication(), mStore);
                 props2.connect(mLifecycleOwner, p2.getId());
                 propsMap.put(p2.getId(), props2);
-                vhpp.peerView2.setProps(props2, mMeetingClient);
+                vhpp.peerView2.setProps(props2, mMeetingClient, p2.getId());
             } else {
-                vhpp.peerView2.setProps(propsMap.get(p2.getId()), mMeetingClient);
+                vhpp.peerView2.setProps(propsMap.get(p2.getId()), mMeetingClient, p2.getId());
             }
             vhpp.peerView2.setName(p2.getDisplayName());
             if (WDirector.getInstance().isCameraOn(p2.getId())) {

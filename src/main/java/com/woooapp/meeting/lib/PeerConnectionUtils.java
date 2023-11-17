@@ -3,9 +3,12 @@ package com.woooapp.meeting.lib;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import androidx.annotation.MainThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import org.mediasoup.droid.Logger;
 import org.webrtc.AudioSource;
@@ -21,6 +24,7 @@ import org.webrtc.MediaConstraints;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.ThreadUtils;
+import org.webrtc.VideoCapturer;
 import org.webrtc.VideoDecoderFactory;
 import org.webrtc.VideoEncoderFactory;
 import org.webrtc.VideoSource;
@@ -55,7 +59,9 @@ public class PeerConnectionUtils {
 
     private AudioSource mAudioSource;
     private VideoSource mVideoSource;
+    private VideoSource mScreeVideoSource;
     private CameraVideoCapturer mCamCapture;
+    private VideoCapturer mScreenCapturer;
 
     public PeerConnectionUtils() {
         mThreadChecker = new ThreadUtils.ThreadChecker();
@@ -130,6 +136,15 @@ public class PeerConnectionUtils {
                 .setAudioRecordErrorCallback(audioRecordErrorCallback)
                 .setAudioTrackErrorCallback(audioTrackErrorCallback)
                 .createAudioDeviceModule();
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Nullable
+    public PeerConnectionFactory getPeerConnectionFactory() {
+        return this.mPeerConnectionFactory;
     }
 
     // Audio source creation.
@@ -240,6 +255,30 @@ public class PeerConnectionUtils {
         mCamCapture.startCapture(640, 480, 30);
     }
 
+    /**
+     *
+     * @param context
+     * @param capturer
+     */
+    @MainThread
+    private void createScreenVideoSource(@NonNull Context context, @NonNull DisplayMetrics metrics) {
+        if (mScreenCapturer == null)
+            return;
+        Logger.d(TAG, "createScreenVideoSource()");
+        mThreadChecker.checkIsOnValidThread();
+        if (mPeerConnectionFactory == null) {
+            createPeerConnectionFactory(context);
+        }
+
+        mScreeVideoSource = mPeerConnectionFactory.createVideoSource(true);
+
+        SurfaceTextureHelper surfaceTextureHelper =
+                SurfaceTextureHelper.create("CaptureThread2", mEglBase.getEglBaseContext());
+
+        mScreenCapturer.initialize(surfaceTextureHelper, context, mScreeVideoSource.getCapturerObserver());
+        mScreenCapturer.startCapture(1280, 720, 30);
+    }
+
     // Audio track creation.
     public AudioTrack createAudioTrack(Context context, String id) {
         Logger.d(TAG, "createAudioTrack()");
@@ -261,6 +300,27 @@ public class PeerConnectionUtils {
         return mPeerConnectionFactory.createVideoTrack(id, mVideoSource);
     }
 
+    /**
+     *
+     * @param context
+     * @param videoCapturer
+     * @param id
+     * @param displayMetrics
+     * @return
+     */
+    public VideoTrack createScreenVideoTrack(@NonNull Context context,
+                                             @NonNull VideoCapturer videoCapturer,
+                                             @NonNull String id,
+                                             @NonNull DisplayMetrics displayMetrics) {
+        Logger.d(TAG, "createVideoTrack()");
+        mThreadChecker.checkIsOnValidThread();
+        this.mScreenCapturer = videoCapturer;
+        if (mScreeVideoSource == null) {
+            createScreenVideoSource(context, displayMetrics);
+        }
+        return mPeerConnectionFactory.createVideoTrack(id, mScreeVideoSource);
+    }
+
     public void dispose() {
         Logger.w(TAG, "dispose()");
         mThreadChecker.checkIsOnValidThread();
@@ -273,10 +333,28 @@ public class PeerConnectionUtils {
             }
         }
 
+        if (mScreenCapturer != null) {
+            try {
+                mScreenCapturer.dispose();
+                mScreenCapturer = null;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
         if (mVideoSource != null) {
             try {
                 mVideoSource.dispose();
                 mVideoSource = null;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        if (mScreeVideoSource != null) {
+            try {
+                mScreeVideoSource.dispose();
+                mScreeVideoSource = null;
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

@@ -3,6 +3,7 @@ package com.woooapp.meeting.lib.socket;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -15,11 +16,13 @@ import com.woooapp.meeting.lib.Async;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.PeerConnectionUtils;
 import com.woooapp.meeting.lib.RoomClient;
+import com.woooapp.meeting.lib.RoomMessageHandler;
 import com.woooapp.meeting.lib.lv.RoomStore;
 import com.woooapp.meeting.lib.lv.SupplierMutableLiveData;
 import com.woooapp.meeting.lib.model.ConsumerData;
 import com.woooapp.meeting.lib.model.Consumers;
 import com.woooapp.meeting.lib.model.Peer;
+import com.woooapp.meeting.lib.model.StorageIdsData;
 import com.woooapp.meeting.net.ApiManager;
 import com.woooapp.meeting.net.models.Message;
 import com.woooapp.meeting.net.models.RoomData;
@@ -37,6 +40,7 @@ import org.mediasoup.droid.SendTransport;
 import org.mediasoup.droid.Transport;
 import org.webrtc.AudioTrack;
 import org.webrtc.CameraVideoCapturer;
+import org.webrtc.VideoCapturer;
 import org.webrtc.VideoTrack;
 
 import java.io.IOException;
@@ -79,13 +83,15 @@ public class WSocket {
     private SendTransport mSendTransport;
     //    private RecvTransport mRecvTransport;
     private final Map<String, RecvTransport> mRecvTransports = new HashMap<>();
-    private final Map<String, String> mStorageSockIdsMap = new LinkedHashMap<>();
+    //    private final Map<String, String> mStorageSockIdsMap = new LinkedHashMap<>();
+    private final List<StorageIdsData> storageIdsList = new LinkedList<>();
     private final Set<String> consumerStorageIds = new HashSet<>();
     private AudioTrack mLocalAudioTrack;
     private VideoTrack mLocalVideoTrack;
+    private VideoTrack mScreenVideoTrack;
     private Producer mMicProducer;
     private Producer mCamProducer;
-    private Producer mShareProducer;
+    private Producer mScreenProducer;
     private final PeerConnectionUtils mPeerConnectionUtils;
     private final Handler mMainHandler;
     private final Handler mWorkHandler;
@@ -103,6 +109,10 @@ public class WSocket {
     private RoomData mRoomData;
     private boolean mMicEnabled = false;
     private boolean mCamEnabled = false;
+    private boolean isPresenting = false;
+    private boolean produceScreen = false;
+    private boolean consumeScreen = false;
+    private Consumer screenConsumer;
     private boolean destroying = false;
     private final List<ConsumerData> mConsumerData = new LinkedList<>();
 
@@ -221,7 +231,8 @@ public class WSocket {
             this.audioProducersIds.clear();
             this.videoProducerId = null;
 
-            mStorageSockIdsMap.clear();
+//            mStorageSockIdsMap.clear();
+            storageIdsList.clear();
             producerSockIds.clear();
             consumerStorageIds.clear();
             consumeBackDeviceUUIDs.clear();
@@ -268,7 +279,7 @@ public class WSocket {
         if (mSendTransport != null) {
             try {
                 mSendTransport.close();
-//                mSendTransport.dispose();
+                mSendTransport.dispose();
                 mSendTransport = null;
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -319,6 +330,94 @@ public class WSocket {
      */
     public boolean isConnected() {
         return this.mConnected;
+    }
+
+    /**
+     * @param storageId
+     * @param producerSockId
+     */
+    private void addToStorageIds(@NonNull String storageId, @NonNull String producerSockId) {
+        for (int i = 0; i < storageIdsList.size(); i++) {
+            StorageIdsData data = storageIdsList.get(i);
+            if (data != null) {
+                if (data.getStorageId().equals(storageId)) {
+                    Log.d(TAG, "<< Entry with Storage ID >>> " + storageId + " already exist. Skipping this one ...");
+                    return;
+                }
+            }
+        }
+        storageIdsList.add(new StorageIdsData(producerSockId, storageId));
+    }
+
+    /**
+     * @param storageId
+     * @return
+     */
+    @Nullable
+    private String getProducerSockId(@NonNull String storageId) {
+        for (StorageIdsData data : storageIdsList) {
+            if (data.getStorageId().equals(storageId)) {
+                return data.getProducerSockId();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param producerSockId
+     */
+    public void removeStorageId(@NonNull String producerSockId) {
+        for (int i = 0; i < storageIdsList.size(); i++) {
+            StorageIdsData data = storageIdsList.get(i);
+            if (data != null) {
+                if (data.getProducerSockId().equals(producerSockId)) {
+                    storageIdsList.remove(i);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * @param producerSockId
+     * @return
+     */
+    public List<String> getStorageId(@NonNull String producerSockId) {
+        List<String> list = new LinkedList<>();
+        for (StorageIdsData data : storageIdsList) {
+            if (data.getProducerSockId().equals(producerSockId)) {
+                list.add(data.getStorageId());
+            }
+        }
+        return list;
+    }
+
+    public boolean isPresenting() {
+        return this.isPresenting;
+    }
+
+    public void produceScreen() {
+        this.produceScreen = true;
+    }
+
+    @Nullable
+    public Consumer getScreenConsumer() {
+        return this.screenConsumer;
+    }
+
+    @Nullable
+    public void disposeScreenPeer() {
+        if (screenConsumer != null && mStore.getScreenPeer() != null) {
+            try {
+                mStore.getScreenPeer().getConsumers().remove(screenConsumer.getId());
+                screenConsumer.getTrack().setEnabled(false);
+                screenConsumer.getTrack().dispose();
+                screenConsumer.close();
+                screenConsumer = null;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     private void listenSocketEvents() {
@@ -416,7 +515,7 @@ public class WSocket {
                     JSONObject obj = new JSONObject(String.valueOf(args[0]));
                     String producerId = obj.getString("producerId");
                     String producerSockId = obj.getString("producerSockId");
-                    boolean screenShare = false;
+                    consumeScreen = obj.getBoolean("screenShare");
                     producerSockIds.put(producerId, producerSockId);
                     emitCreateConsumeTransport(producerId, producerSockId);
                 } catch (JSONException e) {
@@ -461,7 +560,7 @@ public class WSocket {
                     Log.d(TAG, "Consumer ICE Parameters >>> " + iceParameters);
                     Log.d(TAG, "Consumer ICE Candidates >>> " + iceCandidates.toString());
 
-                    RecvTransport recvTransport = mMediaSoupDevice.createRecvTransport(
+                    mRecvTransports.put(storageId, mMediaSoupDevice.createRecvTransport(
                             new RecvTransport.Listener() {
                                 @Override
                                 public void onConnect(Transport transport, String dtlsParameters) {
@@ -489,9 +588,40 @@ public class WSocket {
                             id,
                             iceParameters.toString(),
                             iceCandidates.toString(),
-                            dtlsParameters.toString());
-                    mRecvTransports.put(storageId, recvTransport);
-                    mStorageSockIdsMap.put(producerSockid, storageId);
+                            dtlsParameters.toString()));
+
+//                    RecvTransport recvTransport = mMediaSoupDevice.createRecvTransport(
+//                            new RecvTransport.Listener() {
+//                                @Override
+//                                public void onConnect(Transport transport, String dtlsParameters) {
+//                                    Log.d(TAG, "<<< RecvTransport.Listener#onConnect() >>>");
+//                                    Log.d(TAG, "RecvTransport.Listener#onConnect() dtlsParametes -> " + dtlsParameters);
+//                                    try {
+//                                        emitConsumeTransportConnect(dtlsParameters, storageId);
+//                                    } catch (JSONException e) {
+//                                        e.printStackTrace();
+//                                    }
+//                                    mSocket.on("consumerTransportConnected", args -> {
+//                                        Log.d(TAG, " << CONSUMER TRANSPORT CONNECTED >>");
+//                                        if (args != null) {
+//                                            Log.d(TAG, "CONSUMER TRANSPORT CONNECTED >> " + args[0]);
+//                                        }
+//                                        // callback();
+//                                    });
+//                                }
+//
+//                                @Override
+//                                public void onConnectionStateChange(Transport transport, String connectionState) {
+//                                    Log.d(TAG, "<<< RecvTransport.Listener#onConnectionStateChanged() >>>");
+//                                }
+//                            },
+//                            id,
+//                            iceParameters.toString(),
+//                            iceCandidates.toString(),
+//                            dtlsParameters.toString());
+
+//                    mStorageSockIdsMap.put(producerSockid, storageId);
+                    addToStorageIds(storageId, producerSockid);
                     consumerStorageIds.add(storageId);
                     Log.d(TAG, "1 Recv. Transports size >>> " + mRecvTransports.size());
 
@@ -508,10 +638,10 @@ public class WSocket {
                 Log.d(TAG, "Created Consumer -> " + String.valueOf(args[0]));
                 try {
                     JSONObject obj = new JSONObject(String.valueOf(args[0]));
-                    String producerId = obj.getString("producerId");
-                    String kind = obj.getString("kind");
-                    String id = obj.getString("id");
-                    String type = obj.getString("type");
+                    final String producerId = obj.getString("producerId");
+                    final String kind = obj.getString("kind");
+                    final String id = obj.getString("id");
+                    final String type = obj.getString("type");
                     JSONObject rtpParams = obj.getJSONObject("rtpParameters");
                     boolean producerPaused = obj.getBoolean("producerPaused");
                     String producerSockId = obj.getString("producerSockId");
@@ -520,7 +650,6 @@ public class WSocket {
                     Log.d(TAG, "Consumer Created of Kind [" + kind + "]");
                     Log.d(TAG, "Consumer RTP Params >>> " + rtpParams);
 
-                    // Peer created
                     ApiManager.build(mContext).fetchRoomData2(mMeetingClient.getMeetingId(), new ApiManager.ApiResult2() {
                         @Override
                         public void onResult(Call call, Response response) {
@@ -541,6 +670,7 @@ public class WSocket {
                                                     try {
                                                         JSONObject peer = new JSONObject();
                                                         peer.put("id", producerSockId);
+                                                        peer.put("screenShare", consumeScreen);
                                                         if (finalUsername != null) {
                                                             peer.put("displayName", finalUsername.isEmpty() ? "" : finalUsername);
                                                         } else {
@@ -575,9 +705,13 @@ public class WSocket {
                                                             new MeetingClient.ConsumerHolder(producerSockId, consumer));
                                                     mStore.addConsumer(producerSockId, type, consumer, producerPaused);
                                                     mConsumerData.add(new ConsumerData(consumer.getId(), producerSockId, kind));
-
                                                     // Notify
-                                                    WEvents.getInstance().notify(WEvents.EVENT_TYPE_CONSUMER_CREATED, id);
+                                                    if (!consumeScreen) {
+                                                        WEvents.getInstance().notify(WEvents.EVENT_TYPE_CONSUMER_CREATED, id);
+                                                    } else {
+                                                        WEvents.getInstance().notify(WEvents.EVENT_REMOTE_SCREEN_CONSUMER_CREATED, consumer.getId());
+                                                        consumeScreen = false;
+                                                    }
 
                                                     // CONSUME BACK Starts here
                                                     emitConsumeBack(producerSockId);
@@ -604,7 +738,8 @@ public class WSocket {
                                                 });
                                             }
                                         }
-                                    } catch (IOException | JSONException | MediasoupException e) {
+                                    } catch (IOException | JSONException |
+                                             MediasoupException e) {
                                         e.printStackTrace();
                                     }
                                 }
@@ -659,7 +794,35 @@ public class WSocket {
                     String storageId = obj.getString("storageId");
                     String producerSockId = obj.getString("producerSockId");
 
-                    RecvTransport recvTransport = mMediaSoupDevice
+//                    RecvTransport recvTransport = mMediaSoupDevice
+//                            .createRecvTransport(new RecvTransport.Listener() {
+//                                                     @Override
+//                                                     public void onConnect(Transport transport, String dtlsParameters) {
+//                                                         Log.d(TAG, "RecvTransport#onConnect() >> dtlsParameters > " + dtlsParameters);
+//                                                         try {
+//                                                             emitConsumeTransportConnectBack(dtlsParameters);
+//                                                         } catch (JSONException e) {
+//                                                             e.printStackTrace();
+//                                                         }
+//                                                         mSocket.on("consumerTransportConnectedBack", args1 -> {
+//                                                             Log.d(TAG, "<< Event Consumer Transport Connected Back >>");
+//                                                             if (args != null) {
+//                                                                 Log.d(TAG, "<< EVENT CONSUMER TRANSPORT CONNECTED BACK >>> " + Arrays.toString(args1));
+//                                                             }
+//                                                             // callback()
+//                                                         });
+//                                                     }
+//
+//                                                     @Override
+//                                                     public void onConnectionStateChange(Transport transport, String connectionState) {
+//
+//                                                     }
+//                                                 },
+//                                    id,
+//                                    iceParameters.toString(),
+//                                    iceCandidates.toString(),
+//                                    dtlsParameters.toString());
+                    mRecvTransports.put(storageId, mMediaSoupDevice
                             .createRecvTransport(new RecvTransport.Listener() {
                                                      @Override
                                                      public void onConnect(Transport transport, String dtlsParameters) {
@@ -686,10 +849,10 @@ public class WSocket {
                                     id,
                                     iceParameters.toString(),
                                     iceCandidates.toString(),
-                                    dtlsParameters.toString());
-                    mRecvTransports.put(storageId, recvTransport);
+                                    dtlsParameters.toString()));
                     Log.d(TAG, "2 Recv. Transports size >>> " + mRecvTransports.size());
-                    mStorageSockIdsMap.put(producerSockId, storageId);
+//                    mStorageSockIdsMap.put(producerSockId, storageId);
+                    addToStorageIds(storageId, producerSockId);
                     consumerStorageIds.add(storageId);
 
                     emitStartConsumingBack(producerId, producerSockId);
@@ -822,48 +985,69 @@ public class WSocket {
                     String username = obj.getString("username");
                     boolean disconnected = obj.getBoolean("disconnect");
                     if (disconnected && !destroying) {
-                        for (Map.Entry<String, String> entry : producerSockIds.entrySet()) {
-                            if (entry.getValue().equals(id)) {
-                                Log.d(TAG, "<<< Peer Disconnected, Disconnecting ....");
-
-                                for (MeetingClient.ConsumerHolder holder : mMeetingClient.getConsumers().values()) {
-                                    if (holder.peerId.equals(id)) {
-                                        holder.mConsumer.close();
-                                        mStore.removeConsumer(id, holder.mConsumer.getId());
-                                        break;
-                                    }
+                        for (int i = 0; i < mConsumerData.size(); i++) {
+                            if (mConsumerData.get(i).getPeerId().equals(id)) {
+                                String consumerId = mConsumerData.get(i).getId();
+                                RoomMessageHandler.ConsumerHolder holder = mMeetingClient.mConsumers.remove(consumerId);
+                                if (holder == null) {
+                                    break;
                                 }
+                                holder.mConsumer.close();
+//                                mMeetingClient.mConsumers.remove(consumerId);
+                                mStore.removeConsumer(holder.peerId, holder.mConsumer.getId());
                                 mStore.removePeer(id);
-
-                                producerSockIds.remove(entry.getValue());
-                                break;
+                                mConsumerData.remove(i);
                             }
                         }
-                        try {
-                            if (mRecvTransports.size() > 0) {
-                                String storageId = mStorageSockIdsMap.get(id);
-                                if (mRecvTransports.containsKey(storageId)) {
-                                    RecvTransport r = mRecvTransports.get(storageId);
-                                    if (r != null) {
-                                        if (!r.isClosed()) {
-                                            try {
-                                                r.close();
-                                                r.dispose();
-                                                Log.d(TAG, "<<< Disposed Recv Transport with storage ID >>> " + storageId);
-                                            } catch (Exception ex) {
-                                                ex.printStackTrace();
-                                            } finally {
-                                                mRecvTransports.remove(storageId);
-                                                Log.d(TAG, "<< Removed Recv Transport with storage ID >>> " + storageId);
-                                                Log.d(TAG, "<< Recv. Transport Map size >>> " + mRecvTransports.size());
+                        List<String> storageIds = getStorageId(id);
+                        if (storageIds.size() > 0) {
+                            for (String storageId : storageIds) {
+                                if (mRecvTransports.size() > 0) {
+                                    for (int i = 0; i < mRecvTransports.size(); i++) {
+                                        RecvTransport r = mRecvTransports.get(storageId);
+                                        if (r != null) {
+                                            if (!r.isClosed()) {
+                                                try {
+                                                    r.close();
+//                                                    r.dispose();
+                                                } catch (Exception ex) {
+                                                    ex.printStackTrace();
+                                                } finally {
+                                                    mRecvTransports.remove(storageId);
+                                                    removeStorageId(id);
+                                                    Log.d(TAG, "<< Removed & Disposed Recv Transport with id : " + storageId + " [size " + mRecvTransports.size() + "]");
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
                         }
+//                        try {
+//                            if (mRecvTransports.size() > 0) {
+//                                String storageId = mStorageSockIdsMap.get(id);
+//                                if (mRecvTransports.containsKey(storageId)) {
+//                                    RecvTransport r = mRecvTransports.get(storageId);
+//                                    if (r != null) {
+//                                        if (!r.isClosed()) {
+//                                            try {
+//                                                r.close();
+//                                                r.dispose();
+//                                                Log.d(TAG, "<<< Disposed Recv Transport with storage ID >>> " + storageId);
+//                                            } catch (Exception ex) {
+//                                                ex.printStackTrace();
+//                                            } finally {
+//                                                mRecvTransports.remove(storageId);
+//                                                Log.d(TAG, "<< Removed Recv Transport with storage ID >>> " + storageId);
+//                                                Log.d(TAG, "<< Recv. Transport Map size >>> " + mRecvTransports.size());
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        } catch (Exception ex) {
+//                            ex.printStackTrace();
+//                        }
                         WEvents.getInstance().notify(WEvents.EVENT_TYPE_PEER_DISCONNECTED, obj);
                     }
                 } catch (JSONException e) {
@@ -1017,40 +1201,38 @@ public class WSocket {
                             if (p != null) {
                                 p.setCamOn(false);
                                 for (int i = 0; i < mConsumerData.size(); i++) {
-                                    ConsumerData consumerData = mConsumerData.get(i);
-                                    if (consumerData != null) {
-                                        if (consumerData.getPeerId().equals(p.getId()) && consumerData.getKind().equals("video")) {
-                                            for (MeetingClient.ConsumerHolder holder : mMeetingClient.getConsumers().values()) {
-                                                if (holder.mConsumer.getId().equals(consumerData.getId())) {
-                                                    holder.mConsumer.getTrack().setEnabled(false);
-                                                    holder.mConsumer.getTrack().dispose();
-                                                    holder.mConsumer.close();
-                                                    mStore.removeConsumer(p.getId(), consumerData.getId());
-
-                                                    Log.d(TAG, "<< Closed & Removed consumer with id >> " + consumerData.getId());
-                                                    mConsumerData.remove(i);
-                                                    break;
-                                                }
-                                            }
+                                    if (mConsumerData.get(i).getPeerId().equals(pSId) && mConsumerData.get(i).getKind().equals("video")) {
+                                        String consumerId = mConsumerData.get(i).getId();
+                                        RoomMessageHandler.ConsumerHolder holder = mMeetingClient.mConsumers.remove(consumerId);
+                                        if (holder == null) {
+                                            break;
                                         }
+                                        holder.mConsumer.close();
+                                        mMeetingClient.mConsumers.remove(consumerId);
+                                        mStore.removeConsumer(holder.peerId, holder.mConsumer.getId());
+                                        mConsumerData.remove(i);
                                     }
                                 }
 
-                                if (mStorageSockIdsMap.size() > 0) {
-                                    String storageId = mStorageSockIdsMap.get(pSId);
-                                    if (storageId != null) {
-                                        if (mRecvTransports.containsKey(pSId)) {
-                                            RecvTransport r = mRecvTransports.get(storageId);
-                                            if (r != null) {
-                                                try {
+                                List<String> storageIds = getStorageId(pSId);
+                                if (storageIds.size() > 0) {
+                                    for (String storageId : storageIds) {
+                                        if (mRecvTransports.size() > 0) {
+                                            for (int i = 0; i < mRecvTransports.size(); i++) {
+                                                RecvTransport r = mRecvTransports.get(storageId);
+                                                if (r != null) {
                                                     if (!r.isClosed()) {
-                                                        r.close();
-//                                                        r.dispose();
+                                                        try {
+                                                            r.close();
+//                                                            r.dispose();
+                                                        } catch (Exception ex) {
+                                                            ex.printStackTrace();
+                                                        } finally {
+                                                            mRecvTransports.remove(storageId);
+                                                            removeStorageId(pSId);
+                                                            Log.d(TAG, "<< Removed & Disposed Recv Transport with id : " + storageId + " [size " + mRecvTransports.size() + "]");
+                                                        }
                                                     }
-                                                    mRecvTransports.remove(pSId);
-                                                    Log.d(TAG, "Removed Recv Transport with storage ID >> " + pSId);
-                                                } catch (Exception ex) {
-                                                    ex.printStackTrace();
                                                 }
                                             }
                                         }
@@ -1099,6 +1281,34 @@ public class WSocket {
                 }
             }
         });
+
+        mSocket.on("screenShareOn", args -> {
+            if (args != null) {
+                if (args.length > 0) {
+                    Log.d(TAG, "<< Event ScreenShareOn >> " + args[0]);
+                    try {
+                        JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                        WEvents.getInstance().notify(WEvents.EVENT_REMOTE_SCREEN_SHARE_ON, obj);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        mSocket.on("screenShareOff", args -> {
+            if (args != null) {
+                if (args.length > 0) {
+                    Log.d(TAG, "<< Event ScreenShareOff >> " + args[0]);
+                    try {
+                        JSONObject obj = new JSONObject(String.valueOf(args[0]));
+                        WEvents.getInstance().notify(WEvents.EVENT_REMOTE_SCREEN_SHARE_OFF, obj);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
     // Emitters
@@ -1133,15 +1343,21 @@ public class WSocket {
     /**
      * @param kind
      * @param rtpParams
+     * @param screenShare
+     * @throws JSONException
      */
-    private void emitProduce(String kind, String rtpParams) throws JSONException {
+    private void emitProduce(String kind, String rtpParams, boolean screenShare) throws JSONException {
         JSONObject rtpParameters = new JSONObject(rtpParams);
         JSONObject obj = new JSONObject();
         obj.put("kind", kind);
         obj.put("rtpParameters", rtpParameters);
         obj.put("id", mSocketId);
         obj.put("roomId", mMeetingClient.getMeetingId());
-//        obj.put("language", mMeetingClient.getSelectedLanguageCode());
+        if (screenShare) {
+            JSONObject appData = new JSONObject();
+            appData.put("type", "screenShare");
+            obj.put("appData", appData);
+        }
         Log.d(TAG, "Emitting Produce >>> " + obj);
         mSocket.emit("produce", obj);
     }
@@ -1450,6 +1666,33 @@ public class WSocket {
             WEvents.getInstance().notify(WEvents.EVENT_NEW_ADMIN_CREATED, true);
         }
     }
+
+    /**
+     * @throws JSONException
+     */
+    public void emitScreenShareOn() throws JSONException {
+        JSONObject obj = new JSONObject();
+        obj.put("socketId", mSocketId);
+        obj.put("roomId", mMeetingClient.getMeetingId());
+        obj.put("username", mMeetingClient.getUsername());
+        Log.d(TAG, "<< Emitting screenShareOn with payload >>> " + obj);
+        mSocket.emit("screenShareOn", obj);
+    }
+
+    /**
+     * @param producerId
+     * @throws JSONException
+     */
+    public void emitScreenShareOff(@NonNull String producerId) throws JSONException {
+        JSONObject obj = new JSONObject();
+        obj.put("socketId", mSocketId);
+        obj.put("roomId", mMeetingClient.getMeetingId());
+        obj.put("producerId", producerId);
+        obj.put("username", mMeetingClient.getUsername());
+        Log.d(TAG, "<< Emitting screenShareOff with payload >>> " + obj);
+        mSocket.emit("screenShareOff", obj);
+    }
+
     // End Emitters
 
     /**
@@ -1481,6 +1724,57 @@ public class WSocket {
         }
     }
 
+    /**
+     *
+     * @param peerId
+     */
+    public void closeVideoConsumer(@NonNull String peerId) {
+        mStore.getPeers().postValue(peers -> {
+            Peer p = peers.getPeer(peerId);
+            if (p != null) {
+                p.setCamOn(false);
+                for (int i = 0; i < mConsumerData.size(); i++) {
+                    if (mConsumerData.get(i).getPeerId().equals(peerId)) {
+                        String consumerId = mConsumerData.get(i).getId();
+                        RoomMessageHandler.ConsumerHolder holder = mMeetingClient.mConsumers.remove(consumerId);
+                        if (holder == null) {
+                            break;
+                        }
+                        holder.mConsumer.close();
+//                        mMeetingClient.mConsumers.remove(consumerId);
+//                        mStore.removeConsumer(holder.peerId, holder.mConsumer.getId());
+                        mConsumerData.remove(i);
+                    }
+                }
+
+                List<String> storageIds = getStorageId(peerId);
+                if (storageIds.size() > 0) {
+                    for (String storageId : storageIds) {
+                        if (mRecvTransports.size() > 0) {
+                            for (int i = 0; i < mRecvTransports.size(); i++) {
+                                RecvTransport r = mRecvTransports.get(storageId);
+                                if (r != null) {
+                                    if (!r.isClosed()) {
+                                        try {
+                                            r.close();
+                                            r.dispose();
+                                        } catch (Exception ex) {
+                                            ex.printStackTrace();
+                                        } finally {
+                                            mRecvTransports.remove(storageId);
+                                            removeStorageId(peerId);
+                                            Log.d(TAG, "<< Removed & Disposed Recv Transport with id : " + storageId + " [size " + mRecvTransports.size() + "]");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
     // Send Transport Listener
     private SendTransport.Listener sendListener = new SendTransport.Listener() {
 
@@ -1489,7 +1783,8 @@ public class WSocket {
             Log.d(TAG, "SendTransport.Listen.onProduce(transport, kind: " + kind + ", rtpParameters, appData: " + appData + ")");
             AtomicReference<String> producerId = new AtomicReference<>(null);
             try {
-                emitProduce(kind, rtpParameters);
+                emitProduce(kind, rtpParameters, produceScreen);
+                produceScreen = false;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -1502,7 +1797,7 @@ public class WSocket {
                             JSONObject obj = new JSONObject(String.valueOf(args[0]));
                             producerId.set(obj.getString("producerId"));
                             String kind1 = obj.getString("kind");
-                            boolean appData1 = obj.getBoolean("appData");
+//                            JSONObject appData1 = obj.getJSONObject("appData");
                             if ("audio".equals(kind1)) {
                                 addAudioProducerId(producerId.get());
                             } else if ("video".equals(kind1)) {
@@ -1763,6 +2058,18 @@ public class WSocket {
     }
 
     @Async
+    public void enableScreenShare(@NonNull VideoCapturer capturer, @NonNull DisplayMetrics dm) {
+        Log.d(TAG, "enableScreenShare()");
+        mWorkHandler.post(() -> enableScreenShareImpl(capturer, dm));
+    }
+
+    @Async
+    public void disableScreenShare() {
+        Log.d(TAG, "disableScreenShare()");
+        mWorkHandler.post(this::disableScreenShareImpl);
+    }
+
+    @Async
     public void changeCam() {
         Log.d(TAG, "changeCam()");
         mStore.setCamInProgress(true);
@@ -1881,7 +2188,7 @@ public class WSocket {
                 return;
             }
             if (mSendTransport == null) {
-                Logger.w(TAG, "enableCam() | mSendTransport doesn't ready");
+                Logger.w(TAG, "enableCam() | mSendTransport isn't ready");
                 return;
             }
 
@@ -1928,6 +2235,75 @@ public class WSocket {
         mCamProducer = null;
         mCamEnabled = false;
         WEvents.getInstance().notify(WEvents.EVENT_ME_CAM_TURNED_OFF, true);
+    }
+
+    @WorkerThread
+    private void enableScreenShareImpl(@NonNull VideoCapturer capturer, @NonNull DisplayMetrics dm) {
+        Logger.d(TAG, "enableScreenShareImpl()");
+        try {
+            if (mScreenProducer != null) {
+                return;
+            }
+            if (!mMediaSoupDevice.isLoaded()) {
+                Logger.w(TAG, "enableScreenShareImpl() | not loaded");
+                return;
+            }
+            if (!mMediaSoupDevice.canProduce("video")) {
+                Logger.w(TAG, "enableScreenShareImpl() | cannot produce video");
+                return;
+            }
+            if (mSendTransport == null) {
+                Logger.w(TAG, "enableScreenShareImpl() | mSendTransport isn't ready");
+                return;
+            }
+
+            if (mScreenVideoTrack == null) {
+                mScreenVideoTrack = mPeerConnectionUtils.createScreenVideoTrack(mContext, capturer, "screen_share", dm);
+                mScreenVideoTrack.setEnabled(true);
+                isPresenting = true;
+            }
+            mScreenProducer =
+                    mSendTransport.produce(
+                            producer -> {
+                                Logger.e(TAG, "onTransportClose(), screenProducer");
+                                if (mScreenProducer != null) {
+                                    mScreenProducer = null;
+                                    isPresenting = false;
+                                }
+                            },
+                            mScreenVideoTrack,
+                            null,
+                            null,
+                            null);
+//            mStore.addProducer(mScreenProducer);
+            WEvents.getInstance().notify(WEvents.EVENT_PRESENTING, true);
+        } catch (MediasoupException e) {
+            e.printStackTrace();
+            if (mScreenVideoTrack != null) {
+                mScreenVideoTrack.setEnabled(false);
+            }
+        }
+    }
+
+    @WorkerThread
+    private void disableScreenShareImpl() {
+        Logger.d(TAG, "disableScreenShareImpl()");
+        if (mScreenProducer == null) {
+            return;
+        }
+
+        String producerId = mScreenProducer.getId();
+        mScreenProducer.close();
+//        mStore.removeProducer(mScreenProducer.getId());
+
+        mScreenProducer = null;
+        isPresenting = false;
+        WEvents.getInstance().notify(WEvents.EVENT_PRESENTING, false);
+        try {
+            emitScreenShareOff(producerId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
