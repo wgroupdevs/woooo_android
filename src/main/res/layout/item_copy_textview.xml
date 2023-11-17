@@ -12,8 +12,10 @@
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/button"
         android:ellipsize="middle"
-        app:icon="@drawable/ic_copy"
+        android:drawableEnd="@drawable/ic_copy"
+        android:paddingHorizontal="@dimen/_5sdp"
         tools:text="0xbc9a1026a4bc6f0ba8bbe486d1d09da5732b39e4" />
 
     <Button
@@ -21,7 +23,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:icon="@drawable/ic_copy"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:drawableEnd="@drawable/ic_copy"
+        android:background="@drawable/button"
+        android:paddingHorizontal="@dimen/_5sdp"
         tools:text="0xbc9a1026a4bc6f0ba8bbe486d1d09da5732b39e4"
         android:lines="2"
         android:maxLines="2"/>

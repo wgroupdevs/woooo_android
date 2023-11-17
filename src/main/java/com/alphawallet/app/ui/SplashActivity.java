@@ -19,6 +19,7 @@ import com.alphawallet.app.entity.CustomViewSettings;
 import com.alphawallet.app.entity.Operation;
 import com.alphawallet.app.entity.Wallet;
 import com.alphawallet.app.entity.analytics.FirstWalletAction;
+import com.alphawallet.app.router.HomeRouter;
 import com.alphawallet.app.router.ImportWalletRouter;
 import com.alphawallet.app.service.KeyService;
 import com.alphawallet.app.util.RootUtil;
@@ -30,15 +31,12 @@ import dagger.hilt.android.AndroidEntryPoint;
 import eu.siacs.conversations.R;
 
 @AndroidEntryPoint
-public class SplashActivity extends BaseActivity implements CreateWalletCallbackInterface, Runnable
-{
+public class SplashActivity extends BaseActivity implements CreateWalletCallbackInterface, Runnable {
     private CreateWalletViewModel viewModel;
     private String errorMessage;
-    private final Runnable displayError = new Runnable()
-    {
+    private final Runnable displayError = new Runnable() {
         @Override
-        public void run()
-        {
+        public void run() {
             AWalletAlertDialog aDialog = new AWalletAlertDialog(getThisActivity());
             aDialog.setTitle(R.string.key_error);
             aDialog.setIcon(AWalletAlertDialog.ERROR);
@@ -51,20 +49,18 @@ public class SplashActivity extends BaseActivity implements CreateWalletCallback
     private Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
-    protected void attachBaseContext(Context base)
-    {
+    protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
         //detect previous launch
         viewModel = new ViewModelProvider(this)
-            .get(CreateWalletViewModel.class);
+                .get(CreateWalletViewModel.class);
         viewModel.cleanAuxData(getApplicationContext());
         viewModel.wallets().observe(this, this::onWallets);
         viewModel.createWallet().observe(this, this::onWalletCreate);
@@ -73,21 +69,18 @@ public class SplashActivity extends BaseActivity implements CreateWalletCallback
         checkRoot();
     }
 
-    protected Activity getThisActivity()
-    {
+    protected Activity getThisActivity() {
         return this;
     }
 
     //wallet created, now check if we need to import
-    private void onWalletCreate(Wallet wallet)
-    {
+    private void onWalletCreate(Wallet wallet) {
         Wallet[] wallets = new Wallet[1];
         wallets[0] = wallet;
         onWallets(wallets);
     }
 
-    private void onWallets(Wallet[] wallets)
-    {
+    private void onWallets(Wallet[] wallets) {
         //event chain should look like this:
         //1. check if wallets are empty:
         //      - yes, get either create a new account or take user to wallet page if SHOW_NEW_ACCOUNT_PROMPT is set
@@ -96,10 +89,12 @@ public class SplashActivity extends BaseActivity implements CreateWalletCallback
         //2. repeat after step 1 is complete. Are we importing a ticket?
         //      - yes - proceed with import
         //      - no - proceed to home activity
-        if (wallets.length == 0)
-        {
+        if (wallets.length == 0) {
             viewModel.setDefaultBrowser();
             findViewById(R.id.layout_new_wallet).setVisibility(View.VISIBLE);
+            findViewById(R.id.backArrow).setOnClickListener(v -> {
+                finish();
+            });
             findViewById(R.id.button_create).setOnClickListener(v -> {
                 AnalyticsProperties props = new AnalyticsProperties();
                 props.put(FirstWalletAction.KEY, FirstWalletAction.CREATE_WALLET.getValue());
@@ -112,80 +107,63 @@ public class SplashActivity extends BaseActivity implements CreateWalletCallback
             findViewById(R.id.button_import).setOnClickListener(v -> {
                 new ImportWalletRouter().openForResult(this, IMPORT_REQUEST_CODE, true);
             });
-        }
-        else
-        {
+        } else {
             viewModel.doWalletStartupActions(wallets[0]);
             handler.postDelayed(this, CustomViewSettings.startupDelay());
         }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode >= SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS && requestCode <= SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS + 10)
-        {
+        if (requestCode >= SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS && requestCode <= SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS + 10) {
             Operation taskCode = Operation.values()[requestCode - SignTransactionDialog.REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS];
-            if (resultCode == RESULT_OK)
-            {
+            if (resultCode == RESULT_OK) {
                 viewModel.completeAuthentication(taskCode);
-            }
-            else
-            {
+            } else {
                 viewModel.failedAuthentication(taskCode);
             }
-        }
-        else if (requestCode == IMPORT_REQUEST_CODE)
-        {
+        } else if (requestCode == IMPORT_REQUEST_CODE) {
             viewModel.fetchWallets();
         }
     }
 
     @Override
-    public void HDKeyCreated(String address, Context ctx, KeyService.AuthenticationLevel level)
-    {
+    public void HDKeyCreated(String address, Context ctx, KeyService.AuthenticationLevel level) {
         viewModel.StoreHDKey(address, level);
     }
 
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         super.onDestroy();
         handler = null;
     }
 
     @Override
-    public void keyFailure(String message)
-    {
+    public void keyFailure(String message) {
         errorMessage = message;
         if (handler != null) handler.post(displayError);
     }
 
     @Override
-    public void cancelAuthentication()
-    {
+    public void cancelAuthentication() {
 
     }
 
     @Override
-    public void fetchMnemonic(String mnemonic)
-    {
+    public void fetchMnemonic(String mnemonic) {
 
     }
 
     @Override
-    public void run()
-    {
-//        new HomeRouter().open(this, true);
-//        finish();
+    public void run() {
+        new HomeRouter().open(this, true);
+        finish();
     }
 
-    private void checkRoot()
-    {
-        if (RootUtil.isDeviceRooted())
-        {
+    private void checkRoot() {
+        if (RootUtil.isDeviceRooted()) {
             AWalletAlertDialog dialog = new AWalletAlertDialog(this);
             dialog.setTitle(R.string.root_title);
             dialog.setMessage(R.string.root_body);

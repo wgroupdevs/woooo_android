@@ -8,14 +8,15 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.TooltipCompat;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import eu.siacs.conversations.R;
 import com.alphawallet.app.entity.opensea.OpenSeaAsset;
-import com.google.android.material.card.MaterialCardView;
 
 import java.text.DecimalFormat;
 import java.util.List;
+
+import eu.siacs.conversations.R;
 
 public class TraitsAdapter extends RecyclerView.Adapter<TraitsAdapter.ViewHolder> {
     private final List<OpenSeaAsset.Trait> traitList;
@@ -74,7 +75,7 @@ public class TraitsAdapter extends RecyclerView.Adapter<TraitsAdapter.ViewHolder
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        MaterialCardView layout;
+        CardView layout;
         TextView trait;
         TextView value;
         TextView rarity;

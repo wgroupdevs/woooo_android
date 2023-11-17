@@ -36,6 +36,7 @@
 	<color name="blue_primary200">#ff2675AE</color>
 	<color name="blue_primary300">#ff22689B</color>
 	<color name="blue_primaryDarker">#ff154175</color>
+	<color name="blue_text_field">#ff195E91</color>
 	<color name="blue_primary_transparent">#8022689B</color>
 	<color name="dark_primary_transparent">#80000000</color>
 	<color name="cyan">#ff00FFFF</color>

@@ -24,14 +24,12 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alphawallet.app.C;
-import eu.siacs.conversations.R;
 import com.alphawallet.app.entity.Wallet;
 import com.alphawallet.app.entity.nftassets.NFTAsset;
 import com.alphawallet.app.entity.tokens.Token;
@@ -50,6 +48,7 @@ import java.math.BigInteger;
 import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import eu.siacs.conversations.R;
 
 @AndroidEntryPoint
 public class NFTAssetsFragment extends BaseFragment implements OnAssetClickListener, TokensAdapterCallback {
@@ -182,7 +181,7 @@ public class NFTAssetsFragment extends BaseFragment implements OnAssetClickListe
     {
         recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
         recyclerView.addItemDecoration(gridItemDecoration);
-        recyclerView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.surface));
+//        recyclerView.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.surface));
         initAndAttachAdapter(true);
     }
 

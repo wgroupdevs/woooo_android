@@ -2,6 +2,10 @@
 <androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"
+    app:contentInsetLeft="0dp"
+    app:contentInsetStart="0dp"
+    app:contentInsetStartWithNavigation="0dp"
+
     android:layout_width="match_parent"
     android:layout_height="?actionBarSize">
 
@@ -12,7 +16,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="2dp"
         app:cardCornerRadius="0dp"
-        app:cardElevation="2dp"
+        app:cardElevation="0dp"
         app:cardPreventCornerOverlap="false">
 
         <androidx.constraintlayout.widget.ConstraintLayout

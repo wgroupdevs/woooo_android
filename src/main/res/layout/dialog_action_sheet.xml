@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bg_border"
     android:orientation="vertical">
 
     <LinearLayout
@@ -75,7 +76,11 @@
             android:visibility="gone"
             tools:visibility="visible" />
 
-        <View style="@style/Aw.Component.Separator" />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:src="@drawable/divider_ic" />
 
         <com.alphawallet.app.widget.ConfirmationWidget
             android:id="@+id/confirmation_view"

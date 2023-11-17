@@ -5,7 +5,11 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <View style="@style/Aw.Component.Separator" />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:src="@drawable/divider_ic" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -46,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/insufficient_gas"
-                android:textColor="?colorError" />
+                android:textColor="@color/red500" />
 
         </LinearLayout>
 
@@ -72,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/speed_too_low"
-                android:textColor="?colorError" />
+                android:textColor="@color/red500" />
 
         </LinearLayout>
 

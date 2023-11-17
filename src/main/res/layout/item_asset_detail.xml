@@ -7,9 +7,12 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <View
+    <ImageView
         android:id="@+id/spacing_line"
-        style="@style/Aw.Component.Separator" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:src="@drawable/divider_ic" />
 
     <LinearLayout
         android:layout_width="match_parent"

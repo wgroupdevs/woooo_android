@@ -22,9 +22,9 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.lifecycle.ViewModelProvider;
 
-import eu.siacs.conversations.R;
 import com.alphawallet.app.entity.BackupOperationType;
 import com.alphawallet.app.entity.BackupState;
 import com.alphawallet.app.entity.CreateWalletCallbackInterface;
@@ -44,13 +44,13 @@ import com.alphawallet.app.widget.SignTransactionDialog;
 import com.alphawallet.hardware.SignatureFromKey;
 import com.google.android.flexbox.FlexDirection;
 import com.google.android.flexbox.FlexboxLayout;
-import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import eu.siacs.conversations.R;
 
 @AndroidEntryPoint
 public class BackupKeyActivity extends BaseActivity implements
@@ -73,7 +73,7 @@ public class BackupKeyActivity extends BaseActivity implements
     private PasswordInputView inputView;
     private ImageView backupImage;
     private TextView verifyTextBox;
-    private MaterialCardView verifyTextContainer;
+    private CardView verifyTextContainer;
     private String[] mnemonicArray;
     private LinearLayout successOverlay;
     private final Handler handler = new Handler();

@@ -17,14 +17,16 @@ public final class Config {
     private static final int OPENPGP = 2;
     private static final int OMEMO = 8;
 
-    private static final int ENCRYPTION_MASK = UNENCRYPTED | OPENPGP | OMEMO;
+    //    private static final int ENCRYPTION_MASK = UNENCRYPTED | OPENPGP | OMEMO;
+    private static final int ENCRYPTION_MASK = OMEMO;
 
     public static boolean supportUnencrypted() {
         return (ENCRYPTION_MASK & UNENCRYPTED) != 0;
     }
 
     public static boolean supportOpenPgp() {
-        return (ENCRYPTION_MASK & OPENPGP) != 0;
+//        return (ENCRYPTION_MASK & OPENPGP) != 0;
+        return false;
     }
 
     public static boolean supportOmemo() {

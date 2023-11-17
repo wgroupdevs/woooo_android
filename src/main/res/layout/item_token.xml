@@ -4,7 +4,10 @@
     android:id="@+id/token_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bg_border"
+    android:layout_marginHorizontal="@dimen/_5sdp"
     android:clickable="true"
+    android:layout_marginVertical="@dimen/_5sdp"
     android:focusable="true">
 
     <com.google.android.material.checkbox.MaterialCheckBox
@@ -22,7 +25,7 @@
         android:layout_alignParentTop="true"
         android:layout_toEndOf="@id/select_token"
         android:orientation="vertical"
-        android:padding="@dimen/standard_16">
+        android:padding="@dimen/small_12">
 
         <LinearLayout
             android:id="@+id/layout_balance"

@@ -17,7 +17,6 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -42,7 +41,7 @@ import java.util.List;
 
 import eu.siacs.conversations.BuildConfig;
 import eu.siacs.conversations.R;
-import eu.siacs.conversations.ui.HomeActivity;
+import eu.siacs.conversations.ui.WooHomeActivity;
 
 /**
  * @author muneebahmad (ahmadgallian@yahoo.com)
@@ -266,7 +265,7 @@ public final class UIManager {
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         intent.putExtra("notification", true);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(activity);
-        stackBuilder.addParentStack(HomeActivity.class);
+        stackBuilder.addParentStack(WooHomeActivity.class);
         stackBuilder.addNextIntent(intent);
         PendingIntent pendingIntent = stackBuilder.getPendingIntent(0x9f, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
@@ -275,8 +274,8 @@ public final class UIManager {
             inboxStyle.addLine(message);
         }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(activity, activity.getClass().getSimpleName().toUpperCase());
-        builder.setSmallIcon(R.drawable.woooo_logo);
-        builder.setLargeIcon(BitmapFactory.decodeResource(activity.getResources(), R.drawable.woooo_logo));
+        builder.setSmallIcon(R.drawable.app_logo);
+        builder.setLargeIcon(BitmapFactory.decodeResource(activity.getResources(), R.drawable.app_logo));
         builder.setContentTitle("Woooo Meeting in Progress");
         builder.setStyle(inboxStyle);
         builder.setContentIntent(pendingIntent);

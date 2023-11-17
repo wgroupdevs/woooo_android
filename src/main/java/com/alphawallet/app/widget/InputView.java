@@ -233,7 +233,7 @@ public class InputView extends LinearLayout {
                 errorText.setVisibility(View.GONE);
                 break;
             case SELECTED:
-                boxLayout.setBackgroundResource(R.drawable.background_input_selected);
+                boxLayout.setBackgroundResource(R.drawable.textfield_background);
                 labelText.setTextColor(context.getColor(R.color.brand));
                 errorText.setVisibility(View.GONE);
                 break;

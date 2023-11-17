@@ -42,7 +42,7 @@
         android:background="@drawable/button"
         android:enabled="true"
         android:padding="10dp"
-        android:text="Connect"
+        android:text="Next"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="17sp" />

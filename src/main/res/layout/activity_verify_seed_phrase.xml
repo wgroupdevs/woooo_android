@@ -8,10 +8,17 @@
 
     <include layout="@layout/layout_simple_toolbar" />
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:src="@drawable/divider_ic" />
+
     <RelativeLayout
         android:id="@+id/relativeLayout3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp"
         android:focusable="true"
         android:focusableInTouchMode="true">
 
@@ -43,6 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_horizontal"
+                android:background="@drawable/bg_border"
                 android:minHeight="110dp"
                 android:padding="@dimen/standard_16"
                 tools:text="Verify" />

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,7 +18,6 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.alphawallet.app.C;
-import eu.siacs.conversations.R;
 import com.alphawallet.app.analytics.Analytics;
 import com.alphawallet.app.entity.AnalyticsProperties;
 import com.alphawallet.app.entity.ErrorEnvelope;
@@ -49,7 +49,6 @@ import com.alphawallet.app.widget.TokenInfoView;
 import com.alphawallet.app.widget.TokenSelector;
 import com.alphawallet.ethereum.EthereumNetworkBase;
 import com.alphawallet.hardware.SignatureFromKey;
-import com.google.android.material.button.MaterialButton;
 
 import org.web3j.utils.Numeric;
 
@@ -57,6 +56,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dagger.hilt.android.AndroidEntryPoint;
+import eu.siacs.conversations.R;
 
 @AndroidEntryPoint
 public class SwapActivity extends BaseActivity implements StandardFunctionInterface, ActionSheetCallback
@@ -82,8 +82,8 @@ public class SwapActivity extends BaseActivity implements StandardFunctionInterf
     private TokenInfoView currentPrice;
     private TokenInfoView minReceived;
     private LinearLayout noConnectionsLayout;
-    private MaterialButton continueBtn;
-    private MaterialButton openSettingsBtn;
+    private Button continueBtn;
+    private Button openSettingsBtn;
     private TextView chainName;
     private com.alphawallet.app.entity.tokens.Token token;
     private Wallet wallet;

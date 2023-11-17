@@ -23,7 +23,7 @@
                 android:id="@+id/ivIcon"
                 android:layout_width="32sp"
                 android:layout_height="32sp"
-                android:src="@drawable/woooo_logo"/>
+                android:src="@drawable/app_logo"/>
 
             <TextView
                 android:id="@+id/tvTitle"

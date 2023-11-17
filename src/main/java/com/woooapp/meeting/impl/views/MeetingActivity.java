@@ -61,13 +61,11 @@ import com.woooapp.meeting.impl.views.adapters.MeetingTranscriptAdapter;
 import com.woooapp.meeting.impl.views.adapters.MemberAdapter;
 import com.woooapp.meeting.impl.views.adapters.PeerAdapter2;
 import com.woooapp.meeting.impl.views.animations.WooAnimationUtil;
-import com.woooapp.meeting.impl.views.fragments.MeetingPageFragment;
 import com.woooapp.meeting.impl.views.fragments.MeetingPageFragment2;
 import com.woooapp.meeting.impl.views.models.Chat;
 import com.woooapp.meeting.impl.views.models.GridPeer;
 import com.woooapp.meeting.impl.views.models.Languages;
 import com.woooapp.meeting.impl.views.models.ListGridPeer;
-import com.woooapp.meeting.impl.views.models.MeetingPage;
 import com.woooapp.meeting.impl.views.models.Member;
 import com.woooapp.meeting.impl.views.models.Transcript;
 import com.woooapp.meeting.impl.views.popups.MeetingMorePopup;
@@ -2208,10 +2206,10 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ? PendingIntent.FLAG_IMMUTABLE : PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.drawable.woooo_logo)
+                .setSmallIcon(R.drawable.app_logo)
                 .setContentTitle("Woooo Meeting in progress")
                 .setContentText("Tap to go back to room")
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.woooo_logo))
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.app_logo))
                 .setOngoing(true)
                 .setContentIntent(pendingIntent);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {

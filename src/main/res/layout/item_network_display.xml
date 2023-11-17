@@ -5,9 +5,12 @@
     android:layout_height="60dp"
     android:orientation="vertical">
 
-    <View
-        style="@style/Aw.Component.Separator"
-        android:layout_alignParentTop="true" />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/divider_ic" />
 
     <LinearLayout
         android:layout_width="match_parent"

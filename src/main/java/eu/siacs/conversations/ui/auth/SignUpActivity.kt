@@ -54,7 +54,15 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult,
         }
         binding.signUpBtn.setOnClickListener {
 
-            validateSignUpForm()
+            try {
+                validateSignUpForm()
+
+//                createWallet?.createNewWallet(this, this)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
         }
 
         //detect previous launch

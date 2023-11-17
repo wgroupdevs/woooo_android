@@ -4,7 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/layout_simple_toolbar" />
+    <include
+      android:id="@+id/toolbar"
+        layout="@layout/layout_simple_toolbar" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:src="@drawable/divider_ic" />
 
     <TextView
         android:id="@+id/text_title"
@@ -44,8 +53,8 @@
         android:lineSpacingMultiplier="1.3"
         android:paddingStart="@dimen/double_base_48"
         android:paddingEnd="@dimen/double_base_48"
-        android:text="@string/alphawallet_never_ask"
-        android:textAlignment="center"
+        android:text="@string/Woooo_never_ask"
+        android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="@id/layoutButtons"
         app:layout_constraintEnd_toEndOf="parent"

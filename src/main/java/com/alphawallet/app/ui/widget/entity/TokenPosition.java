@@ -5,7 +5,7 @@ import static com.alphawallet.app.repository.EthereumNetworkBase.getChainOrdinal
 import com.alphawallet.app.entity.tokendata.TokenGroup;
 
 /**
- * Created by JB on 10/01/2022.
+ * Created by Ehsan on 15/11/2023.
  */
 public class TokenPosition
 {

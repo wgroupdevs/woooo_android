@@ -15,15 +15,22 @@
         android:layout_marginTop="?android:attr/actionBarSize"
         android:orientation="vertical">
 
-        <View style="@style/Aw.Component.Separator" />
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:src="@drawable/divider_ic" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <View style="@style/Aw.Component.Separator" />
-
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:src="@drawable/divider_ic" />
     </LinearLayout>
 
 </RelativeLayout>

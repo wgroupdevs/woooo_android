@@ -30,7 +30,7 @@ public class AddWalletView extends FrameLayout implements View.OnClickListener {
 
     private void init(@LayoutRes int layoutId) {
         LayoutInflater.from(getContext()).inflate(layoutId, this, true);
-        findViewById(R.id.new_account_action).setOnClickListener(this);
+//        findViewById(R.id.new_account_action).setOnClickListener(this);
         findViewById(R.id.import_account_action).setOnClickListener(this);
         findViewById(R.id.watch_account_action).setOnClickListener(this);
         findViewById(R.id.hardware_card).setOnClickListener(this);
@@ -41,7 +41,7 @@ public class AddWalletView extends FrameLayout implements View.OnClickListener {
     {
 
         final int close_action = R.id.close_action;
-        final int new_account_action = R.id.new_account_action;
+//        final int new_account_action = R.id.new_account_action;
         final int import_account_action = R.id.import_account_action;
         final int watch_account_action = R.id.watch_account_action;
         final int hardware_card = R.id.hardware_card;
@@ -56,14 +56,14 @@ public class AddWalletView extends FrameLayout implements View.OnClickListener {
                 }
                 break;
             }
-            case new_account_action:
-            {
-                if (onNewWalletClickListener != null)
-                {
-                    onNewWalletClickListener.onNewWallet(view);
-                }
-                break;
-            }
+//            case new_account_action:
+//            {
+//                if (onNewWalletClickListener != null)
+//                {
+//                    onNewWalletClickListener.onNewWallet(view);
+//                }
+//                break;
+//            }
             case import_account_action:
             {
                 if (onImportWalletClickListener != null)

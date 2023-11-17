@@ -34,51 +34,51 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.google.common.base.Strings;
-
-import eu.siacs.conversations.Config;
-import eu.siacs.conversations.R;
 import eu.siacs.conversations.entities.Message;
-import eu.siacs.conversations.ui.SettingsActivity;
 
 public class OmemoSetting {
 
-	private static boolean always = false;
-	private static int encryption = Message.ENCRYPTION_AXOLOTL;
+    private static boolean always = false;
+    private static int encryption = Message.ENCRYPTION_AXOLOTL;
 
-	public static boolean isAlways() {
-		return always;
-	}
+    public static boolean isAlways() {
+        return always;
+    }
 
-	public static int getEncryption() {
-		return encryption;
-	}
+    public static int getEncryption() {
+        return encryption;
+    }
 
-	public static void load(final Context context, final SharedPreferences sharedPreferences) {
-		if (Config.omemoOnly()) {
-			always = true;
-			encryption = Message.ENCRYPTION_AXOLOTL;
-			return;
-		}
-		final String value = sharedPreferences.getString(SettingsActivity.OMEMO_SETTING, context.getResources().getString(R.string.omemo_setting_default));
-		switch (Strings.nullToEmpty(value)) {
-			case "always":
-				always = true;
-				encryption = Message.ENCRYPTION_AXOLOTL;
-				break;
-			case "default_off":
-				always = false;
-				encryption = Message.ENCRYPTION_NONE;
-				break;
-			default:
-				always = false;
-				encryption = Message.ENCRYPTION_AXOLOTL;
-				break;
+    public static void load(final Context context, final SharedPreferences sharedPreferences) {
+        always = true;
+        encryption = Message.ENCRYPTION_AXOLOTL;
 
-		}
-	}
+//		if (Config.omemoOnly()) {
+//			always = true;
+//			encryption = Message.ENCRYPTION_AXOLOTL;
+//			return;
+//		}
 
-	public static void load(final Context context) {
-		load(context, PreferenceManager.getDefaultSharedPreferences(context));
-	}
+
+//		final String value = sharedPreferences.getString(SettingsActivity.OMEMO_SETTING, context.getResources().getString(R.string.omemo_setting_default));
+//		switch (Strings.nullToEmpty(value)) {
+//			case "always":
+//				always = true;
+//				encryption = Message.ENCRYPTION_AXOLOTL;
+//				break;
+//			case "default_off":
+//				always = false;
+//				encryption = Message.ENCRYPTION_NONE;
+//				break;
+//			default:
+//				always = false;
+//				encryption = Message.ENCRYPTION_AXOLOTL;
+//				break;
+//
+//		}
+    }
+
+    public static void load(final Context context) {
+        load(context, PreferenceManager.getDefaultSharedPreferences(context));
+    }
 }

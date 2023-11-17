@@ -8,10 +8,10 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal" />
 
-    <TextView
-            android:id="@+id/new_account_action"
-            style="@style/Aw.Component.ActionItem"
-            android:text="@string/action_create_new_account" />
+<!--    <TextView-->
+<!--            android:id="@+id/new_account_action"-->
+<!--            style="@style/Aw.Component.ActionItem"-->
+<!--            android:text="@string/action_create_new_account" />-->
 
     <TextView
             android:id="@+id/import_account_action"

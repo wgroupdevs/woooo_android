@@ -29,7 +29,7 @@
             android:layout_width="62sp"
             android:layout_height="62sp"
             android:padding="5sp"
-            android:src="@drawable/woooo_logo"/>
+            android:src="@drawable/app_logo"/>
 
         <TextView
             android:id="@+id/tvMessage"

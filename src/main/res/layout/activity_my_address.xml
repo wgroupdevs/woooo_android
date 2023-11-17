@@ -8,7 +8,11 @@
     android:orientation="vertical">
 
     <include layout="@layout/layout_simple_toolbar" />
-
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:src="@drawable/divider_ic" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/layout_holder"
@@ -37,6 +41,7 @@
             android:layout_marginTop="@dimen/base_24"
             android:gravity="center"
             android:paddingTop="@dimen/cozy_20"
+            android:textAppearance="@style/TextAppearance.Conversations.Subhead"
             android:text="@string/scan_qr_label"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

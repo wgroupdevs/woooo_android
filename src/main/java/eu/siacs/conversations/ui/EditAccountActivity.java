@@ -637,7 +637,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             final Intent intent;
             final XmppConnection connection = mAccount.getXmppConnection();
             if (mInitMode) {
-                saveWooNetwork();
+//                saveWooNetwork();
                 // get Woaa Contacts Api
                 getContactsFromServer();
             }

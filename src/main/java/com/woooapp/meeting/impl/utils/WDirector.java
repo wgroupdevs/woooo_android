@@ -23,7 +23,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
-import eu.siacs.conversations.WooApplication;
+import eu.siacs.conversations.WooApp;
 
 /**
  * @author muneebahmad (ahmadgallian@yahoo.com)
@@ -47,7 +47,7 @@ public final class WDirector {
 //        eu.siacs.conversations.WooApplication.Companion.getSharedInstance().getSystemService(Context.TELEPHONY_SERVICE);
 //        String devId = tm.getImei();
 //        String devSerial = tm.getSimSerialNumber();
-        String androidId = Settings.Secure.getString(WooApplication.Companion.getSharedInstance().getContentResolver(), Settings.Secure.ANDROID_ID);
+        String androidId = Settings.Secure.getString(WooApp.Companion.getInstance().getContentResolver(), Settings.Secure.ANDROID_ID);
         UUID devUUID = new UUID(androidId.hashCode(), (long) System.currentTimeMillis() << 32 | System.nanoTime());
         String uuid = devUUID.toString();
         return uuid;

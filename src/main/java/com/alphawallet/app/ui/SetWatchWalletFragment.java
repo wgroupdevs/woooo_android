@@ -19,8 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 import eu.siacs.conversations.R;
 
 /**
- * Created by James on 26/07/2019.
- * Stormbird in Sydney
+ * Created by Ehsan on 17/11/2023.
  */
 @AndroidEntryPoint
 public class SetWatchWalletFragment extends ImportFragment implements AddressReadyCallback

@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -79,7 +80,7 @@ public class FunctionButtonBar extends LinearLayout implements AdapterView.OnIte
     private Button secondaryButton;
     private RelativeLayout primaryButtonWrapper;
     private ProgressBar primaryButtonSpinner;
-    private Button moreButton;
+    private ImageButton moreButton;
     private AssetDefinitionService assetService;
     private WalletType walletType = WalletType.NOT_DEFINED;
     private BottomSheetDialog bottomSheet;

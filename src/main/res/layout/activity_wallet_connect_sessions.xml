@@ -6,7 +6,15 @@
     android:scrollbarAlwaysDrawVerticalTrack="true"
     android:scrollbars="vertical">
 
-    <include layout="@layout/layout_simple_toolbar" />
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/layout_simple_toolbar" />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_below="@id/toolbar"
+        android:src="@drawable/divider_ic" />
 
     <LinearLayout
         android:id="@+id/layout_list"
@@ -31,10 +39,10 @@
 
             <ImageView
                 android:id="@+id/img_no_active_sessions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/_200sdp"
+                android:layout_height="@dimen/_200sdp"
                 android:layout_marginBottom="20dp"
-                android:src="@drawable/ic_icons_no_transactions" />
+                android:src="@drawable/app_logo" />
 
             <TextView
                 android:id="@+id/no_active_sessions_subtext"
@@ -47,6 +55,7 @@
                 android:id="@+id/btn_connect_wallet"
                 android:layout_width="250dp"
                 android:layout_height="wrap_content"
+                android:background="@drawable/button"
                 android:layout_marginTop="@dimen/dp24"
                 android:text="@string/wc_connect_wallet" />
 

@@ -40,7 +40,6 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -91,6 +90,7 @@ import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import eu.siacs.conversations.R;
+import eu.siacs.conversations.ui.MainActivity;
 import timber.log.Timber;
 
 @AndroidEntryPoint
@@ -204,15 +204,13 @@ public class WalletHomeActivity extends BaseNavigationActivity implements View.O
 
         if (getSupportActionBar() != null) getSupportActionBar().hide();
 
-        viewModel = new ViewModelProvider(this)
-                .get(WalletHomeViewModel.class);
-        viewModelWC = new ViewModelProvider(this)
-                .get(WalletConnectViewModel.class);
+        viewModel = MainActivity.viewModelWH;
+        viewModelWC = MainActivity.viewModelWC;
 
         viewModel.identify();
         viewModel.setWalletStartup();
         viewModel.setCurrencyAndLocale(this);
-        viewModel.tryToShowWhatsNewDialog(this);
+//        viewModel.tryToShowWhatsNewDialog(this);
         setContentView(R.layout.activity_alpha_wallet_home);
 
         initViews();
@@ -248,7 +246,7 @@ public class WalletHomeActivity extends BaseNavigationActivity implements View.O
         viewModel.splashReset().observe(this, this::onRequireInit);
         viewModel.defaultWallet().observe(this, this::onDefaultWallet);
         viewModel.updateAvailable().observe(this, this::onUpdateAvailable);
-        
+
         KeyboardVisibilityEvent.setEventListener(
                 this, isOpen ->
                 {
@@ -261,8 +259,8 @@ public class WalletHomeActivity extends BaseNavigationActivity implements View.O
                     }
                 });
 
-        viewModel.tryToShowRateAppDialog(this);
-        viewModel.tryToShowEmailPrompt(this, successOverlay, handler, this);
+//        viewModel.tryToShowRateAppDialog(this);
+//        viewModel.tryToShowEmailPrompt(this, successOverlay, handler, this);
 
         if (Utils.verifyInstallerId(this)) {
 //            UpdateUtils.checkForUpdates(this, this);
@@ -630,7 +628,7 @@ public class WalletHomeActivity extends BaseNavigationActivity implements View.O
         enableDisplayHomeAsHome(enableDisplayAsHome);
         switchAdapterToPage(page);
         invalidateOptionsMenu();
-        checkWarnings();
+//        checkWarnings();
 
         signalPageVisibilityChange(oldPage, page);
     }
@@ -657,7 +655,7 @@ public class WalletHomeActivity extends BaseNavigationActivity implements View.O
             int warns = viewModel.getUpdateWarnings() + 1;
             if (warns < 3) {
                 AWalletConfirmationDialog cDialog = new AWalletConfirmationDialog(this);
-                cDialog.setTitle(R.string.alphawallet_update);
+
                 cDialog.setCancelable(true);
                 cDialog.setSmallText("Using an old version of Alphawallet. Please update from the Play Store or Alphawallet website.");
                 cDialog.setPrimaryButtonText(R.string.ok);

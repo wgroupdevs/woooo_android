@@ -419,10 +419,11 @@ public class WooAPIService {
             public void onResponse(@NonNull Call<GetWooContactsModel> call, @NonNull Response<GetWooContactsModel> response) {
                 final GetWooContactsModel body = response.body();
                 if (body == null) {
-                    assert response.errorBody() != null;
                     try {
-                        String errorBodyFound = response.errorBody().byteString().utf8();
-                        listener.OnGetWooContactAPiResultFound(parseErrorBody(errorBodyFound));
+                        if (response.errorBody() != null) {
+                            String errorBodyFound = response.errorBody().byteString().utf8();
+                            listener.OnGetWooContactAPiResultFound(parseErrorBody(errorBodyFound));
+                        }
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

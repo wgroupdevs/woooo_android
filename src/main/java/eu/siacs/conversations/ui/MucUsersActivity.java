@@ -67,7 +67,7 @@ public class MucUsersActivity extends XmppActivity implements XmppConnectionServ
         } else {
             final String needle = search.toLowerCase(Locale.getDefault());
             ArrayList<MucOptions.User> filtered = new ArrayList<>();
-            for(MucOptions.User user : allUsers) {
+            for (MucOptions.User user : allUsers) {
                 final String name = user.getName();
                 final Contact contact = user.getContact();
                 if (name != null && name.toLowerCase(Locale.getDefault()).contains(needle) || contact != null && contact.getDisplayName().toLowerCase(Locale.getDefault()).contains(needle)) {
@@ -102,7 +102,7 @@ public class MucUsersActivity extends XmppActivity implements XmppConnectionServ
         loadAndSubmitUsers();
     }
 
-     private void displayToast(final String msg) {
+    private void displayToast(final String msg) {
         runOnUiThread(() -> Toast.makeText(this, msg, Toast.LENGTH_SHORT).show());
     }
 

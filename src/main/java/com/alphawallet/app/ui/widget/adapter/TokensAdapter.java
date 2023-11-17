@@ -19,8 +19,6 @@ import com.alphawallet.app.entity.walletconnect.WalletConnectSessionItem;
 import com.alphawallet.app.service.AssetDefinitionService;
 import com.alphawallet.app.service.TokensService;
 import com.alphawallet.app.ui.widget.TokensAdapterCallback;
-import com.alphawallet.app.ui.widget.entity.ChainItem;
-import com.alphawallet.app.ui.widget.entity.HeaderItem;
 import com.alphawallet.app.ui.widget.entity.ManageTokensData;
 import com.alphawallet.app.ui.widget.entity.ManageTokensSearchItem;
 import com.alphawallet.app.ui.widget.entity.ManageTokensSortedItem;
@@ -306,15 +304,15 @@ public class TokensAdapter extends RecyclerView.Adapter<BinderViewHolder>
             }
             else
             {
-                SortedItem headerItem = new HeaderItem(token.group);
+//                SortedItem headerItem = new HeaderItem(token.group);
                 items.add(tsi);
-                items.add(headerItem);
+//                items.add(headerItem);
 
-                SortedItem chainItem = new ChainItem(token.getChain(), token.group);
-                if (doesNotExist(chainItem))
-                {
-                    items.add(chainItem);
-                }
+//                SortedItem chainItem = new ChainItem(token.getChain(), token.group);
+//                if (doesNotExist(chainItem))
+//                {
+//                    items.add(chainItem);
+//                }
             }
         }
         else

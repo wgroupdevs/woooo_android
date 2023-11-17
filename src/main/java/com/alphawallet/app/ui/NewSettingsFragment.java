@@ -13,7 +13,6 @@ import static com.alphawallet.app.C.SETTINGS_INSTANTIATED;
 import static com.alphawallet.app.entity.BackupOperationType.BACKUP_HD_KEY;
 import static com.alphawallet.app.entity.BackupOperationType.BACKUP_KEYSTORE_KEY;
 import static com.alphawallet.app.ui.WalletHomeActivity.RESET_TOKEN_SERVICE;
-import static com.alphawallet.token.tools.TokenDefinition.TOKENSCRIPT_CURRENT_SCHEMA;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -59,18 +58,18 @@ public class NewSettingsFragment extends BaseFragment
     private NewSettingsViewModel viewModel;
     private LinearLayout walletSettingsLayout;
     private LinearLayout systemSettingsLayout;
-    private LinearLayout supportSettingsLayout;
+//    private LinearLayout supportSettingsLayout;
     private SettingsItemView myAddressSetting;
     private SettingsItemView changeWalletSetting;
     private SettingsItemView backUpWalletSetting;
     private SettingsItemView notificationsSetting;
-    private SettingsItemView changeLanguage;
+//    private SettingsItemView changeLanguage;
     private SettingsItemView changeCurrency;
     private SettingsItemView biometricsSetting;
     private SettingsItemView selectNetworksSetting;
-    private SettingsItemView advancedSetting;
-    private SettingsItemView darkModeSetting;
-    private SettingsItemView supportSetting;
+//    private SettingsItemView advancedSetting;
+//    private SettingsItemView darkModeSetting;
+//    private SettingsItemView supportSetting;
     private SettingsItemView walletConnectSetting;
     private SettingsItemView showSeedPhrase;
     private SettingsItemView nameThisWallet;
@@ -250,7 +249,7 @@ public class NewSettingsFragment extends BaseFragment
     {
         walletSettingsLayout = view.findViewById(R.id.layout_settings_wallet);
         systemSettingsLayout = view.findViewById(R.id.layout_settings_system);
-        supportSettingsLayout = view.findViewById(R.id.layout_settings_support);
+//        supportSettingsLayout = view.findViewById(R.id.layout_settings_support);
         updateLayout = view.findViewById(R.id.layout_update);
 
         myAddressSetting =
@@ -300,11 +299,11 @@ public class NewSettingsFragment extends BaseFragment
                         .withListener(this::onNotificationsSettingClicked)
                         .build();
 
-        changeLanguage = new SettingsItemView.Builder(getContext())
-                .withIcon(R.drawable.ic_settings_language)
-                .withTitle(R.string.title_change_language)
-                .withListener(this::onChangeLanguageClicked)
-                .build();
+//        changeLanguage = new SettingsItemView.Builder(getContext())
+//                .withIcon(R.drawable.ic_settings_language)
+//                .withTitle(R.string.title_change_language)
+//                .withListener(this::onChangeLanguageClicked)
+//                .build();
 
         changeCurrency = new SettingsItemView.Builder(getContext())
                 .withIcon(R.drawable.ic_currency)
@@ -327,26 +326,26 @@ public class NewSettingsFragment extends BaseFragment
                         .withListener(this::onSelectNetworksSettingClicked)
                         .build();
 
-        advancedSetting =
-                new SettingsItemView.Builder(getContext())
-                        .withIcon(R.drawable.ic_settings_advanced)
-                        .withTitle(R.string.title_advanced)
-                        .withListener(this::onAdvancedSettingClicked)
-                        .build();
-
-        darkModeSetting =
-                new SettingsItemView.Builder(getContext())
-                        .withIcon(R.drawable.ic_settings_darkmode)
-                        .withTitle(R.string.title_dark_mode)
-                        .withListener(this::onDarkModeSettingClicked)
-                        .build();
-
-        supportSetting =
-                new SettingsItemView.Builder(getContext())
-                        .withIcon(R.drawable.ic_settings_support)
-                        .withTitle(R.string.title_support)
-                        .withListener(this::onSupportSettingClicked)
-                        .build();
+//        advancedSetting =
+//                new SettingsItemView.Builder(getContext())
+//                        .withIcon(R.drawable.ic_settings_advanced)
+//                        .withTitle(R.string.title_advanced)
+//                        .withListener(this::onAdvancedSettingClicked)
+//                        .build();
+//
+//        darkModeSetting =
+//                new SettingsItemView.Builder(getContext())
+//                        .withIcon(R.drawable.ic_settings_darkmode)
+//                        .withTitle(R.string.title_dark_mode)
+//                        .withListener(this::onDarkModeSettingClicked)
+//                        .build();
+//
+//        supportSetting =
+//                new SettingsItemView.Builder(getContext())
+//                        .withIcon(R.drawable.ic_settings_support)
+//                        .withTitle(R.string.title_support)
+//                        .withListener(this::onSupportSettingClicked)
+//                        .build();
     }
 
     private void addSettingsToLayout()
@@ -377,23 +376,23 @@ public class NewSettingsFragment extends BaseFragment
 
         systemSettingsLayout.addView(notificationsSetting, systemIndex++);
 
-        systemSettingsLayout.addView(changeLanguage, systemIndex++);
+//        systemSettingsLayout.addView(changeLanguage, systemIndex++);
 
         systemSettingsLayout.addView(changeCurrency, systemIndex++);
 
-        systemSettingsLayout.addView(darkModeSetting, systemIndex++);
+//        systemSettingsLayout.addView(darkModeSetting, systemIndex++);
 
-        systemSettingsLayout.addView(advancedSetting, systemIndex++);
+//        systemSettingsLayout.addView(advancedSetting, systemIndex++);
 
-        supportSettingsLayout.addView(supportSetting, supportIndex++);
+//        supportSettingsLayout.addView(supportSetting, supportIndex++);
     }
 
     private void setInitialSettingsData(View view)
     {
-        TextView appVersionText = view.findViewById(R.id.text_version);
+//        TextView appVersionText = view.findViewById(R.id.text_version);
 //        appVersionText.setText(String.format(Locale.getDefault(), "%s (%d)", BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
-        TextView tokenScriptVersionText = view.findViewById(R.id.text_tokenscript_compatibility);
-        tokenScriptVersionText.setText(TOKENSCRIPT_CURRENT_SCHEMA);
+//        TextView tokenScriptVersionText = view.findViewById(R.id.text_tokenscript_compatibility);
+//        tokenScriptVersionText.setText(TOKENSCRIPT_CURRENT_SCHEMA);
     }
 
     private void openShowSeedPhrase(Wallet wallet)
@@ -494,7 +493,7 @@ public class NewSettingsFragment extends BaseFragment
 
         viewModel.setLocale(getContext());
 
-        changeLanguage.setSubtitle(LocaleUtils.getDisplayLanguage(viewModel.getActiveLocale(), viewModel.getActiveLocale()));
+//        changeLanguage.setSubtitle(LocaleUtils.getDisplayLanguage(viewModel.getActiveLocale(), viewModel.getActiveLocale()));
 
         changeCurrency.setSubtitle(viewModel.getDefaultCurrency());
     }

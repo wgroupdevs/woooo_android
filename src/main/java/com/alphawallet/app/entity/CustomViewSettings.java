@@ -1,19 +1,18 @@
 package com.alphawallet.app.entity;
 
-import static com.alphawallet.ethereum.EthereumNetworkBase.MAINNET_ID;
-
 import com.alphawallet.app.C;
 import com.alphawallet.app.entity.tokens.Token;
 import com.alphawallet.app.entity.tokens.TokenCardMeta;
 import com.alphawallet.app.entity.tokens.TokenInfo;
-import com.alphawallet.ethereum.EthereumNetworkBase;
 
 import java.util.Arrays;
 import java.util.List;
 
+import eu.siacs.conversations.utils.WOONetwork;
+
 public class CustomViewSettings
 {
-    public static final long primaryChain = MAINNET_ID;
+    public static final long primaryChain = WOONetwork.WOO_NET_ID;
     private static final String primaryChainName = C.ETHEREUM_NETWORK_NAME;
 
     //You can use the settings in this file to customise the wallet appearance
@@ -41,7 +40,7 @@ public class CustomViewSettings
     );
 
     public static final List<Long> alwaysVisibleChains = Arrays.asList(
-            EthereumNetworkBase.MAINNET_ID
+            WOONetwork.WOO_NET_ID
     );
 
     public static boolean alwaysShow(long chainId)

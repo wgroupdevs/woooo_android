@@ -86,11 +86,7 @@ class MainActivity : XmppActivity(), OnAccountUpdate {
     private fun inItWalletHomeViewModel() {
         viewModelWH = ViewModelProvider(this)[WalletHomeViewModel::class.java]
         viewModelWC = ViewModelProvider(this)[WalletConnectViewModel::class.java]
-        viewModelWH.identify()
-        viewModelWH.setWalletStartup()
-        viewModelWH.setCurrencyAndLocale(this)
-        viewModelWH.prepare(this)
-        viewModelWH.getWalletName(this)
+
 
     }
 

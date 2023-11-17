@@ -86,6 +86,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/standard_16"
+            android:visibility="gone"
             android:background="@drawable/button"
             android:text="@string/create_a_new_wallet" />
 
@@ -94,7 +95,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/button"
-            android:text="@string/i_already_have_a_wallet" />
+            android:text="@string/title_import" />
 
 
         <Button

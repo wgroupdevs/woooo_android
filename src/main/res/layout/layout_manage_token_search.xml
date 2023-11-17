@@ -20,8 +20,7 @@
             android:layout_width="@dimen/base_24"
             android:layout_height="@dimen/base_24"
             android:layout_marginStart="@dimen/small_12"
-            android:src="@drawable/ic_search_small"
-            app:tint="?android:textColorSecondary" />
+            android:src="@drawable/ic_search_small"/>
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edit_search"
