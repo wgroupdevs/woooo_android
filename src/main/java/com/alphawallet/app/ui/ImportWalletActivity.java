@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,6 +77,9 @@ public class ImportWalletActivity extends BaseActivity implements OnImportSeedLi
     private AWalletAlertDialog dialog;
     private ImportType currentPage;
     ViewPager2 viewPager;
+
+    private final String TAG="ImportWallet_TAG";
+
     ActivityResultLauncher<Intent> getQRCode = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> handleScanQR(result.getResultCode(), result.getData()));
 
@@ -232,17 +236,16 @@ public class ImportWalletActivity extends BaseActivity implements OnImportSeedLi
 
     private void onWallet(Pair<Wallet, ImportWalletType> wallet) {
         onProgress(false);
+        Log.d(TAG,"onWallet Called....");
 
         ImportWalletType importType = wallet.second;
         boolean fromSplash = getIntent().getBooleanExtra(C.EXTRA_FROM_SPLASH, false);
         if (fromSplash) {
             AnalyticsProperties firstActionProps = new AnalyticsProperties();
-            if (importType == ImportWalletType.WATCH) {
-                firstActionProps.put(FirstWalletAction.KEY, FirstWalletAction.WATCH_WALLET.getValue());
-            } else {
-                firstActionProps.put(FirstWalletAction.KEY, FirstWalletAction.IMPORT_WALLET.getValue());
-            }
+            firstActionProps.put(FirstWalletAction.KEY, FirstWalletAction.IMPORT_WALLET.getValue());
             viewModel.track(Analytics.Action.FIRST_WALLET_ACTION, firstActionProps);
+            Log.d(TAG,"Analytics.Action.FIRST_WALLET_ACTION....");
+
         } else {
             AnalyticsProperties importProps = new AnalyticsProperties();
             importProps.put(Analytics.PROPS_WALLET_TYPE, wallet.first.type.toString());

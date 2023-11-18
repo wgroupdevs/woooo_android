@@ -12,13 +12,10 @@ import android.view.View;
 
 import androidx.lifecycle.ViewModelProvider;
 
-import com.alphawallet.app.analytics.Analytics;
-import com.alphawallet.app.entity.AnalyticsProperties;
 import com.alphawallet.app.entity.CreateWalletCallbackInterface;
 import com.alphawallet.app.entity.CustomViewSettings;
 import com.alphawallet.app.entity.Operation;
 import com.alphawallet.app.entity.Wallet;
-import com.alphawallet.app.entity.analytics.FirstWalletAction;
 import com.alphawallet.app.router.HomeRouter;
 import com.alphawallet.app.router.ImportWalletRouter;
 import com.alphawallet.app.service.KeyService;
@@ -26,6 +23,8 @@ import com.alphawallet.app.util.RootUtil;
 import com.alphawallet.app.viewmodel.CreateWalletViewModel;
 import com.alphawallet.app.widget.AWalletAlertDialog;
 import com.alphawallet.app.widget.SignTransactionDialog;
+
+import org.whispersystems.libsignal.logging.Log;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import eu.siacs.conversations.R;
@@ -95,15 +94,15 @@ public class SplashActivity extends BaseActivity implements CreateWalletCallback
             findViewById(R.id.backArrow).setOnClickListener(v -> {
                 finish();
             });
-            findViewById(R.id.button_create).setOnClickListener(v -> {
-                AnalyticsProperties props = new AnalyticsProperties();
-                props.put(FirstWalletAction.KEY, FirstWalletAction.CREATE_WALLET.getValue());
-                viewModel.track(Analytics.Action.FIRST_WALLET_ACTION, props);
-                viewModel.createNewWallet(this, this);
-            });
-            findViewById(R.id.button_watch).setOnClickListener(v -> {
-                new ImportWalletRouter().openWatchCreate(this, IMPORT_REQUEST_CODE);
-            });
+//            findViewById(R.id.button_create).setOnClickListener(v -> {
+//                AnalyticsProperties props = new AnalyticsProperties();
+//                props.put(FirstWalletAction.KEY, FirstWalletAction.CREATE_WALLET.getValue());
+//                viewModel.track(Analytics.Action.FIRST_WALLET_ACTION, props);
+//                viewModel.createNewWallet(this, this);
+//            });
+//            findViewById(R.id.button_watch).setOnClickListener(v -> {
+//                new ImportWalletRouter().openWatchCreate(this, IMPORT_REQUEST_CODE);
+//            });
             findViewById(R.id.button_import).setOnClickListener(v -> {
                 new ImportWalletRouter().openForResult(this, IMPORT_REQUEST_CODE, true);
             });
@@ -125,6 +124,7 @@ public class SplashActivity extends BaseActivity implements CreateWalletCallback
                 viewModel.failedAuthentication(taskCode);
             }
         } else if (requestCode == IMPORT_REQUEST_CODE) {
+            Log.d("SPLASH_TAG","onActivityResult (IMPORT_REQUEST_CODE) " );
             viewModel.fetchWallets();
         }
     }

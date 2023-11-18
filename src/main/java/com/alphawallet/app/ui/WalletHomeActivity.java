@@ -40,6 +40,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -90,7 +91,6 @@ import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import eu.siacs.conversations.R;
-import eu.siacs.conversations.ui.MainActivity;
 import timber.log.Timber;
 
 @AndroidEntryPoint
@@ -204,8 +204,10 @@ public class WalletHomeActivity extends BaseNavigationActivity implements View.O
 
         if (getSupportActionBar() != null) getSupportActionBar().hide();
 
-        viewModel = MainActivity.viewModelWH;
-        viewModelWC = MainActivity.viewModelWC;
+        viewModel = new ViewModelProvider(this)
+                .get(WalletHomeViewModel.class);
+        viewModelWC = new ViewModelProvider(this)
+                .get(WalletConnectViewModel.class);
 
         viewModel.identify();
         viewModel.setWalletStartup();

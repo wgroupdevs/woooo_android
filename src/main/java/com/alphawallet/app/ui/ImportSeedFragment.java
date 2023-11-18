@@ -200,7 +200,7 @@ public class ImportSeedFragment extends ImportFragment implements OnSuggestionCl
             updateButtonState(true);
         } else if (passwordPhraseCounter.notEnough())
         {
-            wordCount.setTextColor(ContextCompat.getColor(requireActivity(), R.color.text_secondary));
+            wordCount.setTextColor(ContextCompat.getColor(requireActivity(), R.color.white70));
             updateButtonState(false);
         } else if (passwordPhraseCounter.exceed())
         {
