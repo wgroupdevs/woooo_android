@@ -23,6 +23,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.woooapp.meeting.impl.utils.ClipboardCopy
+import com.woooapp.meeting.impl.utils.WDirector
 import com.woooapp.meeting.impl.utils.WEvents
 import com.woooapp.meeting.impl.views.MeetingActivity
 import com.woooapp.meeting.impl.views.UIManager
@@ -106,7 +107,7 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
 
         var intent: Intent? = null
         if (account != null) {
-            meetingId = Utils.getNumericString(9);
+            meetingId = WDirector.getInstance().meetingId;
             mBinding?.meetingUrlEt?.text = Editable.Factory.getInstance()
                 .newEditable("https://cc.watchblock.net/meeting/$meetingId")
             val email = account!!.userEmail
@@ -184,6 +185,8 @@ class NewMeetingFragment : Fragment(), Handler.Callback {
                     dialog?.dismiss()
                 }
                 dialog = builder?.create()
+                dialog?.setCanceledOnTouchOutside(false)
+                dialog?.setCancelable(false)
                 dialog?.show()
             } else {
                 askForPermission(Manifest.permission.RECORD_AUDIO, PERMISSION_MIC_CODE)

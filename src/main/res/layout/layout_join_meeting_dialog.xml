@@ -48,7 +48,7 @@
         android:gravity="center_horizontal"
         android:textSize="16sp"
         android:layout_marginTop="20sp"
-        android:text="Please Enter the Meeting ID to join meeting"
+        android:text="Please Paste Meeting link or Enter Meeting ID to join in."
         />
 
     <androidx.appcompat.widget.AppCompatEditText
@@ -64,12 +64,13 @@
         android:padding="10sp"
         android:inputType="number"
         android:hint="Meeting ID"
-        />
+        android:gravity="center"
+        android:imeOptions="actionDone"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="2sp"
-        android:layout_marginTop="25sp"
+        android:layout_marginTop="10sp"
         android:layout_marginLeft="5sp"
         android:layout_marginRight="5sp"
         android:background="@color/blue_primary100"
@@ -86,7 +87,7 @@
         android:text="Join"
         android:paddingLeft="10sp"
         android:paddingRight="10sp"
-        android:layout_marginTop="30sp"
+        android:layout_marginTop="10sp"
         android:layout_marginRight="20sp"
         android:layout_marginLeft="20sp"
         />
@@ -102,7 +103,7 @@
         android:text="Cancel"
         android:paddingLeft="10sp"
         android:paddingRight="10sp"
-        android:layout_marginTop="20sp"
+        android:layout_marginTop="10sp"
         android:layout_marginRight="20sp"
         android:layout_marginLeft="20sp"
         android:layout_marginBottom="20sp"

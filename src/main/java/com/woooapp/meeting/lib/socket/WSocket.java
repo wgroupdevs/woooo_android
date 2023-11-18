@@ -18,9 +18,7 @@ import com.woooapp.meeting.lib.PeerConnectionUtils;
 import com.woooapp.meeting.lib.RoomClient;
 import com.woooapp.meeting.lib.RoomMessageHandler;
 import com.woooapp.meeting.lib.lv.RoomStore;
-import com.woooapp.meeting.lib.lv.SupplierMutableLiveData;
 import com.woooapp.meeting.lib.model.ConsumerData;
-import com.woooapp.meeting.lib.model.Consumers;
 import com.woooapp.meeting.lib.model.Peer;
 import com.woooapp.meeting.lib.model.StorageIdsData;
 import com.woooapp.meeting.net.ApiManager;
@@ -678,6 +676,7 @@ public class WSocket {
                                                         }
                                                         peer.put("device", null);
                                                         mStore.addPeer(producerSockId, peer);
+
                                                         if (finalUsername != null) {
                                                             WEvents.getInstance().notify(WEvents.EVENT_NEW_PEER_JOINED, finalUsername.isEmpty() ? "" : finalUsername);
                                                         } else {
@@ -705,6 +704,7 @@ public class WSocket {
                                                             new MeetingClient.ConsumerHolder(producerSockId, consumer));
                                                     mStore.addConsumer(producerSockId, type, consumer, producerPaused);
                                                     mConsumerData.add(new ConsumerData(consumer.getId(), producerSockId, kind));
+
                                                     // Notify
                                                     if (!consumeScreen) {
                                                         WEvents.getInstance().notify(WEvents.EVENT_TYPE_CONSUMER_CREATED, id);
@@ -1725,7 +1725,6 @@ public class WSocket {
     }
 
     /**
-     *
      * @param peerId
      */
     public void closeVideoConsumer(@NonNull String peerId) {
@@ -1741,8 +1740,8 @@ public class WSocket {
                             break;
                         }
                         holder.mConsumer.close();
-//                        mMeetingClient.mConsumers.remove(consumerId);
-//                        mStore.removeConsumer(holder.peerId, holder.mConsumer.getId());
+                        mMeetingClient.mConsumers.remove(consumerId);
+                        mStore.removeConsumer(holder.peerId, holder.mConsumer.getId());
                         mConsumerData.remove(i);
                     }
                 }
@@ -1757,7 +1756,7 @@ public class WSocket {
                                     if (!r.isClosed()) {
                                         try {
                                             r.close();
-                                            r.dispose();
+//                                            r.dispose();
                                         } catch (Exception ex) {
                                             ex.printStackTrace();
                                         } finally {
@@ -2229,6 +2228,12 @@ public class WSocket {
             return;
         }
 
+        mPeerConnectionUtils.disposeCamCapturer();
+        if (mLocalVideoTrack != null) {
+            mLocalVideoTrack.setEnabled(false);
+            mLocalVideoTrack = null;
+        }
+
         mCamProducer.close();
         mStore.removeProducer(mCamProducer.getId());
 
@@ -2275,7 +2280,7 @@ public class WSocket {
                             null,
                             null,
                             null);
-//            mStore.addProducer(mScreenProducer);
+            mStore.addProducer(mScreenProducer);
             WEvents.getInstance().notify(WEvents.EVENT_PRESENTING, true);
         } catch (MediasoupException e) {
             e.printStackTrace();
@@ -2292,9 +2297,18 @@ public class WSocket {
             return;
         }
 
+        mPeerConnectionUtils.disposeScreenVideoCapturer();
         String producerId = mScreenProducer.getId();
+
+        try {
+            mScreenVideoTrack.setEnabled(false);
+            mScreenVideoTrack = null;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
         mScreenProducer.close();
-//        mStore.removeProducer(mScreenProducer.getId());
+        mStore.removeProducer(mScreenProducer.getId());
 
         mScreenProducer = null;
         isPresenting = false;

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="500sp"
+    android:background="@drawable/bg_rounded_default"
+    android:layout_margin="10sp"
+    android:elevation="10sp">
+
+    <com.woooapp.meeting.impl.views.ScreenSharePeerView
+        android:id="@+id/screenSharePeerView"
+        android:layout_width="400sp"
+        android:layout_height="500sp"
+        android:layout_margin="0sp"
+        android:padding="0sp"
+        android:layout_centerInParent="true"
+        />
+
+    <TextView
+        android:id="@+id/screenShareTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Presenting"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="15sp"
+        android:padding="5sp"
+        android:elevation="10sp"
+        android:background="@drawable/bg_rounded_red"/>
+
+</RelativeLayout>
