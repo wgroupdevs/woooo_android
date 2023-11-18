@@ -496,7 +496,7 @@ public class MeetingPageFragment2 extends Fragment implements Handler.Callback {
      * @return
      */
     @Nullable
-    private PeerView getPeerView(@NonNull String socketId) {
+    public PeerView getPeerView(@NonNull String socketId) {
         if (mFrameLayout != null) {
             for (int i = 0; i < mFrameLayout.getChildCount(); i++) {
                 if (mFrameLayout.getChildAt(i).getTag() != null) {
@@ -507,6 +507,24 @@ public class MeetingPageFragment2 extends Fragment implements Handler.Callback {
             }
         }
         return null;
+    }
+
+    /**
+     *
+     * @param socketId
+     * @return
+     */
+    public boolean hasPeerView(@NonNull String socketId) {
+        if (mFrameLayout != null) {
+            for (int i = 0; i < mFrameLayout.getChildCount(); i++) {
+                if (mFrameLayout.getChildAt(i).getTag() != null) {
+                    if (mFrameLayout.getChildAt(i).getTag().equals(socketId)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public void enableTranslation() {

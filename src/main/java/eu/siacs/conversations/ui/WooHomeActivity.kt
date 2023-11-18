@@ -17,6 +17,7 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.woooapp.meeting.impl.utils.WDirector
 import eu.siacs.conversations.R
 import eu.siacs.conversations.databinding.ActivityHomeBinding
 import eu.siacs.conversations.entities.Account
@@ -44,6 +45,8 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
 
 //        crashChecker = CrashChecker(this)
 //        crashChecker?.checkForCrash()
+
+        WDirector.getInstance().generateMeetingId()
 
         binding.appBarHome.toolbar.toolbarProfilePhoto.setOnClickListener {
             binding.drawerLayout.open()

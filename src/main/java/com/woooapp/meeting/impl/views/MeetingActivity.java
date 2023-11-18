@@ -104,6 +104,7 @@ import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.persistance.DatabaseBackend;
 import okhttp3.Call;
 import okhttp3.Response;
+import pk.muneebahmad.lib.graphics.SP;
 
 /**
  * @author muneebahmad (ahmadgallian@yahoo.com)
@@ -193,15 +194,12 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private NotificationManagerCompat notificationManager;
     private boolean isNewIntent = false;
     private MediaProjectionManager mediaProjectionManager;
-    private MediaProjection mediaProjection;
     private Intent mMediaProjectionPermissionResultData;
     private int mMediaProjectionPermissionResultCode;
     private VideoCapturer capturer;
     private LinearLayout layoutScreenShare;
     private ImageView buttonStopScreenShare;
     private RelativeLayout layoutPeerScreenShare;
-    private TextView tvPeerScreenShare;
-    private PeerView peerView;
 
     @SuppressWarnings("deprecation")
     @Override
@@ -418,7 +416,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         this.layoutScreenShare = findViewById(R.id.layoutPresenting);
         this.buttonStopScreenShare = findViewById(R.id.buttonStop);
         this.layoutPeerScreenShare = findViewById(R.id.layoutPeerScreenShare);
-        this.tvPeerScreenShare = findViewById(R.id.screenSharePeerTv);
 
         this.meetingBackground.setOnTouchListener((view, motionEvent) -> true);
 
@@ -1018,6 +1015,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
 
         getViewModelStore().clear();
         initViewModel();
+        WDirector.getInstance().generateMeetingId();
     }
 
     private void initViewModel() {
@@ -1413,7 +1411,8 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     mMeetingClient.shareScreen(true, capturer, dm);
                 }
             } else {
-                Log.w(TAG, "Screen Share already working ...");
+                Log.w(TAG, "Capturer already exist ...");
+                mMeetingClient.shareScreen(true, capturer, dm);
             }
         }
     }
@@ -1717,6 +1716,17 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                                     ex.printStackTrace();
                                 }
                             });
+                            mRoomStore.getPeers().postValue(peers -> {
+                                Peer p = peers.getPeer(socketId);
+                                if (p != null) {
+                                    String peerName = p.getDisplayName();
+                                    if (peerName != null) {
+                                        runOnUiThread(() -> {
+                                            showCommonPopup(peerName + " speaking", true, WooCommonPopup.VERTICAL_POSITION_TOP);
+                                        });
+                                    }
+                                }
+                            });
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -2011,7 +2021,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                     if (presenting) {
                         showScreenShareView();
                     } else {
-                        disposeVideoCapturer();
+//                        disposeVideoCapturer();
                     }
                 }
                 return false;
@@ -2059,13 +2069,18 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 Peer peer = peers.getPeer(peerId);
                 if (layoutPeerScreenShare != null && mMeetingClient != null && peer != null) {
                     layoutPeerScreenShare.setVisibility(View.VISIBLE);
-                    peerView = findViewById(R.id.screenSharePeerView);
-                    peerView.setScreenShare(true);
-                    if (peerView != null) {
-                        tvPeerScreenShare.setText(peer.getDisplayName() + " is Presenting");
+                    View contentView = LayoutInflater.from(MeetingActivity.this).inflate(R.layout.layout_screen_share_peer_view, null);
+                    if (contentView != null) {
+                        ScreenSharePeerView pv = contentView.findViewById(R.id.screenSharePeerView);
+                        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+                                (int) SP.valueOf(MeetingActivity.this, 500));
+                        params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
+                        TextView tvTitle = contentView.findViewById(R.id.screenShareTv);
+                        tvTitle.setText(peer.getDisplayName() + " is presenting");
                         PeerProps props = new PeerProps(getApplication(), mRoomStore);
-                        peerView.setProps(props, mMeetingClient, peer.getId());
-                        props.connect(this, peer.getId());
+                        pv.setProps(props, mMeetingClient, peer.getId());
+                        layoutPeerScreenShare.addView(contentView, params);
+                        props.connect(MeetingActivity.this, peer.getId());
                     }
                 }
             });
@@ -2082,8 +2097,9 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
                             layoutPeerScreenShare.setVisibility(View.GONE);
-                            peerView.getProps().disconnect(MeetingActivity.this, peerId);
-//                            mMeetingClient.closeConsumer(peerId);
+                            layoutPeerScreenShare.removeAllViews();
+                            mMeetingClient.closeConsumer(peerId);
+                            mRoomStore.removePeer(peerId);
                         }
                     });
                 }
@@ -2440,14 +2456,19 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private void disposeVideoCapturer() {
         if (capturer != null) {
             try {
-                capturer.stopCapture();
-                capturer.dispose();
+//                capturer.stopCapture();
+//                capturer.dispose();
                 capturer = null;
-                Log.d(TAG, "<< Disposed VideoCapturer ...");
+                Log.d(TAG, "<< Stopped VideoCapturer ...");
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+
+        if (mediaProjectionManager != null) {
+            mediaProjectionManager = null;
+        }
+
         runOnUiThread(() -> {
             if (layoutScreenShare != null) {
                 if (layoutScreenShare.getVisibility() == View.VISIBLE) {
@@ -2456,7 +2477,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                         public void onAnimationEnd(Animator animation) {
                             super.onAnimationEnd(animation);
                             layoutScreenShare.setVisibility(View.GONE);
-                            buttonStopScreenShare.setOnClickListener(null);
                         }
                     });
                 }

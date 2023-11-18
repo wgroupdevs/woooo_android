@@ -62,6 +62,7 @@ public class PeerConnectionUtils {
     private VideoSource mScreeVideoSource;
     private CameraVideoCapturer mCamCapture;
     private VideoCapturer mScreenCapturer;
+    private SurfaceTextureHelper surfaceTextureHelper2;
 
     public PeerConnectionUtils() {
         mThreadChecker = new ThreadUtils.ThreadChecker();
@@ -264,6 +265,7 @@ public class PeerConnectionUtils {
     private void createScreenVideoSource(@NonNull Context context, @NonNull DisplayMetrics metrics) {
         if (mScreenCapturer == null)
             return;
+
         Logger.d(TAG, "createScreenVideoSource()");
         mThreadChecker.checkIsOnValidThread();
         if (mPeerConnectionFactory == null) {
@@ -272,11 +274,50 @@ public class PeerConnectionUtils {
 
         mScreeVideoSource = mPeerConnectionFactory.createVideoSource(true);
 
-        SurfaceTextureHelper surfaceTextureHelper =
-                SurfaceTextureHelper.create("CaptureThread2", mEglBase.getEglBaseContext());
+        if (surfaceTextureHelper2 == null) {
+            surfaceTextureHelper2 =
+                    SurfaceTextureHelper.create("CaptureThread2", mEglBase.getEglBaseContext());
+        }
 
-        mScreenCapturer.initialize(surfaceTextureHelper, context, mScreeVideoSource.getCapturerObserver());
+        mScreenCapturer.initialize(surfaceTextureHelper2, context, mScreeVideoSource.getCapturerObserver());
         mScreenCapturer.startCapture(1280, 720, 30);
+    }
+
+    public void disposeCamCapturer() {
+        if (mCamCapture != null) {
+            try {
+                mCamCapture.stopCapture();
+                mCamCapture.dispose();
+                mCamCapture = null;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        if (mVideoSource != null) {
+            mVideoSource.dispose();
+            mVideoSource = null;
+        }
+    }
+
+    public void disposeScreenVideoCapturer() {
+        if (mScreenCapturer != null) {
+            try {
+                mScreenCapturer.stopCapture();
+                mScreenCapturer.dispose();
+                mScreenCapturer = null;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        if (mScreeVideoSource != null) {
+            try {
+                mScreeVideoSource.dispose();
+                mScreeVideoSource = null;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     // Audio track creation.
@@ -314,7 +355,9 @@ public class PeerConnectionUtils {
                                              @NonNull DisplayMetrics displayMetrics) {
         Logger.d(TAG, "createVideoTrack()");
         mThreadChecker.checkIsOnValidThread();
-        this.mScreenCapturer = videoCapturer;
+        if (this.mScreenCapturer == null) {
+            this.mScreenCapturer = videoCapturer;
+        }
         if (mScreeVideoSource == null) {
             createScreenVideoSource(context, displayMetrics);
         }

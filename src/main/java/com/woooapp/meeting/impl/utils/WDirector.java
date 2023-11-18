@@ -8,6 +8,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.woooapp.meeting.lib.MeetingClient;
+import com.woooapp.meeting.lib.Utils;
 import com.woooapp.meeting.lib.model.Peer;
 import com.woooapp.meeting.net.models.RoomData;
 
@@ -37,6 +38,8 @@ public final class WDirector {
     private final Map<String, Boolean> videoStateMap = new LinkedHashMap<>();
     private RoomData roomData;
     private boolean chatTranslationEnabled = false;
+    private String meetingId;
+
     private WDirector() {
         this.videoStateMap.clear();
     }
@@ -102,6 +105,18 @@ public final class WDirector {
             }
         }
         return strBuff.toString();
+    }
+
+    public void generateMeetingId() {
+        this.meetingId = Utils.getNumericString(9);
+    }
+
+    /**
+     *
+     * @return
+     */
+    public String getMeetingId() {
+        return this.meetingId;
     }
 
     /**

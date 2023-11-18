@@ -112,13 +112,14 @@
                     android:hint="https://cc.watchblock.net/meeting/123456"
                     android:imeOptions="actionNext"
                     android:inputType="none"
-                    android:paddingVertical="@dimen/_10sdp"
+                    android:paddingVertical="15sp"
                     android:paddingStart="@dimen/_5sdp"
                     android:textColor="@color/white"
                     android:enabled="false"
                     android:singleLine="true"
                     android:ellipsize="start"
                     android:layout_weight="1"
+                    android:textSize="10sp"
                     />
 
                 <ImageButton
