@@ -24,6 +24,8 @@ import com.alphawallet.app.widget.SignTransactionDialog
 import com.hbb20.CountryCodePicker
 import dagger.hilt.android.AndroidEntryPoint
 import eu.siacs.conversations.R
+import eu.siacs.conversations.blockchain.interfaces.AddressMapperCallback
+import eu.siacs.conversations.blockchain.viewModel.AddressMapperViewModel
 import eu.siacs.conversations.databinding.ActivitySignUpBinding
 import eu.siacs.conversations.http.model.SignUpModel
 import eu.siacs.conversations.http.model.SignUpRequestModel
@@ -36,12 +38,13 @@ import eu.siacs.conversations.ui.util.isValidEmail
 
 @AndroidEntryPoint
 class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult,
-    CreateWalletCallbackInterface {
+    CreateWalletCallbackInterface, AddressMapperCallback {
 
     private lateinit var binding: ActivitySignUpBinding
     private lateinit var codePicker: CountryCodePicker
     private val TAG = "SignUpActivity_TAG"
     private var createWallet: CreateWalletViewModel? = null
+    private var addressMapperVM: AddressMapperViewModel? = null
     private var userSignUpRequest: SignUpRequestModel? = null;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,9 +58,10 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult,
         binding.signUpBtn.setOnClickListener {
 
             try {
-                validateSignUpForm()
+                addressMapperVM?.checkAddressMapper()
 
-//                createWallet?.createNewWallet(this, this)
+//                validateSignUpForm()
+
 
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -67,6 +71,7 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult,
 
         //detect previous launch
         createWallet = ViewModelProvider(this)[CreateWalletViewModel::class.java]
+        addressMapperVM = ViewModelProvider(this)[AddressMapperViewModel::class.java]
         createWallet?.cleanAuxData(applicationContext)
 
         createWallet!!.wallets().observe(this, this::onWallets)
@@ -75,6 +80,10 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult,
 
     override fun onResume() {
         super.onResume()
+
+
+
+
     }
 
 
@@ -328,6 +337,11 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult,
         } else if (requestCode == C.IMPORT_REQUEST_CODE) {
             createWallet?.fetchWallets()
         }
+    }
+
+    override fun setAddressPhoneNumber(status: String?) {
+
+        Log.d(TAG, "setAddressPhoneNumber : $status")
     }
 
 
