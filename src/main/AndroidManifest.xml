@@ -124,6 +124,12 @@
 
         <service android:name=".services.XmppConnectionService" />
 
+        <service android:name="com.woooapp.meeting.lib.ScreenCaptureService"
+            android:foregroundServiceType="mediaProjection"
+            android:exported="false"
+            android:enabled="true"
+            />
+
         <receiver
             android:name="eu.siacs.conversations.services.EventReceiver"
             android:exported="true">

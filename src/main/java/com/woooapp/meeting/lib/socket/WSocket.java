@@ -253,7 +253,7 @@ public class WSocket {
             mMainHandler.postDelayed(() -> {
                 Logger.freeHandler();
                 Log.d(TAG, "WebRTC Logger released ....");
-            }, 3000);
+            }, 4000);
 
             // Deliberate call to GC
             Runtime.getRuntime().gc();
