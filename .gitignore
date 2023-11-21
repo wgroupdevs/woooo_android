@@ -15,7 +15,7 @@ signing.properties
 # Ignore Gradle GUI config
 gradle-app.setting
 
-libs/*.aar
+#libs/*.aar
 
 # https://github.com/github/gitignore/blob/master/Android.gitignore
 # Built application files

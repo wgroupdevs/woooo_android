@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/Users/mac/Desktop/w_group/woooo_android/.cxx/RelWithDebInfo/382p4s1z/armeabi-v7a",
+  "command": "/Users/mac/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=armv7-none-linux-androideabi24 --sysroot=/Users/mac/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dkeys_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -march=armv7-a -mthumb -Wformat -Werror=format-security -DIFKEY=\"da3717f25f824cc1baa32d812386d93f\" -DOSKEY=\"...\" -DPSKEY=\"...\" -DASKEY=\"HFDDY5BNKGXBB82DE2G8S64C3C41B76PYI\" -DWCKEY=\"40c6071febfd93f4fe485c232a8a4cd9\" -Wno-dev -O2 -g -DNDEBUG -fPIC -o CMakeFiles/keys.dir/keys.c.o -c /Users/mac/Desktop/w_group/woooo_android/src/main/cpp/keys.c",
+  "file": "/Users/mac/Desktop/w_group/woooo_android/src/main/cpp/keys.c"
+}
+]
