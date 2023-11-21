@@ -1,0 +1,19 @@
+# ninja log v5
+1	248	1700464922514482502	build.ninja	c682757c8a002a07
+0	7	0	clean	236afe6167867679
+82	152	1700196266473661790	/Users/mac/Desktop/w_group/woooo_android/build/intermediates/cxx/Debug/9186a532/obj/armeabi-v7a/libkeys.so	feef38b06dda8511
+1	81	1700196266404102360	CMakeFiles/keys.dir/keys.c.o	3aae65a5f93004bb
+2	122	1700464922697219701	CMakeFiles/keys.dir/keys.c.o	3aae65a5f93004bb
+123	251	1700464922821960583	/Users/mac/Desktop/w_group/woooo_android/build/intermediates/cxx/Debug/9186a532/obj/armeabi-v7a/libkeys.so	feef38b06dda8511
+0	12	0	clean	236afe6167867679
+0	8	0	clean	236afe6167867679
+0	11	0	clean	236afe6167867679
+0	10	0	clean	236afe6167867679
+1	526	1700466901207123358	CMakeFiles/keys.dir/keys.c.o	3aae65a5f93004bb
+526	858	1700466901535637943	/Users/mac/Desktop/w_group/woooo_android/build/intermediates/cxx/Debug/9186a532/obj/armeabi-v7a/libkeys.so	feef38b06dda8511
+0	11	0	clean	236afe6167867679
+0	7	0	clean	236afe6167867679
+0	7	0	clean	236afe6167867679
+0	6	0	clean	236afe6167867679
+1	535	1700467030352691815	CMakeFiles/keys.dir/keys.c.o	3aae65a5f93004bb
+535	884	1700467030698500674	/Users/mac/Desktop/w_group/woooo_android/build/intermediates/cxx/Debug/9186a532/obj/armeabi-v7a/libkeys.so	feef38b06dda8511
