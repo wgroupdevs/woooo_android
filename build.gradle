@@ -166,7 +166,7 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.2.6'
 
     implementation 'com.github.bumptech.glide:glide:4.16.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
+//    kapt 'com.github.bumptech.glide:compiler:4.13.0'
 
 
     // charts
@@ -415,7 +415,7 @@ android {
         debug {
 //            shrinkResources true
 //            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -490,6 +490,6 @@ private String getGitHubUsername() {
 
 private String getPAT() {
     def encodedToken = project.findProperty("gpr.key")
-//    def firstEncode = new String(encodedToken.decodeBase64())
-    new String(encodedToken)
+    def firstEncode = new String(encodedToken.decodeBase64())
+    new String(firstEncode)
 }
