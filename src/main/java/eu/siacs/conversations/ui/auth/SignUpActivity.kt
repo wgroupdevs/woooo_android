@@ -34,6 +34,8 @@ import eu.siacs.conversations.http.services.WooAPIService
 import eu.siacs.conversations.ui.EditAccountActivity
 import eu.siacs.conversations.ui.util.PrDialog
 import eu.siacs.conversations.ui.util.isValidEmail
+import java.util.concurrent.CompletableFuture
+import java.util.function.Supplier
 
 
 @AndroidEntryPoint
@@ -46,6 +48,10 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult,
     private var createWallet: CreateWalletViewModel? = null
     private var addressMapperVM: AddressMapperViewModel? = null
     private var userSignUpRequest: SignUpRequestModel? = null;
+
+    private var isTransactionSuccess = false;
+    private var isSignUpSuccess = false;
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
@@ -58,10 +64,7 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult,
         binding.signUpBtn.setOnClickListener {
 
             try {
-                addressMapperVM?.checkAddressMapper()
-
-//                validateSignUpForm()
-
+                validateSignUpForm()
 
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -80,8 +83,6 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult,
 
     override fun onResume() {
         super.onResume()
-
-
 
 
     }
@@ -194,6 +195,10 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult,
         }
 
         phoneNumber = countryCode.plus(phoneNumber)
+        isTransactionSuccess = false;
+        isSignUpSuccess = false;
+        createWallet?.clearPreferences();
+        createWallet?.cleanAuxData(this)
 
 
 //        Create Wallet
@@ -251,52 +256,34 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult,
     }
 
 
-    override fun <T : Any?> onSignUpResultFound(result: T) {
-
-        runOnUiThread {
-            PrDialog.hide()
-            when (result) {
-                is SignUpModel -> {
-                    showAlertDialog(
-                        isSuccess = true,
-                        "Register successfully",
-                        "An OTP is sent to your email please verify."
-                    )
-                }
-
-                is BaseModelAPIResponse -> {
-                    val message = (result as BaseModelAPIResponse).Message
-                    showAlertDialog(
-                        isSuccess = false,
-                        "Registration failed",
-                        message
-                    )
-                    Log.d(
-                        TAG,
-                        "onSignUpResultFound ERROR : " + (result as BaseModelAPIResponse).Message
-                    )
-                }
-
-                else -> {
-                    PrDialog.hide()
-                    Log.d(EditAccountActivity.TAG, "ECEPTION FOUND... $result")
-                }
-            }
-        }
-    }
-
-
     private fun onWallets(wallets: Array<Wallet>) {
 
         if (wallets.isNotEmpty()) {
             val wallet = wallets.first()
             val wooAuthService = WooAPIService.getInstance()
             userSignUpRequest?.walletAddress = wallet.address;
-            wooAuthService.signUp(userSignUpRequest, this@SignUpActivity)
             createWallet?.doWalletStartupActions(wallet)
 
-            Log.d(TAG, "onWallets WALLET-DATA FOUND ")
+            val setAddressPhoneFuture: CompletableFuture<Unit> = CompletableFuture.supplyAsync {
+                addressMapperVM?.setAddressPhoneNumber(
+                    wallet.address,
+                    userSignUpRequest?.phoneNumber,
+                    this@SignUpActivity
+                )
+            }
+            val signUpFuture: CompletableFuture<Unit> = CompletableFuture.supplyAsync {
+                wooAuthService.signUp(userSignUpRequest, this@SignUpActivity)
+            }
+            // Combine both futures and wait for both to complete
+            val combinedFuture = CompletableFuture.allOf(setAddressPhoneFuture, signUpFuture)
 
+            try {
+                combinedFuture.get()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            Log.d(TAG, "onWallets WALLET-DATA FOUND ")
         } else {
             Log.d(TAG, "NO WALLET-DATA FOUND")
         }
@@ -339,11 +326,83 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult,
         }
     }
 
-    override fun setAddressPhoneNumber(status: String?) {
+    override fun setAddressPhoneNumber(status: Boolean) {
+        if (status) {
+            isTransactionSuccess = status;
+            finalizeSignUp()
+        } else {
+            PrDialog.hide()
+            showAlertDialog(
+                isSuccess = false,
+                "Registration failed",
+                "Account not created,Try again"
+            )
+            Log.d(TAG, "Register Account Failed...")
+        }
 
-        Log.d(TAG, "setAddressPhoneNumber : $status")
+
     }
 
+    override fun <T : Any?> onSignUpResultFound(result: T) {
+
+        runOnUiThread {
+            when (result) {
+                is SignUpModel -> {
+                    isSignUpSuccess = true;
+                    Log.d(
+                        TAG,
+                        "onSignUpResultFound Success : " + (result as SignUpModel).Message
+                    )
+                    finalizeSignUp()
+                }
+
+                is BaseModelAPIResponse -> {
+                    PrDialog.hide()
+                    val message = (result as BaseModelAPIResponse).Message
+                    showAlertDialog(
+                        isSuccess = false,
+                        "Registration failed",
+                        message
+                    )
+                    Log.d(
+                        TAG,
+                        "onSignUpResultFound ERROR : " + (result as BaseModelAPIResponse).Message
+                    )
+                }
+
+                else -> {
+
+                    Log.d(EditAccountActivity.TAG, "ECEPTION FOUND... $result")
+                }
+            }
+        }
+    }
+
+
+    private fun finalizeSignUp() {
+        // Wait for both calls to finish
+        runOnUiThread {
+            try {
+                Log.d(TAG, "isTransactionSuccess ... $isTransactionSuccess")
+                Log.d(TAG, "isSignUpSuccess ... $isSignUpSuccess")
+                if (isTransactionSuccess && isSignUpSuccess) {
+                    PrDialog.hide()
+                    showAlertDialog(
+                        isSuccess = true,
+                        "Register successfully",
+                        "An OTP is sent to your email please verify."
+                    )
+                }
+
+            } catch (e: Exception) {
+                PrDialog.hide()
+                e.printStackTrace()
+            }
+
+        }
+
+
+    }
 
 }
 

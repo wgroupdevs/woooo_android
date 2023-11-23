@@ -239,6 +239,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 + Account.LANGUAGE_CODE + " TEXT, "
                 + Account.DATE_OF_BIRTH + " TEXT, "
                 + Account.ACCOUNT_UNIQUE_ID + " TEXT, "
+                + Account.WALLET_ADDRESS + " TEXT, "
                 + Account.COUNTRY + " TEXT, "
                 + Account.STATE + " TEXT, "
                 + Account.CITY + " TEXT, "

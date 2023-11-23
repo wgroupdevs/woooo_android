@@ -585,6 +585,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         mAccount.setUserEmail(user.email);
         mAccount.setUserPhone(user.phoneNumber);
         mAccount.setAccountId(user.accountId);
+        mAccount.setWalletAddress(user.walletAddress);
         mAccount.setDescription(user.description);
         mAccount.setFirstName(user.firstName);
         mAccount.setLastName(user.lastName);
@@ -882,7 +883,6 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             ActivityCompat.requestPermissions((Activity) context, PERMISSIONS, REQUEST_CODE_READ_CONTACTS);
         }
 
-
         customNetworkViewModel = new ViewModelProvider(this)
                 .get(CustomNetworkViewModel.class);
         createWalletViewModel = new ViewModelProvider(this)
@@ -900,6 +900,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
 
         if (mInitMode) {
+            isLoginWithEmail=false;
             binding.editProfileLayout.setVisibility(View.GONE);
             binding.countryCodetv.setVisibility(View.VISIBLE);
             binding.loginWithPhoneLayout.setVisibility(View.VISIBLE);
@@ -910,7 +911,10 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             binding.accountPassword.setVisibility(View.VISIBLE);
             binding.accountPasswordLayout.setVisibility(View.VISIBLE);
             binding.lgnwithEmailBtn.setVisibility(View.VISIBLE);
+            binding.loginWithEmailLayout.setVisibility(View.GONE);
+            binding.lgnwithEmailBtn.setText("Login With Email");
             keyboardVisibilityChecker();
+
         } else {
             binding.editProfileLayout.setVisibility(View.VISIBLE);
             binding.menuButton.setVisibility(View.VISIBLE);
@@ -1930,6 +1934,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
                 String languageCode = userBasicInfo.languageCode;
                 Log.d("onLoginApiResultFound", " LoginAPIResponseJAVA Called in EditActivity LANGUAGE CODE " + languageCode);
+                Log.d("onLoginApiResultFound", "WalletAddress " + userBasicInfo.walletAddress);
 
                 if (languageCode == null || languageCode.isEmpty()) {
                     languageCode = "en";

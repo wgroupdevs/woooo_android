@@ -4532,7 +4532,7 @@ public class XmppConnectionService extends Service {
     public void sendMessagePacket(Account account, MessagePacket packet) {
         final XmppConnection connection = account.getXmppConnection();
         if (connection != null) {
-            Log.d(TAG, "sendMessagePacket CALLED.....");
+            Log.d(TAG, "sendMessagePacket CALLED....." +packet);
             connection.sendMessagePacket(packet);
         }
     }

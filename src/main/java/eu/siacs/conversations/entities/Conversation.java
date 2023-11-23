@@ -729,24 +729,26 @@ public class Conversation extends AbstractEntity implements Blockable, Comparabl
     }
 
     public int getNextEncryption() {
-        if (!Config.supportOmemo() && !Config.supportOpenPgp()) {
-            return Message.ENCRYPTION_NONE;
-        }
-        if (OmemoSetting.isAlways()) {
-            return suitableForOmemoByDefault(this) ? Message.ENCRYPTION_AXOLOTL : Message.ENCRYPTION_NONE;
-        }
-        final int defaultEncryption;
-        if (suitableForOmemoByDefault(this)) {
-            defaultEncryption = OmemoSetting.getEncryption();
-        } else {
-            defaultEncryption = Message.ENCRYPTION_NONE;
-        }
-        int encryption = this.getIntAttribute(ATTRIBUTE_NEXT_ENCRYPTION, defaultEncryption);
-        if (encryption == Message.ENCRYPTION_OTR || encryption < 0) {
-            return defaultEncryption;
-        } else {
-            return encryption;
-        }
+        return Message.ENCRYPTION_NONE;
+
+//        if (!Config.supportOmemo() && !Config.supportOpenPgp()) {
+//            return Message.ENCRYPTION_NONE;
+//        }
+//        if (OmemoSetting.isAlways()) {
+//            return suitableForOmemoByDefault(this) ? Message.ENCRYPTION_AXOLOTL : Message.ENCRYPTION_NONE;
+//        }
+//        final int defaultEncryption;
+//        if (suitableForOmemoByDefault(this)) {
+//            defaultEncryption = OmemoSetting.getEncryption();
+//        } else {
+//            defaultEncryption = Message.ENCRYPTION_NONE;
+//        }
+//        int encryption = this.getIntAttribute(ATTRIBUTE_NEXT_ENCRYPTION, defaultEncryption);
+//        if (encryption == Message.ENCRYPTION_OTR || encryption < 0) {
+//            return defaultEncryption;
+//        } else {
+//            return encryption;
+//        }
     }
 
     public boolean setNextEncryption(int encryption) {

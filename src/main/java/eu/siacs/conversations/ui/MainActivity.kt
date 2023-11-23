@@ -3,8 +3,11 @@ package eu.siacs.conversations.ui
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
-import com.alphawallet.app.viewmodel.CustomNetworkViewModel
+import com.alphawallet.app.entity.Wallet
+import com.alphawallet.app.interact.FetchWalletsInteract
+import com.alphawallet.app.viewmodel.CreateWalletViewModel
 import com.alphawallet.app.viewmodel.WalletConnectViewModel
 import com.alphawallet.app.viewmodel.WalletHomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -12,11 +15,15 @@ import eu.siacs.conversations.entities.Account
 import eu.siacs.conversations.http.services.WooAPIService
 import eu.siacs.conversations.persistance.WOOPrefManager
 import eu.siacs.conversations.services.XmppConnectionService.OnAccountUpdate
+import io.reactivex.SingleObserver
+import io.reactivex.annotations.NonNull
+import io.reactivex.disposables.Disposable
 import javax.inject.Inject
+
 
 @AndroidEntryPoint
 class MainActivity : XmppActivity(), OnAccountUpdate {
-    val TAG = "MainActivityLOGS"
+    val TAG = "MainActivity_TAG"
     private var mAccount: Account? = null
 
     @Inject
@@ -25,7 +32,9 @@ class MainActivity : XmppActivity(), OnAccountUpdate {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
     }
+
 
     override fun refreshUiReal() {
     }
@@ -50,14 +59,12 @@ class MainActivity : XmppActivity(), OnAccountUpdate {
                     wooPrefManager.getString(WOOPrefManager.USER_TOKEN_KEY, "")
                 WooAPIService.userToken = token
                 Log.d(TAG, "ACCOUNT UUID :${mAccount?.accountId}")
-                Log.d(TAG, "USER TOKEN FROM PREF : $token")
+                Log.d(TAG, "WALLET-ADDRESS:${mAccount?.walletAddress}")
                 WooAPIService.resetWooAPIService()
 
                 mAccount?.let {
                     account = mAccount!!
                 }
-//                init Wallet
-                inItWalletHomeViewModel()
 
                 val homeIntent = Intent(this@MainActivity, WooHomeActivity::class.java)
                 startNewActivity(homeIntent)
@@ -75,49 +82,10 @@ class MainActivity : XmppActivity(), OnAccountUpdate {
     override fun onAccountUpdate() {
     }
 
-
     companion object {
-        lateinit var viewModelWH: WalletHomeViewModel
-        lateinit var viewModelWC: WalletConnectViewModel
         var account: Account? = null
     }
 
-
-    private fun inItWalletHomeViewModel() {
-        viewModelWH = ViewModelProvider(this)[WalletHomeViewModel::class.java]
-        viewModelWC = ViewModelProvider(this)[WalletConnectViewModel::class.java]
-
-
-    }
-
-
-    private fun saveWooNetwork() {
-
-        val customNetworkViewModel = ViewModelProvider(this)
-            .get<CustomNetworkViewModel>(CustomNetworkViewModel::class.java)
-
-        Log.d(TAG, "saveWooNetwork");
-
-        customNetworkViewModel.saveNetwork(
-            false,
-            "Woooo",
-            "https://dataseed.woooo.world",
-            2064,
-            "WOO",
-            "https://scan.woooo.world/",
-            "https://block.woooo.world/api-docs",
-            false,
-            null
-        )
-
-//        val list = arrayListOf<Long>(2064)
-//
-//        val networkToggleViewModel: NetworkToggleViewModel = ViewModelProvider(this)
-//            .get<NetworkToggleViewModel>(NetworkToggleViewModel::class.java)
-//
-//        networkToggleViewModel.setFilterNetworks(list, true, false)
-
-    }
 
 
 }

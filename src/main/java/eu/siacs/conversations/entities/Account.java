@@ -53,6 +53,7 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
     public static final String DISPLAY_NAME = "display_name";
     public static final String FIRST_NAME = "first_name";
     public static final String ACCOUNT_UNIQUE_ID = "account_unique_id";
+    public static final String WALLET_ADDRESS = "wallet_address";
     public static final String DESCRIPTION = "description";
     public static final String LAST_NAME = "last_name";
     public static final String DATE_OF_BIRTH = "date_of_birth";
@@ -112,6 +113,7 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
     private String displayName = null;
 
     private String accountId = null;
+    private String walletAddress = null;
     private String userEmail = null;
     private String userPhone = null;
     private String firstName = null;
@@ -143,6 +145,7 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
         this(
                 java.util.UUID.randomUUID().toString(),
                 jid,
+                null,
                 null,
                 password,
                 0,
@@ -177,6 +180,7 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
             final String uuid,
             final Jid jid,
             String accountId,
+            String walletAddress,
             final String password,
             final int options,
             final String rosterVersion,
@@ -207,6 +211,7 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
         this.uuid = uuid;
         this.jid = jid;
         this.accountId = accountId;
+        this.walletAddress = walletAddress;
         this.password = password;
         this.options = options;
         this.rosterVersion = rosterVersion;
@@ -263,6 +268,7 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
                 cursor.getString(cursor.getColumnIndexOrThrow(UUID)),
                 jid,
                 cursor.getString(cursor.getColumnIndexOrThrow(ACCOUNT_UNIQUE_ID)),
+                cursor.getString(cursor.getColumnIndexOrThrow(WALLET_ADDRESS)),
                 cursor.getString(cursor.getColumnIndexOrThrow(PASSWORD)),
                 cursor.getInt(cursor.getColumnIndexOrThrow(OPTIONS)),
                 cursor.getString(cursor.getColumnIndexOrThrow(ROSTERVERSION)),
@@ -297,7 +303,12 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
     public String getAccountId() {
         return accountId;
     }
-
+    public String getWalletAddress() {
+        return walletAddress;
+    }
+    public void setWalletAddress(String walletAddress) {
+        this.walletAddress = walletAddress;
+    }
     public void setAccountId(String accountId) {
         this.accountId = accountId;
     }
@@ -696,6 +707,7 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
         final ContentValues values = new ContentValues();
         values.put(UUID, uuid);
         values.put(ACCOUNT_UNIQUE_ID, accountId);
+        values.put(WALLET_ADDRESS, walletAddress);
         values.put(USERNAME, jid.getLocal());
         values.put(SERVER, jid.getDomain().toEscapedString());
         values.put(PASSWORD, password);
@@ -719,7 +731,6 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
         values.put(CITY, city);
         values.put(ADDRESS, address);
         values.put(POSTAL_CODE, postalCode);
-
         values.put(HOSTNAME, hostname);
         values.put(PORT, port);
         values.put(STATUS, presenceStatus.toShowString());

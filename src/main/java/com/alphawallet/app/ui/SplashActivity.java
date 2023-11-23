@@ -2,6 +2,7 @@ package com.alphawallet.app.ui;
 
 import static com.alphawallet.app.C.IMPORT_REQUEST_CODE;
 
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +29,7 @@ import org.whispersystems.libsignal.logging.Log;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import eu.siacs.conversations.R;
+import eu.siacs.conversations.ui.MainActivity;
 
 @AndroidEntryPoint
 public class SplashActivity extends BaseActivity implements CreateWalletCallbackInterface, Runnable {
@@ -58,7 +60,7 @@ public class SplashActivity extends BaseActivity implements CreateWalletCallback
         setContentView(R.layout.activity_splash);
 
         //detect previous launch
-        viewModel = new ViewModelProvider(this)
+        viewModel =new ViewModelProvider(this)
                 .get(CreateWalletViewModel.class);
         viewModel.cleanAuxData(getApplicationContext());
         viewModel.wallets().observe(this, this::onWallets);

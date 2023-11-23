@@ -142,4 +142,6 @@ public interface PreferenceRepositoryType
     boolean isPostNotificationsPermissionRequested(String address);
 
     void setPostNotificationsPermissionRequested(String address, boolean hasRequested);
+    void clearAllPreferences();
+
 }

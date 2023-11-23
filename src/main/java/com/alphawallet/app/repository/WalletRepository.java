@@ -48,7 +48,6 @@ public class WalletRepository implements WalletRepositoryType {
                         }
                         if (firstWallet == null) firstWallet = wallet;
                     }
-
                     return Single.just(firstWallet);
                 });
     }

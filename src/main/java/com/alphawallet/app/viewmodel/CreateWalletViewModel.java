@@ -28,8 +28,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 @HiltViewModel
-public class CreateWalletViewModel extends BaseViewModel
-{
+public class CreateWalletViewModel extends BaseViewModel {
     private static final String LEGACY_CERTIFICATE_DB = "CERTIFICATE_CACHE-db.realm";
     private static final String LEGACY_AUX_DB_PREFIX = "AuxData-";
     private final FetchWalletsInteract fetchWalletsInteract;
@@ -40,11 +39,10 @@ public class CreateWalletViewModel extends BaseViewModel
 
     @Inject
     CreateWalletViewModel(
-        FetchWalletsInteract fetchWalletsInteract,
-        PreferenceRepositoryType preferenceRepository,
-        KeyService keyService,
-        AnalyticsServiceType analyticsService)
-    {
+            FetchWalletsInteract fetchWalletsInteract,
+            PreferenceRepositoryType preferenceRepository,
+            KeyService keyService,
+            AnalyticsServiceType analyticsService) {
         this.fetchWalletsInteract = fetchWalletsInteract;
         this.preferenceRepository = preferenceRepository;
         this.keyService = keyService;
@@ -53,101 +51,85 @@ public class CreateWalletViewModel extends BaseViewModel
 //        this.preferenceRepository.incrementLaunchCount();
     }
 
-    public void fetchWallets()
-    {
+    public void fetchWallets() {
         fetchWalletsInteract
-            .fetch()
-            .subscribe(wallets::postValue, this::onError)
-            .isDisposed();
+                .fetch()
+                .subscribe(wallets::postValue, this::onError)
+                .isDisposed();
     }
 
     //on wallet error ensure execution still continues and splash screen terminates
     @Override
-    protected void onError(Throwable throwable)
-    {
+    protected void onError(Throwable throwable) {
         wallets.postValue(new Wallet[0]);
     }
 
-    public LiveData<Wallet[]> wallets()
-    {
+    public LiveData<Wallet[]> wallets() {
         return wallets;
     }
 
-    public LiveData<Wallet> createWallet()
-    {
+    public LiveData<Wallet> createWallet() {
         return createWallet;
     }
 
-    public void createNewWallet(Activity ctx, CreateWalletCallbackInterface createCallback)
-    {
+
+    public void createNewWallet(Activity ctx, CreateWalletCallbackInterface createCallback) {
         Completable.fromAction(() -> keyService.createNewHDKey(ctx, createCallback)) //create wallet on a computation thread to give UI a chance to complete all tasks
-            .subscribeOn(Schedulers.computation())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe()
-            .isDisposed();
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe()
+                .isDisposed();
     }
 
-    public void StoreHDKey(String address, KeyService.AuthenticationLevel authLevel)
-    {
-        if (!address.equals(ZERO_ADDRESS))
-        {
+    public void StoreHDKey(String address, KeyService.AuthenticationLevel authLevel) {
+        if (!address.equals(ZERO_ADDRESS)) {
             Wallet wallet = new Wallet(address);
             wallet.type = WalletType.HDKEY;
             wallet.authLevel = authLevel;
             fetchWalletsInteract.storeWallet(wallet)
-                .map(w -> {
-                    preferenceRepository.setCurrentWalletAddress(w.address);
-                    return w;
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(newWallet -> wallets.postValue(new Wallet[]{newWallet}), this::onError).isDisposed();
-        }
-        else
-        {
+                    .map(w -> {
+                        preferenceRepository.setCurrentWalletAddress(w.address);
+                        return w;
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(newWallet -> wallets.postValue(new Wallet[]{newWallet}), this::onError).isDisposed();
+        } else {
             wallets.postValue(new Wallet[0]);
         }
 
         preferenceRepository.setNewWallet(address, true);
     }
 
-    public void completeAuthentication(Operation taskCode)
-    {
+    public void completeAuthentication(Operation taskCode) {
         keyService.completeAuthentication(taskCode);
     }
 
-    public void failedAuthentication(Operation taskCode)
-    {
+    public void failedAuthentication(Operation taskCode) {
         keyService.failedAuthentication(taskCode);
     }
 
-    public void cleanAuxData(Context ctx)
-    {
-        try
-        {
+    public void cleanAuxData(Context ctx) {
+        try {
             File[] files = ctx.getFilesDir().listFiles();
-            for (File file : files)
-            {
+            for (File file : files) {
                 String fileName = file.getName();
-                if (fileName.startsWith(LEGACY_AUX_DB_PREFIX) || fileName.equals(LEGACY_CERTIFICATE_DB))
-                {
+                if (fileName.startsWith(LEGACY_AUX_DB_PREFIX) || fileName.equals(LEGACY_CERTIFICATE_DB)) {
                     deleteRecursive(file);
                 }
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             //
         }
     }
+    public void clearPreferences(){
+        preferenceRepository.clearAllPreferences();
+    }
 
-    private void deleteRecursive(File fp)
-    {
-        if (fp.isDirectory())
-        {
+    private void deleteRecursive(File fp) {
+        if (fp.isDirectory()) {
             File[] contents = fp.listFiles();
-            if (contents != null)
-            {
+            if (contents != null) {
                 for (File child : contents)
                     deleteRecursive(child);
             }
@@ -156,23 +138,19 @@ public class CreateWalletViewModel extends BaseViewModel
         fp.delete();
     }
 
-    public void setDefaultBrowser()
-    {
+    public void setDefaultBrowser() {
         preferenceRepository.setActiveBrowserNetwork(WOONetwork.WOO_NET_ID);
     }
 
-    public long getInstallTime()
-    {
+    public long getInstallTime() {
         return preferenceRepository.getInstallTime();
     }
 
-    public void setInstallTime(long time)
-    {
+    public void setInstallTime(long time) {
         preferenceRepository.setInstallTime(time);
     }
 
-    public void doWalletStartupActions(Wallet wallet)
-    {
+    public void doWalletStartupActions(Wallet wallet) {
         preferenceRepository.logIn(wallet.address);
         preferenceRepository.setCurrentWalletAddress(wallet.address);
         preferenceRepository.setWatchOnly(wallet.watchOnly());

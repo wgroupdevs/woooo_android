@@ -24,6 +24,16 @@ public class UserBasicInfo implements Serializable {
     public String language;
     public String languageCode;
 
+    public String getWalletAddress() {
+        return walletAddress;
+    }
+
+    public void setWalletAddress(String walletAddress) {
+        this.walletAddress = walletAddress;
+    }
+
+    public String walletAddress;
+
 
     public String getAccountId() {
         return accountId;

@@ -478,4 +478,10 @@ public class SharedPreferenceRepository implements PreferenceRepositoryType {
     {
         return key + address.toLowerCase(Locale.ENGLISH);
     }
+
+    public  void clearAllPreferences() {
+        SharedPreferences.Editor editor = pref.edit();
+        editor.clear();
+        editor.apply();
+    }
 }

@@ -753,37 +753,54 @@ public class MessageParser extends AbstractParser implements OnMessagePacketRece
             }
 
 
-            if (translation != null) {
-                String translationStatus = translation.getContent();
-                if (translationStatus.equals(Message.TRANSLATION_ON)) {
-                    message.setTranslationStatus(true);
-                    message.setTranslatedBody("");
-                    if (!mXmppConnectionService.getAccounts().isEmpty()) {
-                        Account mAccount = mXmppConnectionService.getAccounts().get(0);
-                        Log.d(TAG, "TRANSLATE MESSAGE FOUND ....." + mAccount.getLanguageCode());
-                        TextTranslateModel translateModel = new TextTranslateModel(
-                                message.getBody(),
-                                mAccount.getLanguageCode(),
-                                message.getServerMsgId()
-                        );
-                        messageQueue.add(message);
-                        mXmppConnectionService.translateText(translateModel, this);
+
+            try{
+
+
+                if (translation != null) {
+                    Log.d(TAG, "TRANSLATION-STATUS ....." + original);
+
+                    String translationStatus = translation.getContent();
+                    Log.d(TAG, "TRANSLATION-STATUS ....." + translationStatus);
+
+                    if (translationStatus.equals(Message.TRANSLATION_ON)) {
+                        message.setTranslationStatus(true);
+                        message.setTranslatedBody("");
+                        if (!mXmppConnectionService.getAccounts().isEmpty()) {
+                            Account mAccount = mXmppConnectionService.getAccounts().get(0);
+                            Log.d(TAG, "TRANSLATE MESSAGE FOUND ....." + mAccount.getLanguageCode());
+                            TextTranslateModel translateModel = new TextTranslateModel(
+                                    message.getBody(),
+                                    mAccount.getLanguageCode(),
+                                    message.getServerMsgId()
+                            );
+                            messageQueue.add(message);
+                            mXmppConnectionService.translateText(translateModel, this);
+                        }
+
                     }
-
                 }
+
+                if (forwarded != null) {
+                    Log.d(TAG, "FORWARD MESSAGE FOUND ....." + forwarded);
+                    // DO working for forwarded message here....
+                    message.setForwarded(true);
+                }
+
+                if (reply != null) {
+                    String uuid = reply.getAttribute("id");
+                    message.setParentMsgId(uuid);
+                    Log.d(TAG, "REPLY MESSAGE FOUND ....." + uuid);
+                }
+
+
+
+
+            }catch (Exception e){
+                e.printStackTrace();
             }
 
-            if (forwarded != null) {
-                Log.d(TAG, "FORWARD MESSAGE FOUND ....." + forwarded);
-                // DO working for forwarded message here....
-                message.setForwarded(true);
-            }
 
-            if (reply != null) {
-                String uuid = reply.getAttribute("id");
-                message.setParentMsgId(uuid);
-                Log.d(TAG, "REPLY MESSAGE FOUND ....." + uuid);
-            }
 
             mXmppConnectionService.databaseBackend.createMessage(message);
             final HttpConnectionManager manager = this.mXmppConnectionService.getHttpConnectionManager();
