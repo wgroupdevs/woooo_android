@@ -4,9 +4,12 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,6 +22,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
@@ -78,6 +82,7 @@ import com.woooapp.meeting.impl.vm.PeerProps;
 import com.woooapp.meeting.impl.vm.RoomProps;
 import com.woooapp.meeting.lib.MeetingClient;
 import com.woooapp.meeting.lib.RoomOptions;
+import com.woooapp.meeting.lib.ScreenCaptureService;
 import com.woooapp.meeting.lib.Utils;
 import com.woooapp.meeting.lib.lv.RoomStore;
 import com.woooapp.meeting.lib.model.Peer;
@@ -1401,16 +1406,30 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         mMediaProjectionPermissionResultCode = resultCode;
         mMediaProjectionPermissionResultData = data;
 
+        DisplayMetrics dm = new DisplayMetrics();
         if (resultCode == Activity.RESULT_OK && mMeetingClient != null) {
-            DisplayMetrics dm = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getRealMetrics(dm);
             if (this.capturer == null) {
-                capturer = createScreenCapturer();
-                if (capturer != null) {
-                    Log.d(TAG, "<<< Enabling Screen Share ...");
-                    mMeetingClient.shareScreen(true, capturer, dm);
-                }
-            } else {
+//                if (capturer != null) {
+                Log.d(TAG, "<< Starting Screen Share Service");
+                Intent serviceIntent = new Intent(this, ScreenCaptureService.class);
+                startService(serviceIntent);
+                bindService(serviceIntent, new ServiceConnection() {
+                    @Override
+                    public void onServiceConnected(ComponentName name, IBinder service) {
+                        Log.d(TAG, "<<< Service Connected ... Enabling Screen Share ...");
+                        capturer = createScreenCapturer();
+                        if (capturer != null) {
+                            mMeetingClient.shareScreen(true, capturer, dm);
+                        }
+                    }
+
+                    @Override
+                    public void onServiceDisconnected(ComponentName name) {
+                        Log.d(TAG, "<< SERVICE DISCONNECTED >>>");
+                    }
+                }, BIND_AUTO_CREATE);
+            }  else {
                 Log.w(TAG, "Capturer already exist ...");
                 mMeetingClient.shareScreen(true, capturer, dm);
             }
@@ -2453,9 +2472,28 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         }
     }
 
+    /**
+     * @param serviceClz
+     * @return boolean
+     */
+    public boolean isServiceRunning(Class<?> serviceClz) {
+        ActivityManager m = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : m.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClz.getName().equalsIgnoreCase(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void disposeVideoCapturer() {
         if (capturer != null) {
             try {
+                if (isServiceRunning(ScreenCaptureService.class)) {
+                    Intent intent = new Intent(MeetingActivity.this, ScreenCaptureService.class);
+                    stopService(intent);
+                    Log.d(TAG, "<< Stopped Screen Capture Service ....");
+                }
 //                capturer.stopCapture();
 //                capturer.dispose();
                 capturer = null;
