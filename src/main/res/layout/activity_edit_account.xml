@@ -10,12 +10,14 @@
 
         <ScrollView
             android:layout_width="fill_parent"
+            android:layout_marginTop="?attr/actionBarSize"
             android:layout_height="fill_parent">
 
             <LinearLayout
                 android:id="@+id/account_main_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:orientation="vertical">
 
 
@@ -24,7 +26,6 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
                     android:elevation="0dp"
@@ -34,7 +35,7 @@
                         android:id="@+id/relativeLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/card_padding_regular">
+                        android:paddingHorizontal="@dimen/card_padding_regular">
 
                         <LinearLayout
                             android:layout_width="fill_parent"
@@ -1222,15 +1223,68 @@
             android:visibility="gone" />
 
 
-        <ImageView
-            android:id="@+id/menuButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="@dimen/_10sdp"
-            android:src="@drawable/baseline_more_vert_24"
-            android:visibility="gone" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:id="@+id/toolbar_edit_account"
+            android:layout_height="?attr/actionBarSize"
+            android:visibility="visible"
+            android:minHeight="?attr/actionBarSize">
+
+
+
+            <ImageView
+                android:id="@+id/toolBar_backArrow"
+                android:layout_width="@dimen/_24sdp"
+                android:layout_height="@dimen/_24sdp"
+                android:layout_margin="@dimen/_5sdp"
+                android:backgroundTint="@color/white"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/baseline_arrow_back_24" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Profile"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/toolBar_backArrow"
+                android:gravity="center"
+                android:paddingBottom="@dimen/_5sdp"
+                android:textAppearance="@style/TextAppearance.Conversations.Title" />
+
+
+
+
+
+            <ImageView
+                android:id="@+id/menuButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/baseline_more_vert_24"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/_5sdp"
+                />
+
+
+
+
+
+            <!--        Divider-->
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:src="@drawable/divider_ic" />
+
+
+        </RelativeLayout>
+
+
+
 
     </RelativeLayout>
 </layout>

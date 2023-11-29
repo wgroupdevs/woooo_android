@@ -99,7 +99,6 @@ class WalletMainFragment : XmppFragment() {
         piChartViewSettings()
         populateCurrencyDropDown()
 
-
 //        apply-font to pi chart
         val tf = Typeface.createFromAsset(resources.assets, "nasalization.otf")
         binding.pieChart.setCenterTextTypeface(tf)
@@ -136,7 +135,6 @@ class WalletMainFragment : XmppFragment() {
 
     private fun updatePIChart() {
         Log.d(TAG, "SELECTED WALLET : ${selectedWallet?.currency} : ${selectedWallet?.balance}")
-
         val pieChart: PieChart = binding.pieChart
         pieChart.centerText =
             "${selectedWallet?.currency ?: "WOO"}\n${selectedWallet?.balance ?: "0.0"}"
@@ -144,8 +142,6 @@ class WalletMainFragment : XmppFragment() {
         pieChart.setCenterTextColor(Color.WHITE)
         pieChart.invalidate()
         populateCurrencyDropDown()
-
-
     }
 
 

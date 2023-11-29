@@ -104,13 +104,9 @@ public class TokenHolder extends BinderViewHolder<TokenCardMeta> implements View
         }
         try {
             tokenKey = data.tokenId;
-
-            Log.d(TAG, "TOKEN-KEY : " + tokenKey);
-            Log.d(TAG, "CHAIN : " + data.getChain());
-            Log.d(TAG, "ADDRESS : " + data.getAddress());
-
             tokenLayout.setVisibility(View.VISIBLE);
             token = tokensService.getToken(data.getChain(), data.getAddress());
+
             if (token != null) {
                 token.group = data.getTokenGroup();
             }
@@ -140,8 +136,6 @@ public class TokenHolder extends BinderViewHolder<TokenCardMeta> implements View
             balanceEth.setText(shortTitle());
 
             String coinBalance = token.getStringBalanceForUI(4);
-
-            Log.d(TAG, "COIN-BALANCE : " + coinBalance);
 
             if (!TextUtils.isEmpty(coinBalance)) {
                 balanceCoin.setVisibility(View.VISIBLE);
@@ -195,6 +189,8 @@ public class TokenHolder extends BinderViewHolder<TokenCardMeta> implements View
         resetTickerViews();
         TokenTicker ticker = tokensService.getTokenTicker(token);
         if (ticker != null || (token.isEthereum() && EthereumNetworkRepository.hasRealValue(token.tokenInfo.chainId))) {
+//            Log.d(TAG, "Symbol : " + token.getSymbol() + " PRICE :" + ticker.price + " BALANCE : " + token.balance);
+
             handleTicker(ticker, group);
         } else {
             balanceCurrency.setVisibility(View.GONE);
@@ -284,6 +280,8 @@ public class TokenHolder extends BinderViewHolder<TokenCardMeta> implements View
         String converted = TickerService.getCurrencyString(fiatBalance.doubleValue());
         String formattedPercents = "";
         int color = Color.RED;
+        Log.d(TAG, "BALANCE CONVERTED : " + converted);
+
 
         String lbl = getString(R.string.token_balance, "", converted);
         Spannable spannable;

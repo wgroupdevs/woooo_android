@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -137,12 +138,15 @@ public class ChooseContactActivity extends AbstractSearchableListItemActivity im
         }
 
         getListView().setOnItemClickListener(this);
+
         this.showEnterJid = intent.getBooleanExtra(EXTRA_SHOW_ENTER_JID, false);
         this.isForwardMessage = intent.getBooleanExtra(EXTRA_FROWARD_MESSAGE, false);
         this.binding.fab.setOnClickListener(this::onFabClicked);
 
         //Back Button on TollBar
         ImageView backButton = findViewById(R.id.toolBar_leading_View);
+        EditText toolBarSearch = findViewById(R.id.toolbar_search);
+        toolBarSearch.setVisibility(View.GONE);
         backButton.setOnClickListener(v -> super.onBackPressed());
         if (this.showEnterJid) {
             this.binding.fab.show();

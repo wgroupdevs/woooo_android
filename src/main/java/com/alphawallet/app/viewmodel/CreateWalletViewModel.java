@@ -4,6 +4,7 @@ import static com.alphawallet.app.entity.tokenscript.TokenscriptFunction.ZERO_AD
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -14,15 +15,17 @@ import com.alphawallet.app.entity.Wallet;
 import com.alphawallet.app.entity.WalletType;
 import com.alphawallet.app.interact.FetchWalletsInteract;
 import com.alphawallet.app.repository.PreferenceRepositoryType;
+import com.alphawallet.app.repository.WalletRepositoryType;
 import com.alphawallet.app.service.AnalyticsServiceType;
 import com.alphawallet.app.service.KeyService;
 
 import java.io.File;
+import java.util.concurrent.CompletableFuture;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.lifecycle.HiltViewModel;
-import eu.siacs.conversations.utils.WOONetwork;
+import eu.siacs.conversations.utils.WOOOO;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -33,6 +36,7 @@ public class CreateWalletViewModel extends BaseViewModel {
     private static final String LEGACY_AUX_DB_PREFIX = "AuxData-";
     private final FetchWalletsInteract fetchWalletsInteract;
     private final PreferenceRepositoryType preferenceRepository;
+    private final WalletRepositoryType walletRepositoryType;
     private final KeyService keyService;
     private final MutableLiveData<Wallet[]> wallets = new MutableLiveData<>();
     private final MutableLiveData<Wallet> createWallet = new MutableLiveData<>();
@@ -42,9 +46,11 @@ public class CreateWalletViewModel extends BaseViewModel {
             FetchWalletsInteract fetchWalletsInteract,
             PreferenceRepositoryType preferenceRepository,
             KeyService keyService,
+            WalletRepositoryType walletRepositoryType,
             AnalyticsServiceType analyticsService) {
         this.fetchWalletsInteract = fetchWalletsInteract;
         this.preferenceRepository = preferenceRepository;
+        this.walletRepositoryType = walletRepositoryType;
         this.keyService = keyService;
         setAnalyticsService(analyticsService);
         // increase launch count
@@ -122,7 +128,8 @@ public class CreateWalletViewModel extends BaseViewModel {
             //
         }
     }
-    public void clearPreferences(){
+
+    public void clearPreferences() {
         preferenceRepository.clearAllPreferences();
     }
 
@@ -139,7 +146,7 @@ public class CreateWalletViewModel extends BaseViewModel {
     }
 
     public void setDefaultBrowser() {
-        preferenceRepository.setActiveBrowserNetwork(WOONetwork.WOO_NET_ID);
+        preferenceRepository.setActiveBrowserNetwork(WOOOO.CHAIN_ID);
     }
 
     public long getInstallTime() {
@@ -155,4 +162,18 @@ public class CreateWalletViewModel extends BaseViewModel {
         preferenceRepository.setCurrentWalletAddress(wallet.address);
         preferenceRepository.setWatchOnly(wallet.watchOnly());
     }
+
+    public CompletableFuture<Void> clearDatabase() {
+        // Example: Making a future call
+        CompletableFuture<String> future = walletRepositoryType.clearDatabase();
+        // Attach a callback to be executed when the future completes
+        return future.thenAccept(result -> {
+            Log.d("CREATE_WALLET", "Clear Db call completed with result: " + result);
+
+        });
+
+
+    }
+
+
 }

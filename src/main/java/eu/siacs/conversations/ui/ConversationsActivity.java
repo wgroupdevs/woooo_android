@@ -103,7 +103,6 @@ import eu.siacs.conversations.ui.util.ConversationMenuConfigurator;
 import eu.siacs.conversations.ui.util.MenuDoubleTabUtil;
 import eu.siacs.conversations.ui.util.PendingItem;
 import eu.siacs.conversations.utils.AccountUtils;
-import eu.siacs.conversations.utils.ExceptionHelper;
 import eu.siacs.conversations.utils.SignupUtils;
 import eu.siacs.conversations.utils.XmppUri;
 import eu.siacs.conversations.xmpp.Jid;
@@ -290,9 +289,9 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         }
         final Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.main_fragment);
         if (fragment instanceof ConversationsOverviewFragment) {
-            if (ExceptionHelper.checkForCrash(this)) {
-                return;
-            }
+//            if (ExceptionHelper.checkForCrash(this)) {
+//                return;
+//            }
             if (openBatteryOptimizationDialogIfNeeded()) {
                 return;
             }
@@ -525,6 +524,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
         }
         configureActionBar(getSupportActionBar());
         this.getFragmentManager().addOnBackStackChangedListener(this::invalidateActionBarTitle);
+
         this.getFragmentManager().addOnBackStackChangedListener(this::showDialogsIfMainIsOverview);
 
         final Intent intent;

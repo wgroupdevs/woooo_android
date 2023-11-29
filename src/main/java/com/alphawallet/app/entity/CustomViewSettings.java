@@ -8,11 +8,11 @@ import com.alphawallet.app.entity.tokens.TokenInfo;
 import java.util.Arrays;
 import java.util.List;
 
-import eu.siacs.conversations.utils.WOONetwork;
+import eu.siacs.conversations.utils.WOOOO;
 
 public class CustomViewSettings
 {
-    public static final long primaryChain = WOONetwork.WOO_NET_ID;
+    public static final long primaryChain = WOOOO.CHAIN_ID;
     private static final String primaryChainName = C.ETHEREUM_NETWORK_NAME;
 
     //You can use the settings in this file to customise the wallet appearance
@@ -40,7 +40,7 @@ public class CustomViewSettings
     );
 
     public static final List<Long> alwaysVisibleChains = Arrays.asList(
-            WOONetwork.WOO_NET_ID
+            WOOOO.CHAIN_ID
     );
 
     public static boolean alwaysShow(long chainId)

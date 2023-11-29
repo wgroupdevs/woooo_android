@@ -34,6 +34,7 @@ import eu.siacs.conversations.crypto.sasl.SaslMechanism;
 import eu.siacs.conversations.services.AvatarService;
 import eu.siacs.conversations.services.XmppConnectionService;
 import eu.siacs.conversations.utils.UIHelper;
+import eu.siacs.conversations.utils.WOOOO;
 import eu.siacs.conversations.utils.XmppUri;
 import eu.siacs.conversations.xmpp.Jid;
 import eu.siacs.conversations.xmpp.XmppConnection;
@@ -923,7 +924,7 @@ public class Account extends AbstractEntity implements AvatarService.Avatarable 
     public String getShareableLink() {
         List<XmppUri.Fingerprint> fingerprints = this.getFingerprints();
         String uri =
-                "https://conversations.im/i/"
+                WOOOO.WEB_URL
                         + XmppUri.lameUrlEncode(this.getJid().asBareJid().toEscapedString());
         if (fingerprints.size() > 0) {
             return XmppUri.getFingerprintUri(uri, fingerprints, '&');

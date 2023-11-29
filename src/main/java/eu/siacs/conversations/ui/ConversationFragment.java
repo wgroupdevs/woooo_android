@@ -769,7 +769,6 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             reply = false;
         }
         activity.xmppConnectionService.attachImageToConversation(selectedMessage, conversation, uri, type, new UiCallback<Message>() {
-
             @Override
             public void userInputRequired(PendingIntent pi, Message object) {
                 hidePrepareFileToast(prepareFileToast);
@@ -1349,12 +1348,18 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 
 
     void replyMessage() {
+
+        Log.d(TAG, "SELECTED-MSG : " + selectedMessage.getContact());
+
         this.binding.replyMessageBox.setVisibility(View.VISIBLE);
         this.binding.parentName.setVisibility(View.VISIBLE);
         this.binding.parentBody.setVisibility(View.VISIBLE);
 
         if (selectedMessage.getStatus() <= Message.STATUS_RECEIVED) {
-            this.binding.parentName.setText(selectedMessage.getContact().getDisplayName());
+            if (selectedMessage.getContact() != null) {
+                this.binding.parentName.setText(selectedMessage.getContact().getDisplayName());
+            }
+
         } else {
             this.binding.parentName.setText("You");
         }

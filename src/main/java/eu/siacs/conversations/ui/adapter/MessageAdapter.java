@@ -866,7 +866,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             displayInfoMessage(viewHolder, activity.getString(R.string.decryption_failed), darkBackground);
         } else if (message.getEncryption() == Message.ENCRYPTION_AXOLOTL_NOT_FOR_THIS_DEVICE) {
 
-            Log.d(TAG,"MESSAGE BODY :" + message.getBody());
+            Log.d(TAG, "MESSAGE BODY :" + message.getBody());
             displayInfoMessage(viewHolder, activity.getString(R.string.not_encrypted_for_this_device), darkBackground);
 
         } else if (message.getEncryption() == Message.ENCRYPTION_AXOLOTL_FAILED) {
@@ -908,7 +908,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                 viewHolder.encryption.setVisibility(View.GONE);
             } else {
 
-                viewHolder.message_box.setBackgroundResource(R.color.blue_primary300);
+//                viewHolder.message_box.setBackgroundResource(R.drawable.bg_border);
 //                viewHolder.encryption.setVisibility(View.VISIBLE);
                 if (omemoEncryption && !message.isTrusted()) {
                     viewHolder.encryption.setText(R.string.not_trusted);
@@ -919,7 +919,6 @@ public class MessageAdapter extends ArrayAdapter<Message> {
         }
         displayStatus(viewHolder, message, type, darkBackground);
         if (message.getForwarded()) {
-            Log.d(TAG, "BODY : " + message.getBody());
             if (viewHolder.messageForwarded != null) {
                 viewHolder.messageForwarded.setVisibility(View.VISIBLE);
 
@@ -950,8 +949,6 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             uUid = currentMessage.getUuid() == null ? "" : currentMessage.getUuid().trim();
             if (remoteMsgId.equals(parentID) || uUid.equals(parentID)) {
                 parentMessage = currentMessage;
-
-                Log.d(TAG, "PARENT_MESSAGE BODY : " + parentMessage.getBody());
                 return parentMessage;
             }
         }
@@ -973,9 +970,10 @@ public class MessageAdapter extends ArrayAdapter<Message> {
             Message parentMessage = getParentMessage(message);
 
             if (parentMessage != null) {
-                Log.d(TAG, "PARENT_MESSAGE_FOUND .....");
                 if (parentMessage.getStatus() <= Message.STATUS_RECEIVED) {
-                    viewHolder.parentName.setText(message.getContact().getDisplayName());
+                    if (parentMessage.getContact() != null) {
+                        viewHolder.parentName.setText(parentMessage.getContact().getDisplayName());
+                    }
                 } else {
                     viewHolder.parentName.setText("You");
                 }
@@ -1000,7 +998,6 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                     viewHolder.parent_msg_preview.setVisibility(View.GONE);
                 }
 
-                return;
             }
         } else {
             viewHolder.reply_box.setVisibility(View.GONE);
@@ -1031,9 +1028,6 @@ public class MessageAdapter extends ArrayAdapter<Message> {
     }
 
     public void openDownloadable(Message message) {
-
-        Log.d(TAG, "FILE LINK : " + message.getBody());
-
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU && ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ConversationFragment.registerPendingMessage(activity, message);

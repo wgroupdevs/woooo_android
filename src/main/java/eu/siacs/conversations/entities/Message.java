@@ -1093,6 +1093,18 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
         return false;
     }
 
+    public static boolean isMultiUserChat(final Message message) {
+        final Conversation conversation;
+        if (message.conversation instanceof Conversation) {
+            conversation = (Conversation) message.conversation;
+        } else {
+            return false;
+        }
+        return conversation.getMode() == Conversation.MODE_MULTI;
+
+
+    }
+
     public static boolean configurePrivateMessage(final Message message, final Jid counterpart) {
         final Conversation conversation;
         if (message.conversation instanceof Conversation) {

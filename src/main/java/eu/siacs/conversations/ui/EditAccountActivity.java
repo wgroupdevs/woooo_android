@@ -49,7 +49,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.alphawallet.app.viewmodel.CreateWalletViewModel;
 import com.alphawallet.app.viewmodel.CustomNetworkViewModel;
-import com.alphawallet.app.viewmodel.NetworkToggleViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hbb20.CountryCodePicker;
 
@@ -103,7 +102,6 @@ import eu.siacs.conversations.utils.Resolver;
 import eu.siacs.conversations.utils.SignupUtils;
 import eu.siacs.conversations.utils.TorServiceUtils;
 import eu.siacs.conversations.utils.UIHelper;
-import eu.siacs.conversations.utils.WOONetwork;
 import eu.siacs.conversations.utils.XmppUri;
 import eu.siacs.conversations.xml.Element;
 import eu.siacs.conversations.xmpp.Jid;
@@ -601,37 +599,6 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     }
 
 
-    private void saveWooNetwork() {
-
-
-        Log.d(TAG, "saveWooNetwork");
-
-        customNetworkViewModel.saveNetwork(
-                false,
-                WOONetwork.WOO_NAME,
-                WOONetwork.WOO_RPC_URL,
-                WOONetwork.WOO_NET_ID,
-                WOONetwork.WOO_SYMBOL,
-                WOONetwork.WOO_EXP_URL,
-                WOONetwork.WOO_EXP_API_URL,
-                false,
-                null
-        );
-
-        createWalletViewModel.setDefaultBrowser();
-
-
-        List<Long> enabledIds = new ArrayList<>();
-        enabledIds.add(2064L);
-
-        NetworkToggleViewModel networkToggleViewModel = new ViewModelProvider(this)
-                .get(NetworkToggleViewModel.class);
-
-        networkToggleViewModel.setFilterNetworks(enabledIds, true, false);
-
-    }
-
-
     protected void finishInitialSetup(final Avatar avatar) {
         runOnUiThread(() -> {
             SoftKeyboardUtils.hideSoftKeyboard(EditAccountActivity.this);
@@ -900,8 +867,9 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
 
         if (mInitMode) {
-            isLoginWithEmail=false;
+            isLoginWithEmail = false;
             binding.editProfileLayout.setVisibility(View.GONE);
+            binding.toolbarEditAccount.setVisibility(View.GONE);
             binding.countryCodetv.setVisibility(View.VISIBLE);
             binding.loginWithPhoneLayout.setVisibility(View.VISIBLE);
             binding.loginButton.setVisibility(View.VISIBLE);
@@ -931,6 +899,10 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             if (mAccount != null) {
 
                 Log.d(TAG, "AVATAR URL : " + mAccount.getAvatar());
+                binding.toolbarEditAccount.setVisibility(View.VISIBLE);
+                binding.toolBarBackArrow.setOnClickListener(v -> {
+                    finish();
+                });
                 binding.aboutEt.setText(mAccount.getDescription());
                 binding.firstNameEt.setText(mAccount.getFirstName());
                 binding.lastNameEt.setText(mAccount.getLastName());
@@ -1268,6 +1240,8 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             this.messageFingerprint = intent.getStringExtra("fingerprint");
             if (!mInitMode) {
 //                this.binding.accountRegisterNew.setVisibility(View.GONE);
+
+                Log.d(TAG, "SUPPPORT_ACTION_BAR...");
                 setTitle(getString(R.string.account_details));
                 configureActionBar(getSupportActionBar(), !openedFromNotification);
             } else {

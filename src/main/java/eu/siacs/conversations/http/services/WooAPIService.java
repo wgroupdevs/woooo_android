@@ -43,7 +43,6 @@ public class WooAPIService {
     private static WooService wooService;
     // private field that refers to the object
     private static WooAPIService wooooAuthService;
-
     private static String TAG = "WooooAPIService_TAG";
 
     public static String userToken;

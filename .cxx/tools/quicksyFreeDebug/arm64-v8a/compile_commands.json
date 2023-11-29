@@ -1,7 +1,7 @@
 [
 {
-  "directory": "C:/Users/ehsan/StudioProjects/woooo_android/.cxx/Debug/1d4d1q6p/arm64-v8a",
-  "command": "C:\\Users\\ehsan\\AppData\\Local\\Android\\Sdk\\ndk\\25.1.8937393\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang.exe --target=aarch64-none-linux-android24 --sysroot=C:/Users/ehsan/AppData/Local/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/sysroot -Dkeys_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -DIFKEY=85e4cb43a0634867a0da83f58de51b11 -DOSKEY=... -DPSKEY=85e4cb43a0634867a0da83f58de51b11 -DASKEY=85e4cb43a0634867a0da83f58de51b11 -DWCKEY=3c23ac970b2ec1729412087b2078b511 -Wno-dev -fno-limit-debug-info  -fPIC -o CMakeFiles\\keys.dir\\keys.c.o -c C:\\Users\\ehsan\\StudioProjects\\woooo_android\\src\\main\\cpp\\keys.c",
-  "file": "C:\\Users\\ehsan\\StudioProjects\\woooo_android\\src\\main\\cpp\\keys.c"
+  "directory": "/Users/mac/Desktop/w_group/woooo_android/.cxx/Debug/1d4d1q6p/arm64-v8a",
+  "command": "/Users/mac/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/bin/clang --target=aarch64-none-linux-android24 --sysroot=/Users/mac/Library/Android/sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/darwin-x86_64/sysroot -Dkeys_EXPORTS -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -DIFKEY=\"85e4cb43a0634867a0da83f58de51b11\" -DOSKEY=\"...\" -DPSKEY=\"85e4cb43a0634867a0da83f58de51b11\" -DASKEY=\"85e4cb43a0634867a0da83f58de51b11\" -DWCKEY=\"3c23ac970b2ec1729412087b2078b511\" -Wno-dev -fno-limit-debug-info  -fPIC -o CMakeFiles/keys.dir/keys.c.o -c /Users/mac/Desktop/w_group/woooo_android/src/main/cpp/keys.c",
+  "file": "/Users/mac/Desktop/w_group/woooo_android/src/main/cpp/keys.c"
 }
 ]

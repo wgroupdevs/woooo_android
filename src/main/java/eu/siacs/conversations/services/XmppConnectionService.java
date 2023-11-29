@@ -1571,7 +1571,6 @@ public class XmppConnectionService extends Service {
 
     private void sendMessage(final Message message, final boolean resend, final boolean delay) {
 
-
         final Account account = message.getConversation().getAccount();
         if (account.setShowErrorNotification(true)) {
             databaseBackend.updateAccount(account);

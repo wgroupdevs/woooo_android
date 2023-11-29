@@ -1,13 +1,11 @@
 package eu.siacs.conversations.ui;
 
 import android.content.Context;
-import android.content.Intent;
 import android.preference.Preference;
 import android.util.AttributeSet;
 
 import eu.siacs.conversations.BuildConfig;
 import eu.siacs.conversations.R;
-import eu.siacs.conversations.utils.PhoneHelper;
 
 public class AboutPreference extends Preference {
 	public AboutPreference(final Context context, final AttributeSet attrs, final int defStyle) {
@@ -28,8 +26,8 @@ public class AboutPreference extends Preference {
     @Override
     protected void onClick() {
         super.onClick();
-        final Intent intent = new Intent(getContext(), AboutActivity.class);
-        getContext().startActivity(intent);
+//        final Intent intent = new Intent(getContext(), AboutActivity.class);
+//        getContext().startActivity(intent);
     }
 }
 

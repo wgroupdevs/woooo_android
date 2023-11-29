@@ -17,8 +17,10 @@ import com.alphawallet.app.repository.EthereumNetworkBase;
 import com.alphawallet.app.repository.EthereumNetworkRepository;
 import com.alphawallet.app.repository.TokensRealmSource;
 import com.alphawallet.app.service.AssetDefinitionService;
+import com.alphawallet.app.util.BalanceUtils;
 import com.alphawallet.token.entity.ContractAddress;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
@@ -58,6 +60,15 @@ public class TokenCardMeta implements Comparable<TokenCardMeta>, Parcelable
         this.group = group;
     }
 
+    public String getStringBalanceForUI(int decimalPlaces)
+    {
+        int decimals = 18;
+        BigDecimal balance = new BigDecimal(this.balance);
+
+        String balanceStr = BalanceUtils.getScaledValueScientific(balance, decimals, decimalPlaces);
+        if (balanceStr.equals("0") && balance.compareTo(BigDecimal.ZERO) > 0) { balanceStr = "0.00"; }
+        return balanceStr;
+    }
     public String getAttestationId()
     {
         //should end with ATTESTATION_SUFFIX

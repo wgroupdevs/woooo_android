@@ -65,7 +65,8 @@ public final class MucDetailsContextMenuHelper {
             MenuItem removeOwnerPrivileges = menu.findItem(R.id.revoke_owner_privileges);
             MenuItem removeAdminPrivileges = menu.findItem(R.id.remove_admin_privileges);
             MenuItem removeFromRoom = menu.findItem(R.id.remove_from_room);
-            MenuItem managePermissions = menu.findItem(R.id.manage_permissions);
+//            MenuItem managePermissions = menu.findItem(R.id.manage_permissions);
+
             removeFromRoom.setTitle(isGroupChat ? R.string.remove_from_room : R.string.remove_from_channel);
             MenuItem banFromConference = menu.findItem(R.id.ban_from_conference);
             banFromConference.setTitle(isGroupChat ? R.string.ban_from_conference : R.string.ban_from_channel);
@@ -79,18 +80,14 @@ public final class MucDetailsContextMenuHelper {
             if ((activity instanceof ConferenceDetailsActivity || activity instanceof MucUsersActivity) && user.getRole() == MucOptions.Role.NONE) {
                 invite.setVisible(true);
             }
-            boolean managePermissionsVisible = false;
             if ((self.getAffiliation().ranks(MucOptions.Affiliation.ADMIN) && self.getAffiliation().outranks(user.getAffiliation())) || self.getAffiliation() == MucOptions.Affiliation.OWNER) {
                 if (advancedMode) {
                     if (!user.getAffiliation().ranks(MucOptions.Affiliation.MEMBER)) {
-                        managePermissionsVisible = true;
                         giveMembership.setVisible(true);
                     } else if (user.getAffiliation() == MucOptions.Affiliation.MEMBER) {
-                        managePermissionsVisible = true;
                         removeMembership.setVisible(true);
                     }
                     if (!Config.DISABLE_BAN) {
-                        managePermissionsVisible = true;
                         banFromConference.setVisible(true);
                     }
                 } else {
@@ -102,24 +99,19 @@ public final class MucDetailsContextMenuHelper {
             if (self.getAffiliation().ranks(MucOptions.Affiliation.OWNER)) {
                 if (isGroupChat || advancedMode || user.getAffiliation() == MucOptions.Affiliation.OWNER) {
                     if (!user.getAffiliation().ranks(MucOptions.Affiliation.OWNER)) {
-                        managePermissionsVisible = true;
                         giveOwnerPrivileges.setVisible(true);
                     } else if (user.getAffiliation() == MucOptions.Affiliation.OWNER){
-                        managePermissionsVisible = true;
                         removeOwnerPrivileges.setVisible(true);
                     }
                 }
                 if (!isGroupChat || advancedMode || user.getAffiliation() == MucOptions.Affiliation.ADMIN) {
                     if (!user.getAffiliation().ranks(MucOptions.Affiliation.ADMIN)) {
-                        managePermissionsVisible = true;
                         giveAdminPrivileges.setVisible(true);
                     } else if (user.getAffiliation() == MucOptions.Affiliation.ADMIN) {
-                        managePermissionsVisible = true;
                         removeAdminPrivileges.setVisible(true);
                     }
                 }
             }
-            managePermissions.setVisible(managePermissionsVisible);
             sendPrivateMessage.setVisible(!isGroupChat && mucOptions.allowPm() && user.getRole().ranks(MucOptions.Role.VISITOR));
         } else {
             sendPrivateMessage.setVisible(true);

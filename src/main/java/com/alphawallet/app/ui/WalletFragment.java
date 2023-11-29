@@ -2,6 +2,8 @@ package com.alphawallet.app.ui;
 
 import static android.app.Activity.RESULT_OK;
 import static com.alphawallet.app.C.ADDED_TOKEN;
+import static com.alphawallet.app.C.EXTRA_CURRENCY;
+import static com.alphawallet.app.C.EXTRA_STATE;
 import static com.alphawallet.app.C.ErrorCode.EMPTY_COLLECTION;
 import static com.alphawallet.app.C.Key.WALLET;
 import static com.alphawallet.app.ui.MyAddressActivity.KEY_ADDRESS;
@@ -12,17 +14,24 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -46,6 +55,7 @@ import com.alphawallet.app.entity.ContractLocator;
 import com.alphawallet.app.entity.ContractType;
 import com.alphawallet.app.entity.CustomViewSettings;
 import com.alphawallet.app.entity.ErrorEnvelope;
+import com.alphawallet.app.entity.NetworkInfo;
 import com.alphawallet.app.entity.ServiceSyncCallback;
 import com.alphawallet.app.entity.TokenFilter;
 import com.alphawallet.app.entity.Wallet;
@@ -53,6 +63,7 @@ import com.alphawallet.app.entity.WalletType;
 import com.alphawallet.app.entity.tokens.Token;
 import com.alphawallet.app.entity.tokens.TokenCardMeta;
 import com.alphawallet.app.interact.GenericWalletInteract;
+import com.alphawallet.app.repository.EthereumNetworkBase;
 import com.alphawallet.app.service.TickerService;
 import com.alphawallet.app.service.TokensService;
 import com.alphawallet.app.ui.widget.TokensAdapterCallback;
@@ -72,6 +83,13 @@ import com.alphawallet.app.widget.NotificationView;
 import com.alphawallet.app.widget.ProgressView;
 import com.alphawallet.app.widget.SystemView;
 import com.alphawallet.app.widget.UserAvatar;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -82,11 +100,13 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 import dagger.hilt.android.AndroidEntryPoint;
 import eu.siacs.conversations.R;
+import eu.siacs.conversations.utils.WOOOO;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -114,8 +134,21 @@ public class WalletFragment extends BaseFragment implements
     private boolean isVisible;
     private TokenFilter currentTabPos = TokenFilter.ALL;
     private LargeTitleView largeTitleView;
+    private PieChart pieChart;
+    private TextView currencySymbol;
+    private TextView currencyBalance;
+
+    private ArrayList<Integer> pieChartColorList = new ArrayList<>();
+    private ArrayList<PieEntry> pieChartEntries = new ArrayList<>();
+
+    private TokenCardMeta currentCardMeta;
+    private TextView fiatTextView;
+    private Button switchCurrencyButton;
+
     private ActivityResultLauncher<Intent> handleBackupClick;
     private ActivityResultLauncher<Intent> tokenManagementLauncher;
+    private ActivityResultLauncher<Intent> updateCurrency;
+
 
     @Inject
     AWWalletConnectClient awWalletConnectClient;
@@ -126,8 +159,6 @@ public class WalletFragment extends BaseFragment implements
                 //send instruction to restart tokenService
                 getParentFragmentManager().setFragmentResult(RESET_TOKEN_SERVICE, new Bundle());
             });
-
-
 
 
     @Nullable
@@ -174,6 +205,7 @@ public class WalletFragment extends BaseFragment implements
 
         return view;
     }
+
     private void initResultLaunchers() {
         tokenManagementLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result ->
@@ -241,6 +273,7 @@ public class WalletFragment extends BaseFragment implements
         systemView = view.findViewById(R.id.system_view);
         recyclerView = view.findViewById(R.id.list);
         addressAvatar = view.findViewById(R.id.user_address_blockie);
+        fiatTextView = view.findViewById(R.id.fiat_price_tv);
         addressAvatar.setVisibility(View.VISIBLE);
 
         systemView.showProgress(true);
@@ -248,9 +281,114 @@ public class WalletFragment extends BaseFragment implements
         systemView.attachRecyclerView(recyclerView);
         systemView.attachSwipeRefreshLayout(refreshLayout);
 
-        largeTitleView = view.findViewById(R.id.large_title_view);
-
+//        largeTitleView = view.findViewById(R.id.large_title_view);
+        pieChart = view.findViewById(R.id.pieChart);
+        currencySymbol = view.findViewById(R.id.currency_symbol);
+        currencyBalance = view.findViewById(R.id.currency_balance);
+        //        apply-font to pi chart
+        Typeface tf = Typeface.createFromAsset(getResources().getAssets(), "nasalization.otf");
+        pieChart.setCenterTextTypeface(tf);
         ((ProgressView) view.findViewById(R.id.progress_view)).hide();
+        piChartViewSetting();
+
+
+        updateCurrency = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result ->
+                {
+                    updateCurrency(result.getData());
+                });
+
+        switchCurrencyButton = view.findViewById(R.id.switch_currency_btn);
+        switchCurrencyButton.setOnClickListener(v -> {
+            onChangeCurrencyClicked();
+        });
+
+
+    }
+
+    private void piChartViewSetting() {
+        pieChart.setHoleRadius(65f);
+        pieChart.setHoleColor(Color.TRANSPARENT);
+        pieChart.setTransparentCircleRadius(35f);
+        pieChart.getLegend().setEnabled(false);
+        pieChart.getDescription().setEnabled(false);
+        pieChart.setCenterTextSize(0f);
+        pieChart.setCenterTextColor(Color.WHITE);
+
+        // Set up the OnChartValueSelectedListener
+        pieChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+
+                for (TokenCardMeta token : Objects.requireNonNull(viewModel.tokens().getValue())) {
+                    if (token.getChain() == (Long) e.getData()) {
+                        currentCardMeta = token;
+                        updatePiChart();
+                        return;
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected() {
+                // Handle the case where nothing is selected (optional)
+            }
+        });
+
+        showEmptyPiChart();
+    }
+
+    private void showEmptyPiChart() {
+        clearPieChart();
+        pieChartEntries.add(new PieEntry(1f, "", 0L));
+        pieChartColorList.add(Color.YELLOW);
+        setPieDataSet();
+
+    }
+
+    private void clearPieChart() {
+        pieChartEntries.clear();
+        pieChartColorList.clear();
+    }
+
+    private void setPieDataSet() {
+        PieDataSet pieDataSet = new PieDataSet(pieChartEntries, "Wallet");
+        pieDataSet.setValueTextSize(0f);
+        pieDataSet.setDrawValues(false);
+        pieDataSet.setColors(pieChartColorList);
+        PieData data = new PieData(pieDataSet);
+        pieChart.setData(data);
+        updatePiChart();
+    }
+
+    private void updatePiChart() {
+        if (currentCardMeta != null) {
+            NetworkInfo network = EthereumNetworkBase.getNetworkInfo(currentCardMeta.getChain());
+            String balance = currentCardMeta.getStringBalanceForUI(2);
+            currencySymbol.setText(network.symbol);
+            currencyBalance.setText(SpannableStringBuilder(balance, '.', 0.8f));
+            pieChart.invalidate();
+
+        }
+
+    }
+
+    private SpannableStringBuilder SpannableStringBuilder(String text, final char afterChar, final float reduceBy) {
+        text = text.replaceAll(",", "");
+        if (text.indexOf(afterChar) < 0) {
+            text = text.concat(".00");
+        }
+
+        RelativeSizeSpan smallSizeText = new RelativeSizeSpan(reduceBy);
+        SpannableStringBuilder ssBuilder = new SpannableStringBuilder(text);
+        ssBuilder.setSpan(
+                smallSizeText,
+                text.indexOf(afterChar),
+                text.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+
+        return ssBuilder;
     }
 
     private void onDefaultWallet(Wallet wallet) {
@@ -293,6 +431,7 @@ public class WalletFragment extends BaseFragment implements
     @Override
     public void syncComplete(TokensService svs, int syncCount) {
         if (syncCount > 0) handler.post(() -> addressAvatar.finishWaiting());
+
         svs.getFiatValuePair()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -313,13 +452,17 @@ public class WalletFragment extends BaseFragment implements
     private void updateValue(Pair<Double, Double> fiatValues) {
         try {
             // to avoid NaN
-            double changePercent = fiatValues.first != 0 ? ((fiatValues.first - fiatValues.second) / fiatValues.second) * 100.0 : 0.0;
-            largeTitleView.subtitle.setText(getString(R.string.wallet_total_change, TickerService.getCurrencyString(fiatValues.first - fiatValues.second),
-                    TickerService.getPercentageConversion(changePercent)));
-            largeTitleView.title.setText(TickerService.getCurrencyString(fiatValues.first));
-            int color = ContextCompat.getColor(requireContext(), changePercent < 0 ? R.color.negative : R.color.positive);
-            largeTitleView.subtitle.setTextColor(color);
+//            double changePercent = fiatValues.first != 0 ? ((fiatValues.first - fiatValues.second) / fiatValues.second) * 100.0 : 0.0;
 
+//            largeTitleView.subtitle.setText(getString(R.string.wallet_total_change, TickerService.getCurrencyString(fiatValues.first - fiatValues.second),
+//                    TickerService.getPercentageConversion(changePercent)));
+//            largeTitleView.title.setText(TickerService.getCurrencyString(fiatValues.first));
+
+            fiatTextView.setText(TickerService.getCurrencyString(fiatValues.first));
+            switchCurrencyButton.setText(viewModel.getDefaultCurrency());
+
+//            int color = ContextCompat.getColor(requireContext(), changePercent < 0 ? R.color.negative : R.color.positive);
+//            largeTitleView.subtitle.setTextColor(color);
             if (viewModel.getWallet() != null && viewModel.getWallet().type != WalletType.WATCH && isVisible) {
                 viewModel.checkBackup(fiatValues.first);
             }
@@ -382,7 +525,7 @@ public class WalletFragment extends BaseFragment implements
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 TokenFilter newFilter = setLinearLayoutManager(tab.getPosition());
-                Log.d(TAG,"COLLECTIBLES TAB Loaded...."+newFilter.name());
+                Log.d(TAG, "COLLECTIBLES TAB Loaded...." + newFilter.name());
 
                 adapter.setFilterType(newFilter);
                 switch (newFilter) {
@@ -396,7 +539,7 @@ public class WalletFragment extends BaseFragment implements
                     case COLLECTIBLES:
                         setGridLayoutManager(TokenFilter.COLLECTIBLES);
                         viewModel.prepare();
-                        Log.d(TAG,"COLLECTIBLES TAB Loaded....");
+                        Log.d(TAG, "COLLECTIBLES TAB Loaded....");
                         break;
                     case ATTESTATIONS: // TODO: Filter Attestations
                         break;
@@ -500,6 +643,16 @@ public class WalletFragment extends BaseFragment implements
             adapter.setTokens(tokens);
             checkScrollPosition();
             viewModel.calculateFiatValues();
+
+            if (!viewModel.getWallet().balance.equals("-") && !viewModel.getWallet().balance.equals("0.0000")) {
+
+                clearPieChart();
+                for (TokenCardMeta token : tokens) {
+                    addPiChartEntry(token);
+                }
+                setPieDataSet();
+            }
+
         }
         systemView.showProgress(false);
 
@@ -513,6 +666,21 @@ public class WalletFragment extends BaseFragment implements
             adapter.showActiveWalletConnectSessions(Collections.emptyList());
         }
     }
+
+
+    private void addPiChartEntry(TokenCardMeta token) {
+        int color = EthereumNetworkBase.getChainColour(token.getChain());
+        color = ContextCompat.getColor(requireContext(), color);
+        pieChartColorList.add(color);
+
+        float balance = Float.parseFloat(token.getStringBalanceForUI(2).replaceAll(",", ""));
+        Log.d(TAG, "TOKEN_BALANCE : " + balance + " CHAIN-ID : " + token.getChain() + " COLOR-CODE : " + color);
+        pieChartEntries.add(new PieEntry(balance, "", token.getChain()));
+        if (token.getChain() == WOOOO.CHAIN_ID) {
+            currentCardMeta = token;
+        }
+    }
+
 
     /**
      * Checks to see if the current session was started from clicking on a TokenScript notification
@@ -810,6 +978,27 @@ public class WalletFragment extends BaseFragment implements
         ClipData clip = ClipData.newPlainText(KEY_ADDRESS, Keys.toChecksumAddress(viewModel.getWalletAddr()));
         if (clipboard != null) {
             clipboard.setPrimaryClip(clip);
+        }
+    }
+
+    private void onChangeCurrencyClicked() {
+        Intent intent = new Intent(getActivity(), SelectCurrencyActivity.class);
+        String currentLocale = viewModel.getDefaultCurrency();
+        intent.putExtra(EXTRA_CURRENCY, currentLocale);
+        intent.putParcelableArrayListExtra(EXTRA_STATE, viewModel.getCurrencyList());
+        updateCurrency.launch(intent);
+    }
+
+    public void updateCurrency(Intent data) {
+        if (data != null) {
+            String currencyCode = data.getStringExtra(C.EXTRA_CURRENCY);
+            if (!viewModel.getDefaultCurrency().equals(currencyCode)) {
+                viewModel.updateCurrency(currencyCode)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(res -> getActivity().recreate())
+                        .isDisposed();
+            }
         }
     }
 }

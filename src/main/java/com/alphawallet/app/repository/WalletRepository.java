@@ -4,6 +4,8 @@ import com.alphawallet.app.entity.Wallet;
 import com.alphawallet.app.service.AccountKeystoreService;
 import com.alphawallet.app.service.KeyService;
 
+import java.util.concurrent.CompletableFuture;
+
 import io.reactivex.Completable;
 import io.reactivex.Single;
 import io.realm.Realm;
@@ -155,5 +157,11 @@ public class WalletRepository implements WalletRepositoryType {
     @Override
     public Realm getWalletRealm() {
         return walletDataRealmSource.getWalletRealm();
+    }
+
+    @Override
+    public CompletableFuture<String> clearDatabase() {
+       return walletDataRealmSource.clearDatabase();
+
     }
 }

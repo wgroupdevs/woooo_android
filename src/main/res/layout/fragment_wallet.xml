@@ -30,11 +30,97 @@
             android:src="@drawable/divider_ic" />
 
 
-        <com.alphawallet.app.widget.LargeTitleView
-            android:id="@+id/large_title_view"
+        <RelativeLayout
             android:layout_width="match_parent"
+            android:layout_height="@dimen/_140sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/pieChart"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_140sdp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/currency_symbol"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-4dp"
+                    android:text="WOO"
+                    android:textAppearance="@style/TextAppearance.Conversations.Title" />
+
+                <TextView
+                    android:id="@+id/currency_balance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-4dp"
+                    android:text="0.0"
+                    android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+            </LinearLayout>
+        </RelativeLayout>
+
+
+        <!--    Currency Spinner START -->
+        <LinearLayout
+            android:id="@+id/currency_layout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll|snap" />
+            android:layout_below="@id/pieChart_layout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginHorizontal="@dimen/_70sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:background="@drawable/button"
+            android:gravity="center"
+            android:minWidth="@dimen/_100sdp"
+
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/fiat_price_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="---"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+
+            <View
+                android:layout_width="@dimen/_1sdp"
+                android:layout_height="@dimen/_20sdp"
+                android:layout_marginStart="@dimen/_10sdp"
+                android:background="@color/grey50" />
+
+            <Button
+                android:id="@+id/switch_currency_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/_5sdp"
+                android:padding="0dp"
+                android:background="@color/transparent"
+                android:drawableEnd="@drawable/ccp_ic_arrow_drop_down"
+                android:elevation="0dp"
+                android:text="---"
+                android:textAppearance="@style/TextAppearance.Conversations.Subhead"
+                android:textColor="@color/white"
+
+                />
+        </LinearLayout>
+
+
+        <!--        <com.alphawallet.app.widget.LargeTitleView-->
+        <!--            android:id="@+id/large_title_view"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            app:layout_scrollFlags="scroll|snap" />-->
+
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
@@ -47,7 +133,8 @@
         <com.alphawallet.app.widget.NotificationView
             android:id="@+id/notification"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

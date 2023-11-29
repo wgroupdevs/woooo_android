@@ -208,11 +208,11 @@ public class BalanceUtils
         final BigDecimal displayThreshold = BigDecimal.ONE.divide(BigDecimal.valueOf(Math.pow(10, dPlaces)), 18, RoundingMode.DOWN);
         if (value.equals(BigDecimal.ZERO)) //zero balance
         {
-            returnValue = "0";
+            returnValue = "0.00";
         }
         else if (correctedValue.compareTo(displayThreshold) < 0) //very low balance //TODO: Fold into getSuffixedValue below
         {
-            returnValue = "0.000~";
+            returnValue = "0.000";
         }
         else if (requiresSuffix(correctedValue, dPlaces))
         {

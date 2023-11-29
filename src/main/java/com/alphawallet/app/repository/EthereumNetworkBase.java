@@ -101,7 +101,7 @@ import java.util.Map;
 import java.util.Set;
 
 import eu.siacs.conversations.R;
-import eu.siacs.conversations.utils.WOONetwork;
+import eu.siacs.conversations.utils.WOOOO;
 import io.reactivex.Single;
 
 public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryType {
@@ -189,7 +189,7 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
     //If your wallet prioritises xDai for example, you may want to move the XDAI_ID to the front of this list,
     //Then xDai would appear as the first token at the top of the wallet
     private static final List<Long> hasValue = new ArrayList<>(Arrays.asList(
-            WOONetwork.WOO_NET_ID, MAINNET_ID, GNOSIS_ID, POLYGON_ID, ROOTSTOCK_MAINNET_ID, CLASSIC_ID, LINEA_ID, BINANCE_MAIN_ID, HECO_ID, AVALANCHE_ID,
+            WOOOO.CHAIN_ID, MAINNET_ID, GNOSIS_ID, POLYGON_ID, ROOTSTOCK_MAINNET_ID, CLASSIC_ID, LINEA_ID, BINANCE_MAIN_ID, HECO_ID, AVALANCHE_ID,
             FANTOM_ID, OPTIMISTIC_MAIN_ID, CRONOS_MAIN_ID, ARBITRUM_MAIN_ID, PALM_ID, KLAYTN_ID, IOTEX_MAINNET_ID, AURORA_MAINNET_ID, MILKOMEDA_C1_ID, OKX_ID));
 
     private static final List<Long> testnetList = new ArrayList<>(Arrays.asList(
@@ -228,12 +228,15 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
     private static final LongSparseArray<NetworkInfo> builtinNetworkMap = new LongSparseArray<NetworkInfo>() {
         {
 
-            put(WOONetwork.WOO_NET_ID, new NetworkInfo(WOONetwork.WOO_NAME, WOONetwork.WOO_SYMBOL,
-                    WOONetwork.WOO_RPC_URL,
-                    WOONetwork.WOO_EXP_URL,
-                    WOONetwork.WOO_NET_ID,
-                    WOONetwork.WOO_EXP_URL,
-                    WOONetwork.WOO_EXP_API_URL));
+            put(WOOOO.CHAIN_ID,
+                    new NetworkInfo(
+                            WOOOO.NAME,
+                            WOOOO.SYMBOL,
+                            WOOOO.RPC_URL,
+                            WOOOO.EXP_URL,
+                            WOOOO.CHAIN_ID,
+                            WOOOO.EXP_URL,
+                            WOOOO.EXP_API_URL));
 
             put(MAINNET_ID, new NetworkInfo(C.ETHEREUM_NETWORK_NAME, C.ETH_SYMBOL,
                     MAINNET_RPC_URL,
@@ -390,7 +393,7 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
 
     private static final LongSparseArray<Integer> chainLogos = new LongSparseArray<Integer>() {
         {
-            put(WOONetwork.WOO_NET_ID, R.drawable.woa_coin);
+            put(WOOOO.CHAIN_ID, R.drawable.woa_coin);
             put(MAINNET_ID, R.drawable.ic_token_eth);
             put(CLASSIC_ID, R.drawable.ic_icons_network_etc); //classic_logo
             put(GNOSIS_ID, R.drawable.ic_icons_network_gnosis);
@@ -432,7 +435,7 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
 
     private static final LongSparseArray<Integer> smallChainLogos = new LongSparseArray<Integer>() {
         {
-            put(WOONetwork.WOO_NET_ID, R.drawable.woa_coin);
+            put(WOOOO.CHAIN_ID, R.drawable.woa_coin);
             put(MAINNET_ID, R.drawable.ic_icons_network_eth);
             put(CLASSIC_ID, R.drawable.ic_icons_network_etc);
             put(GNOSIS_ID, R.drawable.ic_icons_network_gnosis);
@@ -474,7 +477,7 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
 
     private static final LongSparseArray<Integer> chainColours = new LongSparseArray<Integer>() {
         {
-            put(WOONetwork.WOO_NET_ID, R.color.blue_primary200);
+            put(WOOOO.CHAIN_ID, R.color.gold);
             put(MAINNET_ID, R.color.mainnet);
             put(CLASSIC_ID, R.color.classic);
             put(GNOSIS_ID, R.color.xdai);
@@ -769,7 +772,7 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
 //            }
 
 
-            Log.d(TAG,"NETWORK-COUNT : "+result.size());
+            Log.d(TAG, "NETWORK-COUNT : " + result.size());
 
 
         } else {
@@ -944,7 +947,7 @@ public abstract class EthereumNetworkBase implements EthereumNetworkRepositoryTy
         if (chainColours.indexOfKey(chainId) >= 0) {
             return chainColours.get(chainId);
         } else {
-            return R.color.text_primary;
+            return R.color.text_secondary;
         }
     }
 

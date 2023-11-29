@@ -1,8 +1,6 @@
 package com.woooapp.meeting.lib;
 
 import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
@@ -57,7 +55,7 @@ public class ScreenCaptureService extends Service {
                 .setContentTitle("Woooo Casting Screen ...")
                 .setContentText("Your Screen was shared with other members.")
                 .setCategory(Notification.CATEGORY_SERVICE)
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.woooo_logo))
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.app_logo))
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent);
 

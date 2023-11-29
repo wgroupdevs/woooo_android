@@ -6,7 +6,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
 
@@ -22,8 +21,6 @@ import java.util.Locale;
 import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.entities.Account;
-import eu.siacs.conversations.entities.Conversation;
-import eu.siacs.conversations.entities.Message;
 import eu.siacs.conversations.services.XmppConnectionService;
 import eu.siacs.conversations.ui.XmppActivity;
 
@@ -86,13 +83,15 @@ public class ExceptionHelper {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle(activity.getString(R.string.crash_report_title, activity.getString(R.string.app_name)));
             builder.setMessage(activity.getString(R.string.crash_report_message, activity.getString(R.string.app_name)));
-            builder.setPositiveButton(activity.getText(R.string.send_now), (dialog, which) -> {
 
-                Log.d(Config.LOGTAG, "using account=" + account.getJid().asBareJid() + " to send in stack trace");
-                Conversation conversation = service.findOrCreateConversation(account, Config.BUG_REPORTS, false, true);
-                Message message = new Message(conversation, report.toString(), Message.ENCRYPTION_NONE);
-                service.sendMessage(message);
-            });
+            builder.setNegativeButton(activity.getText(R.string.send_now), (dialog, which) -> preferences.edit().putBoolean("never_send", true).apply());
+
+//            builder.setPositiveButton(activity.getText(R.string.send_now), (dialog, which) -> {
+//                Log.d(Config.LOGTAG, "using account=" + account.getJid().asBareJid() + " to send in stack trace");
+//                Conversation conversation = service.findOrCreateConversation(account, Config.BUG_REPORTS, false, true);
+//                Message message = new Message(conversation, report.toString(), Message.ENCRYPTION_NONE);
+//                service.sendMessage(message);
+//            });
             builder.setNegativeButton(activity.getText(R.string.send_never), (dialog, which) -> preferences.edit().putBoolean("never_send", true).apply());
             builder.create().show();
             return true;

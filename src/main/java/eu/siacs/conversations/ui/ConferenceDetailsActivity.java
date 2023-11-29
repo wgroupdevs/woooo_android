@@ -51,6 +51,7 @@ import eu.siacs.conversations.utils.AccountUtils;
 import eu.siacs.conversations.utils.Compatibility;
 import eu.siacs.conversations.utils.StringUtils;
 import eu.siacs.conversations.utils.StylingHelper;
+import eu.siacs.conversations.utils.WOOOO;
 import eu.siacs.conversations.utils.XmppUri;
 import eu.siacs.conversations.xmpp.Jid;
 import me.drakeet.support.toast.ToastCompat;
@@ -315,7 +316,7 @@ public class ConferenceDetailsActivity extends XmppActivity implements OnConvers
     protected String getShareableUri(boolean http) {
         if (mConversation != null) {
             if (http) {
-                return "https://conversations.im/j/" + XmppUri.lameUrlEncode(mConversation.getJid().asBareJid().toEscapedString());
+                return WOOOO.WEB_URL + XmppUri.lameUrlEncode(mConversation.getJid().asBareJid().toEscapedString());
             } else {
                 return "xmpp:" + mConversation.getJid().asBareJid() + "?join";
             }

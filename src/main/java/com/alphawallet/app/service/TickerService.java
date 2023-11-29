@@ -24,6 +24,7 @@ import static org.web3j.protocol.core.methods.request.Transaction.createEthCallT
 
 import android.text.TextUtils;
 import android.text.format.DateUtils;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -66,6 +67,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
+import eu.siacs.conversations.utils.WOOOO;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -76,19 +78,19 @@ import okhttp3.Request;
 import okhttp3.Response;
 import timber.log.Timber;
 
-public class TickerService
-{
+public class TickerService {
     private static final int UPDATE_TICKER_CYCLE = 5; //5 Minutes
     private static final String MEDIANIZER = "0x729D19f657BD0614b4985Cf1D82531c67569197B";
     private static final String MARKET_ORACLE_CONTRACT = "0xdAcAf435f241B1a062B021abEED9CA2F76F22F8D";
     private static final String CONTRACT_ADDR = "[CONTRACT_ADDR]";
     private static final String CHAIN_IDS = "[CHAIN_ID]";
     private static final String CURRENCY_TOKEN = "[CURRENCY]";
-    private static final String COINGECKO_CHAIN_CALL = "https://api.coingecko.com/api/v3/simple/price?ids=" + CHAIN_IDS + "&vs_currencies=" + CURRENCY_TOKEN + "&include_24hr_change=true";
+    private static final String COINGECKO_CHAIN_CALL = "https://api.coingecko.com/api/v3/simple/price?ids=tether," + CHAIN_IDS + "&vs_currencies=" + CURRENCY_TOKEN + "&include_24hr_change=true";
     private static final String COINGECKO_API = String.format("https://api.coingecko.com/api/v3/simple/token_price/%s?contract_addresses=%s&vs_currencies=%s&include_24hr_change=true",
             CHAIN_IDS, CONTRACT_ADDR, CURRENCY_TOKEN);
     private static final String DEXGURU_API = "https://api.dex.guru/v1/tokens/" + CONTRACT_ADDR + "-" + CHAIN_IDS;
     private static final String CURRENCY_CONV = "currency";
+    private static final String TAG = "TICKER_SERVICE_TAG";
     private static final boolean ALLOW_UNVERIFIED_TICKERS = false; //allows verified:false tickers from DEX.GURU. Not recommended
     public static final long TICKER_TIMEOUT = DateUtils.WEEK_IN_MILLIS; //remove ticker if not seen in one week
     public static final long TICKER_STALE_TIMEOUT = 30 * DateUtils.MINUTE_IN_MILLIS; //Use market API if AlphaWallet market oracle not updating
@@ -113,8 +115,7 @@ public class TickerService
     @Nullable
     private Disposable mainTickerUpdate;
 
-    public TickerService(OkHttpClient httpClient, PreferenceRepositoryType sharedPrefs, TokenLocalSource localSource)
-    {
+    public TickerService(OkHttpClient httpClient, PreferenceRepositoryType sharedPrefs, TokenLocalSource localSource) {
         this.httpClient = httpClient;
         this.sharedPrefs = sharedPrefs;
         this.localSource = localSource;
@@ -124,13 +125,12 @@ public class TickerService
         lastTickerUpdate = 0;
     }
 
-    public void updateTickers()
-    {
-        if (mainTickerUpdate != null && !mainTickerUpdate.isDisposed() && System.currentTimeMillis() > (lastTickerUpdate + DateUtils.MINUTE_IN_MILLIS))
-        {
+    public void updateTickers() {
+        if (mainTickerUpdate != null && !mainTickerUpdate.isDisposed() && System.currentTimeMillis() > (lastTickerUpdate + DateUtils.MINUTE_IN_MILLIS)) {
             return; //do not update if update is currently in progress
         }
-        if (tickerUpdateTimer != null && !tickerUpdateTimer.isDisposed()) tickerUpdateTimer.dispose();
+        if (tickerUpdateTimer != null && !tickerUpdateTimer.isDisposed())
+            tickerUpdateTimer.dispose();
         sharedPrefs.commit();
 
         tickerUpdateTimer = Observable.interval(0, UPDATE_TICKER_CYCLE, TimeUnit.MINUTES)
@@ -138,8 +138,7 @@ public class TickerService
                 .subscribe();
     }
 
-    private void tickerUpdate()
-    {
+    private void tickerUpdate() {
         mainTickerUpdate = updateCurrencyConversion()
                 .flatMap(this::updateTickersFromOracle)
                 .flatMap(this::fetchTickersSeparatelyIfRequired)
@@ -149,70 +148,62 @@ public class TickerService
                 .subscribe(this::tickersUpdated, this::onTickersError);
     }
 
-    private void tickersUpdated(int tickerCount)
-    {
+    private void tickersUpdated(int tickerCount) {
         Timber.d("Tickers Updated: %s", tickerCount);
         mainTickerUpdate = null;
         lastTickerUpdate = System.currentTimeMillis();
+        fetchCoinGeckoChainPrices();
     }
 
-    public Single<Double> updateCurrencyConversion()
-    {
+    public Single<Double> updateCurrencyConversion() {
         initCurrency();
         return convertPair("USD", currentCurrencySymbolTxt)
                 .map(this::storeCurrentRate);
     }
 
-    private Double storeCurrentRate(Double rate)
-    {
-        if (rate == 0.0)
-        {
+    private Double storeCurrentRate(Double rate) {
+        if (rate == 0.0) {
             TokenTicker tt = localSource.getCurrentTicker(TokensRealmSource.databaseKey(0, CURRENCY_CONV));
-            if (tt != null)
-            {
+            if (tt != null) {
                 return Double.parseDouble(tt.price);
-            }
-            else
-            {
+            } else {
                 return 0.0;
             }
-        }
-        else
-        {
+        } else {
             TokenTicker currencyTicker = new TokenTicker(Double.toString(rate), "0", currentCurrencySymbolTxt, null, System.currentTimeMillis());
-            localSource.updateERC20Tickers(0, new HashMap<String, TokenTicker>()
-            {{
+            localSource.updateERC20Tickers(0, new HashMap<String, TokenTicker>() {{
                 put(CURRENCY_CONV, currencyTicker);
             }});
             return rate;
         }
     }
 
-    private Single<Integer> fetchTickersSeparatelyIfRequired(int tickerCount)
-    {
+    private Single<Integer> fetchTickersSeparatelyIfRequired(int tickerCount) {
         //check base chain tickers
         if (receivedAllChainPairs()) return Single.fromCallable(() -> tickerCount);
         else return fetchCoinGeckoChainPrices(); //fetch directly
     }
 
 
-    private Single<Integer> fetchCoinGeckoChainPrices()
-    {
+    private Single<Integer> fetchCoinGeckoChainPrices() {
+
+        Log.d(TAG, "getCoinGeckoChainCall : " + getCoinGeckoChainCall());
+
         return Single.fromCallable(() -> {
             int tickers = 0;
             Request request = new Request.Builder()
                     .url(getCoinGeckoChainCall())
                     .get()
                     .build();
-            try (Response response = httpClient.newCall(request).execute())
-            {
-                if (response.code() / 200 == 1)
-                {
+            try (Response response = httpClient.newCall(request).execute()) {
+                if (response.code() / 200 == 1) {
                     String result = response.body()
                             .string();
+
                     JSONObject data = new JSONObject(result);
-                    for (long chainId : chainPairs.keySet())
-                    {
+                    Log.d(TAG, "JSONObject : " + data);
+
+                    for (long chainId : chainPairs.keySet()) {
                         String chainSymbol = chainPairs.get(chainId);
                         if (!data.has(chainSymbol)) continue;
                         JSONObject tickerData = (JSONObject) data.get(chainSymbol);
@@ -222,9 +213,7 @@ public class TickerService
                         tickers++;
                     }
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Timber.e(e);
             }
 
@@ -232,8 +221,7 @@ public class TickerService
         });
     }
 
-    private Single<Integer> updateTickersFromOracle(double conversionRate)
-    {
+    private Single<Integer> updateTickersFromOracle(double conversionRate) {
         resetTickerUpdate();
         currentConversionRate = conversionRate;
         return Single.fromCallable(() -> {
@@ -244,16 +232,13 @@ public class TickerService
             String responseValue = callSmartContractFunction(web3j, function, MARKET_ORACLE_CONTRACT);
             List<Type> responseValues = FunctionReturnDecoder.decode(responseValue, function.getOutputParameters());
 
-            if (!responseValues.isEmpty())
-            {
+            if (!responseValues.isEmpty()) {
                 Type T = responseValues.get(0);
                 List<Uint256> values = (List) T.getValue();
                 long tickerUpdateTime = values.get(0).getValue().longValue() * 1000L;
 
-                if ((System.currentTimeMillis() - tickerUpdateTime) < TICKER_STALE_TIMEOUT)
-                {
-                    for (int i = 1; i < values.size(); i++)
-                    {
+                if ((System.currentTimeMillis() - tickerUpdateTime) < TICKER_STALE_TIMEOUT) {
+                    for (int i = 1; i < values.size(); i++) {
                         //decode ticker values and populate
                         BigInteger tickerInfo = values.get(i).getValue();
                         addToTokenTickers(tickerInfo, tickerUpdateTime);
@@ -268,8 +253,7 @@ public class TickerService
 
     private static final int GREATEST_MAPSIZE = 75;
 
-    public Single<Integer> syncERC20Tickers(long chainId, List<TokenCardMeta> erc20Tokens)
-    {
+    public Single<Integer> syncERC20Tickers(long chainId, List<TokenCardMeta> erc20Tokens) {
         if (!canUpdate(chainId) || erc20Tokens.size() == 0)
             return Single.fromCallable(() -> 0);
         //this function called after sync is complete, only update tickers that need updating
@@ -281,8 +265,7 @@ public class TickerService
         canUpdate.put(chainId, System.currentTimeMillis() + 15 * DateUtils.SECOND_IN_MILLIS);
         nextUpdate = System.currentTimeMillis() + 5 * DateUtils.SECOND_IN_MILLIS;
 
-        for (TokenCardMeta tcm : erc20Tokens)
-        {
+        for (TokenCardMeta tcm : erc20Tokens) {
             if (!dexGuruQuery.containsKey(tcm.tokenId) // don't include any token in the dexguru queue
                     && (!currentTickerMap.containsKey(tcm.getAddress())
                     || currentTickerMap.get(tcm.getAddress()) < staleTime)) //include tokens who's tickers have gone stale
@@ -303,38 +286,31 @@ public class TickerService
 
     private long nextUpdate = 0;
 
-    private boolean canUpdate(long chainId)
-    {
+    private boolean canUpdate(long chainId) {
         if (System.currentTimeMillis() < nextUpdate) return false;
 
-        if (canUpdate.containsKey(chainId))
-        {
+        if (canUpdate.containsKey(chainId)) {
             return System.currentTimeMillis() > canUpdate.get(chainId);
-        }
-        else
-        {
+        } else {
             return true;
         }
     }
 
-    private Map<String, TokenTicker> fetchERC20TokenTickers(long chainId, Collection<TokenCardMeta> erc20Tokens)
-    {
+    private Map<String, TokenTicker> fetchERC20TokenTickers(long chainId, Collection<TokenCardMeta> erc20Tokens) {
         final String apiChainName = coinGeckoChainIdToAPIName.get(chainId);
         final String dexGuruName = dexGuruChainIdToAPISymbol.get(chainId);
         final Map<String, TokenTicker> erc20Tickers = new HashMap<>();
         if (apiChainName == null) return erc20Tickers;
 
         final Map<String, TokenCardMeta> lookupMap = new HashMap<>();
-        for (TokenCardMeta tcm : erc20Tokens)
-        {
+        for (TokenCardMeta tcm : erc20Tokens) {
             lookupMap.put(tcm.getAddress().toLowerCase(), tcm);
         }
 
         //build ticker header
         StringBuilder sb = new StringBuilder();
         boolean isFirst = true;
-        for (TokenCardMeta t : erc20Tokens)
-        {
+        for (TokenCardMeta t : erc20Tokens) {
             if (!isFirst) sb.append(",");
             sb.append(t.getAddress());
             isFirst = false;
@@ -346,57 +322,44 @@ public class TickerService
                 .build();
 
         try (Response response = httpClient.newCall(request)
-                .execute())
-        {
+                .execute()) {
             String responseStr = response.body().string();
             List<CoinGeckoTicker> tickers = CoinGeckoTicker.buildTickerList(responseStr, currentCurrencySymbolTxt, currentConversionRate);
-            for (CoinGeckoTicker t : tickers)
-            {
+            for (CoinGeckoTicker t : tickers) {
                 //store ticker
                 erc20Tickers.put(t.address, t.toTokenTicker(currentCurrencySymbolTxt));
                 lookupMap.remove(t.address.toLowerCase());
             }
 
-            if (dexGuruName != null)
-            {
+            if (dexGuruName != null) {
                 addDexGuruTickers(lookupMap.values());
-            }
-            else
-            {
+            } else {
                 final Map<String, TokenTicker> blankTickers = new HashMap<>(); //These tokens have no ticker, don't check them again today
-                for (String address : lookupMap.keySet())
-                {
+                for (String address : lookupMap.keySet()) {
                     blankTickers.put(address, new TokenTicker(System.currentTimeMillis() + DateUtils.DAY_IN_MILLIS));
                 }
                 localSource.updateERC20Tickers(chainId, blankTickers);
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Timber.e(e);
         }
 
         return erc20Tickers;
     }
 
-    private void addDexGuruTickers(Collection<TokenCardMeta> tokens)
-    {
-        for (TokenCardMeta tcm : tokens)
-        {
+    private void addDexGuruTickers(Collection<TokenCardMeta> tokens) {
+        for (TokenCardMeta tcm : tokens) {
             dexGuruQuery.put(tcm.tokenId, tcm);
         }
 
-        if (dexGuruLookup == null || dexGuruLookup.isDisposed())
-        {
+        if (dexGuruLookup == null || dexGuruLookup.isDisposed()) {
             dexGuruLookup = Observable.interval(0, 1000, TimeUnit.MILLISECONDS)
                     .doOnNext(l -> getDexGuruTicker()).subscribe();
         }
     }
 
-    private void getDexGuruTicker()
-    {
-        if (dexGuruQuery.keySet().iterator().hasNext())
-        {
+    private void getDexGuruTicker() {
+        if (dexGuruQuery.keySet().iterator().hasNext()) {
             String key = dexGuruQuery.keySet().iterator().next();
             TokenCardMeta tcm = dexGuruQuery.get(key);
             dexGuruQuery.remove(key);
@@ -408,56 +371,42 @@ public class TickerService
                     .build();
 
             try (Response response = httpClient.newCall(request)
-                    .execute())
-            {
-                if ((response.code() / 100) == 2 && response.body() != null)
-                {
+                    .execute()) {
+                if ((response.code() / 100) == 2 && response.body() != null) {
                     DexGuruTicker t = new DexGuruTicker(response.body().string());
-                    if (t.verified || ALLOW_UNVERIFIED_TICKERS)
-                    {
+                    if (t.verified || ALLOW_UNVERIFIED_TICKERS) {
                         BigDecimal changeValue = new BigDecimal(t.usdChange).setScale(3, RoundingMode.DOWN);
 
                         TokenTicker tTicker = new TokenTicker(String.valueOf(t.usdPrice * currentConversionRate),
                                 changeValue.toString(), currentCurrencySymbolTxt, "", System.currentTimeMillis());
 
-                        localSource.updateERC20Tickers(tcm.getChain(), new HashMap<String, TokenTicker>()
-                        {{
+                        localSource.updateERC20Tickers(tcm.getChain(), new HashMap<String, TokenTicker>() {{
                             put(tcm.getAddress(), tTicker);
                         }});
                         return;
                     }
                 }
                 localSource.updateTicker(tcm.getChain(), tcm.getAddress(), new TokenTicker(System.currentTimeMillis() + DateUtils.DAY_IN_MILLIS));
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Timber.e(e);
             }
-        }
-        else
-        {
+        } else {
             if (dexGuruLookup != null && !dexGuruLookup.isDisposed()) dexGuruLookup.dispose();
         }
     }
 
-    private void checkPeggedTickers(long chainId, TokenTicker ticker)
-    {
-        if (chainId == MAINNET_ID)
-        {
-            for (Map.Entry<Long, String> entry : chainPairs.entrySet())
-            {
-                if (entry.getValue().equals("ethereum"))
-                {
+    private void checkPeggedTickers(long chainId, TokenTicker ticker) {
+        if (chainId == MAINNET_ID) {
+            for (Map.Entry<Long, String> entry : chainPairs.entrySet()) {
+                if (entry.getValue().equals("ethereum")) {
                     ethTickers.put(entry.getKey(), ticker);
                 }
             }
         }
     }
 
-    private void addToTokenTickers(BigInteger tickerInfo, long tickerTime)
-    {
-        try
-        {
+    private void addToTokenTickers(BigInteger tickerInfo, long tickerTime) {
+        try {
             byte[] tickerData = Numeric.toBytesPadded(tickerInfo, 32);
             ByteArrayInputStream buffer = new ByteArrayInputStream(tickerData);
             EthereumReadBuffer ds = new EthereumReadBuffer(buffer);
@@ -477,15 +426,12 @@ public class TickerService
 
             ethTickers.put(chainId.longValue(), tTicker);
             checkPeggedTickers(chainId.longValue(), tTicker);
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private int checkTickers(int tickerSize)
-    {
+    private int checkTickers(int tickerSize) {
         Timber.d("Tickers received: %s", tickerSize);
         //store ticker values. If values have changed then update the token's update time so the wallet view will update
         localSource.updateEthTickers(ethTickers);
@@ -493,26 +439,25 @@ public class TickerService
         return tickerSize;
     }
 
-    public TokenTicker getEthTicker(long chainId)
-    {
+    public TokenTicker getEthTicker(long chainId) {
         return ethTickers.get(chainId);
     }
 
-    private TokenTicker decodeCoinGeckoTicker(JSONObject eth)
-    {
+    private TokenTicker decodeCoinGeckoTicker(JSONObject eth) {
+
+
+        Log.d("TICKER_SERVICE", "DATA_DecodeCoinGeckoTicker" + eth);
+
+
         TokenTicker tTicker;
-        try
-        {
+        try {
             BigDecimal changeValue = BigDecimal.ZERO;
             double fiatPrice = 0.0;
             String fiatChangeStr = "0.0";
-            if (eth.has(currentCurrencySymbolTxt.toLowerCase()))
-            {
+            if (eth.has(currentCurrencySymbolTxt.toLowerCase())) {
                 fiatPrice = eth.getDouble(currentCurrencySymbolTxt.toLowerCase());
                 fiatChangeStr = eth.getString(currentCurrencySymbolTxt.toLowerCase() + "_24h_change");
-            }
-            else
-            {
+            } else {
                 fiatPrice = eth.getDouble("usd") * currentConversionRate;
                 fiatChangeStr = eth.getString("usd_24h_change");
             }
@@ -521,9 +466,7 @@ public class TickerService
 
             tTicker = new TokenTicker(String.valueOf(fiatPrice),
                     changeValue.setScale(3, RoundingMode.DOWN).toString(), currentCurrencySymbolTxt, "", System.currentTimeMillis());
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
             tTicker = new TokenTicker();
         }
@@ -531,10 +474,10 @@ public class TickerService
         return tTicker;
     }
 
-    public Single<Double> convertPair(String currency1, String currency2)
-    {
+    public Single<Double> convertPair(String currency1, String currency2) {
         return Single.fromCallable(() -> {
-            if (currency1 == null || currency2 == null || currency1.equals(currency2)) return (Double) 1.0;
+            if (currency1 == null || currency2 == null || currency1.equals(currency2))
+                return (Double) 1.0;
             String conversionURL = "http://currencies.apps.grandtrunk.net/getlatest/" + currency1 + "/" + currency2;
 
             double rate = 0.0;
@@ -545,17 +488,13 @@ public class TickerService
                     .get()
                     .build();
 
-            try (Response response = httpClient.newCall(request).execute())
-            {
+            try (Response response = httpClient.newCall(request).execute()) {
                 int resultCode = response.code();
-                if ((resultCode / 100) == 2 && response.body() != null)
-                {
+                if ((resultCode / 100) == 2 && response.body() != null) {
                     String responseBody = response.body().string();
                     rate = Double.parseDouble(responseBody);
                 }
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Timber.e(e);
                 rate = 0.0;
             }
@@ -564,37 +503,29 @@ public class TickerService
         });
     }
 
-    private String callSmartContractFunction(Web3j web3j, Function function, String contractAddress)
-    {
+    private String callSmartContractFunction(Web3j web3j, Function function, String contractAddress) {
         String encodedFunction = FunctionEncoder.encode(function);
 
-        try
-        {
+        try {
             org.web3j.protocol.core.methods.request.Transaction transaction
                     = createEthCallTransaction(ZERO_ADDRESS, contractAddress, encodedFunction);
             EthCall response = web3j.ethCall(transaction, DefaultBlockParameterName.LATEST).send();
 
             return response.getValue();
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             //Connection error. Use cached value
             return null;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Timber.e(e);
             return null;
         }
     }
 
-    private static Function getTickers()
-    {
+    private static Function getTickers() {
         return new Function(
                 "getTickers",
                 Arrays.asList(),
-                Collections.singletonList(new TypeReference<DynamicArray<Uint256>>()
-                {
+                Collections.singletonList(new TypeReference<DynamicArray<Uint256>>() {
                 }));
     }
 
@@ -605,10 +536,8 @@ public class TickerService
      * @param ticker
      */
     @SuppressWarnings("unused")
-    public void addCustomTicker(long chainId, TokenTicker ticker)
-    {
-        if (ticker != null)
-        {
+    public void addCustomTicker(long chainId, TokenTicker ticker) {
+        if (ticker != null) {
             ethTickers.put(chainId, ticker);
         }
     }
@@ -621,13 +550,10 @@ public class TickerService
      * @param ticker
      */
     @SuppressWarnings("unused")
-    public void addCustomTicker(long chainId, String address, TokenTicker ticker)
-    {
-        if (ticker != null && address != null)
-        {
+    public void addCustomTicker(long chainId, String address, TokenTicker ticker) {
+        if (ticker != null && address != null) {
             Single.fromCallable(() -> {
-                        localSource.updateERC20Tickers(chainId, new HashMap<String, TokenTicker>()
-                        {{
+                        localSource.updateERC20Tickers(chainId, new HashMap<String, TokenTicker>() {{
                             put(address, ticker);
                         }});
                         return true;
@@ -637,34 +563,28 @@ public class TickerService
         }
     }
 
-    private void onTickersError(Throwable throwable)
-    {
+    private void onTickersError(Throwable throwable) {
         mainTickerUpdate = null;
         throwable.printStackTrace();
     }
 
-    public static String getFullCurrencyString(double price)
-    {
+    public static String getFullCurrencyString(double price) {
         return getCurrencyString(price) + " " + currentCurrencySymbolTxt;
     }
 
-    public static String getCurrencyString(double price)
-    {
+    public static String getCurrencyString(double price) {
         return BalanceUtils.genCurrencyString(price, currentCurrencySymbol);
     }
 
-    public static String getCurrencyWithoutSymbol(double price)
-    {
+    public static String getCurrencyWithoutSymbol(double price) {
         return BalanceUtils.genCurrencyString(price, "");
     }
 
-    public static String getPercentageConversion(double d)
-    {
+    public static String getPercentageConversion(double d) {
         return BalanceUtils.getScaledValue(BigDecimal.valueOf(d), 0, 2);
     }
 
-    private void initCurrency()
-    {
+    private void initCurrency() {
         currentCurrencySymbolTxt = sharedPrefs.getDefaultCurrency();
         currentCurrencySymbol = sharedPrefs.getDefaultCurrencySymbol();
     }
@@ -674,31 +594,26 @@ public class TickerService
      *
      * @return 3 character currency ISO text
      */
-    public static String getCurrencySymbolTxt()
-    {
+    public static String getCurrencySymbolTxt() {
         return currentCurrencySymbolTxt;
     }
 
-    public static String getCurrencySymbol()
-    {
+    public static String getCurrencySymbol() {
         return currentCurrencySymbol;
     }
 
-    public double getCurrentConversionRate()
-    {
+    public double getCurrentConversionRate() {
         return currentConversionRate;
     }
 
-    private void resetTickerUpdate()
-    {
+    private void resetTickerUpdate() {
         canUpdate.clear();
         dexGuruQuery.clear();
         ethTickers.clear();
     }
 
     // Update this list from here: https://api.coingecko.com/api/v3/asset_platforms
-    public static final Map<Long, String> coinGeckoChainIdToAPIName = new HashMap<>()
-    {{
+    public static final Map<Long, String> coinGeckoChainIdToAPIName = new HashMap<>() {{
         put(MAINNET_ID, "ethereum");
         put(GNOSIS_ID, "xdai");
         put(BINANCE_MAIN_ID, "binance-smart-chain");
@@ -720,25 +635,23 @@ public class TickerService
         put(CRONOS_MAIN_ID, "cronos");
         put(ROOTSTOCK_MAINNET_ID, "rootstock");
         put(LINEA_ID, "linea");
+        put(WOOOO.CHAIN_ID, "tether");
     }};
 
-    private static final Map<Long, String> dexGuruChainIdToAPISymbol = new HashMap<Long, String>()
-    {{
+    private static final Map<Long, String> dexGuruChainIdToAPISymbol = new HashMap<Long, String>() {{
         put(MAINNET_ID, "eth");
         put(BINANCE_MAIN_ID, "bsc");
         put(POLYGON_ID, "polygon");
         put(AVALANCHE_ID, "avalanche");
     }};
 
-    public void deleteTickers()
-    {
+    public void deleteTickers() {
         localSource.deleteTickers();
     }
 
     // Update from https://api.coingecko.com/api/v3/coins/list
     // If ticker is pegged against ethereum (L2's) then use 'ethereum' here.
-    public static final Map<Long, String> chainPairs = new HashMap<>()
-    {{
+    public static final Map<Long, String> chainPairs = new HashMap<>() {{
         put(MAINNET_ID, "ethereum");
         put(CLASSIC_ID, "ethereum-classic");
         put(GNOSIS_ID, "xdai");
@@ -757,23 +670,22 @@ public class TickerService
         put(OKX_ID, "okb");
         put(ROOTSTOCK_MAINNET_ID, "rootstock");
         put(LINEA_ID, "ethereum");
+        put(WOOOO.CHAIN_ID, "tether");
+
     }};
 
-    public static boolean validateCoinGeckoAPI(Token token)
-    {
+    public static boolean validateCoinGeckoAPI(Token token) {
         if (token.isEthereum() && chainPairs.containsKey(token.tokenInfo.chainId)) return true;
-        else if ((!token.isEthereum() && !token.isNonFungible()) && coinGeckoChainIdToAPIName.containsKey(token.tokenInfo.chainId)) return true;
+        else if ((!token.isEthereum() && !token.isNonFungible()) && coinGeckoChainIdToAPIName.containsKey(token.tokenInfo.chainId))
+            return true;
         else return false;
     }
 
-    private String getCoinGeckoChainCall()
-    {
+    private String getCoinGeckoChainCall() {
         StringBuilder tokenList = new StringBuilder();
         boolean firstPair = true;
-        for (long chainId : chainPairs.keySet())
-        {
-            if (ethTickers.containsKey(chainId))
-            {
+        for (long chainId : chainPairs.keySet()) {
+            if (ethTickers.containsKey(chainId)) {
                 continue;
             }
             if (!firstPair) tokenList.append(",");
@@ -784,12 +696,9 @@ public class TickerService
         return COINGECKO_CHAIN_CALL.replace(CHAIN_IDS, tokenList.toString()).replace(CURRENCY_TOKEN, currentCurrencySymbolTxt);
     }
 
-    private boolean receivedAllChainPairs()
-    {
-        for (long chainId : chainPairs.keySet())
-        {
-            if (!ethTickers.containsKey(chainId))
-            {
+    private boolean receivedAllChainPairs() {
+        for (long chainId : chainPairs.keySet()) {
+            if (!ethTickers.containsKey(chainId)) {
                 return false;
             }
         }

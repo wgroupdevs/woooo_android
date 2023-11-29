@@ -20,6 +20,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.alphawallet.app.C;
+import com.alphawallet.app.entity.CurrencyItem;
 import com.alphawallet.app.entity.Wallet;
 import com.alphawallet.app.entity.WalletType;
 import com.alphawallet.app.entity.analytics.QrScanSource;
@@ -34,6 +35,7 @@ import com.alphawallet.app.interact.ChangeTokenEnableInteract;
 import com.alphawallet.app.interact.FetchTokensInteract;
 import com.alphawallet.app.interact.GenericWalletInteract;
 import com.alphawallet.app.repository.CoinbasePayRepository;
+import com.alphawallet.app.repository.CurrencyRepositoryType;
 import com.alphawallet.app.repository.OnRampRepositoryType;
 import com.alphawallet.app.repository.PreferenceRepositoryType;
 import com.alphawallet.app.repository.TokensRealmSource;
@@ -47,7 +49,9 @@ import com.alphawallet.app.router.TokenDetailRouter;
 import com.alphawallet.app.service.AnalyticsServiceType;
 import com.alphawallet.app.service.AssetDefinitionService;
 import com.alphawallet.app.service.RealmManager;
+import com.alphawallet.app.service.TickerService;
 import com.alphawallet.app.service.TokensService;
+import com.alphawallet.app.service.TransactionsService;
 import com.alphawallet.app.ui.NameThisWalletActivity;
 import com.alphawallet.app.ui.QRScanning.QRScannerActivity;
 import com.alphawallet.app.ui.TokenManagementActivity;
@@ -77,8 +81,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 @HiltViewModel
-public class WalletViewModel extends BaseViewModel
-{
+public class WalletViewModel extends BaseViewModel {
     public static long BALANCE_BACKUP_CHECK_INTERVAL = 5 * DateUtils.MINUTE_IN_MILLIS;
     public static double VALUE_THRESHOLD = 200.0; //$200 USD value is difference between red and grey backup warnings
     private final MutableLiveData<TokenCardMeta[]> tokens = new MutableLiveData<>();
@@ -103,6 +106,9 @@ public class WalletViewModel extends BaseViewModel
     private long lastTokenFetchTime = 0;
     private BottomSheetDialog dialog;
     private final AWWalletConnectClient awWalletConnectClient;
+    private final CurrencyRepositoryType currencyRepository;
+    private final TransactionsService transactionsService;
+    private final TickerService tickerService;
     @Nullable
     private Disposable balanceUpdateCheck;
 
@@ -121,8 +127,11 @@ public class WalletViewModel extends BaseViewModel
             RealmManager realmManager,
             OnRampRepositoryType onRampRepository,
             AnalyticsServiceType analyticsService,
-            AWWalletConnectClient awWalletConnectClient)
-    {
+            AWWalletConnectClient awWalletConnectClient,
+            CurrencyRepositoryType currencyRepository,
+            TransactionsService transactionsService,
+            TickerService tickerService
+    ) {
         this.fetchTokensInteract = fetchTokensInteract;
         this.tokenDetailRouter = tokenDetailRouter;
         this.genericWalletInteract = genericWalletInteract;
@@ -136,51 +145,46 @@ public class WalletViewModel extends BaseViewModel
         this.realmManager = realmManager;
         this.onRampRepository = onRampRepository;
         this.awWalletConnectClient = awWalletConnectClient;
+        this.currencyRepository = currencyRepository;
+        this.tickerService = tickerService;
+        this.transactionsService = transactionsService;
+
         setAnalyticsService(analyticsService);
     }
 
-    public LiveData<TokenCardMeta[]> tokens()
-    {
+    public LiveData<TokenCardMeta[]> tokens() {
         return tokens;
     }
 
-    public LiveData<TokenCardMeta[]> onUpdatedTokens()
-    {
+    public LiveData<TokenCardMeta[]> onUpdatedTokens() {
         return updatedTokens;
     }
 
-    public LiveData<Wallet> defaultWallet()
-    {
+    public LiveData<Wallet> defaultWallet() {
         return defaultWallet;
     }
 
-    public LiveData<GenericWalletInteract.BackupLevel> backupEvent()
-    {
+    public LiveData<GenericWalletInteract.BackupLevel> backupEvent() {
         return backupEvent;
     }
 
-    public LiveData<Pair<Double, Double>> onFiatValues()
-    {
+    public LiveData<Pair<Double, Double>> onFiatValues() {
         return fiatValues;
     }
 
-    public LiveData<Token[]> removeDisplayTokens()
-    {
+    public LiveData<Token[]> removeDisplayTokens() {
         return tokensToRemove;
     }
 
-    public String getWalletAddr()
-    {
+    public String getWalletAddr() {
         return defaultWallet.getValue() != null ? defaultWallet.getValue().address : "";
     }
 
-    public WalletType getWalletType()
-    {
+    public WalletType getWalletType() {
         return defaultWallet.getValue() != null ? defaultWallet.getValue().type : WalletType.KEYSTORE;
     }
 
-    public void prepare()
-    {
+    public void prepare() {
         lastTokenFetchTime = 0;
         lastBackupCheck = System.currentTimeMillis() - BALANCE_BACKUP_CHECK_INTERVAL + 5 * DateUtils.SECOND_IN_MILLIS;
         //load the activity meta list
@@ -189,22 +193,17 @@ public class WalletViewModel extends BaseViewModel
                 .subscribe(this::onDefaultWallet, this::onError);
     }
 
-    public void reloadTokens()
-    {
+    public void reloadTokens() {
         lastTokenFetchTime = 0;
         tokensService.startUpdateCycle();
-        if (defaultWallet.getValue() != null)
-        {
+        if (defaultWallet.getValue() != null) {
             fetchTokens(defaultWallet().getValue());
-        }
-        else
-        {
+        } else {
             prepare();
         }
     }
 
-    private void onDefaultWallet(Wallet wallet)
-    {
+    private void onDefaultWallet(Wallet wallet) {
         tokensService.setCurrentAddress(wallet.address);
         assetDefinitionService.startEventListener();
         defaultWallet.postValue(wallet);
@@ -212,8 +211,7 @@ public class WalletViewModel extends BaseViewModel
         fetchTokens(wallet);
     }
 
-    private void fetchTokens(Wallet wallet)
-    {
+    private void fetchTokens(Wallet wallet) {
         disposable =
                 fetchTokensInteract.fetchTokenMetas(wallet, tokensService.getNetworkFilters(), assetDefinitionService)
                         .subscribeOn(Schedulers.io())
@@ -221,15 +219,13 @@ public class WalletViewModel extends BaseViewModel
                         .subscribe(this::onTokenMetas, this::onError);
     }
 
-    private void onTokenMetas(TokenCardMeta[] metaTokens)
-    {
+    private void onTokenMetas(TokenCardMeta[] metaTokens) {
         lastTokenFetchTime = System.currentTimeMillis();
         tokens.postValue(metaTokens);
         tokensService.updateTickers();
     }
 
-    public void searchTokens(String search)
-    {
+    public void searchTokens(String search) {
         disposable =
                 fetchTokensInteract.searchTokenMetas(defaultWallet.getValue(), tokensService.getNetworkFilters(), search)
                         .subscribeOn(Schedulers.io())
@@ -237,26 +233,21 @@ public class WalletViewModel extends BaseViewModel
                         .subscribe(this::onTokenMetas, this::onError);
     }
 
-    public void startUpdateListener()
-    {
-        if (balanceUpdateCheck == null || balanceUpdateCheck.isDisposed())
-        {
+    public void startUpdateListener() {
+        if (balanceUpdateCheck == null || balanceUpdateCheck.isDisposed()) {
             balanceUpdateCheck = Observable.interval(2, 2, TimeUnit.SECONDS) //check every 2 seconds for new tokens
                     .doOnNext(l -> checkTokenUpdates()).subscribe();
         }
     }
 
-    public void stopUpdateListener()
-    {
-        if (balanceUpdateCheck != null && !balanceUpdateCheck.isDisposed())
-        {
+    public void stopUpdateListener() {
+        if (balanceUpdateCheck != null && !balanceUpdateCheck.isDisposed()) {
             balanceUpdateCheck.dispose();
             balanceUpdateCheck = null;
         }
     }
 
-    private void checkTokenUpdates()
-    {
+    private void checkTokenUpdates() {
         if (defaultWallet.getValue() == null) return;
 
         disposable = getUpdatedTokenMetas()
@@ -265,65 +256,52 @@ public class WalletViewModel extends BaseViewModel
                 .subscribe(updatedTokens::postValue, this::onError);
     }
 
-    public AssetDefinitionService getAssetDefinitionService()
-    {
+    public AssetDefinitionService getAssetDefinitionService() {
         return assetDefinitionService;
     }
 
-    public TokensService getTokensService()
-    {
+    public TokensService getTokensService() {
         return tokensService;
     }
 
-    public Token getTokenFromService(@NotNull Token token)
-    {
+    public Token getTokenFromService(@NotNull Token token) {
         Token serviceToken = tokensService.getToken(token.tokenInfo.chainId, token.getAddress());
-        if (serviceToken != null && serviceToken.isEthereum())
-        {
+        if (serviceToken != null && serviceToken.isEthereum()) {
             return tokensService.getServiceToken(token.tokenInfo.chainId);
-        }
-        else
-        {
+        } else {
             return (serviceToken != null) ? serviceToken : token;
         }
     }
 
-    public Wallet getWallet()
-    {
+    public Wallet getWallet() {
         return defaultWallet.getValue();
     }
 
-    public void setKeyBackupTime(String walletAddr)
-    {
+    public void setKeyBackupTime(String walletAddr) {
         genericWalletInteract.updateBackupTime(walletAddr);
     }
 
-    public void setKeyWarningDismissTime(String walletAddr)
-    {
+    public void setKeyWarningDismissTime(String walletAddr) {
         genericWalletInteract.updateWarningTime(walletAddr);
     }
 
-    public void setTokenEnabled(Token token, boolean enabled)
-    {
+    public void setTokenEnabled(Token token, boolean enabled) {
         changeTokenEnableInteract.setEnable(defaultWallet.getValue(), token.getContractAddress(), enabled);
         token.tokenInfo.isEnabled = enabled;
     }
 
-    public void showBuyEthOptions(Activity activity)
-    {
+    public void showBuyEthOptions(Activity activity) {
         coinbasePayRouter.buyFromSelectedChain(activity, CoinbasePayRepository.Blockchains.ETHEREUM);
     }
 
-    public void showMyAddress(Activity context)
-    {
+    public void showMyAddress(Activity context) {
         // show bottomsheet dialog
         WalletFragmentActionsView actionsView = new WalletFragmentActionsView(context);
         actionsView.setOnCopyWalletAddressClickListener(v -> {
             dialog.dismiss();
             ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText(KEY_ADDRESS, Keys.toChecksumAddress(getWalletAddr()));
-            if (clipboard != null)
-            {
+            if (clipboard != null) {
                 clipboard.setPrimaryClip(clip);
             }
 
@@ -354,24 +332,20 @@ public class WalletViewModel extends BaseViewModel
         dialog.show();
     }
 
-    public void showQRCodeScanning(Activity activity)
-    {
+    public void showQRCodeScanning(Activity activity) {
         Intent intent = new Intent(activity, QRScannerActivity.class);
         intent.putExtra(C.EXTRA_UNIVERSAL_SCAN, true);
         intent.putExtra(QrScanSource.KEY, QrScanSource.WALLET_SCREEN.getValue());
         activity.startActivityForResult(intent, C.REQUEST_UNIVERSAL_SCAN);
     }
 
-    public TokenGroup getTokenGroup(long chainId, String address)
-    {
+    public TokenGroup getTokenGroup(long chainId, String address) {
         return tokensService.getTokenGroup(tokensService.getToken(chainId, address));
     }
 
-    public void showTokenDetail(Activity activity, Token token)
-    {
+    public void showTokenDetail(Activity activity, Token token) {
         boolean hasDefinition = assetDefinitionService.hasDefinition(token);
-        switch (token.getInterfaceSpec())
-        {
+        switch (token.getInterfaceSpec()) {
             case ETHEREUM:
             case ERC20:
             case CURRENCY:
@@ -388,7 +362,7 @@ public class WalletViewModel extends BaseViewModel
                 break;
 
             case ATTESTATION:
-                tokenDetailRouter.openAttestation(activity, token, defaultWallet.getValue(), new NFTAsset((Attestation)token));
+                tokenDetailRouter.openAttestation(activity, token, defaultWallet.getValue(), new NFTAsset((Attestation) token));
                 break;
 
             case ERC721:
@@ -412,15 +386,13 @@ public class WalletViewModel extends BaseViewModel
         }
     }
 
-    public void checkBackup(double fiatValue)
-    {
+    public void checkBackup(double fiatValue) {
         if (TextUtils.isEmpty(getWalletAddr()) || System.currentTimeMillis() < (lastBackupCheck + BALANCE_BACKUP_CHECK_INTERVAL))
             return;
         lastBackupCheck = System.currentTimeMillis();
         double walletUSDValue = tokensService.convertToUSD(fiatValue);
 
-        if (walletUSDValue > 0.0)
-        {
+        if (walletUSDValue > 0.0) {
             final BigDecimal calcValue = BigDecimal.valueOf(walletUSDValue);
             genericWalletInteract.getBackupWarning(getWalletAddr())
                     .map(needsBackup -> calculateBackupWarning(needsBackup, calcValue))
@@ -430,91 +402,72 @@ public class WalletViewModel extends BaseViewModel
         }
     }
 
-    private void onTokenBalanceError(Throwable throwable)
-    {
+    private void onTokenBalanceError(Throwable throwable) {
         //unable to resolve - phone may be offline
     }
 
-    private GenericWalletInteract.BackupLevel calculateBackupWarning(Boolean needsBackup, @NotNull BigDecimal value)
-    {
-        if (!needsBackup)
-        {
+    private GenericWalletInteract.BackupLevel calculateBackupWarning(Boolean needsBackup, @NotNull BigDecimal value) {
+        if (!needsBackup) {
             return GenericWalletInteract.BackupLevel.BACKUP_NOT_REQUIRED;
-        }
-        else if (value.compareTo(BigDecimal.valueOf(VALUE_THRESHOLD)) >= 0)
-        {
+        } else if (value.compareTo(BigDecimal.valueOf(VALUE_THRESHOLD)) >= 0) {
             return GenericWalletInteract.BackupLevel.WALLET_HAS_HIGH_VALUE;
-        }
-        else
-        {
+        } else {
             return GenericWalletInteract.BackupLevel.WALLET_HAS_LOW_VALUE;
         }
     }
 
-    public void notifyRefresh()
-    {
+    public void notifyRefresh() {
         tokensService.clearFocusToken(); //ensure if we do a refresh there's no focus token preventing correct update
         tokensService.onWalletRefreshSwipe();
     }
 
-    public boolean isChainToken(long chainId, String tokenAddress)
-    {
+    public boolean isChainToken(long chainId, String tokenAddress) {
         return tokensService.isChainToken(chainId, tokenAddress);
     }
 
-    public void calculateFiatValues()
-    {
+    public void calculateFiatValues() {
         disposable = tokensService.getFiatValuePair()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(fiatValues::postValue);
     }
 
-    public void showManageWallets(Context context, boolean clearStack)
-    {
+    public void showManageWallets(Context context, boolean clearStack) {
         manageWalletsRouter.open(context, clearStack);
     }
 
-    public boolean isMarshMallowWarningShown()
-    {
+    public boolean isMarshMallowWarningShown() {
         return preferenceRepository.isMarshMallowWarningShown();
     }
 
-    public void setMarshMallowWarning(boolean shown)
-    {
+    public void setMarshMallowWarning(boolean shown) {
         preferenceRepository.setMarshMallowWarning(shown);
     }
 
-    public void saveAvatar(Wallet wallet)
-    {
-        genericWalletInteract.updateWalletItem(wallet, WalletItem.ENS_AVATAR, () -> {});
+    public void saveAvatar(Wallet wallet) {
+        genericWalletInteract.updateWalletItem(wallet, WalletItem.ENS_AVATAR, () -> {
+        });
     }
 
-    public Intent getBuyIntent(String address)
-    {
+    public Intent getBuyIntent(String address) {
         Intent intent = new Intent();
         intent.putExtra(C.DAPP_URL_LOAD, onRampRepository.getUri(address, null));
         return intent;
     }
 
-    public MutableLiveData<List<WalletConnectSessionItem>> activeWalletConnectSessions()
-    {
+    public MutableLiveData<List<WalletConnectSessionItem>> activeWalletConnectSessions() {
         return awWalletConnectClient.sessionItemMutableLiveData();
     }
 
-    public void checkDeleteMetas(TokenCardMeta[] metas)
-    {
+    public void checkDeleteMetas(TokenCardMeta[] metas) {
         List<TokenCardMeta> metasToDelete = new ArrayList<>();
-        for (TokenCardMeta meta : metas)
-        {
-            if (meta.balance.equals("-2"))
-            {
+        for (TokenCardMeta meta : metas) {
+            if (meta.balance.equals("-2")) {
                 metasToDelete.add(meta);
             }
         }
 
-        if (metasToDelete.size() > 0)
-        {
+        if (metasToDelete.size() > 0) {
             disposable = tokensService.deleteTokens(metasToDelete)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -522,21 +475,17 @@ public class WalletViewModel extends BaseViewModel
         }
     }
 
-    private Single<TokenCardMeta[]> getUpdatedTokenMetas()
-    {
+    private Single<TokenCardMeta[]> getUpdatedTokenMetas() {
         return Single.fromCallable(() -> {
             List<TokenCardMeta> tokenMetas = new ArrayList<>();
-            try (Realm r = realmManager.getRealmInstance(defaultWallet.getValue()))
-            {
+            try (Realm r = realmManager.getRealmInstance(defaultWallet.getValue())) {
                 RealmResults<RealmToken> updatedTokens = r.where(RealmToken.class).equalTo("isEnabled", true)
                         .like("address", ADDRESS_FORMAT)
                         .greaterThan("updatedTime", lastTokenFetchTime)
                         .findAll();
 
-                for (RealmToken t : updatedTokens)
-                {
-                    if (!tokensService.getNetworkFilters().contains(t.getChainId()))
-                    {
+                for (RealmToken t : updatedTokens) {
+                    if (!tokensService.getNetworkFilters().contains(t.getChainId())) {
                         continue;
                     }
 
@@ -548,8 +497,7 @@ public class WalletViewModel extends BaseViewModel
                     meta.lastTxUpdate = t.getLastTxTime();
                     meta.isEnabled = t.isEnabled();
                     tokenMetas.add(meta);
-                    if (t.getBalanceUpdateTime() > lastTokenFetchTime)
-                    {
+                    if (t.getBalanceUpdateTime() > lastTokenFetchTime) {
                         lastTokenFetchTime = t.getBalanceUpdateTime() + 1;
                     }
                 }
@@ -559,70 +507,76 @@ public class WalletViewModel extends BaseViewModel
         });
     }
 
-    public void removeTokenMetaItem(String tokenKeyId)
-    {
+    public void removeTokenMetaItem(String tokenKeyId) {
         final String tokenKey = tokenKeyId.endsWith(Attestation.ATTESTATION_SUFFIX) ? tokenKeyId.substring(0, tokenKeyId.length() - Attestation.ATTESTATION_SUFFIX.length())
                 : tokenKeyId;
 
-        try (Realm realm = realmManager.getRealmInstance(defaultWallet.getValue()))
-        {
+        try (Realm realm = realmManager.getRealmInstance(defaultWallet.getValue())) {
             realm.executeTransactionAsync(r -> {
                 RealmAttestation realmAttn = r.where(RealmAttestation.class)
                         .equalTo("address", tokenKey)
                         .findFirst();
 
-                if (realmAttn != null)
-                {
+                if (realmAttn != null) {
                     realmAttn.deleteFromRealm();
                 }
             });
         }
     }
 
-    public void deleteToken(Token token)
-    {
-        try (Realm realm = realmManager.getRealmInstance(defaultWallet.getValue()))
-        {
+    public void deleteToken(Token token) {
+        try (Realm realm = realmManager.getRealmInstance(defaultWallet.getValue())) {
             realm.executeTransactionAsync(r -> {
                 RealmAttestation realmAttn = r.where(RealmAttestation.class)
                         .equalTo("address", token.getDatabaseKey())
                         .findFirst();
 
-                if (realmAttn != null)
-                {
+                if (realmAttn != null) {
                     realmAttn.deleteFromRealm();
                 }
             });
         }
     }
 
-    public void checkRemovedMetas()
-    {
+    public void checkRemovedMetas() {
         disposable = Single.fromCallable(() -> {
-            final List<Token> forRemoval = new ArrayList<>();
+                    final List<Token> forRemoval = new ArrayList<>();
 
-            try (Realm realm = realmManager.getRealmInstance(defaultWallet.getValue()))
-            {
-                RealmResults<RealmAttestation> attnResults = realm.where(RealmAttestation.class)
-                        .equalTo("collectionId", ImportAttestation.DELETE_KEY)
-                        .findAll();
+                    try (Realm realm = realmManager.getRealmInstance(defaultWallet.getValue())) {
+                        RealmResults<RealmAttestation> attnResults = realm.where(RealmAttestation.class)
+                                .equalTo("collectionId", ImportAttestation.DELETE_KEY)
+                                .findAll();
 
-                for (RealmAttestation attn : attnResults)
-                {
-                    long chainId = attn.getChains().get(0);
-                    Attestation attestationForRemoval = (Attestation) tokensService.getAttestation(chainId, attn.getTokenAddress(), attn.getAttestationID());
-                    forRemoval.add(attestationForRemoval);
-                }
+                        for (RealmAttestation attn : attnResults) {
+                            long chainId = attn.getChains().get(0);
+                            Attestation attestationForRemoval = (Attestation) tokensService.getAttestation(chainId, attn.getTokenAddress(), attn.getAttestationID());
+                            forRemoval.add(attestationForRemoval);
+                        }
 
-                if (attnResults.size() > 0)
-                {
-                    realm.executeTransaction(r -> attnResults.deleteAllFromRealm());
-                }
-            }
+                        if (attnResults.size() > 0) {
+                            realm.executeTransaction(r -> attnResults.deleteAllFromRealm());
+                        }
+                    }
 
-            return forRemoval.toArray(new Token[0]);
-        }).subscribeOn(Schedulers.io())
+                    return forRemoval.toArray(new Token[0]);
+                }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(tokensToRemove::postValue);
+    }
+
+
+    public String getDefaultCurrency() {
+        return currencyRepository.getDefaultCurrency();
+    }
+
+    public ArrayList<CurrencyItem> getCurrencyList() {
+        return currencyRepository.getCurrencyList();
+    }
+
+    public Single<Boolean> updateCurrency(String currencyCode) {
+        currencyRepository.setDefaultCurrency(currencyCode);
+        tickerService.updateCurrencyConversion();
+        //delete tickers from realm
+        return transactionsService.wipeTickerData();
     }
 }

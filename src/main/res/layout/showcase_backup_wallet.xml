@@ -44,6 +44,7 @@
                 android:id="@+id/btn_close"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/button"
                 android:layout_marginBottom="@dimen/giant_40"
                 android:text="@string/action_close" />
 

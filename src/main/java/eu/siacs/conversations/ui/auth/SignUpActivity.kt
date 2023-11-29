@@ -45,6 +45,8 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult,
     private var createWallet: CreateWalletViewModel? = null
     private var userSignUpRequest: SignUpRequestModel? = null;
 
+    private var isWalletCreated = false;
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySignUpBinding.inflate(layoutInflater)
@@ -68,7 +70,7 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult,
         //detect previous launch
         createWallet = ViewModelProvider(this)[CreateWalletViewModel::class.java]
         createWallet?.cleanAuxData(applicationContext)
-
+        createWallet?.clearDatabase()
         createWallet!!.wallets().observe(this, this::onWallets)
 
     }
@@ -187,12 +189,6 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult,
         }
 
         phoneNumber = countryCode.plus(phoneNumber)
-        createWallet?.clearPreferences();
-        createWallet?.cleanAuxData(this)
-
-
-//        Create Wallet
-        createWallet?.createNewWallet(this, this)
 
         userSignUpRequest = SignUpRequestModel(
             firstName = fName,
@@ -202,6 +198,16 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult,
             password = password,
             userReferralCode = referralCode,
         )
+
+        if (!isWalletCreated) {
+            createWallet?.clearPreferences();
+            createWallet?.cleanAuxData(this)
+//        Create Wallet
+            createWallet?.createNewWallet(this, this)
+        } else {
+            signUp()
+        }
+
 
         PrDialog.show(this)
 
@@ -249,25 +255,29 @@ class SignUpActivity : AppCompatActivity(), WooAPIService.OnSignUpAPiResult,
     private fun onWallets(wallets: Array<Wallet>) {
 
         if (wallets.isNotEmpty()) {
+            isWalletCreated = true
             val wallet = wallets.first()
-            val wooAuthService = WooAPIService.getInstance()
             userSignUpRequest?.walletAddress = wallet.address;
             createWallet?.doWalletStartupActions(wallet)
-            val signUpFuture: CompletableFuture<Unit> = CompletableFuture.supplyAsync {
-                wooAuthService.signUp(userSignUpRequest, this@SignUpActivity)
-            }
-
-            try {
-                signUpFuture.get()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-
+            signUp()
             Log.d(TAG, "onWallets WALLET-DATA FOUND ")
         } else {
             Log.d(TAG, "NO WALLET-DATA FOUND")
         }
 
+
+    }
+
+    private fun signUp() {
+        val wooAuthService = WooAPIService.getInstance()
+        val signUpFuture: CompletableFuture<Unit> = CompletableFuture.supplyAsync {
+            wooAuthService.signUp(userSignUpRequest, this@SignUpActivity)
+        }
+        try {
+            signUpFuture.get()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
 
     }
 
