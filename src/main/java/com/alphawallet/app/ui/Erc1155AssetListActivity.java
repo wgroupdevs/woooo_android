@@ -109,11 +109,11 @@ public class Erc1155AssetListActivity extends BaseActivity implements StandardFu
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        if (item.getItemId() == R.id.action_send_multiple_tokens)
-        {
-            handleTransactionSuccess.launch(viewModel.openSelectionModeIntent(this, token, wallet, asset));
-            return true;
-        }
+//        if (item.getItemId() == R.id.action_send_multiple_tokens)
+//        {
+//            handleTransactionSuccess.launch(viewModel.openSelectionModeIntent(this, token, wallet, asset));
+//            return true;
+//        }
         return super.onOptionsItemSelected(item);
     }
 }

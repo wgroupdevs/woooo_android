@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/background_grid_icon"
-    custom:strokeColor="?colorSurfaceQuaternary"
+    android:background="@drawable/bg_border"
     custom:strokeWidth="1dp">
 
     <RelativeLayout
@@ -21,7 +20,6 @@
 
         <TextView
             android:id="@+id/text_count"
-            style="@style/ConversationsTheme"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_centerInParent="true"
@@ -40,7 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/background_round_bottom_corners"
+        android:background="@drawable/bg_border"
         android:padding="@dimen/dp9">
 
         <TextView
@@ -51,17 +49,18 @@
             android:ellipsize="end"
             android:gravity="center"
             android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
             tools:text="Title" />
 
         <TextView
             android:id="@+id/subtitle"
-            style="@style/ConversationsTheme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/title"
             android:gravity="center"
             android:singleLine="true"
             android:visibility="gone"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
             tools:text="Subtitle"
             tools:visibility="visible" />
 

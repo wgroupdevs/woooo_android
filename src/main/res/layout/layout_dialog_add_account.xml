@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+    android:background="@drawable/bg_border"
         android:orientation="vertical">
 
     <com.alphawallet.app.widget.BottomSheetHandleView
@@ -17,11 +18,21 @@
             android:id="@+id/import_account_action"
             style="@style/Aw.Component.ActionItem"
             android:text="@string/title_import" />
+    <!--        Divider-->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/divider_ic" />
 
     <TextView
             android:id="@+id/watch_account_action"
             style="@style/Aw.Component.ActionItem"
             android:text="@string/action_watch_account" />
+    <!--        Divider-->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/divider_ic" />
 
     <TextView
             android:id="@+id/hardware_card"

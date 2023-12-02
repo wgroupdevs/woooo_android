@@ -117,10 +117,6 @@ public class MessageGenerator extends AbstractGenerator {
             content = message.getBody();
         }
 
-
-
-        Log.d(TAG, "generateChat Called..." +packet.toString());
-
         packet.setBody(content);
         return packet;
     }

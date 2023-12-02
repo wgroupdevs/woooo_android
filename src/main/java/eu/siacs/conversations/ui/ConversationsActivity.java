@@ -74,6 +74,7 @@ import org.openintents.openpgp.util.OpenPgpApi;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -206,8 +207,9 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
             List<Contact> contacts = mAccount.getRoster().getContacts();
             if (!contacts.isEmpty()) {
                 for (Contact item : contacts) {
-                    if (startsWithNumber(item.getDisplayName())) {
-                        Log.d(TAG, "CONTACT_JID: " + item.getJid().asBareJid().toString());
+                    if (item.getJid().asBareJid().toString().contains("muc"))
+                        continue;
+                    if (!isContactInfoSet(item)) {
                         xmppConnectionService.getAccountByJid(item.getJid().asBareJid().toString(), this);
                     }
                 }
@@ -219,22 +221,30 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
 
     }
 
-    public static boolean startsWithNumber(String input) {
+    public static boolean isContactInfoSet(Contact contact) {
+        boolean status = true;
+        String name = contact.getDisplayName();
         Pattern pattern = Pattern.compile("^[0-9+].*");
-        Matcher matcher = pattern.matcher(input);
-        return matcher.find();
+        Matcher matcher = pattern.matcher(name);
+        if (matcher.find() || contact.getEmail() == null || contact.getEmail().isEmpty()) {
+            status = false;
+        }
+        return status;
     }
 
 
     private void updateContactName(UserBasicInfo user) {
 //        find contact by jid
         Jid jid = Jid.ofEscaped(user.jid);
-        Conversation conversation = xmppConnectionService.findConversationByJid(jid);
-        if (conversation != null) {
-            Contact contact = conversation.getContact();
+        Contact contact = Objects.requireNonNull(MainActivity.Companion.getAccount()).getRoster().getContact(jid);
+        if (contact != null) {
+            contact.setEmail(user.email);
+            contact.setPhoneNumber(user.phoneNumber);
             contact.setServerName(user.firstName + " " + user.lastName);
             xmppConnectionService.pushContactToServer(contact);
+            xmppConnectionService.updateContact(contact);
         }
+
 
     }
 

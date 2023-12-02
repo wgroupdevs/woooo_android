@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/blue_primary200"
+    android:background="@drawable/bg_border"
     android:orientation="vertical">
 
     <com.alphawallet.app.widget.BottomSheetHandleView

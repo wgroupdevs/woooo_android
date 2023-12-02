@@ -1056,6 +1056,12 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         final int rows = db.update(Account.TABLENAME, account.getContentValues(), Account.UUID + "=?", args);
         return rows == 1;
     }
+    public boolean updateContact(Contact contact) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String[] args = {contact.getJid().asBareJid().toString()};
+        final int rows = db.update(Contact.TABLENAME, contact.getContentValues(), Contact.JID + "=?", args);
+        return rows == 1;
+    }
 
     public boolean deleteAccount(Account account) {
         SQLiteDatabase db = this.getWritableDatabase();

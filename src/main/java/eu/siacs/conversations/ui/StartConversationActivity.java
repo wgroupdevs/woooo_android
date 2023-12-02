@@ -279,6 +279,9 @@ public class StartConversationActivity extends XmppActivity implements XmppConne
         configureActionBar(getSupportActionBar());
         inflateFab(binding.speedDial, R.menu.conversation_overview_fab_menu);
         binding.tabLayout.setupWithViewPager(binding.startConversationViewPager);
+        binding.tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.darkturquoise));
+        binding.tabLayout.setTabTextColors(getResources().getColor(R.color.white87), getResources().getColor(R.color.white));
+
         binding.startConversationViewPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
             public void onPageSelected(int position) {

@@ -25,6 +25,7 @@ import eu.siacs.conversations.http.model.UserBasicInfo;
 import eu.siacs.conversations.http.model.requestmodels.GetWooContactsRequestParams;
 import eu.siacs.conversations.http.model.requestmodels.EmailRequestModel;
 import eu.siacs.conversations.http.model.requestmodels.ResetPasswordRequestModel;
+import eu.siacs.conversations.http.model.requestmodels.SendMessageReqModel;
 import eu.siacs.conversations.http.model.wallet.BlockChainAPIModel;
 import eu.siacs.conversations.http.model.wallet.PaymentReqModel;
 import eu.siacs.conversations.http.model.wallet.TransactionAPIModel;
@@ -81,7 +82,6 @@ public class WooAPIService {
 
 
     public void login(boolean isLoginWithEmail, String email, String phone, String password, OnLoginAPiResult listener) {
-        Log.d(phone, "LOGIN STARTED...");
         final LoginRequestParams requestParams = new LoginRequestParams(email, phone, password, "", "", "");
         final Call<LoginAPIResponseJAVA> searchResultCall = wooService.login(isLoginWithEmail, requestParams);
         searchResultCall.enqueue(new Callback<>() {
@@ -109,8 +109,6 @@ public class WooAPIService {
     }
 
     public void signUp(SignUpRequestModel user, OnSignUpAPiResult listener) {
-        Log.d(TAG, "SIGNUP STARTED..." + user);
-
         final Call<SignUpModel> signUpResultCall = wooService.signUp(user);
         signUpResultCall.enqueue(new Callback<SignUpModel>() {
             @Override
@@ -137,7 +135,6 @@ public class WooAPIService {
     }
 
     public void confirmAccount(Map<String, String> params, OnConfirmAccountAPiResult listener) {
-        Log.d(TAG, "confirmAccount STARTED...");
         final Call<BaseModelAPIResponse> confirmAccount = wooService.confirmAccount(params);
         confirmAccount.enqueue(new Callback<BaseModelAPIResponse>() {
             @Override
@@ -164,7 +161,6 @@ public class WooAPIService {
     }
 
     public void resendOTP(boolean IsOtpForAccount, EmailRequestModel bodyParams, OnResendOTPAPiResult listener) {
-        Log.d(TAG, "resendOTP STARTED...");
         final Call<BaseModelAPIResponse> confirmAccount = wooService.resendOTP(IsOtpForAccount, bodyParams);
         confirmAccount.enqueue(new Callback<BaseModelAPIResponse>() {
             @Override
@@ -271,8 +267,28 @@ public class WooAPIService {
         });
     }
 
+    public void sendMessage(SendMessageReqModel messageReqModel) {
+        final Call<BaseModelAPIResponse> sendMessageCall = wooService.sendMessage(messageReqModel);
+        sendMessageCall.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<BaseModelAPIResponse> call, @NonNull Response<BaseModelAPIResponse> response) {
+                try {
+                    final BaseModelAPIResponse body = response.body();
+                    if (body != null)
+                        Log.d(TAG, "sendMessageToBlockchain RESPONSE: " + body.Success);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<BaseModelAPIResponse> call, @NonNull Throwable throwable) {
+                Log.d(Config.LOGTAG, "Unable to query WoooService on " + Config.WOOOO_BASE_URL, throwable);
+            }
+        });
+    }
+
     public void resetPassword(ResetPasswordRequestModel bodyParams, OnResetPasswordAPiResult listener) {
-        Log.d(TAG, "resendOTP STARTED...");
         final Call<BaseModelAPIResponse> resetPassword = wooService.resetPassword(bodyParams);
         resetPassword.enqueue(new Callback<>() {
             @Override

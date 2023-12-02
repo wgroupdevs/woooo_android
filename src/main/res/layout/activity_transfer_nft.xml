@@ -7,8 +7,14 @@
     android:orientation="vertical">
 
     <include layout="@layout/layout_simple_toolbar" />
+    <!--        Divider-->
 
-    <View style="@style/Aw.Component.Separator" />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:src="@drawable/divider_ic" />
+
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -47,7 +53,13 @@
                 custom:label="@string/recipient"
                 custom:show_header="true" />
 
-            <View style="@style/Aw.Component.Separator" />
+            <!--        Divider-->
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp"
+                android:src="@drawable/divider_ic" />
 
             <com.alphawallet.app.widget.StandardHeader
                 android:id="@+id/layout_header"

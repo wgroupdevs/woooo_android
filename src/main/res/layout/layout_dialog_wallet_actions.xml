@@ -1,6 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bg_border"
     android:orientation="vertical">
 
     <com.alphawallet.app.widget.BottomSheetHandleView
@@ -13,15 +14,32 @@
         style="@style/Aw.Component.ActionItem"
         android:text="@string/copy_wallet_address" />
 
+    <!--        Divider-->
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/divider_ic" />
+
     <TextView
         android:id="@+id/show_my_wallet_address_action"
         style="@style/Aw.Component.ActionItem"
         android:text="@string/title_show_wallet_address" />
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/divider_ic" />
+
     <TextView
         android:id="@+id/add_hide_tokens_action"
         style="@style/Aw.Component.ActionItem"
         android:text="@string/add_hide_tokens" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/divider_ic" />
 
     <TextView
         android:id="@+id/rename_this_wallet_action"

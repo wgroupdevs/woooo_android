@@ -10,7 +10,7 @@
     android:layout_marginVertical="@dimen/_5sdp"
     android:focusable="true">
 
-    <com.google.android.material.checkbox.MaterialCheckBox
+    <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/select_token"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

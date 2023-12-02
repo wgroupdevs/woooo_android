@@ -28,7 +28,6 @@ import com.alphawallet.app.entity.nftassets.NFTAsset;
 import com.alphawallet.app.entity.tokens.Token;
 import com.alphawallet.app.service.AssetDefinitionService;
 import com.alphawallet.app.ui.widget.adapter.TabPagerAdapter;
-import com.alphawallet.app.util.TabUtils;
 import com.alphawallet.app.viewmodel.NFTViewModel;
 import com.alphawallet.app.widget.CertifiedToolbarView;
 import com.alphawallet.app.widget.FunctionButtonBar;
@@ -53,7 +52,7 @@ public class NFTActivity extends BaseActivity implements StandardFunctionInterfa
     private Token token;
     private FunctionButtonBar functionBar;
     private boolean isGridView;
-    private MenuItem sendMultipleTokensMenuItem;
+//    private MenuItem sendMultipleTokensMenuItem;
     private MenuItem switchToGridViewMenuItem;
     private MenuItem switchToListViewMenuItem;
     private NFTAssetsFragment assetsFragment;
@@ -231,7 +230,8 @@ public class NFTActivity extends BaseActivity implements StandardFunctionInterfa
                 ((tab, position) -> tab.setText(pages.get(position).first))
         ).attach();
 
-        TabUtils.decorateTabLayout(this, tabLayout);
+        tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.darkturquoise));
+        tabLayout.setTabTextColors(getResources().getColor(R.color.white87), getResources().getColor(R.color.white));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener()
         {
@@ -296,19 +296,19 @@ public class NFTActivity extends BaseActivity implements StandardFunctionInterfa
     {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_nft_display, menu);
-        sendMultipleTokensMenuItem = menu.findItem(R.id.action_send_multiple_tokens);
+//        sendMultipleTokensMenuItem = menu.findItem(R.id.action_send_multiple_tokens);
         switchToGridViewMenuItem = menu.findItem(R.id.action_grid_view);
         switchToListViewMenuItem = menu.findItem(R.id.action_list_view);
         if (token.isBatchTransferAvailable())
         {
-            sendMultipleTokensMenuItem.setVisible(true);
-            sendMultipleTokensMenuItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER);
+//            sendMultipleTokensMenuItem.setVisible(true);
+//            sendMultipleTokensMenuItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER);
             switchToGridViewMenuItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER);
             switchToListViewMenuItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_NEVER);
         }
         else
         {
-            sendMultipleTokensMenuItem.setVisible(false);
+//            sendMultipleTokensMenuItem.setVisible(false);
             switchToGridViewMenuItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
             switchToListViewMenuItem.setShowAsActionFlags(MenuItem.SHOW_AS_ACTION_ALWAYS);
         }
@@ -332,10 +332,10 @@ public class NFTActivity extends BaseActivity implements StandardFunctionInterfa
             switchToGridViewMenuItem.setVisible(false);
             assetsFragment.showGridView();
         }
-        else if (item.getItemId() == R.id.action_send_multiple_tokens)
-        {
-            handleTransactionSuccess.launch(viewModel.openSelectionModeIntent(this, token, wallet));
-        }
+//        else if (item.getItemId() == R.id.action_send_multiple_tokens)
+//        {
+//            handleTransactionSuccess.launch(viewModel.openSelectionModeIntent(this, token, wallet));
+//        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -360,10 +360,10 @@ public class NFTActivity extends BaseActivity implements StandardFunctionInterfa
 
     private void hideMenu()
     {
-        if (sendMultipleTokensMenuItem != null)
-        {
-            sendMultipleTokensMenuItem.setVisible(false);
-        }
+//        if (sendMultipleTokensMenuItem != null)
+//        {
+//            sendMultipleTokensMenuItem.setVisible(false);
+//        }
         if (switchToGridViewMenuItem != null)
         {
             switchToGridViewMenuItem.setVisible(false);
@@ -387,9 +387,9 @@ public class NFTActivity extends BaseActivity implements StandardFunctionInterfa
             switchToGridViewMenuItem.setVisible(!hasTokenScriptOverride(token));
         }
 
-        if (token.isBatchTransferAvailable())
-        {
-            sendMultipleTokensMenuItem.setVisible(true);
-        }
+//        if (token.isBatchTransferAvailable())
+//        {
+//            sendMultipleTokensMenuItem.setVisible(true);
+//        }
     }
 }

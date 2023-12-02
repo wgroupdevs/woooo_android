@@ -776,6 +776,12 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
 
             @Override
             public void success(Message message) {
+
+
+                Log.d(TAG,"AttachImageToConversation : " +uri);
+                Log.d(TAG,"AttachImageToConversation : " +message.getFileParams().url);
+
+
                 hidePrepareFileToast(prepareFileToast);
             }
 
@@ -2285,6 +2291,7 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         if (conversation.setOutgoingChatState(Config.DEFAULT_CHAT_STATE)) {
             activity.xmppConnectionService.sendChatState(conversation);
         }
+        Log.d(TAG,"privateMessageWith : " +counterpart.asBareJid());
         this.binding.textinput.setText("");
         this.conversation.setNextCounterpart(counterpart);
         updateChatMsgHint();

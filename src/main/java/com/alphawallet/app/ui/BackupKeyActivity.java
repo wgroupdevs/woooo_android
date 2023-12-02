@@ -579,6 +579,7 @@ public class BackupKeyActivity extends BaseActivity implements
             int mnemonicIndex = numberList.get(random);
             numberList.remove(random); //remove this index
             TextView tv = generateSeedWordTextView(mnemonicArray[mnemonicIndex]);
+            tv.setBackground(getResources().getDrawable(R.drawable.bg_border));
             tv.setOnClickListener(view -> onWordClick(tv));
             layoutWordHolder.addView(tv);
         }

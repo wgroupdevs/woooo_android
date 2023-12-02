@@ -5,13 +5,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/layout_simple_toolbar" />
+    <include
+        layout="@layout/layout_simple_toolbar" />
+    <!--        Divider-->
 
+    <ImageView
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="?actionBarSize"
+        android:src="@drawable/divider_ic" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/_5sdp"
         android:layout_below="@id/separator">
 
         <androidx.recyclerview.widget.RecyclerView

@@ -14,6 +14,7 @@ import eu.siacs.conversations.http.model.UserBasicInfo;
 import eu.siacs.conversations.http.model.requestmodels.GetWooContactsRequestParams;
 import eu.siacs.conversations.http.model.requestmodels.EmailRequestModel;
 import eu.siacs.conversations.http.model.requestmodels.ResetPasswordRequestModel;
+import eu.siacs.conversations.http.model.requestmodels.SendMessageReqModel;
 import eu.siacs.conversations.http.model.wallet.BlockChainAPIModel;
 import eu.siacs.conversations.http.model.wallet.PaymentReqModel;
 import eu.siacs.conversations.http.model.wallet.TransactionAPIModel;
@@ -80,5 +81,7 @@ public interface WooService {
 
     @POST("/api/v1/Payment/CreatePayment")
     Call<BaseModelAPIResponse> createPayment(@Body PaymentReqModel payment);
+    @POST("/api/v1/Chat/SendMessage")
+    Call<BaseModelAPIResponse> sendMessage(@Body SendMessageReqModel messageReqModel);
 
 }

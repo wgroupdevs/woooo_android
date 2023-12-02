@@ -375,7 +375,7 @@ public class WalletsActivity extends BaseActivity implements
         addWalletView.setOnWatchWalletClickListener(this);
         addWalletView.setOnHardwareCardClickListener(this);
         addWalletView.setHardwareActive(hardwareCard.isStub());
-        dialog = new BottomSheetDialog(this);
+        dialog = new BottomSheetDialog(this,R.style.SheetDialog);
         dialog.setContentView(addWalletView);
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);

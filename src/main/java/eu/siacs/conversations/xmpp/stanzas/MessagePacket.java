@@ -1,6 +1,5 @@
 package eu.siacs.conversations.xmpp.stanzas;
 
-import android.util.Log;
 import android.util.Pair;
 
 import eu.siacs.conversations.entities.Message;
@@ -8,6 +7,7 @@ import eu.siacs.conversations.parser.AbstractParser;
 import eu.siacs.conversations.xml.Element;
 import eu.siacs.conversations.xml.LocalizedContent;
 import eu.siacs.conversations.xml.Namespace;
+import eu.siacs.conversations.xmpp.Jid;
 
 public class MessagePacket extends AbstractAcknowledgeableStanza {
     public static final int TYPE_CHAT = 0;
@@ -37,7 +37,6 @@ public class MessagePacket extends AbstractAcknowledgeableStanza {
     public void setForwardedElement(String text) {
         Element forwarded = new Element("forwarded", Namespace.FORWARD);
         forwarded.setContent(text);
-        Log.d(TAG, "Forwarded Element Added");
         this.children.add(forwarded);
     }
 
@@ -48,21 +47,25 @@ public class MessagePacket extends AbstractAcknowledgeableStanza {
         this.children.add(remove);
     }
 
+    public Jid receiverJid() {
+        String to = getAttribute("to");
+        return Jid.ofEscaped(to);
+    }
+
+    public boolean isMedia() {
+        return findChild("x", Namespace.OOB) != null;
+    }
+
     public void setReplyElement(final Message message) {
         Element reply = new Element("reply", Namespace.REPLY);
         if (!Message.isMultiUserChat(message)) {
-            Log.d(TAG, "TrueCounterpart : " + message.getTrueCounterpart());
             reply.setAttribute("to", message.getContact().getJid());
         }
         reply.setAttribute("id", message.getParentMsgId());
-
-        Log.d(TAG, "MESSAGE PARENT ID " + message.getParentMsgId());
-
         this.children.add(reply);
     }
 
     public void setTranslationStatus(String status) {
-        Log.d(TAG, "setTranslationStatus : " + status);
         Element translation = new Element("translation");
         translation.setContent(status);
         this.children.add(translation);
@@ -123,7 +126,6 @@ public class MessagePacket extends AbstractAcknowledgeableStanza {
         Element forwarded_1 = findChild("forwarded", "urn:xmpp:forward:0");
 
         if (forwarded_1 == null) {
-            Log.d(TAG, "FORWARDED NOT FOUND..");
             return null;
         }
         MessagePacket packet = create(forwarded_1.findChild("message"));

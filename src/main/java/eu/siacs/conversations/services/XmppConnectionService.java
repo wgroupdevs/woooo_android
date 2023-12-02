@@ -118,6 +118,7 @@ import eu.siacs.conversations.http.HttpConnectionManager;
 import eu.siacs.conversations.http.model.TextTranslateModel;
 import eu.siacs.conversations.http.model.UserBasicInfo;
 import eu.siacs.conversations.http.model.requestmodels.GetWooContactsRequestParams;
+import eu.siacs.conversations.http.model.requestmodels.SendMessageReqModel;
 import eu.siacs.conversations.http.services.WooAPIService;
 import eu.siacs.conversations.parser.AbstractParser;
 import eu.siacs.conversations.parser.IqParser;
@@ -320,7 +321,6 @@ public class XmppConnectionService extends Service {
 
 
     public final Set<String> FILENAMES_TO_IGNORE_DELETION = new HashSet<>();
-
 
     private final OnBindListener mOnBindListener = new OnBindListener() {
 
@@ -652,6 +652,7 @@ public class XmppConnectionService extends Service {
         MessageSearchTask.search(this, term, uuid, onSearchResultsAvailable);
     }
 
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         final String action = intent == null ? null : intent.getAction();
@@ -976,6 +977,13 @@ public class XmppConnectionService extends Service {
             wooooAuthService = WooAPIService.getInstance();
         }
         wooooAuthService.login(isLoginWithEmail, email, phone, password, onLoginAPiResult);
+    }
+
+    private void sendMessageToBlockchain(SendMessageReqModel messageReqModel) {
+        if (wooooAuthService == null) {
+            wooooAuthService = WooAPIService.getInstance();
+        }
+        wooooAuthService.sendMessage(messageReqModel);
     }
 
     public void updateProfile(UserBasicInfo user, WooAPIService.OnUpdateAccountApiResult listener) {
@@ -1555,7 +1563,6 @@ public class XmppConnectionService extends Service {
     }
 
     private void sendFileMessage(final Message message, final boolean delay) {
-        Log.d(Config.LOGTAG, "send file message");
         final Account account = message.getConversation().getAccount();
         if (account.httpUploadAvailable(fileBackend.getFile(message, false).getSize()) || message.getConversation().getMode() == Conversation.MODE_MULTI) {
             mHttpConnectionManager.createNewUploadConnection(message, delay);
@@ -1572,13 +1579,23 @@ public class XmppConnectionService extends Service {
     private void sendMessage(final Message message, final boolean resend, final boolean delay) {
 
         final Account account = message.getConversation().getAccount();
+
+        final Contact receiverContact = message.getContact();
+
+        if (receiverContact != null) {
+
+            Log.d(TAG, "CONTACT_INFO : " + receiverContact.getJid().asBareJid());
+            Log.d(TAG, "CONTACT_INFO : " + receiverContact.getEmail());
+
+        }
+
+
         if (account.setShowErrorNotification(true)) {
             databaseBackend.updateAccount(account);
             mNotificationService.updateErrorNotification();
         }
         final Conversation conversation = (Conversation) message.getConversation();
         account.deactivateGracePeriod();
-
 
         if (QuickConversationsService.isQuicksy() && conversation.getMode() == Conversation.MODE_SINGLE) {
             final Contact contact = conversation.getContact();
@@ -2411,6 +2428,11 @@ public class XmppConnectionService extends Service {
         updateAccountUi();
         syncEnabledAccountSetting();
         toggleForegroundService();
+    }
+
+    public void updateContact(Contact contact) {
+        final boolean status = databaseBackend.updateContact(contact);
+        Log.d(TAG, "updateContact_STATUS: " + status);
     }
 
     private void syncEnabledAccountSetting() {
@@ -4530,8 +4552,25 @@ public class XmppConnectionService extends Service {
 
     public void sendMessagePacket(Account account, MessagePacket packet) {
         final XmppConnection connection = account.getXmppConnection();
+
         if (connection != null) {
-            Log.d(TAG, "sendMessagePacket CALLED....." +packet);
+            if (MessagePacket.TYPE_CHAT == packet.getType()) {
+                if (packet.getBody() != null) {
+                    Log.d(TAG, "sendMessagePacket CALLED....." + packet);
+                    Contact contact = account.getRoster().getContact(packet.receiverJid());
+                    SendMessageReqModel sendMessageReqModel = new SendMessageReqModel(
+                            account.getUserEmail(),
+                            contact.getEmail(),
+                            packet.getBody().content,
+                            false
+                    );
+                    if (packet.isMedia()) {
+                        sendMessageReqModel.setMedia(true);
+                    }
+                    sendMessageToBlockchain(sendMessageReqModel);
+                }
+
+            }
             connection.sendMessagePacket(packet);
         }
     }

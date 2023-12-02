@@ -23,6 +23,12 @@
             android:layout_height="match_parent"
             android:descendantFocusability="blocksDescendants"
             android:orientation="vertical">
+            <!--        Divider-->
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/divider_ic" />
 
             <com.alphawallet.app.widget.StandardHeader
                 android:id="@+id/mainnet_header"

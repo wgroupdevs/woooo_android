@@ -3,6 +3,7 @@ package com.alphawallet.app.ui.widget.adapter;
 import static com.alphawallet.app.service.AssetDefinitionService.ASSET_SUMMARY_VIEW_NAME;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.Pair;
 import android.view.ViewGroup;
 
@@ -50,11 +51,10 @@ import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 /**
- * Created by James on 9/02/2018.
+ * Created by Ehsan on 9/02/2018.
  */
 
-public class NonFungibleTokenAdapter extends TokensAdapter implements NonFungibleAdapterInterface
-{
+public class NonFungibleTokenAdapter extends TokensAdapter implements NonFungibleAdapterInterface {
     TicketRange currentRange = null;
     final Token token;
     protected final OpenSeaService openseaService;
@@ -63,8 +63,7 @@ public class NonFungibleTokenAdapter extends TokensAdapter implements NonFungibl
     private boolean isGrid;
 
     public NonFungibleTokenAdapter(TokensAdapterCallback tokenClickListener, Token t, AssetDefinitionService service,
-                                   OpenSeaService opensea)
-    {
+                                   OpenSeaService opensea) {
         super(tokenClickListener, service);
         assetCount = 0;
         token = t;
@@ -74,8 +73,7 @@ public class NonFungibleTokenAdapter extends TokensAdapter implements NonFungibl
     }
 
     public NonFungibleTokenAdapter(TokensAdapterCallback tokenClickListener, Token t, AssetDefinitionService service,
-                                   OpenSeaService opensea, boolean isGrid)
-    {
+                                   OpenSeaService opensea, boolean isGrid) {
         super(tokenClickListener, service);
         assetCount = 0;
         token = t;
@@ -86,8 +84,7 @@ public class NonFungibleTokenAdapter extends TokensAdapter implements NonFungibl
     }
 
     public NonFungibleTokenAdapter(TokensAdapterCallback tokenClickListener, Token t, List<BigInteger> tokenSelection,
-                                   AssetDefinitionService service)
-    {
+                                   AssetDefinitionService service) {
         super(tokenClickListener, service);
         assetCount = 0;
         token = t;
@@ -97,8 +94,7 @@ public class NonFungibleTokenAdapter extends TokensAdapter implements NonFungibl
     }
 
     public NonFungibleTokenAdapter(TokensAdapterCallback tokenClickListener, Token t, ArrayList<Pair<BigInteger, NFTAsset>> assetSelection,
-                                   AssetDefinitionService service)
-    {
+                                   AssetDefinitionService service) {
         super(tokenClickListener, service);
         assetCount = 0;
         token = t;
@@ -107,18 +103,18 @@ public class NonFungibleTokenAdapter extends TokensAdapter implements NonFungibl
         setAssetSelection(token, assetSelection);
     }
 
-    private void setAssetSelection(Token token, List<Pair<BigInteger, NFTAsset>> selection)
-    {
+    private void setAssetSelection(Token token, List<Pair<BigInteger, NFTAsset>> selection) {
         setAssetRange(token, selection);
     }
 
     @NotNull
     @Override
-    public BinderViewHolder<?> onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
-    {
+    public BinderViewHolder<?> onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         BinderViewHolder<?> holder = null;
-        switch (viewType)
-        {
+
+        Log.d("NON_FUNGIBLE_TOKEN", "VIEW_TYPE : " + viewType);
+
+        switch (viewType) {
             case TicketHolder.VIEW_TYPE: //Ticket holder now deprecated //TODO: remove
                 holder = new TicketHolder(R.layout.item_ticket, parent, token, assetService);
                 holder.setOnTokenClickListener(tokensAdapterCallback);
@@ -147,30 +143,27 @@ public class NonFungibleTokenAdapter extends TokensAdapter implements NonFungibl
         return holder;
     }
 
-    public int getTicketRangeCount()
-    {
+    public int getTicketRangeCount() {
         int count = 0;
-        if (currentRange != null)
-        {
+        if (currentRange != null) {
             count = currentRange.tokenIds.size();
         }
         return count;
     }
 
-    public void addQuantitySelector()
-    {
+    public void addQuantitySelector() {
         items.add(new QuantitySelectorSortedItem(token));
     }
 
-    private void setTokenRange(Token t, List<BigInteger> tokenIds)
-    {
+    private void setTokenRange(Token t, List<BigInteger> tokenIds) {
         items.beginBatchedUpdates();
         items.clear();
         assetCount = tokenIds.size();
         int holderType = getHolderType();
 
         //TokenScript view for ERC721 overrides OpenSea display
-        if (assetService.hasTokenView(t, ASSET_SUMMARY_VIEW_NAME)) holderType = AssetInstanceScriptHolder.VIEW_TYPE;
+        if (assetService.hasTokenView(t, ASSET_SUMMARY_VIEW_NAME))
+            holderType = AssetInstanceScriptHolder.VIEW_TYPE;
 
         List<TicketRangeElement> sortedList = generateSortedList(assetService, token, tokenIds); //generate sorted list
         addSortedItems(sortedList, t, holderType); //insert sorted items into view
@@ -178,46 +171,41 @@ public class NonFungibleTokenAdapter extends TokensAdapter implements NonFungibl
         items.endBatchedUpdates();
     }
 
-    public void setToken(Token t)
-    {
+    public void setToken(Token t) {
         items.beginBatchedUpdates();
         items.clear();
         assetCount = t.getTokenCount();
         int holderType = getHolderType();
 
         //TokenScript view for ERC721 overrides OpenSea display
-        if (assetService.hasTokenView(t, ASSET_SUMMARY_VIEW_NAME)) holderType = AssetInstanceScriptHolder.VIEW_TYPE;
+        if (assetService.hasTokenView(t, ASSET_SUMMARY_VIEW_NAME))
+            holderType = AssetInstanceScriptHolder.VIEW_TYPE;
 
         addRanges(t, holderType);
         items.endBatchedUpdates();
     }
 
-    private void setAssetRange(Token t, List<Pair<BigInteger, NFTAsset>> selection)
-    {
+    private void setAssetRange(Token t, List<Pair<BigInteger, NFTAsset>> selection) {
         items.beginBatchedUpdates();
         items.clear();
         assetCount = selection.size();
 
-        for (int i = 0; i < selection.size(); i++)
-        {
+        for (int i = 0; i < selection.size(); i++) {
             items.add(new NFTSortedItem(selection.get(i), i + 1));
         }
 
         items.endBatchedUpdates();
     }
 
-    private void addRanges(Token t, int holderType)
-    {
+    private void addRanges(Token t, int holderType) {
         currentRange = null;
         List<TicketRangeElement> sortedList = generateSortedList(assetService, t, t.getArrayBalance());
         addSortedItems(sortedList, t, holderType);
     }
 
-    protected List<TicketRangeElement> generateSortedList(AssetDefinitionService assetService, Token token, List<BigInteger> idList)
-    {
+    protected List<TicketRangeElement> generateSortedList(AssetDefinitionService assetService, Token token, List<BigInteger> idList) {
         List<TicketRangeElement> sortedList = new ArrayList<>();
-        for (BigInteger v : idList)
-        {
+        for (BigInteger v : idList) {
             if (v.compareTo(BigInteger.ZERO) == 0) continue;
             TicketRangeElement e = new TicketRangeElement(assetService, token, v);
             sortedList.add(e);
@@ -227,12 +215,10 @@ public class NonFungibleTokenAdapter extends TokensAdapter implements NonFungibl
     }
 
     @SuppressWarnings("unchecked")
-    protected <T> T generateType(TicketRange range, int weight, int id)
-    {
+    protected <T> T generateType(TicketRange range, int weight, int id) {
         TokenPosition tp = new TokenPosition(TokenGroup.NFT, 1, weight);
         T item;
-        switch (id)
-        {
+        switch (id) {
             case AssetInstanceScriptHolder.VIEW_TYPE:
                 item = (T) new AssetInstanceSortedItem(range, tp);
                 break;
@@ -245,18 +231,13 @@ public class NonFungibleTokenAdapter extends TokensAdapter implements NonFungibl
         return item;
     }
 
-    protected <T> SortedList<T> addSortedItems(List<TicketRangeElement> sortedList, Token t, int id)
-    {
+    protected <T> SortedList<T> addSortedItems(List<TicketRangeElement> sortedList, Token t, int id) {
         long currentTime = 0;
-        for (int i = 0; i < sortedList.size(); i++)
-        {
+        for (int i = 0; i < sortedList.size(); i++) {
             TicketRangeElement e = sortedList.get(i);
-            if (currentRange != null && t.groupWithToken(currentRange, e, currentTime))
-            {
+            if (currentRange != null && t.groupWithToken(currentRange, e, currentTime)) {
                 currentRange.tokenIds.add(e.id);
-            }
-            else
-            {
+            } else {
                 currentRange = new TicketRange(e.id, t.getAddress());
                 final T item = generateType(currentRange, 10 + i, id);
                 items.add((SortedItem) item);
@@ -267,8 +248,7 @@ public class NonFungibleTokenAdapter extends TokensAdapter implements NonFungibl
         return null;
     }
 
-    private Single<Boolean> clearCache(Context ctx)
-    {
+    private Single<Boolean> clearCache(Context ctx) {
         return Single.fromCallable(() -> {
             Glide.get(ctx).clearDiskCache();
             return true;
@@ -277,10 +257,8 @@ public class NonFungibleTokenAdapter extends TokensAdapter implements NonFungibl
 
     //TODO: Find out how to calculate the storage hash for each image and reproduce that, deleting only the right image.
     //TODO: Possibly the best way is not to use glide, revert back to caching images as in the original implementation.
-    public void reloadAssets(Context ctx)
-    {
-        if (token instanceof ERC721Token)
-        {
+    public void reloadAssets(Context ctx) {
+        if (token instanceof ERC721Token) {
             clearCache(ctx)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -289,46 +267,40 @@ public class NonFungibleTokenAdapter extends TokensAdapter implements NonFungibl
         }
     }
 
-    private void cleared(Boolean aBoolean)
-    {
+    private void cleared(Boolean aBoolean) {
         this.notifyDataSetChanged();
     }
 
     @Override
-    public void setRadioButtons(boolean expose)
-    {
+    public void setRadioButtons(boolean expose) {
         boolean requiresFullRedraw = false;
         //uncheck all ranges, note that the selected range will be checked after the refresh
-        for (int i = 0; i < items.size(); i++)
-        {
+        for (int i = 0; i < items.size(); i++) {
             SortedItem si = items.get(i);
             if (si.isRadioExposed() != expose) requiresFullRedraw = true;
-            if (si.view != null)
-            {
+            if (si.view != null) {
                 AppCompatRadioButton button = si.view.itemView.findViewById(R.id.radioBox);
-                if (button != null && (button.isChecked() || si.isItemChecked())) button.setChecked(false);
+                if (button != null && (button.isChecked() || si.isItemChecked()))
+                    button.setChecked(false);
             }
             si.setIsChecked(false);
             si.setExposeRadio(expose);
         }
 
-        if (requiresFullRedraw)
-        {
+        if (requiresFullRedraw) {
             notifyDataSetChanged();
         }
     }
 
     @Override
-    public List<BigInteger> getSelectedTokenIds(List<BigInteger> selection)
-    {
+    public List<BigInteger> getSelectedTokenIds(List<BigInteger> selection) {
         List<BigInteger> tokenIds = new ArrayList<>(selection);
-        for (int i = 0; i < items.size(); i++)
-        {
+        for (int i = 0; i < items.size(); i++) {
             SortedItem si = items.get(i);
-            if (si.isItemChecked())
-            {
+            if (si.isItemChecked()) {
                 List<BigInteger> rangeIds = si.getTokenIds();
-                for (BigInteger tokenId : rangeIds) if (!tokenIds.contains(tokenId)) tokenIds.add(tokenId);
+                for (BigInteger tokenId : rangeIds)
+                    if (!tokenIds.contains(tokenId)) tokenIds.add(tokenId);
             }
         }
 
@@ -336,46 +308,38 @@ public class NonFungibleTokenAdapter extends TokensAdapter implements NonFungibl
     }
 
     @Override
-    public int getSelectedGroups()
-    {
+    public int getSelectedGroups() {
         int selected = 0;
-        for (int i = 0; i < items.size(); i++)
-        {
+        for (int i = 0; i < items.size(); i++) {
             if (items.get(i).isItemChecked()) selected++;
         }
 
         return selected;
     }
 
-    public int getSelectedQuantity()
-    {
-        for (int i = 0; i < items.size(); i++)
-        {
+    public int getSelectedQuantity() {
+        for (int i = 0; i < items.size(); i++) {
             SortedItem si = items.get(i);
-            if (si.view.getItemViewType() == QuantitySelectorHolder.VIEW_TYPE)
-            {
+            if (si.view.getItemViewType() == QuantitySelectorHolder.VIEW_TYPE) {
                 return ((QuantitySelectorHolder) si.view).getCurrentQuantity();
             }
         }
         return 0;
     }
 
-    public TicketRange getSelectedRange(List<BigInteger> selection)
-    {
+    public TicketRange getSelectedRange(List<BigInteger> selection) {
         int quantity = getSelectedQuantity();
         if (quantity > selection.size()) quantity = selection.size();
         List<BigInteger> subSelection = new ArrayList<>();
 
-        for (int i = 0; i < quantity; i++)
-        {
+        for (int i = 0; i < quantity; i++) {
             subSelection.add(selection.get(i));
         }
 
         return new TicketRange(subSelection, token.getAddress(), false);
     }
 
-    private int getHolderType()
-    {
+    private int getHolderType() {
         return AssetInstanceScriptHolder.VIEW_TYPE;
     }
 }

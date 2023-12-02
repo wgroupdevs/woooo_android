@@ -246,7 +246,6 @@ public class WalletViewModel extends BaseViewModel {
             balanceUpdateCheck = null;
         }
     }
-
     private void checkTokenUpdates() {
         if (defaultWallet.getValue() == null) return;
 
@@ -323,7 +322,7 @@ public class WalletViewModel extends BaseViewModel {
             context.startActivity(intent);
         });
 
-        dialog = new BottomSheetDialog(context);
+        dialog = new BottomSheetDialog(context,R.style.SheetDialog);
         dialog.setContentView(actionsView);
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);

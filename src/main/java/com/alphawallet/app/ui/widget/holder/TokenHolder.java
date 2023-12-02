@@ -12,6 +12,7 @@ import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -36,7 +37,6 @@ import com.alphawallet.app.ui.widget.TokensAdapterCallback;
 import com.alphawallet.app.widget.TokenIcon;
 import com.alphawallet.token.tools.Convert;
 import com.alphawallet.token.tools.TokenDefinition;
-import com.google.android.material.checkbox.MaterialCheckBox;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -65,7 +65,7 @@ public class TokenHolder extends BinderViewHolder<TokenCardMeta> implements View
     private final AssetDefinitionService assetDefinition; //need to cache this locally, unless we cache every string we need in the constructor
     private final TokensService tokensService;
     private final RelativeLayout tokenLayout;
-    private final MaterialCheckBox selectToken;
+    private final CheckBox selectToken;
     private final ProgressBar tickerProgress;
 
     public Token token;

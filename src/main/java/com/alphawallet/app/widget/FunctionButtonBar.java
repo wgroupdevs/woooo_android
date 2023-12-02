@@ -1,11 +1,8 @@
 package com.alphawallet.app.widget;
 
 import static android.os.VibrationEffect.DEFAULT_AMPLITUDE;
-import static com.alphawallet.ethereum.EthereumNetworkBase.ARBITRUM_MAIN_ID;
-import static com.alphawallet.ethereum.EthereumNetworkBase.BINANCE_MAIN_ID;
 import static com.alphawallet.ethereum.EthereumNetworkBase.GNOSIS_ID;
 import static com.alphawallet.ethereum.EthereumNetworkBase.MAINNET_ID;
-import static com.alphawallet.ethereum.EthereumNetworkBase.OPTIMISTIC_MAIN_ID;
 import static com.alphawallet.ethereum.EthereumNetworkBase.POLYGON_ID;
 
 import android.annotation.SuppressLint;
@@ -106,7 +103,7 @@ public class FunctionButtonBar extends LinearLayout implements AdapterView.OnIte
         secondaryButton = findViewById(R.id.secondary_button);
         moreButton = findViewById(R.id.more_button);
 
-        bottomSheet = new BottomSheetDialog(getContext());
+        bottomSheet = new BottomSheetDialog(getContext(),R.style.SheetDialog);
         bottomSheet.setCancelable(true);
         bottomSheet.setCanceledOnTouchOutside(true);
 
@@ -586,13 +583,13 @@ public class FunctionButtonBar extends LinearLayout implements AdapterView.OnIte
             addStandardTokenFunctions(token);
         }
 
-        setupCustomTokenActions();
+//        setupCustomTokenActions();
 
         //Add buy function
-        if (hasBuyFunction)
-        {
-            addBuyFunction();
-        }
+//        if (hasBuyFunction)
+//        {
+//            addBuyFunction();
+//        }
 
         //now add the standard functions for NonFungibles (since these are lower priority)
         if (token.isNonFungible())
@@ -666,21 +663,21 @@ public class FunctionButtonBar extends LinearLayout implements AdapterView.OnIte
                     return true;
             }
         }
-        else if (token.tokenInfo.chainId == BINANCE_MAIN_ID
-                || token.tokenInfo.chainId == OPTIMISTIC_MAIN_ID
-                || token.tokenInfo.chainId == ARBITRUM_MAIN_ID)
-        {
-            if (token.isERC20() || token.isEthereum())
-            {
-                addFunction(R.string.swap);
-                return true;
-            }
-        }
-        else if (token.tokenInfo.chainId == POLYGON_ID)
-        {
-            addFunction(R.string.swap_with_quickswap);
-            return true;
-        }
+//        else if (token.tokenInfo.chainId == BINANCE_MAIN_ID
+//                || token.tokenInfo.chainId == OPTIMISTIC_MAIN_ID
+//                || token.tokenInfo.chainId == ARBITRUM_MAIN_ID)
+//        {
+//            if (token.isERC20() || token.isEthereum())
+//            {
+//                addFunction(R.string.swap);
+//                return true;
+//            }
+//        }
+//        else if (token.tokenInfo.chainId == POLYGON_ID)
+//        {
+//            addFunction(R.string.swap_with_quickswap);
+//            return true;
+//        }
         return false;
     }
 

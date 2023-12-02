@@ -24,7 +24,7 @@ import java.util.Map;
 import eu.siacs.conversations.R;
 
 /**
- * Created by JB on 2/09/2021.
+ * Created by Ehsan on 01/11/2023.
  */
 public class NFTAttributeLayout extends LinearLayout {
     private final TokenInfoCategoryView labelAttributes;

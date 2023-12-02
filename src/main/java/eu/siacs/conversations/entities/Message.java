@@ -102,7 +102,6 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
     protected Jid trueCounterpart;
     protected String body;
 
-
     protected String translatedBody;
     protected String encryptedBody;
     protected long timeSent;
@@ -114,7 +113,6 @@ public class Message extends AbstractEntity implements AvatarService.Avatarable 
 
     protected boolean deletedForMe = false;
     protected boolean forwarded = false;
-
 
     protected boolean reply = false;
 

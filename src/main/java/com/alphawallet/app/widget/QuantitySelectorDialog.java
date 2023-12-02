@@ -2,23 +2,24 @@ package com.alphawallet.app.widget;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
-import eu.siacs.conversations.R;
 import com.alphawallet.app.ui.widget.entity.OnQuantityChangedListener;
 import com.alphawallet.app.ui.widget.entity.QuantitySelectorDialogInterface;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.button.MaterialButton;
+
+import eu.siacs.conversations.R;
 
 public class QuantitySelectorDialog extends BottomSheetDialog implements OnQuantityChangedListener
 {
     private final QuantitySelector quantitySelector;
     private final TextView maxText;
     private final TextView btnMax;
-    private final MaterialButton confirmButton;
+    private final Button confirmButton;
     private final ImageView closeImage;
     private final Context context;
     private final QuantitySelectorDialogInterface callback;

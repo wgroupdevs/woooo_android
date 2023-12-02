@@ -85,7 +85,7 @@ public class TickerService {
     private static final String CONTRACT_ADDR = "[CONTRACT_ADDR]";
     private static final String CHAIN_IDS = "[CHAIN_ID]";
     private static final String CURRENCY_TOKEN = "[CURRENCY]";
-    private static final String COINGECKO_CHAIN_CALL = "https://api.coingecko.com/api/v3/simple/price?ids=tether," + CHAIN_IDS + "&vs_currencies=" + CURRENCY_TOKEN + "&include_24hr_change=true";
+    private static final String COINGECKO_CHAIN_CALL = "https://api.coingecko.com/api/v3/simple/price?ids=" + CHAIN_IDS + "&vs_currencies=" + CURRENCY_TOKEN + "&include_24hr_change=true";
     private static final String COINGECKO_API = String.format("https://api.coingecko.com/api/v3/simple/token_price/%s?contract_addresses=%s&vs_currencies=%s&include_24hr_change=true",
             CHAIN_IDS, CONTRACT_ADDR, CURRENCY_TOKEN);
     private static final String DEXGURU_API = "https://api.dex.guru/v1/tokens/" + CONTRACT_ADDR + "-" + CHAIN_IDS;

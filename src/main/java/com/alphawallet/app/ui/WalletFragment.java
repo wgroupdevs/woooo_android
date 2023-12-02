@@ -189,7 +189,7 @@ public class WalletFragment extends BaseFragment implements
 
         viewModel.prepare();
 
-        addressAvatar.setWaiting();
+//        addressAvatar.setWaiting();
 
         getChildFragmentManager()
                 .setFragmentResultListener(SEARCH_FRAGMENT, this, (requestKey, bundle) ->
@@ -344,6 +344,7 @@ public class WalletFragment extends BaseFragment implements
         pieChartColorList.add(Color.YELLOW);
         setPieDataSet();
 
+
     }
 
     private void clearPieChart() {
@@ -409,8 +410,10 @@ public class WalletFragment extends BaseFragment implements
         Bundle result = new Bundle();
         result.putBoolean(C.SHOW_BACKUP, wallet.lastBackupTime > 0);
         getParentFragmentManager().setFragmentResult(C.SHOW_BACKUP, result); //reset tokens service and wallet page with updated filters
+        Log.d(TAG, "ON-DEFAULT-WALLET-CALLED :" + wallet.balance);
 
-        addressAvatar.setWaiting();
+//        addressAvatar.setWaiting();
+
     }
 
     private void updateMetas(TokenCardMeta[] metas) {
@@ -460,6 +463,7 @@ public class WalletFragment extends BaseFragment implements
 
             fiatTextView.setText(TickerService.getCurrencyString(fiatValues.first));
             switchCurrencyButton.setText(viewModel.getDefaultCurrency());
+
 
 //            int color = ContextCompat.getColor(requireContext(), changePercent < 0 ? R.color.negative : R.color.positive);
 //            largeTitleView.subtitle.setTextColor(color);
@@ -640,17 +644,21 @@ public class WalletFragment extends BaseFragment implements
 
     private void onTokens(TokenCardMeta[] tokens) {
         if (tokens != null) {
+            boolean isBalanceFound = false;
             adapter.setTokens(tokens);
             checkScrollPosition();
             viewModel.calculateFiatValues();
-
-            if (!viewModel.getWallet().balance.equals("-") && !viewModel.getWallet().balance.equals("0.0000")) {
-
-                clearPieChart();
-                for (TokenCardMeta token : tokens) {
+            clearPieChart();
+            for (TokenCardMeta token : tokens) {
+                if (token.hasPositiveBalance()) {
                     addPiChartEntry(token);
+                    isBalanceFound = true;
                 }
+            }
+            if (isBalanceFound) {
                 setPieDataSet();
+            } else {
+                showEmptyPiChart();
             }
 
         }
@@ -672,7 +680,6 @@ public class WalletFragment extends BaseFragment implements
         int color = EthereumNetworkBase.getChainColour(token.getChain());
         color = ContextCompat.getColor(requireContext(), color);
         pieChartColorList.add(color);
-
         float balance = Float.parseFloat(token.getStringBalanceForUI(2).replaceAll(",", ""));
         Log.d(TAG, "TOKEN_BALANCE : " + balance + " CHAIN-ID : " + token.getChain() + " COLOR-CODE : " + color);
         pieChartEntries.add(new PieEntry(balance, "", token.getChain()));

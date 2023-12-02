@@ -7,6 +7,13 @@
     android:orientation="vertical">
 
     <include layout="@layout/layout_simple_toolbar" />
+    <!--        Divider-->
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/divider_ic"
+        android:contentDescription="divider" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -53,7 +60,6 @@
 
                     <TextView
                         android:id="@+id/id"
-                        style="@style/ConversationsTheme"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/small_12"
@@ -64,7 +70,6 @@
 
                     <TextView
                         android:id="@+id/generation"
-                        style="@style/ConversationsTheme"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/small_12"
@@ -75,7 +80,6 @@
 
                     <TextView
                         android:id="@+id/cooldown"
-                        style="@style/ConversationsTheme"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:drawableLeft="@drawable/ic_cooldown"
@@ -95,7 +99,6 @@
 
                     <TextView
                         android:id="@+id/name"
-                        style="@style/ConversationsTheme"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/small_12"
@@ -103,7 +106,6 @@
 
                     <TextView
                         android:id="@+id/description"
-                        style="@style/ConversationsTheme"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         custom:text="Description" />
@@ -118,7 +120,6 @@
 
                 <TextView
                     android:id="@+id/open_external"
-                    style="@style/ConversationsTheme"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/attributes"

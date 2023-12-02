@@ -8,6 +8,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.view.inputmethod.EditorInfo;
 import android.webkit.URLUtil;
+import android.widget.CheckBox;
 
 import androidx.lifecycle.ViewModelProvider;
 
@@ -17,7 +18,6 @@ import com.alphawallet.app.entity.StandardFunctionInterface;
 import com.alphawallet.app.viewmodel.CustomNetworkViewModel;
 import com.alphawallet.app.widget.FunctionButtonBar;
 import com.alphawallet.app.widget.InputView;
-import com.google.android.material.checkbox.MaterialCheckBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,7 @@ public class AddCustomRPCNetworkActivity extends BaseActivity implements Standar
     private InputView symbolInputView;
     private InputView blockExplorerUrlInputView;
     private InputView blockExplorerApiUrl;
-    private MaterialCheckBox testNetCheckBox;
+    private CheckBox testNetCheckBox;
     private long chainId;
     private boolean isEditMode;
 
