@@ -1797,7 +1797,7 @@ public class NotificationService {
         } else if (errors.size() == 1) {
             mBuilder.setContentTitle(
                     mXmppConnectionService.getString(R.string.problem_connecting_to_account));
-            mBuilder.setContentText(errors.get(0).getJid().asBareJid().toEscapedString());
+            mBuilder.setContentText("Not conected");
         } else {
             mBuilder.setContentTitle(
                     mXmppConnectionService.getString(R.string.problem_connecting_to_accounts));

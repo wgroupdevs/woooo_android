@@ -77,9 +77,6 @@ repositories {
 
 configurations {
     freeImplementation
-    conversationsFreeImplementation
-    conversationsPlaystorImplementation
-    quicksyFreeImplementation
     quicksyImplementation
 }
 
@@ -195,7 +192,6 @@ dependencies {
     implementation 'androidx.gridlayout:gridlayout:1.0.0'
 
 
-
     implementation("com.trustwallet:wallet-core:3.2.18", {
         exclude group: 'com.google.protobuf', module: '*'
     })
@@ -224,8 +220,6 @@ dependencies {
     implementation 'net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:3.0.0-RC3'
 
 
-
-
     //Analytics
 
     implementation 'com.google.android.play:core:1.10.3'
@@ -234,7 +228,10 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics:18.4.3'
     implementation 'com.google.firebase:firebase-messaging:21.1.0'
 
-
+//    Expand-able-layout
+    implementation "com.github.skydoves:expandablelayout:1.0.7"
+//    Arc-layout
+    implementation 'com.ogaclejapan.arclayout:library:1.1.0@aar'
 
 
 }
@@ -246,9 +243,9 @@ ext {
 android {
     signingConfigs {
         release {
-        storeFile file('/Users/mac/Desktop/woooo_release_key')
+            storeFile file('/Users/mac/Desktop/woooo_release_key')
             storePassword '12345@Az'
-            keyAlias 'wooooandroidkey'
+            keyAlias 'wooooAndroidKey'
             keyPassword '12345@Az'
         }
     }
@@ -266,11 +263,10 @@ android {
         resValue "string", "app_name", appName
         buildConfigField "String", "APP_NAME", "\"$appName\""
         multiDexEnabled true
-        archivesBaseName = "Woooo-$versionName"
+//        archivesBaseName = "Woooo-$versionName"
 
         renderscriptTargetApi 23
         renderscriptSupportModeEnabled true
-
 
         testInstrumentationRunnerArguments clearPackageData: 'true'
         def XInfuraAPI = "XInfuraAPI"
@@ -285,10 +281,8 @@ android {
         //Put your Aurorascan.dev API key here - this one will rate limit as it is common
 
         buildConfigField 'int', 'DB_VERSION', '01'
-
         buildConfigField "String", XInfuraAPI, DEFAULT_INFURA_API_KEY
         buildConfigField "String", "WALLETCONNECT_PROJECT_ID", DEFUALT_WALLETCONNECT_PROJECT_ID
-
         buildConfigField "String", "NOTIFICATION_API_BASE_URL", NOTIFICATION_API_BASE_URL
         buildConfigField "String", "CONTRACT_OPERATOR", CONTRACT_OPERATOR
 
@@ -350,14 +344,13 @@ android {
     }
 
 
-
-    applicationVariants.all { variant ->
-        kotlin.sourceSets {
-            getByName(variant.name) {
-                kotlin.srcDir("build/generated/ksp/${variant.name}/kotlin")
-            }
-        }
-    }
+//    applicationVariants.all { variant ->
+//        kotlin.sourceSets {
+//            getByName(variant.name) {
+//                kotlin.srcDir("build/generated/ksp/${variant.name}/kotlin")
+//            }
+//        }
+//    }
 
     kapt {
         correctErrorTypes true
@@ -366,17 +359,16 @@ android {
     flavorDimensions("mode", "distribution")
 
     productFlavors {
-
+//
         quicksy {
             dimension "mode"
             applicationId = "im.quicksy.client"
             resValue "string", "applicationId", applicationId
-
             def appName = "Quicksy"
             resValue "string", "app_name", appName
             buildConfigField "String", "APP_NAME", "\"$appName\""
         }
-
+////
         conversations {
             dimension "mode"
         }
@@ -387,7 +379,7 @@ android {
 //        }
         free {
             dimension "distribution"
-            versionNameSuffix "+free"
+//            versionNameSuffix ""
         }
     }
 
@@ -452,7 +444,6 @@ android {
     }
 
 
-
     packagingOptions {
         jniLibs {
             excludes += ['solidity/*']
@@ -462,7 +453,6 @@ android {
             excludes += ['META-INF/NOTICE', 'META-INF/LICENSE', 'META-INF/LICENSE.md', 'META-INF/NOTICE.md', 'META-INF/LICENSE-notice.md', 'solidity/ens/build/*.bin', 'solidity/ens/*.sol', 'solidity/ens/build/*.abi', 'en-mnemonic-word-list.txt', 'solidity/*']
         }
     }
-
 
 
     lint {

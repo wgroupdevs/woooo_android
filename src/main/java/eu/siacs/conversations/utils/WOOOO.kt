@@ -2,7 +2,7 @@ package eu.siacs.conversations.utils
 
 object WOOOO {
     const val NAME = "Woooo Chain"
-    const val SYMBOL = "Woooo"
+    const val SYMBOL = "WOC"
     const val CHAIN_ID = 2064L
     const val DOLLAR_RATE= 12
     const val WEB_URL= "https://woooo.world/"

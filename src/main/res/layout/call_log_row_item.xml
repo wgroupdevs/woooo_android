@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="8dp">
+
+    <com.skydoves.expandablelayout.ExpandableLayout
+        android:id="@+id/call_log_expand_able_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:expandable_duration="300"
+        app:expandable_isExpanded="false"
+        app:expandable_showSpinner="true"
+        app:expandable_spinner="@drawable/ic_arrow_down"
+        app:expandable_spinner_animate="true"
+        app:expandable_spinner_gravity="end"
+        app:expandable_spinner_size="32dp"
+        app:expandable_parentLayout="@layout/call_log_row_header"
+        app:expandable_secondLayout="@layout/call_log_row_body"
+ />
+
+
+    <ImageView
+        android:id="@+id/spacing_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:src="@drawable/divider_ic" />
+
+
+
+</LinearLayout>

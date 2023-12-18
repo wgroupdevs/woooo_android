@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**
- * Created by JB on 12/07/2020.
+ * Created by Ehsan on 12/07/2023.
  */
 public class TokenCardMeta implements Comparable<TokenCardMeta>, Parcelable
 {
@@ -174,7 +174,7 @@ public class TokenCardMeta implements Comparable<TokenCardMeta>, Parcelable
 
     public boolean hasPositiveBalance()
     {
-        return balance != null && !balance.equals("0");
+        return balance != null && !balance.equals("0") && !balance.equals("-1");
     }
 
     public boolean hasValidName()

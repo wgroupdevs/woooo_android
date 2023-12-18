@@ -7,13 +7,14 @@
         android:background="?attr/color_background_primary">
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Call logs ..."
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textAlignment="center" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/call_logs_recycler_view"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+
+
+            />
 
         <!--        <androidx.recyclerview.widget.RecyclerView-->
         <!--            android:id="@+id/list"-->

@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="4sp"
             android:layout_marginLeft="0sp"
-            tools:alpha="0.57"
+            android:tint="@color/white87"
             tools:src="@drawable/ic_call_received_black_18dp" />
 
         <TextView

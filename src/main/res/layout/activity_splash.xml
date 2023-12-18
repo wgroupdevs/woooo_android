@@ -63,7 +63,7 @@
                 android:id="@+id/splash_image"
                 android:layout_width="@dimen/_200sdp"
                 android:layout_height="@dimen/_200sdp"
-                android:background="@drawable/app_logo" />
+                android:background="@drawable/import_wallet_bg" />
 
 
         </LinearLayout>

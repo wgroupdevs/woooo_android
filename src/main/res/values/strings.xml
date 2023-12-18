@@ -561,12 +561,12 @@
     <string name="distrust_omemo_key">Distrust device</string>
     <string name="distrust_omemo_key_text">Are you sure you want to remove the verification of this device?\nThis device and messages from it will be marked as “Untrusted”.</string>
     <plurals name="seconds">
-        <item quantity="one">%d second</item>
-        <item quantity="other">%d seconds</item>
+        <item quantity="one">%d sec</item>
+        <item quantity="other">%d sec</item>
     </plurals>
     <plurals name="minutes">
-        <item quantity="one">%d minute</item>
-        <item quantity="other">%d minutes</item>
+        <item quantity="one">%d min</item>
+        <item quantity="other">%d min</item>
     </plurals>
     <plurals name="hours">
         <item quantity="one">%d hour</item>

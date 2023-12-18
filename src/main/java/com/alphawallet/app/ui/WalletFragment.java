@@ -364,6 +364,8 @@ public class WalletFragment extends BaseFragment implements
 
     private void updatePiChart() {
         if (currentCardMeta != null) {
+
+            Log.d(TAG, "CURRENT_TOKEN_INFO : " + currentCardMeta.balance);
             NetworkInfo network = EthereumNetworkBase.getNetworkInfo(currentCardMeta.getChain());
             String balance = currentCardMeta.getStringBalanceForUI(2);
             currencySymbol.setText(network.symbol);
@@ -375,9 +377,13 @@ public class WalletFragment extends BaseFragment implements
     }
 
     private SpannableStringBuilder SpannableStringBuilder(String text, final char afterChar, final float reduceBy) {
+
+        Log.d(TAG, "CURRENT_TOKEN_INFO : " + text);
+
+
         text = text.replaceAll(",", "");
         if (text.indexOf(afterChar) < 0) {
-            text = text.concat(".00");
+            text = text.concat(".0");
         }
 
         RelativeSizeSpan smallSizeText = new RelativeSizeSpan(reduceBy);
@@ -650,6 +656,9 @@ public class WalletFragment extends BaseFragment implements
             viewModel.calculateFiatValues();
             clearPieChart();
             for (TokenCardMeta token : tokens) {
+
+                Log.d(TAG, "TOKEN_BALANCE : onTokens :" + token.balance + " CHAIN-ID : " + token.getChain());
+
                 if (token.hasPositiveBalance()) {
                     addPiChartEntry(token);
                     isBalanceFound = true;
@@ -684,6 +693,7 @@ public class WalletFragment extends BaseFragment implements
         Log.d(TAG, "TOKEN_BALANCE : " + balance + " CHAIN-ID : " + token.getChain() + " COLOR-CODE : " + color);
         pieChartEntries.add(new PieEntry(balance, "", token.getChain()));
         if (token.getChain() == WOOOO.CHAIN_ID) {
+            Log.d(TAG, "DEFAULT_TOKEN_FOUND...");
             currentCardMeta = token;
         }
     }

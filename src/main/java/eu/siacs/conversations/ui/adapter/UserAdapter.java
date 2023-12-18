@@ -2,6 +2,7 @@ package eu.siacs.conversations.ui.adapter;
 
 import android.app.PendingIntent;
 import android.content.IntentSender;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,6 +83,16 @@ public class UserAdapter extends ListAdapter<MucOptions.User, UserAdapter.ViewHo
         });
         final String name = user.getName();
         final Contact contact = user.getContact();
+        Log.d("USER_ADAPTER", "NAME : " + name + " ROLE : " + user.getRole());
+
+        if (user.getRole() == MucOptions.Role.MODERATOR) {
+            viewHolder.binding.userRole.setVisibility(View.VISIBLE);
+            viewHolder.binding.userRole.setText("(Admin)");
+        } else {
+            viewHolder.binding.userRole.setVisibility(View.GONE);
+        }
+
+
         if (contact != null) {
             final String displayName = contact.getDisplayName();
             viewHolder.binding.contactDisplayName.setText(displayName);
@@ -125,7 +136,7 @@ public class UserAdapter extends ListAdapter<MucOptions.User, UserAdapter.ViewHo
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        MucDetailsContextMenuHelper.onCreateContextMenu(menu,v);
+        MucDetailsContextMenuHelper.onCreateContextMenu(menu, v);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/call_menu_add_contact"
+        android:title="Add contact"
+        />
+    <item
+        android:id="@+id/call_menu_start_conversation"
+        android:visible="false"
+        android:title="Go to chat"/>
+    <item
+        android:id="@+id/call_menu_noise_cancellation"
+        android:title="Noise cancellation"/>
+    <item
+        android:id="@+id/call_menu_add_background"
+        android:title="Add background"/>
+    <item
+        android:id="@+id/call_menu_share_screen"
+        android:title="Share screen"/>
+</menu>

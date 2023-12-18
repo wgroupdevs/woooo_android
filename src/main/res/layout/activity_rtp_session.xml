@@ -6,7 +6,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?color_background_secondary">
+        android:background="@drawable/call_background">
 
         <LinearLayout
             android:id="@+id/pip_placeholder"
@@ -38,6 +38,7 @@
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/transparent"
             android:elevation="0dp"
             android:visibility="visible"
             app:elevation="0dp">
@@ -56,19 +57,21 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:textAppearance="@style/TextAppearance.Conversations.Display2"
+                android:textAppearance="@style/TextAppearance.Conversations.Title"
                 android:textColor="@color/white"
-                tools:text="Juliet Capulet" />
+                tools:text="Woooo Client" />
 
-<!--            <TextView-->
-<!--                android:id="@+id/with_jid"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:textAppearance="@style/TextAppearance.Conversations.Caption"-->
-<!--                android:textColor="@color/white"-->
-<!--                android:visibility="visible"-->
-<!--                android:layout_gravity="center_horizontal"-->
-<!--                tools:text="abc@example.com" />-->
+
+            <TextView
+                android:id="@+id/call_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/rtp_session_duration_top_margin"
+                android:textAppearance="@style/TextAppearance.Conversations.Body1"
+                tools:text="@string/rtp_state_finding_device" />
+
 
             <TextView
                 android:id="@+id/duration"
@@ -80,16 +83,6 @@
                 android:textAppearance="@style/TextAppearance.Conversations.Title.Monospace"
                 tools:text="01:23" />
 
-
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:src="@drawable/divider_ic"
-                android:layout_marginTop="@dimen/_2sdp"
-                />
-
-
         </com.google.android.material.appbar.AppBarLayout>
 
         <RelativeLayout
@@ -98,11 +91,13 @@
             android:layout_above="@+id/button_row"
             android:layout_below="@id/app_bar_layout">
 
+
             <com.makeramen.roundedimageview.RoundedImageView
                 android:id="@+id/contact_photo"
                 android:layout_width="@dimen/publish_avatar_size"
                 android:layout_height="@dimen/publish_avatar_size"
-                android:layout_centerInParent="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/_20sdp"
                 app:riv_corner_radius="@dimen/incoming_call_radius" />
 
         </RelativeLayout>
@@ -125,6 +120,21 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
+
+
+        <ImageButton
+            android:id="@+id/in_call_action_menu"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_40sdp"
+            android:src="@drawable/baseline_more_vert_24"
+            style="@style/Item.Medium"
+            android:background="@drawable/call_btn_transparent_bubble"
+            android:visibility="visible"
+            app:arc_angle="120"
+            app:tint="@color/white" />
+
         <eu.siacs.conversations.ui.widget.SurfaceViewRenderer
             android:id="@+id/local_video"
             android:layout_width="@dimen/local_video_preview_width"
@@ -136,16 +146,16 @@
             android:visibility="gone"
             app:elevation="4dp" />
 
-        <ImageView
-            android:id="@+id/verified"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/app_bar_layout"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="@dimen/rtp_session_duration_top_margin"
-            android:alpha="0.7"
-            android:src="@drawable/ic_verified_fingerprint" />
+        <!--        <ImageView-->
+        <!--            android:id="@+id/verified"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_below="@+id/app_bar_layout"-->
+        <!--            android:layout_alignParentStart="true"-->
+        <!--            android:layout_marginStart="16dp"-->
+        <!--            android:layout_marginTop="@dimen/rtp_session_duration_top_margin"-->
+        <!--            android:alpha="0.7"-->
+        <!--            android:src="@drawable/ic_verified_fingerprint" />-->
 
         <ImageView
             android:id="@+id/pip_local_mic_off_indicator"
@@ -154,7 +164,6 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_margin="8dp"
-            android:alpha="0.7"
             android:src="@drawable/ic_mic_off_black_24dp"
             android:visibility="gone"
             app:tint="@color/white" />
@@ -165,24 +174,28 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="24dp">
+            android:layout_marginBottom="-8dp">
 
             <RelativeLayout
                 android:layout_width="288dp"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true">
+                android:layout_centerInParent="true"
+                android:visibility="visible">
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/reject_call"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:layout_margin="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
                     android:src="@drawable/ic_call_end_white_48dp"
                     android:visibility="gone"
                     app:backgroundTint="@color/red700"
                     app:elevation="4dp"
-                    app:fabCustomSize="72dp"
+                    app:fabCustomSize="@dimen/_42sdp"
                     app:maxImageSize="36dp"
                     tools:visibility="visible" />
 
@@ -192,82 +205,98 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_margin="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
                     android:src="@drawable/ic_call_white_48dp"
                     android:visibility="gone"
                     app:backgroundTint="@color/green700"
                     app:elevation="4dp"
-                    app:fabCustomSize="72dp"
+                    app:fabCustomSize="@dimen/_42sdp"
                     app:maxImageSize="36dp"
                     tools:visibility="visible" />
-
             </RelativeLayout>
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/in_call_action_left"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_margin="@dimen/in_call_fab_margin"
-                android:layout_toStartOf="@+id/end_call"
-                android:visibility="gone"
-                app:backgroundTint="?color_background_primary"
-                app:elevation="4dp"
-                app:fabSize="mini"
-                app:tint="?attr/icon_tint" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/end_call"
-                android:layout_width="wrap_content"
+            <FrameLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_margin="@dimen/in_call_fab_margin_center"
-                android:src="@drawable/ic_call_end_white_48dp"
-                android:visibility="visible"
-                app:backgroundTint="@color/red700"
-                app:elevation="4dp"
-                app:fabCustomSize="72dp"
-                app:maxImageSize="36dp" />
+                android:paddingTop="@dimen/_10sdp"
+                >
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/in_call_action_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_margin="@dimen/in_call_fab_margin"
-                android:layout_toEndOf="@+id/end_call"
-                android:visibility="gone"
-                app:backgroundTint="?color_background_primary"
-                app:elevation="4dp"
-                app:fabSize="mini"
-                app:tint="?attr/icon_tint" />
+                <com.ogaclejapan.arclayout.ArcLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:arc_axisRadius="180dp"
+                    app:arc_color="@color/transparent"
+                    app:arc_freeAngle="true"
+                    app:arc_origin="bottom"
+                    app:arc_radius="230dp">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/in_call_action_far_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_margin="@dimen/in_call_fab_margin"
-                android:layout_toEndOf="@+id/in_call_action_right"
-                android:visibility="gone"
-                app:backgroundTint="?color_background_primary"
-                app:elevation="4dp"
-                app:fabSize="mini"
-                app:tint="?attr/icon_tint" />
+                    <ImageButton
+                        android:id="@+id/in_call_action_ai"
+                        style="@style/Item.Large"
+                        android:background="@drawable/call_btn_transparent_bubble"
+                        android:src="@drawable/ic_lang_disable"
+                        app:arc_angle="30" />
+
+                    <ImageButton
+                        android:id="@+id/in_call_speaker_button"
+                        style="@style/Item.Large"
+                        android:background="@drawable/call_btn_transparent_bubble"
+                        android:src="@drawable/ic_volume_off_34"
+                        android:visibility="visible"
+                        app:arc_angle="60"
+                        app:tint="@color/white" />
+
+                    <ImageButton
+                        android:id="@+id/in_call_action_switch_camera"
+                        style="@style/Item.Large"
+                        android:background="@drawable/call_btn_transparent_bubble"
+                        android:src="@drawable/ic_flip_camera_android_black_24dp"
+                        android:visibility="gone"
+                        app:arc_angle="60"
+                        app:tint="@color/white" />
+
+                    <ImageButton
+                        android:id="@+id/end_call"
+                        style="@style/Item.Large"
+                        android:background="@drawable/end_call_background"
+                        android:src="@drawable/ic_call_end_white_48dp"
+                        android:visibility="visible"
+                        app:arc_angle="90"
+                        app:backgroundTint="@color/red700"
+                        app:tint="?attr/icon_tint" />
+
+                    <ImageButton
+                        android:id="@+id/in_call_video_button"
+                        style="@style/Item.Large"
+                        android:background="@drawable/call_btn_transparent_bubble"
+                        android:src="@drawable/baseline_videocam_34"
+                        android:visibility="visible"
+                        app:arc_angle="120"
+                        app:tint="@color/white" />
+
+                    <ImageButton
+                        android:id="@+id/in_call_action_mic"
+                        style="@style/Item.Large"
+                        android:background="@drawable/call_btn_transparent_bubble"
+                        android:src="@drawable/ic_mic_black_24dp"
+                        android:visibility="visible"
+                        app:arc_angle="150"
+                        app:tint="?attr/icon_tint"
+
+                        />
+
+                </com.ogaclejapan.arclayout.ArcLayout>
+
+
+            </FrameLayout>
+
+
         </RelativeLayout>
 
-<!--        <TextView-->
-<!--            android:id="@+id/using_account"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_alignParentEnd="true"-->
-<!--            android:layout_alignParentBottom="true"-->
-<!--            android:layout_marginStart="8dp"-->
-<!--            android:layout_marginTop="8dp"-->
-<!--            android:layout_marginEnd="8dp"-->
-<!--            android:layout_marginBottom="8dp"-->
-<!--            android:text="@string/using_account"-->
-<!--            android:textAppearance="@style/TextAppearance.Conversations.Caption" />-->
 
     </RelativeLayout>
 </layout>

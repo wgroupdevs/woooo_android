@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import eu.siacs.conversations.Config;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.databinding.ActivityMucDetailsBinding;
 import eu.siacs.conversations.entities.Account;
@@ -429,12 +428,12 @@ public class ConferenceDetailsActivity extends XmppActivity implements OnConvers
         }
         final MucOptions mucOptions = mConversation.getMucOptions();
         final User self = mucOptions.getSelf();
-        String account;
-        if (Config.DOMAIN_LOCK != null) {
-            account = mConversation.getAccount().getJid().getEscapedLocal();
-        } else {
-            account = mConversation.getAccount().getJid().asBareJid().toEscapedString();
-        }
+//        String account;
+//        if (Config.DOMAIN_LOCK != null) {
+//            account = mConversation.getAccount().getJid().getEscapedLocal();
+//        } else {
+//            account = mConversation.getAccount().getJid().asBareJid().toEscapedString();
+//        }
         setTitle(mucOptions.isPrivateAndNonAnonymous() ? R.string.action_muc_details : R.string.channel_details);
         this.binding.editMucNameButton.setVisibility((self.getAffiliation().ranks(MucOptions.Affiliation.OWNER) || mucOptions.canChangeSubject()) ? View.VISIBLE : View.GONE);
 //        this.binding.detailsAccount.setText(getString(R.string.using_account, account));

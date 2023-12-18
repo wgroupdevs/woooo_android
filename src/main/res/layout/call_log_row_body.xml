@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/_15sdp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        app:flexDirection="row"
+        app:justifyContent="space_around"
+        android:background="@drawable/bg_border"
+        android:paddingVertical="@dimen/_12sdp"
+        android:layout_marginVertical="@dimen/_10sdp"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/audio_call_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:drawableTop="@drawable/ic_call_white_24dp"
+            android:text="Audio"
+            android:background="@color/transparent"
+            android:textAllCaps="false"/>
+        <Button
+            android:id="@+id/video_call_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:drawableTop="@drawable/ic_videocam_white70_24dp"
+            android:text="Video"
+            android:background="@color/transparent"
+            android:textAllCaps="false"/>
+
+        <Button
+            android:id="@+id/chat_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:drawableTop="@drawable/ic_chat_white_24dp"
+            android:text="Chat"
+            android:background="@color/transparent"
+            android:textAllCaps="false"/>
+
+
+
+        <Button
+            android:id="@+id/info_call_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:drawableTop="@drawable/baseline_info_24"
+            android:text="Info"
+            android:background="@color/transparent"
+            android:textAllCaps="false"/>
+
+
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+</LinearLayout>

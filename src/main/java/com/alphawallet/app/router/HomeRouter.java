@@ -10,9 +10,9 @@ public class HomeRouter {
     public void open(Context context, boolean isClearStack) {
         Intent intent = new Intent(context, WalletHomeActivity.class);
         intent.putExtra(C.FROM_HOME_ROUTER, C.FROM_HOME_ROUTER); //HomeRouter should restart the app at the wallet
-        if (isClearStack) {
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        }
+//        if (isClearStack) {
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        }
         context.startActivity(intent);
     }
 }

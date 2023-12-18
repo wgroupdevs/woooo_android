@@ -10,6 +10,7 @@ import com.alphawallet.app.entity.ActivityMeta;
 import com.alphawallet.app.entity.Wallet;
 import com.alphawallet.app.entity.tokens.Token;
 import com.alphawallet.app.interact.FetchTransactionsInteract;
+import com.alphawallet.app.router.SendTokenRouter;
 import com.alphawallet.app.service.AssetDefinitionService;
 import com.alphawallet.app.service.TokensService;
 import com.alphawallet.token.entity.SigReturnType;
@@ -18,7 +19,6 @@ import com.alphawallet.token.tools.TokenDefinition;
 
 import javax.inject.Inject;
 
-import eu.siacs.conversations.Router.SendTokenRouter;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 

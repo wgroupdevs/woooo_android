@@ -5,7 +5,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/blue_primary300"
         android:padding="@dimen/list_padding">
 
         <com.makeramen.roundedimageview.RoundedImageView
@@ -15,7 +14,6 @@
             android:layout_alignParentLeft="true"
             android:scaleType="centerCrop"
             app:riv_corner_radius="6dp"/>
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -54,6 +52,20 @@
                 android:textAppearance="@style/TextAppearance.Conversations.Fingerprint"
                 android:visibility="gone"/>
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/user_role"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:visibility="gone"
+            android:textColor="@color/white70"
+            android:textAppearance="@style/TextAppearance.Conversations.Caption"/>
+
+
+
 
     </RelativeLayout>
 </layout>

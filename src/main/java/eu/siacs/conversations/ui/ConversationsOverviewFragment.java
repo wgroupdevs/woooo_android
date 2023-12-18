@@ -304,7 +304,8 @@ public class ConversationsOverviewFragment extends XmppFragment {
         this.binding.noChatFound.setOnClickListener((view) -> StartConversationActivity.launch(getActivity()));
         Log.d(TAG, "TOTAL CONVERSATIONS : " + this.conversations.size());
 
-        this.conversationsAdapter = new ConversationAdapter(this.activity, this.conversations);
+        this.conversationsAdapter = new ConversationAdapter(this.activity, this.conversations,false);
+
         this.conversationsAdapter.setConversationClickListener((view, conversation) -> {
             if (activity instanceof OnConversationSelected) {
 

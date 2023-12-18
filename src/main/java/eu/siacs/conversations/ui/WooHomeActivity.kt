@@ -1,10 +1,14 @@
 package eu.siacs.conversations.ui
 
+import android.Manifest
 import android.animation.ObjectAnimator
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -12,6 +16,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import com.alphawallet.app.ui.WalletHomeActivity
 import com.alphawallet.app.viewmodel.CreateWalletViewModel
 import com.github.mikephil.charting.charts.PieChart
@@ -21,41 +26,68 @@ import com.github.mikephil.charting.data.PieEntry
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.woooapp.meeting.impl.utils.WDirector
 import dagger.hilt.android.AndroidEntryPoint
+import eu.siacs.conversations.Config
 import eu.siacs.conversations.R
 import eu.siacs.conversations.databinding.ActivityHomeBinding
 import eu.siacs.conversations.entities.Account
+import eu.siacs.conversations.entities.Conversation
+import eu.siacs.conversations.entities.Message
 import eu.siacs.conversations.services.XmppConnectionService
+import eu.siacs.conversations.services.XmppConnectionService.OnConversationUpdate
+import eu.siacs.conversations.ui.adapter.CallLogAdapter
+import eu.siacs.conversations.ui.adapter.ConversationAdapter
+import eu.siacs.conversations.ui.interfaces.OnConversationSelected
 import eu.siacs.conversations.ui.util.AvatarWorkerTask
-@AndroidEntryPoint
-class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
+import java.util.Arrays
 
-    private lateinit var binding: ActivityHomeBinding
+
+@AndroidEntryPoint
+class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
+    OnConversationSelected, OnConversationUpdate {
+
+    private lateinit var homeBinding: ActivityHomeBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
     private var pieChart: PieChart? = null
     private var circleIndex = 0
-//    private var crashChecker: CrashChecker? = null
+    val REQUEST_CALL_Permission = 0x213
+
+    private var conversationsAdapter: ConversationAdapter? = null
+    private var callLogAdapter: CallLogAdapter? = null
+    private var conversations: List<Conversation> = java.util.ArrayList();
+    private var callLogs: List<Message> = java.util.ArrayList();
+
+    private lateinit var chatRecyclerView: RecyclerView
+    private lateinit var callLogsRecyclerView: RecyclerView
+
+
+    companion object {
+        var mAccount: Account? = null
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityHomeBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        homeBinding = ActivityHomeBinding.inflate(layoutInflater)
+        setContentView(homeBinding.root)
         populateCircularMenu()
-        setSupportActionBar(binding.appBarHome.toolbar.toolbar)
-        binding.appBarHome.toolbar.toolBarLeadingView.visibility = View.GONE
-        binding.appBarHome.toolbar.toolbarProfilePhoto.visibility = View.VISIBLE
-        binding.appBarHome.toolbar.toolbarNotification.visibility = View.VISIBLE
-
+        setSupportActionBar(homeBinding.appBarHome.toolbar.toolbar)
+        homeBinding.appBarHome.toolbar.toolBarLeadingView.visibility = View.GONE
+        homeBinding.appBarHome.toolbar.toolbarProfilePhoto.visibility = View.VISIBLE
+        homeBinding.appBarHome.toolbar.toolbarNotification.visibility = View.VISIBLE
+        chatRecyclerView = homeBinding.appBarHome.homeBottomSheet.homeBottomSheetChatRecyclerView
+        callLogsRecyclerView =
+            homeBinding.appBarHome.homeBottomSheet.homeBottomSheetCallLogsRecyclerView
 
 //        crashChecker = CrashChecker(this)
 //        crashChecker?.checkForCrash()
 
         WDirector.getInstance().generateMeetingId()
 
-        binding.appBarHome.toolbar.toolbarProfilePhoto.setOnClickListener {
-            binding.drawerLayout.open()
+        homeBinding.appBarHome.toolbar.toolbarProfilePhoto.setOnClickListener {
+            homeBinding.drawerLayout.open()
         }
 
         bottomSheetBehavior =
-            BottomSheetBehavior.from(binding.appBarHome.homeBottomSheet.bottomSheet)
+            BottomSheetBehavior.from(homeBinding.appBarHome.homeBottomSheet.bottomSheet)
         initBottomSheet()
 
         populatePIChart()
@@ -69,7 +101,16 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
 //    }
 
 
+    override fun onResume() {
+        super.onResume()
+        checkPermission();
+    }
+
     private fun initBottomSheet() {
+
+        initConversationsView()
+        initCallLogsView()
+
         bottomSheetBehavior.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
 
@@ -95,8 +136,23 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
         })
     }
 
+    private fun initConversationsView() {
+        conversationsAdapter = ConversationAdapter(this, conversations,true)
+        chatRecyclerView.adapter = conversationsAdapter;
+        conversationsAdapter?.setConversationClickListener { view: View?, conversation: Conversation ->
+            val newIntent = Intent(this@WooHomeActivity, ConversationActivity::class.java);
+            newIntent.putExtra(ConversationsActivity.EXTRA_CONVERSATION, conversation.uuid)
+            startActivity(newIntent)
+        }
+    }
+
+    private fun initCallLogsView() {
+        this.callLogAdapter = CallLogAdapter(this, this.callLogs, true)
+        this.callLogsRecyclerView.adapter = this.callLogAdapter
+    }
+
     private fun populatePIChart() {
-        pieChart = binding.appBarHome.pieChart
+        pieChart = homeBinding.appBarHome.pieChart
 
         // Create a list of PieEntries
 
@@ -134,7 +190,6 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
 
     }
 
-
     private fun updatePiChart(reset: Boolean = false) {
         val colors: MutableList<Int>? = pieChart?.data?.getDataSetByIndex(0)?.colors
         if (reset) {
@@ -165,27 +220,39 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
                 mAccount = it.accounts[0]
                 runOnUiThread {
                     populateView()
+                    fetchConversations()
+                    fetchCallLogs()
                 }
             }
         }
     }
 
+    private fun fetchConversations() {
+        this.xmppConnectionService.populateWithOrderedConversations(this.conversations)
+        this.conversationsAdapter?.notifyDataSetChanged()
+    }
+
+    private fun fetchCallLogs() {
+        this.xmppConnectionService.getRTPMessages(this.callLogs)
+        Log.d(TAG, "CALL LOGS COUNT : " + callLogs.size)
+        this.callLogAdapter?.notifyDataSetChanged()
+    }
 
     private fun populateView() {
         mAccount?.let {
             AvatarWorkerTask.loadAvatar(
                 it,
-                binding.appBarHome.toolbar.toolbarProfilePhoto,
+                homeBinding.appBarHome.toolbar.toolbarProfilePhoto,
                 R.dimen.avatar
             )
 
-            binding.appBarHome.toolbar.toolbarSearch.setOnClickListener {
+            homeBinding.appBarHome.toolbar.toolbarSearch.setOnClickListener {
                 startActivity(Intent(this, SearchActivity::class.java))
             }
 
-            binding.appBarHome.displayName.text = "Hi, ${getDisplayName()}"
+            homeBinding.appBarHome.displayName.text = "Hi, ${getDisplayName()}"
 
-            val headerLayout: View = binding.navView.getHeaderView(0) // 0-index header
+            val headerLayout: View = homeBinding.navView.getHeaderView(0) // 0-index header
             val nameTextView = headerLayout.findViewById<TextView>(R.id.header_displayName_tv)
             val emailTextView = headerLayout.findViewById<TextView>(R.id.header_email_tv)
             val profileView = headerLayout.findViewById<ImageView>(R.id.header_profile_iv)
@@ -203,7 +270,7 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
             )
 
             editProfileButton.setOnClickListener {
-                binding.drawerLayout.close()
+                homeBinding.drawerLayout.close()
                 val intent = Intent(this, EditAccountActivity::class.java)
                 intent.putExtra("jid", mAccount?.jid?.asBareJid().toString())
                 intent.putExtra("init", false)
@@ -211,7 +278,7 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
             }
 
             logoutButton.setOnClickListener {
-                 var createWallet: CreateWalletViewModel? = null
+                var createWallet: CreateWalletViewModel? = null
                 //detect previous launch
                 createWallet = ViewModelProvider(this)[CreateWalletViewModel::class.java]
                 createWallet.cleanAuxData(applicationContext)
@@ -238,37 +305,37 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
         windowManager.defaultDisplay.getMetrics(displayMetrics)
 
         var width = displayMetrics.widthPixels
-        binding.appBarHome.outerWheel.layoutParams.height = (0.9 * width).toInt()
-        binding.appBarHome.outerWheel.layoutParams.width = (0.9 * width).toInt()
-        binding.appBarHome.middleWheelLayout.layoutParams.height = (0.7 * width).toInt()
-        binding.appBarHome.middleWheelLayout.layoutParams.width = (0.7 * width).toInt()
-        binding.appBarHome.innerWheel.layoutParams.height = (0.33 * width).toInt()
-        binding.appBarHome.innerWheel.layoutParams.width = (0.33 * width).toInt()
+        homeBinding.appBarHome.outerWheel.layoutParams.height = (0.9 * width).toInt()
+        homeBinding.appBarHome.outerWheel.layoutParams.width = (0.9 * width).toInt()
+        homeBinding.appBarHome.middleWheelLayout.layoutParams.height = (0.7 * width).toInt()
+        homeBinding.appBarHome.middleWheelLayout.layoutParams.width = (0.7 * width).toInt()
+        homeBinding.appBarHome.innerWheel.layoutParams.height = (0.33 * width).toInt()
+        homeBinding.appBarHome.innerWheel.layoutParams.width = (0.33 * width).toInt()
 
-        binding.appBarHome.meetingIv.setOnClickListener {
+        homeBinding.appBarHome.meetingIv.setOnClickListener {
             rotateOuterCircle(false, 1)
             circleIndex = 0
             updatePiChart()
 
         }
 
-        binding.appBarHome.walletIv.setOnClickListener {
+        homeBinding.appBarHome.walletIv.setOnClickListener {
 
             rotateOuterCircle(false, 2)
             circleIndex = 1
             updatePiChart()
         }
-        binding.appBarHome.callIv.setOnClickListener {
+        homeBinding.appBarHome.callIv.setOnClickListener {
             rotateOuterCircle(true, 3)
             circleIndex = 2
             updatePiChart()
         }
-        binding.appBarHome.chatIv.setOnClickListener {
+        homeBinding.appBarHome.chatIv.setOnClickListener {
             rotateOuterCircle(true, 4)
             circleIndex = 3
             updatePiChart()
         }
-        binding.appBarHome.innerWheel.setOnClickListener {
+        homeBinding.appBarHome.innerWheel.setOnClickListener {
             rotateOuterCircle(true, 0)
         }
 
@@ -284,10 +351,10 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
 
         if (clockwise) {
             rotateAnimatorClockWise =
-                ObjectAnimator.ofFloat(binding.appBarHome.outerWheel, View.ROTATION, 0f, degree)
+                ObjectAnimator.ofFloat(homeBinding.appBarHome.outerWheel, View.ROTATION, 0f, degree)
             rotateAnimatorAntiClockWise =
                 ObjectAnimator.ofFloat(
-                    binding.appBarHome.middleWheel,
+                    homeBinding.appBarHome.middleWheel,
                     View.ROTATION,
                     0f,
                     -degree
@@ -295,14 +362,14 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
         } else {
             rotateAnimatorClockWise =
                 ObjectAnimator.ofFloat(
-                    binding.appBarHome.outerWheel,
+                    homeBinding.appBarHome.outerWheel,
                     View.ROTATION,
                     0f,
                     -degree
                 )
             rotateAnimatorAntiClockWise =
                 ObjectAnimator.ofFloat(
-                    binding.appBarHome.middleWheel,
+                    homeBinding.appBarHome.middleWheel,
                     View.ROTATION,
                     0f,
                     degree
@@ -356,10 +423,56 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate {
     }
 
 
-    companion object {
-        var mAccount: Account? = null
+    private fun checkPermission() {
+
+        val permissions: List<String> = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            Arrays.asList(
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.CAMERA,
+                Manifest.permission.BLUETOOTH_CONNECT
+            )
+        } else {
+            Arrays.asList(Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA)
+        }
+
+        hasPermissions(REQUEST_CALL_Permission, permissions)
 
     }
+
+    private fun hasPermissions(requestCode: Int, permissions: List<String>): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val missingPermissions: MutableList<String> = ArrayList()
+            for (permission in permissions) {
+                if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU || Config.ONLY_INTERNAL_STORAGE) && permission == Manifest.permission.WRITE_EXTERNAL_STORAGE) {
+                    continue
+                }
+                if (this.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                    missingPermissions.add(permission)
+                }
+            }
+            if (missingPermissions.size == 0) {
+                true
+            } else {
+                requestPermissions(missingPermissions.toTypedArray<String>(), requestCode)
+                false
+            }
+        } else {
+            true
+        }
+    }
+
+    override fun onConversationSelected(conversation: Conversation?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onConversationUpdate() {
+        runOnUiThread {
+            fetchConversations()
+            fetchCallLogs()
+        }
+    }
+
+
 }
 
 

@@ -171,12 +171,18 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         @Override
         public void onClick(final View view) {
             if (mAccount != null) {
-                final Intent intent = new Intent(getApplicationContext(), PublishProfilePictureActivity.class);
-                intent.putExtra(EXTRA_ACCOUNT, mAccount.getJid().asBareJid().toEscapedString());
-                startActivity(intent);
+                publishAvatar(mAccount);
             }
         }
     };
+
+    private void publishAvatar(Account account) {
+        Intent intent = new Intent(getApplicationContext(),
+                PublishProfilePictureActivity.class);
+        intent.putExtra(EXTRA_ACCOUNT, account.getJid().asBareJid().toEscapedString());
+        startActivity(intent);
+    }
+
     private String messageFingerprint;
     private boolean mFetchingAvatar = false;
     private Toast mFetchingMamPrefsToast;
@@ -936,12 +942,12 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             switch (menuItem.getItemId()) {
                 case R.id.edit_profile_update_photo:
                     // Handle Menu Item 1 click
-                    return true;
-                case R.id.edit_profile_disable_account:
-                    // Handle Menu Item 2 click
+                    publishAvatar(mAccount);
                     return true;
                 case R.id.edit_profile_delete_account:
                     // Handle Menu Item 2 click
+                    deleteAccount(mAccount);
+
                     return true;
                 // Add cases for other menu items if needed
                 default:

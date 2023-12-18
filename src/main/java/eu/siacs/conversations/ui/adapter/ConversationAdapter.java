@@ -2,7 +2,6 @@ package eu.siacs.conversations.ui.adapter;
 
 import android.graphics.Typeface;
 import android.os.Build;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,10 +21,8 @@ import eu.siacs.conversations.databinding.ConversationListRowBinding;
 import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.Conversational;
 import eu.siacs.conversations.entities.Message;
-import eu.siacs.conversations.ui.ConversationFragment;
 import eu.siacs.conversations.ui.XmppActivity;
 import eu.siacs.conversations.ui.util.AvatarWorkerTask;
-import eu.siacs.conversations.ui.util.StyledAttributes;
 import eu.siacs.conversations.utils.MimeUtils;
 import eu.siacs.conversations.utils.UIHelper;
 import eu.siacs.conversations.xmpp.Jid;
@@ -37,12 +34,15 @@ public class ConversationAdapter
     private final XmppActivity activity;
     private final List<Conversation> conversations;
     private OnConversationClickListener listener;
+    private boolean isFromHomePage = false;
+
 
     private final String TAG = "ConversationAdapter";
 
-    public ConversationAdapter(XmppActivity activity, List<Conversation> conversations) {
+    public ConversationAdapter(XmppActivity activity, List<Conversation> conversations, boolean isFromHomePage) {
         this.activity = activity;
         this.conversations = conversations;
+        this.isFromHomePage = isFromHomePage;
     }
 
     @NonNull
@@ -72,13 +72,13 @@ public class ConversationAdapter
             viewHolder.binding.conversationName.setText(name);
         }
 
-        if (conversation == ConversationFragment.getConversation(activity)) {
-            viewHolder.binding.frame.setBackgroundColor(
-                    StyledAttributes.getColor(activity, R.attr.color_background_tertiary));
-        } else {
-            viewHolder.binding.frame.setBackgroundColor(
-                    StyledAttributes.getColor(activity, R.attr.color_background_primary));
-        }
+//        if (conversation == ConversationFragment.getConversation(activity)) {
+//            viewHolder.binding.frame.setBackgroundColor(
+//                    StyledAttributes.getColor(activity, R.attr.color_background_tertiary));
+//        } else {
+//            viewHolder.binding.frame.setBackgroundColor(
+//                    StyledAttributes.getColor(activity, R.attr.color_background_primary));
+//        }
 
         Message message = conversation.getLatestMessage();
         final int unreadCount = conversation.unreadCount();
@@ -292,6 +292,12 @@ public class ConversationAdapter
             viewHolder.binding.senderName.setTextAppearance(R.style.TextAppearance_Conversations_Subhead);
             viewHolder.binding.conversationLastmsg.setTextAppearance(R.style.TextAppearance_Conversations_Body1);
         }
+
+
+        if (isFromHomePage) {
+            viewHolder.binding.dividerIc.setVisibility(View.VISIBLE);
+        }
+
         viewHolder.itemView.setOnClickListener(v -> listener.onConversationClick(v, conversation));
     }
 

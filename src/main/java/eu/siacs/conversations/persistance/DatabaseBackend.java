@@ -44,6 +44,7 @@ import eu.siacs.conversations.crypto.axolotl.AxolotlService;
 import eu.siacs.conversations.crypto.axolotl.FingerprintStatus;
 import eu.siacs.conversations.crypto.axolotl.SQLiteAxolotlStore;
 import eu.siacs.conversations.entities.Account;
+import eu.siacs.conversations.entities.CallLog;
 import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.Message;
@@ -52,6 +53,7 @@ import eu.siacs.conversations.entities.Roster;
 import eu.siacs.conversations.entities.ServiceDiscoveryResult;
 import eu.siacs.conversations.services.QuickConversationsService;
 import eu.siacs.conversations.services.ShortcutService;
+import eu.siacs.conversations.services.XmppConnectionService;
 import eu.siacs.conversations.utils.CryptoHelper;
 import eu.siacs.conversations.utils.CursorUtils;
 import eu.siacs.conversations.utils.FtsUtils;
@@ -206,7 +208,6 @@ public class DatabaseBackend extends SQLiteOpenHelper {
     }
 
     /**
-     *
      * @param context
      * @return {@link DatabaseBackend} as a Singleton
      */
@@ -225,7 +226,9 @@ public class DatabaseBackend extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + Account.TABLENAME + "(" + Account.UUID + " TEXT PRIMARY KEY,"
+        db.execSQL("create table "
+                + Account.TABLENAME + "("
+                + Account.UUID + " TEXT PRIMARY KEY,"
                 + Account.USERNAME + " TEXT,"
                 + Account.SERVER + " TEXT,"
                 + Account.PASSWORD + " TEXT,"
@@ -260,15 +263,21 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 + Account.PORT + " NUMBER DEFAULT 5222)");
 
 
-        db.execSQL("create table " + Conversation.TABLENAME + " ("
-                + Conversation.UUID + " TEXT PRIMARY KEY, " + Conversation.NAME
-                + " TEXT, " + Conversation.CONTACT + " TEXT, "
-                + Conversation.ACCOUNT + " TEXT, " + Conversation.CONTACTJID
-                + " TEXT, " + Conversation.CREATED + " NUMBER, "
-                + Conversation.STATUS + " NUMBER, " + Conversation.MODE
-                + " NUMBER, " + Conversation.ATTRIBUTES + " TEXT, FOREIGN KEY("
+        db.execSQL("create table "
+                + Conversation.TABLENAME + " ("
+                + Conversation.UUID + " TEXT PRIMARY KEY, "
+                + Conversation.NAME + " TEXT, "
+                + Conversation.CONTACT + " TEXT, "
+                + Conversation.ACCOUNT + " TEXT, "
+                + Conversation.CONTACTJID + " TEXT, "
+                + Conversation.CREATED + " NUMBER, "
+                + Conversation.STATUS + " NUMBER, "
+                + Conversation.MODE + " NUMBER, "
+                + Conversation.ATTRIBUTES + " TEXT, FOREIGN KEY("
                 + Conversation.ACCOUNT + ") REFERENCES " + Account.TABLENAME
                 + "(" + Account.UUID + ") ON DELETE CASCADE);");
+
+
         db.execSQL("create table " + Message.TABLENAME + "( " + Message.UUID
                 + " TEXT PRIMARY KEY, " + Message.CONVERSATION + " TEXT, "
                 + Message.TIME_SENT + " NUMBER, " + Message.COUNTERPART
@@ -294,6 +303,18 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 + Message.CONVERSATION + ") REFERENCES "
                 + Conversation.TABLENAME + "(" + Conversation.UUID
                 + ") ON DELETE CASCADE);");
+
+
+        db.execSQL("CREATE TABLE "
+                + CallLog.TABLENAME + " ("
+                + CallLog.SESSION_ID + " TEXT PRIMARY KEY,"
+                + CallLog.CONTACT_NAME + " TEXT,"
+                + CallLog.CONTACT_JID + " TEXT,"
+                + CallLog.DURATION + " TEXT,"
+                + CallLog.TIME + " TEXT,"
+                + CallLog.STATUS + " TEXT)");
+
+
         db.execSQL(CREATE_MESSAGE_TIME_INDEX);
         db.execSQL(CREATE_MESSAGE_CONVERSATION_INDEX);
         db.execSQL(CREATE_MESSAGE_DELETED_INDEX);
@@ -724,6 +745,11 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         db.insert(Message.TABLENAME, null, message.getContentValues());
     }
 
+    public void createCallLog(CallLog callLog) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.insert(CallLog.TABLENAME, null, callLog.getContentValues());
+    }
+
     public void createAccount(Account account) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(Account.TABLENAME, null, account.getContentValues());
@@ -855,6 +881,18 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         cursor.close();
         return list;
     }
+
+    public Cursor getRTPMessages() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor;
+        String query = "SELECT * FROM " + Message.TABLENAME +
+                " WHERE " + Message.TYPE + " = '" + Message.TYPE_RTP_SESSION + "'" +
+                " ORDER BY " + Message.TIME_SENT + " DESC" +
+                " LIMIT " + String.valueOf(50);
+        cursor = db.rawQuery(query, null);
+        return cursor;
+    }
+
 
     public Cursor getMessageSearchCursor(final List<String> term, final String uuid) {
         final SQLiteDatabase db = this.getReadableDatabase();
@@ -1056,6 +1094,7 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         final int rows = db.update(Account.TABLENAME, account.getContentValues(), Account.UUID + "=?", args);
         return rows == 1;
     }
+
     public boolean updateContact(Contact contact) {
         SQLiteDatabase db = this.getWritableDatabase();
         String[] args = {contact.getJid().asBareJid().toString()};

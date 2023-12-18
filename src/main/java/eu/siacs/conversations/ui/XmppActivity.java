@@ -237,6 +237,11 @@ public abstract class XmppActivity extends ActionBarActivity {
         Intent intent = new Intent(this, XmppConnectionService.class);
         intent.setAction("ui");
         try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(intent);
+            } else {
+                startService(intent);
+            }
             startService(intent);
         } catch (IllegalStateException e) {
             Log.w(Config.LOGTAG, "unable to start service from " + getClass().getSimpleName());

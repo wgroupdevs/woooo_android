@@ -26,7 +26,15 @@ public class ConversationActivity extends AppCompatActivity {
         if (receivedIntent != null) {
             int showCall = receivedIntent.getIntExtra(ConversationsActivity.EXTRA_CIRCLE_MENU_INDEX, -1);
             newIntent.putExtra(ConversationsActivity.EXTRA_CIRCLE_MENU_INDEX, showCall);
-            Log.d("ConActivity_Tag", "SHOW_CALL : " + showCall);
+            String conversationUUID = receivedIntent.getStringExtra(ConversationsActivity.EXTRA_CONVERSATION);
+            if (conversationUUID != null) {
+                newIntent.setAction(ConversationsActivity.ACTION_VIEW_CONVERSATION);
+                newIntent.putExtra(ConversationsActivity.EXTRA_CONVERSATION, conversationUUID);
+            }
+
+            Log.d("Conversation_TAG", "openConversation : " + conversationUUID);
+
+
         }
 
         startActivity(newIntent);

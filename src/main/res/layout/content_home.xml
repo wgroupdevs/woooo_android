@@ -84,8 +84,8 @@
                     android:id="@+id/pieChart"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/_5sdp"
                     android:layout_centerInParent="true"
+                    android:layout_marginTop="@dimen/_5sdp"
 
                     />
 
@@ -223,6 +223,7 @@
         <!--    REMAINING CALLS,CHAT,MEETING,-->
 
         <LinearLayout
+            android:id="@+id/remaining_items_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_5sdp"
@@ -253,6 +254,8 @@
 
 
         </LinearLayout>
+
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

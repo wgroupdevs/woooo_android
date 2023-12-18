@@ -804,9 +804,6 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     }
 
     private void sendMessage() {
-        Log.d(TAG, "TRANSLATION STATUS .... : " + translation);
-        Log.d(TAG, "REPLY STATUS .... : " + reply);
-        Log.d(TAG, "REPLY STATUS .... : " + conversation.getNextEncryption());
         if (mediaPreviewAdapter.hasAttachments()) {
             commitAttachments();
             return;
@@ -1162,7 +1159,9 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         binding.messagesView.setTranscriptMode(ListView.TRANSCRIPT_MODE_NORMAL);
         mediaPreviewAdapter = new MediaPreviewAdapter(this);
         binding.mediaPreview.setAdapter(mediaPreviewAdapter);
+
         messageListAdapter = new MessageAdapter((XmppActivity) getActivity(), this.messageList);
+
         messageListAdapter.setOnContactPictureClicked(this);
         messageListAdapter.setOnContactPictureLongClicked(this);
         messageListAdapter.setOnParentMessageClicked(this);

@@ -9,8 +9,7 @@
         <FrameLayout
             android:id="@+id/frame"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/color_background_primary">
+            android:layout_height="wrap_content">
 
             <RelativeLayout
                 android:layout_width="fill_parent"
@@ -28,6 +27,7 @@
                     app:riv_corner_radius="8dp" />
 
                 <RelativeLayout
+                    android:id="@+id/conversation_info_layout"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -127,7 +127,7 @@
                             android:layout_marginBottom="1dp"
                             android:visibility="gone"
                             android:layout_alignParentRight="true"
-                            app:backgroundColor="?attr/unread_count" />
+                            app:backgroundColor="@color/blue_primary300" />
 
                     </RelativeLayout>
 
@@ -140,7 +140,22 @@
                         android:gravity="right"
                         android:textAppearance="@style/TextAppearance.Conversations.Caption" />
                 </RelativeLayout>
+
+
+                <ImageView
+                    android:id="@+id/divider_ic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:visibility="gone"
+                    android:layout_below="@id/conversation_info_layout"
+                    android:src="@drawable/divider_ic" />
+
+
+
             </RelativeLayout>
+
         </FrameLayout>
+
     </FrameLayout>
 </layout>

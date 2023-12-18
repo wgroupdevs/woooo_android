@@ -2,9 +2,9 @@
     <item
         android:id="@+id/edit_profile_update_photo"
         android:title="Update photo" />
-    <item
-        android:id="@+id/edit_profile_disable_account"
-        android:title="Disable account" />
+<!--    <item-->
+<!--        android:id="@+id/edit_profile_disable_account"-->
+<!--        android:title="Disable account" />-->
 
     <item
         android:id="@+id/edit_profile_delete_account"

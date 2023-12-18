@@ -118,6 +118,7 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
     public static final String EXTRA_DOWNLOAD_UUID = "eu.siacs.conversations.download_uuid";
     public static final String EXTRA_AS_QUOTE = "eu.siacs.conversations.as_quote";
     public static final String EXTRA_CIRCLE_MENU_INDEX = "circle_menu_value";
+    public static final String EXTRA_OPEN_CONVERSATION = "open_conversation_value";
     public static final String EXTRA_NICK = "nick";
     public static final String EXTRA_IS_PRIVATE_MESSAGE = "pm";
     public static final String EXTRA_DO_NOT_APPEND = "do_not_append";

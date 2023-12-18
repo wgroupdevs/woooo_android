@@ -20,6 +20,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.ContentObserver;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
@@ -137,6 +138,7 @@ import eu.siacs.conversations.ui.interfaces.OnSearchResultsAvailable;
 import eu.siacs.conversations.utils.Compatibility;
 import eu.siacs.conversations.utils.ConversationsFileObserver;
 import eu.siacs.conversations.utils.CryptoHelper;
+import eu.siacs.conversations.utils.CursorUtils;
 import eu.siacs.conversations.utils.EasyOnboardingInvite;
 import eu.siacs.conversations.utils.ExceptionHelper;
 import eu.siacs.conversations.utils.MimeUtils;
@@ -656,11 +658,11 @@ public class XmppConnectionService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         final String action = intent == null ? null : intent.getAction();
-        final boolean needsForegroundService = intent != null && intent.getBooleanExtra(EventReceiver.EXTRA_NEEDS_FOREGROUND_SERVICE, false);
-        if (needsForegroundService) {
-            Log.d(Config.LOGTAG, "toggle forced foreground service after receiving event (action=" + action + ")");
-            toggleForegroundService(true);
-        }
+//        final boolean needsForegroundService = intent != null && intent.getBooleanExtra(EventReceiver.EXTRA_NEEDS_FOREGROUND_SERVICE, false);
+//        if (needsForegroundService) {
+//            Log.d(Config.LOGTAG, "toggle forced foreground service after receiving event (action=" + action + ")");
+//            toggleForegroundService(true);
+//        }
         String pushedAccountHash = null;
         boolean interactive = false;
         if (action != null) {
@@ -731,6 +733,7 @@ public class XmppConnectionService extends Service {
                     break;
                 case ACTION_END_CALL: {
                     final String sessionId = intent.getStringExtra(RtpSessionActivity.EXTRA_SESSION_ID);
+                    mNotificationService.cancel(NotificationService.ONGOING_CALL_NOTIFICATION_ID);
                     Log.d(Config.LOGTAG, "received intent to end call with session id " + sessionId);
                     mJingleConnectionManager.endRtpSession(sessionId);
                 }
@@ -1213,7 +1216,7 @@ public class XmppConnectionService extends Service {
         mChannelDiscoveryService.initializeMuclumbusService();
         wooooAuthService = WooAPIService.getInstance();
         mForceDuringOnCreate.set(Compatibility.runsAndTargetsTwentySix(this));
-        toggleForegroundService();
+//        toggleForegroundService();
         this.destroyed = false;
         OmemoSetting.load(this);
         ExceptionHelper.init(getApplicationContext());
@@ -1284,7 +1287,7 @@ public class XmppConnectionService extends Service {
         final PowerManager pm = ContextCompat.getSystemService(this, PowerManager.class);
         this.wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Conversations:Service");
 
-        toggleForegroundService();
+//        toggleForegroundService();
         updateUnreadCountBadge();
         toggleScreenEventReceiver();
         final IntentFilter intentFilter = new IntentFilter();
@@ -1298,7 +1301,7 @@ public class XmppConnectionService extends Service {
         }
         registerReceiver(this.mInternalEventReceiver, intentFilter);
         mForceDuringOnCreate.set(false);
-        toggleForegroundService();
+//        toggleForegroundService();
         setupPhoneStateListener();
     }
 
@@ -1407,6 +1410,7 @@ public class XmppConnectionService extends Service {
     }
 
     public void removeOngoingCall() {
+        Log.d(TAG, "removeOngoingCall...called");
         ongoingCall.set(null);
         toggleForegroundService(false);
     }
@@ -1414,25 +1418,26 @@ public class XmppConnectionService extends Service {
     private void toggleForegroundService(boolean force) {
         final boolean status;
         final OngoingCall ongoing = ongoingCall.get();
-        if (force || mForceDuringOnCreate.get() || mForceForegroundService.get() || ongoing != null || (Compatibility.keepForegroundService(this) && hasEnabledAccounts())) {
+        if (force || ongoing != null) {
+
             final Notification notification;
             final int id;
             if (ongoing != null) {
                 notification = this.mNotificationService.getOngoingCallNotification(ongoing);
                 id = NotificationService.ONGOING_CALL_NOTIFICATION_ID;
                 startForeground(id, notification);
-                mNotificationService.cancel(NotificationService.FOREGROUND_NOTIFICATION_ID);
+                Log.d(TAG, "toggleForegroundService... zstartForeground...called");
             } else {
 
-                //foreground Service notification
-                notification = this.mNotificationService.createForegroundNotification();
-                id = NotificationService.FOREGROUND_NOTIFICATION_ID;
-                startForeground(id, notification);
+//                foreground Service notification
+//                notification = this.mNotificationService.createForegroundNotification();
+//                id = NotificationService.FOREGROUND_NOTIFICATION_ID;
+//                startForeground(id, notification);
             }
 
-            if (!mForceForegroundService.get()) {
-                mNotificationService.notify(id, notification);
-            }
+//            if (!mForceForegroundService.get()) {
+//                mNotificationService.notify(id, notification);
+//            }
             status = true;
         } else {
             stopForeground(true);
@@ -1581,13 +1586,6 @@ public class XmppConnectionService extends Service {
         final Account account = message.getConversation().getAccount();
 
         final Contact receiverContact = message.getContact();
-
-        if (receiverContact != null) {
-
-            Log.d(TAG, "CONTACT_INFO : " + receiverContact.getJid().asBareJid());
-            Log.d(TAG, "CONTACT_INFO : " + receiverContact.getEmail());
-
-        }
 
 
         if (account.setShowErrorNotification(true)) {
@@ -2060,6 +2058,7 @@ public class XmppConnectionService extends Service {
                 updateConversationUi();
             };
             mDatabaseReaderExecutor.execute(runnable); //will contain one write command (expiry) but that's fine
+//            getRTPMessages();
         }
     }
 
@@ -2427,7 +2426,7 @@ public class XmppConnectionService extends Service {
         this.reconnectAccountInBackground(account);
         updateAccountUi();
         syncEnabledAccountSetting();
-        toggleForegroundService();
+//        toggleForegroundService();
     }
 
     public void updateContact(Contact contact) {
@@ -2548,7 +2547,7 @@ public class XmppConnectionService extends Service {
             reconnectAccountInBackground(account);
             updateAccountUi();
             getNotificationService().updateErrorNotification();
-            toggleForegroundService();
+//            toggleForegroundService();
             syncEnabledAccountSetting();
             mChannelDiscoveryService.cleanCache();
             return true;
@@ -2616,7 +2615,7 @@ public class XmppConnectionService extends Service {
             updateAccountUi();
             mNotificationService.updateErrorNotification();
             syncEnabledAccountSetting();
-            toggleForegroundService();
+//            toggleForegroundService();
         }
     }
 
@@ -4406,6 +4405,28 @@ public class XmppConnectionService extends Service {
             }
         }
         return null;
+    }
+
+    public void getRTPMessages(final List<Message> list) {
+        list.clear();
+        Cursor cursor = databaseBackend.getRTPMessages();
+        CursorUtils.upgradeCursorWindowSize(cursor);
+        while (cursor.moveToNext()) {
+            try {
+                String uuid = cursor.getString(cursor.getColumnIndex(Message.CONVERSATION));
+                if (uuid != null) {
+                    Conversation c = findConversationByUuid(uuid);
+                    if (c != null) {
+                        Message m = Message.fromCursor(cursor, c);
+                        list.add(m);
+                    }
+                }
+            } catch (Exception e) {
+                Log.e(Config.LOGTAG, "unable to restore RTPmessage");
+            }
+        }
+        cursor.close();
+
     }
 
 

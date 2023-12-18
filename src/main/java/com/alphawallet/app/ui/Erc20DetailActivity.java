@@ -37,6 +37,7 @@ import com.alphawallet.app.entity.tokens.Token;
 import com.alphawallet.app.entity.tokens.TokenCardMeta;
 import com.alphawallet.app.repository.EthereumNetworkBase;
 import com.alphawallet.app.repository.entity.RealmToken;
+import com.alphawallet.app.router.SwapRouter;
 import com.alphawallet.app.ui.widget.adapter.ActivityAdapter;
 import com.alphawallet.app.ui.widget.adapter.TabPagerAdapter;
 import com.alphawallet.app.ui.widget.adapter.TokensAdapter;
@@ -473,7 +474,7 @@ public class Erc20DetailActivity extends BaseActivity implements StandardFunctio
         else if (actionId == R.string.swap)
         {
             //openDapp(formatOneInchCall(token));
-            new eu.siacs.conversations.Router.SwapRouter().open(this, token, wallet);
+            new SwapRouter().open(this, token, wallet);
         }
     }
 
