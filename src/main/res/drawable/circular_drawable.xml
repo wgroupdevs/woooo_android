@@ -1,0 +1,13 @@
+<!-- res/drawable/circular_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <!-- Solid color for the background -->
+    <solid android:color="@color/blue_primary300" />
+
+    <!-- Border color and width -->
+    <stroke
+        android:color="@color/white70"
+        android:width="2dp" />
+
+</shape>

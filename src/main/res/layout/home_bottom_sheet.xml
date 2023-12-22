@@ -185,6 +185,14 @@
                     android:layout_marginTop="@dimen/_10sdp"
                     android:src="@drawable/divider_ic" />
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/home_bottom_sheet_meetings_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
+
 
             </LinearLayout>
 
@@ -226,8 +234,16 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_7sdp"
                     android:src="@drawable/divider_ic" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/home_bottom_sheet_wallet_activity_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/_3sdp"
+                    android:orientation="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
 
 
             </LinearLayout>

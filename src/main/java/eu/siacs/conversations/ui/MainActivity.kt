@@ -3,21 +3,13 @@ package eu.siacs.conversations.ui
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
-import com.alphawallet.app.entity.Wallet
-import com.alphawallet.app.interact.FetchWalletsInteract
-import com.alphawallet.app.viewmodel.CreateWalletViewModel
-import com.alphawallet.app.viewmodel.WalletConnectViewModel
-import com.alphawallet.app.viewmodel.WalletHomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import eu.siacs.conversations.entities.Account
 import eu.siacs.conversations.http.services.WooAPIService
 import eu.siacs.conversations.persistance.WOOPrefManager
 import eu.siacs.conversations.services.XmppConnectionService.OnAccountUpdate
-import io.reactivex.SingleObserver
-import io.reactivex.annotations.NonNull
-import io.reactivex.disposables.Disposable
+import eu.siacs.conversations.ui.meeting.ScheduleMeetingViewModel
 import javax.inject.Inject
 
 
@@ -64,6 +56,9 @@ class MainActivity : XmppActivity(), OnAccountUpdate {
 
                 mAccount?.let {
                     account = mAccount!!
+                    scheduleMeetingViewModel =
+                        ViewModelProvider(this)[ScheduleMeetingViewModel::class.java]
+
                 }
 
                 val homeIntent = Intent(this@MainActivity, WooHomeActivity::class.java)
@@ -84,8 +79,9 @@ class MainActivity : XmppActivity(), OnAccountUpdate {
 
     companion object {
         var account: Account? = null
-    }
+        lateinit var scheduleMeetingViewModel: ScheduleMeetingViewModel
 
+    }
 
 
 }

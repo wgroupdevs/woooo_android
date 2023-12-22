@@ -40,7 +40,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
- * Created by JB on 26/06/2020.
+ * Created by Ehsan on 26/11/2023.
  */
 @AndroidEntryPoint
 public class ActivityFragment extends BaseFragment implements View.OnClickListener, ActivityDataInteract

@@ -22,6 +22,7 @@ import java.util.List;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.databinding.FragmentCallLogsBinding;
 import eu.siacs.conversations.entities.Account;
+import eu.siacs.conversations.entities.CallLog;
 import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.Message;
@@ -40,7 +41,7 @@ public class CallLogsFragment extends XmppFragment implements CallLogAdapter.OnA
     private FragmentCallLogsBinding binding;
     private CallLogAdapter callLogAdapter;
     private String TAG = "LogsFragment_TAG";
-    private List<Message> messageList = new ArrayList<>();
+    private List<CallLog> callLogs = new ArrayList<>();
 
 
     @Override
@@ -104,8 +105,8 @@ public class CallLogsFragment extends XmppFragment implements CallLogAdapter.OnA
     }
 
     private void populateRecyclerView() {
-        this.activity.xmppConnectionService.getRTPMessages(this.messageList);
-        callLogAdapter = new CallLogAdapter((XmppActivity) getActivity(), this.messageList,false);
+        this.activity.xmppConnectionService.getRTPMessages(this.callLogs);
+        callLogAdapter = new CallLogAdapter((XmppActivity) getActivity(), this.callLogs, false);
         callLogAdapter.setAudioClickListener(this);
         callLogAdapter.setOnVideoClickListener(this);
         callLogAdapter.setOnChatClickListener(this);
@@ -185,6 +186,8 @@ public class CallLogsFragment extends XmppFragment implements CallLogAdapter.OnA
 
     @Override
     public void onChatClick(Message message) {
+        Log.d(TAG, "CALL-LOG-FRAGMENT : onChatClick...");
+
         if (activity instanceof OnConversationSelected) {
             Conversation conversation = (Conversation) message.getConversation();
             ((OnConversationSelected) activity).onConversationSelected(conversation);
@@ -196,7 +199,14 @@ public class CallLogsFragment extends XmppFragment implements CallLogAdapter.OnA
 
     @Override
     public void onInfoClick(Message message) {
+
         Conversation conversation = (Conversation) message.getConversation();
-        activity.switchToContactDetails(conversation.getContact());
+
+        Intent intent = new Intent(getActivity(), CallLogsDetailActivity.class);
+        intent.putExtra(CallLogsDetailActivity.EXTRA_CONVERSATION, conversation.getUuid());
+        startActivity(intent);
+
+
+//        activity.switchToContactDetails(conversation.getContact());
     }
 }

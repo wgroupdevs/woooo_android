@@ -39,6 +39,7 @@ public final class WDirector {
     private RoomData roomData;
     private boolean chatTranslationEnabled = false;
     private String meetingId;
+    private String meetingBaseURL = "https://cc.watchblock.net/meeting/";
 
     private WDirector() {
         this.videoStateMap.clear();
@@ -57,7 +58,6 @@ public final class WDirector {
     }
 
     /**
-     *
      * @param pId
      * @param videoOn
      */
@@ -66,7 +66,6 @@ public final class WDirector {
     }
 
     /**
-     *
      * @param pId
      * @return
      */
@@ -78,7 +77,6 @@ public final class WDirector {
     }
 
     /**
-     *
      * @param asset
      * @param filename
      * @return
@@ -112,15 +110,17 @@ public final class WDirector {
     }
 
     /**
-     *
      * @return
      */
     public String getMeetingId() {
         return this.meetingId;
     }
 
+    public String getMeetingURL(String meetingId) {
+        return this.meetingBaseURL + meetingId;
+    }
+
     /**
-     *
      * @return
      */
     @Nullable
@@ -129,7 +129,6 @@ public final class WDirector {
     }
 
     /**
-     *
      * @param roomData
      */
     public void setRoomData(RoomData roomData) {
@@ -137,27 +136,25 @@ public final class WDirector {
     }
 
     /**
-     *
      * @param client
      * @param accountUniqueId
      */
     public void updateRole(@NonNull MeetingClient client, @NonNull String accountUniqueId) {
-       if (this.roomData != null) {
-           List<RoomData.Admin> admins = roomData.getAdmins();
-           if (admins != null) {
-               for (RoomData.Admin admin : roomData.getAdmins()) {
-                   if (admin.getAccountUniqueId().equals(accountUniqueId)) {
-                       client.setRole(MeetingClient.Role.ADMIN);
-                       WEvents.getInstance().notify(WEvents.EVENT_PEER_ADAPTER_NOTIFY, true);
-                       break;
-                   }
-               }
-           }
-       }
+        if (this.roomData != null) {
+            List<RoomData.Admin> admins = roomData.getAdmins();
+            if (admins != null) {
+                for (RoomData.Admin admin : roomData.getAdmins()) {
+                    if (admin.getAccountUniqueId().equals(accountUniqueId)) {
+                        client.setRole(MeetingClient.Role.ADMIN);
+                        WEvents.getInstance().notify(WEvents.EVENT_PEER_ADAPTER_NOTIFY, true);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     /**
-     *
      * @param peerList
      * @return
      */
@@ -236,7 +233,6 @@ public final class WDirector {
     }
 
     /**
-     *
      * @return
      */
     public boolean isChatTranslationEnabled() {
@@ -244,7 +240,6 @@ public final class WDirector {
     }
 
     /**
-     *
      * @param chatTranslationEnabled
      */
     public void setChatTranslationEnabled(boolean chatTranslationEnabled) {
@@ -258,7 +253,6 @@ public final class WDirector {
     }
 
     /**
-     *
      * @return
      */
     public static WDirector getInstance() {
@@ -270,4 +264,6 @@ public final class WDirector {
         }
     }
 
-} /** end class. */
+} /**
+ * end class.
+ */

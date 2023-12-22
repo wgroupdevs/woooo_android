@@ -44,7 +44,6 @@ import eu.siacs.conversations.crypto.axolotl.AxolotlService;
 import eu.siacs.conversations.crypto.axolotl.FingerprintStatus;
 import eu.siacs.conversations.crypto.axolotl.SQLiteAxolotlStore;
 import eu.siacs.conversations.entities.Account;
-import eu.siacs.conversations.entities.CallLog;
 import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.Message;
@@ -53,7 +52,6 @@ import eu.siacs.conversations.entities.Roster;
 import eu.siacs.conversations.entities.ServiceDiscoveryResult;
 import eu.siacs.conversations.services.QuickConversationsService;
 import eu.siacs.conversations.services.ShortcutService;
-import eu.siacs.conversations.services.XmppConnectionService;
 import eu.siacs.conversations.utils.CryptoHelper;
 import eu.siacs.conversations.utils.CursorUtils;
 import eu.siacs.conversations.utils.FtsUtils;
@@ -303,16 +301,6 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 + Message.CONVERSATION + ") REFERENCES "
                 + Conversation.TABLENAME + "(" + Conversation.UUID
                 + ") ON DELETE CASCADE);");
-
-
-        db.execSQL("CREATE TABLE "
-                + CallLog.TABLENAME + " ("
-                + CallLog.SESSION_ID + " TEXT PRIMARY KEY,"
-                + CallLog.CONTACT_NAME + " TEXT,"
-                + CallLog.CONTACT_JID + " TEXT,"
-                + CallLog.DURATION + " TEXT,"
-                + CallLog.TIME + " TEXT,"
-                + CallLog.STATUS + " TEXT)");
 
 
         db.execSQL(CREATE_MESSAGE_TIME_INDEX);
@@ -745,10 +733,6 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         db.insert(Message.TABLENAME, null, message.getContentValues());
     }
 
-    public void createCallLog(CallLog callLog) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.insert(CallLog.TABLENAME, null, callLog.getContentValues());
-    }
 
     public void createAccount(Account account) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -889,6 +873,17 @@ public class DatabaseBackend extends SQLiteOpenHelper {
                 " WHERE " + Message.TYPE + " = '" + Message.TYPE_RTP_SESSION + "'" +
                 " ORDER BY " + Message.TIME_SENT + " DESC" +
                 " LIMIT " + String.valueOf(50);
+        cursor = db.rawQuery(query, null);
+        return cursor;
+    }
+
+    public Cursor getRTPMessageCount(String uuid) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor;
+        String query = "SELECT * FROM " + Message.TABLENAME +
+                " WHERE " + Message.TYPE + " = '" + Message.TYPE_RTP_SESSION + "'" +
+                " AND " + Message.CONVERSATION + " = '" + uuid + "'" +
+                " ORDER BY " + Message.TIME_SENT + " DESC";
         cursor = db.rawQuery(query, null);
         return cursor;
     }

@@ -7,17 +7,28 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.alphawallet.app.entity.ActivityMeta
+import com.alphawallet.app.entity.TransactionMeta
+import com.alphawallet.app.entity.Wallet
+import com.alphawallet.app.interact.ActivityDataInteract
+import com.alphawallet.app.repository.entity.RealmTransaction
+import com.alphawallet.app.repository.entity.RealmTransfer
 import com.alphawallet.app.ui.WalletHomeActivity
+import com.alphawallet.app.ui.widget.adapter.ActivityAdapter
+import com.alphawallet.app.ui.widget.entity.TokenTransferData
+import com.alphawallet.app.viewmodel.ActivityViewModel
 import com.alphawallet.app.viewmodel.CreateWalletViewModel
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
@@ -25,25 +36,41 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.woooapp.meeting.impl.utils.WDirector
+import com.woooapp.meeting.impl.views.MeetingActivity
 import dagger.hilt.android.AndroidEntryPoint
 import eu.siacs.conversations.Config
 import eu.siacs.conversations.R
 import eu.siacs.conversations.databinding.ActivityHomeBinding
 import eu.siacs.conversations.entities.Account
+import eu.siacs.conversations.entities.CallLog
 import eu.siacs.conversations.entities.Conversation
 import eu.siacs.conversations.entities.Message
+import eu.siacs.conversations.http.model.meeting.ScheduleMeetingModel
 import eu.siacs.conversations.services.XmppConnectionService
 import eu.siacs.conversations.services.XmppConnectionService.OnConversationUpdate
 import eu.siacs.conversations.ui.adapter.CallLogAdapter
+import eu.siacs.conversations.ui.adapter.CallLogAdapter.OnAudioClickListener
+import eu.siacs.conversations.ui.adapter.CallLogAdapter.OnChatClickListener
+import eu.siacs.conversations.ui.adapter.CallLogAdapter.OnInfoClickListener
+import eu.siacs.conversations.ui.adapter.CallLogAdapter.OnVideoClickListener
 import eu.siacs.conversations.ui.adapter.ConversationAdapter
-import eu.siacs.conversations.ui.interfaces.OnConversationSelected
+import eu.siacs.conversations.ui.adapter.ScheduledMeetingAdapter
 import eu.siacs.conversations.ui.util.AvatarWorkerTask
+import eu.siacs.conversations.ui.util.PresenceSelector
+import eu.siacs.conversations.xml.Namespace
+import eu.siacs.conversations.xmpp.Jid
+import eu.siacs.conversations.xmpp.jingle.RtpCapability
+import io.realm.Realm
+import io.realm.RealmChangeListener
+import io.realm.RealmResults
 import java.util.Arrays
 
 
 @AndroidEntryPoint
 class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
-    OnConversationSelected, OnConversationUpdate {
+    OnConversationUpdate, OnAudioClickListener, OnVideoClickListener, OnChatClickListener,
+    OnInfoClickListener, View.OnClickListener, ActivityDataInteract,
+    ScheduledMeetingAdapter.OnStartMeetingClickListener {
 
     private lateinit var homeBinding: ActivityHomeBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<ConstraintLayout>
@@ -53,15 +80,28 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
 
     private var conversationsAdapter: ConversationAdapter? = null
     private var callLogAdapter: CallLogAdapter? = null
+    private var meetingAdapter: ScheduledMeetingAdapter? = null
+
     private var conversations: List<Conversation> = java.util.ArrayList();
-    private var callLogs: List<Message> = java.util.ArrayList();
+    private var callLogs: List<CallLog> = java.util.ArrayList();
 
     private lateinit var chatRecyclerView: RecyclerView
     private lateinit var callLogsRecyclerView: RecyclerView
+    private lateinit var meetingRecyclerView: RecyclerView
+    private lateinit var walletActivityRecyclerView: RecyclerView
 
+    private var walletActivityViewModel: ActivityViewModel? = null
+
+    private var walletActivityAdapter: ActivityAdapter? = null
+    private var realm: Realm? = null
+    private var lastUpdateTime: Long = 0
+    private val isVisible = false
+    private var checkTimer = false
+    private var realmUpdates: RealmResults<RealmTransaction>? = null
 
     companion object {
         var mAccount: Account? = null
+        val TAG = "HomeActivity_TAG"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,18 +116,23 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
         chatRecyclerView = homeBinding.appBarHome.homeBottomSheet.homeBottomSheetChatRecyclerView
         callLogsRecyclerView =
             homeBinding.appBarHome.homeBottomSheet.homeBottomSheetCallLogsRecyclerView
+        walletActivityRecyclerView =
+            homeBinding.appBarHome.homeBottomSheet.homeBottomSheetWalletActivityRecyclerView
 
-//        crashChecker = CrashChecker(this)
-//        crashChecker?.checkForCrash()
+        meetingRecyclerView =
+            homeBinding.appBarHome.homeBottomSheet.homeBottomSheetMeetingsRecyclerView
+
+
 
         WDirector.getInstance().generateMeetingId()
-
         homeBinding.appBarHome.toolbar.toolbarProfilePhoto.setOnClickListener {
             homeBinding.drawerLayout.open()
         }
 
         bottomSheetBehavior =
             BottomSheetBehavior.from(homeBinding.appBarHome.homeBottomSheet.bottomSheet)
+        initWalletActivityViewModel()
+
         initBottomSheet()
 
         populatePIChart()
@@ -101,15 +146,172 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
 //    }
 
 
+    private fun initWalletActivityViewModel() {
+
+        // Initialize ViewModel
+        if (walletActivityViewModel == null) {
+            walletActivityViewModel = ViewModelProvider(this)[ActivityViewModel::class.java]
+            walletActivityViewModel?.defaultWallet()?.observe(
+                this
+            ) { wallet: Wallet? ->
+                if (wallet != null) {
+                    this.onDefaultWallet(
+                        wallet
+                    )
+                }
+            }
+            walletActivityViewModel?.activityItems()?.observe(
+                this
+            ) { activityItems: Array<ActivityMeta> ->
+                this.onItemsLoaded(activityItems)
+            }
+        }
+    }
+
+    private fun onItemsLoaded(activityItems: Array<ActivityMeta>) {
+        walletActivityViewModel?.getRealmInstance().use { realm ->
+            walletActivityAdapter?.updateActivityItems(
+                buildTransactionList(
+                    realm!!,
+                    activityItems
+                ).toTypedArray<ActivityMeta>()
+            )
+//            showEmptyTx()
+            for (am in activityItems) {
+                if (am is TransactionMeta && am.getTimeStampSeconds() > lastUpdateTime) lastUpdateTime =
+                    am.getTimeStampSeconds() - 60
+            }
+        }
+        if (isVisible) startTxListener()
+    }
+
+    private fun startTxListener() {
+
+        walletActivityViewModel?.let {
+
+            if (walletActivityViewModel!!.defaultWallet().getValue() == null) return
+            if (realm == null || realm!!.isClosed) realm =
+                walletActivityViewModel!!.getRealmInstance()
+            if (realmUpdates != null) realmUpdates!!.removeAllChangeListeners()
+            if (walletActivityViewModel == null || walletActivityViewModel!!.defaultWallet()
+                    .getValue() == null || TextUtils.isEmpty(
+                    walletActivityViewModel!!.defaultWallet().getValue()?.address
+                )
+            ) return
+            realmUpdates =
+                realm!!.where(RealmTransaction::class.java).greaterThan("timeStamp", lastUpdateTime)
+                    .findAllAsync()
+
+            realmUpdates?.addChangeListener(RealmChangeListener<RealmResults<RealmTransaction>> { realmTransactions: RealmResults<RealmTransaction> ->
+                val metas: MutableList<TransactionMeta> = ArrayList()
+                //make list
+                if (realmTransactions.size == 0) return@RealmChangeListener
+                for (item in realmTransactions) {
+                    if (walletActivityViewModel!!.getTokensService().getNetworkFilters()
+                            .contains(item.chainId)
+                    ) {
+                        val newMeta = TransactionMeta(
+                            item.hash,
+                            item.timeStamp,
+                            item.to,
+                            item.chainId,
+                            item.blockNumber
+                        )
+                        metas.add(newMeta)
+                        lastUpdateTime = newMeta.timeStampSeconds + 1
+                    }
+                }
+                if (metas.size > 0) {
+                    val metaArray = metas.toTypedArray<TransactionMeta>()
+                    walletActivityAdapter?.updateActivityItems(
+                        buildTransactionList(
+                            realm!!,
+                            metaArray as Array<ActivityMeta>
+                        ).toTypedArray<ActivityMeta>()
+                    )
+//                    systemView.hide()
+                }
+            })
+
+        }
+
+    }
+
+    private fun buildTransactionList(
+        realm: Realm,
+        activityItems: Array<ActivityMeta>
+    ): List<ActivityMeta> {
+        //selectively filter the items with the following rules:
+        // - allow through all normal transactions with no token transfer consequences
+        // - for any transaction with token transfers; if there's only one token transfer, only show the transfer
+        // - for any transaction with more than one token transfer, show the transaction and show the child transfer consequences
+        val filteredList: MutableList<ActivityMeta> = ArrayList()
+        for (am in activityItems) {
+            if (am is TransactionMeta) {
+                val tokenTransfers: List<TokenTransferData> = getTokenTransfersForHash(
+                    realm,
+                    am
+                )
+                if (tokenTransfers.size != 1) {
+                    filteredList.add(am)
+                } //only 1 token transfer ? No need to show the underlying transaction
+                filteredList.addAll(tokenTransfers)
+            }
+        }
+        return filteredList
+    }
+
+    private fun getTokenTransfersForHash(
+        realm: Realm,
+        tm: TransactionMeta
+    ): List<TokenTransferData> {
+        val transferData: MutableList<TokenTransferData> = ArrayList()
+        //summon realm items
+        //get matching entries for this transaction
+        val transfers = realm.where(RealmTransfer::class.java)
+            .equalTo("hash", RealmTransfer.databaseKey(tm.chainId, tm.hash))
+            .findAll()
+        if (transfers != null && transfers.size > 0) {
+            //list of transfers, descending in time to give ordered list
+            var nextTransferTime =
+                if (transfers.size == 1) tm.timeStamp else tm.timeStamp - 1 // if there's only 1 transfer, keep the transaction timestamp
+            for (rt in transfers) {
+                val ttd = TokenTransferData(
+                    rt.hash, tm.chainId,
+                    rt.tokenAddress, rt.eventName, rt.transferDetail, nextTransferTime
+                )
+                transferData.add(ttd)
+                nextTransferTime--
+            }
+        }
+        return transferData
+    }
+
+
+    private fun onDefaultWallet(wallet: Wallet) {
+        walletActivityAdapter?.setDefaultWallet(wallet)
+    }
+
+
     override fun onResume() {
         super.onResume()
         checkPermission();
+        if (walletActivityViewModel == null) {
+            this.recreate()
+        } else {
+            walletActivityViewModel?.prepare()
+        }
+
+        checkTimer = true
     }
 
     private fun initBottomSheet() {
 
         initConversationsView()
         initCallLogsView()
+        initMeetingView()
+        initWalletActivityView()
+
 
         bottomSheetBehavior.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
@@ -136,18 +338,48 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
         })
     }
 
+
     private fun initConversationsView() {
-        conversationsAdapter = ConversationAdapter(this, conversations,true)
+        conversationsAdapter = ConversationAdapter(this, conversations, true)
         chatRecyclerView.adapter = conversationsAdapter;
         conversationsAdapter?.setConversationClickListener { view: View?, conversation: Conversation ->
-            val newIntent = Intent(this@WooHomeActivity, ConversationActivity::class.java);
-            newIntent.putExtra(ConversationsActivity.EXTRA_CONVERSATION, conversation.uuid)
-            startActivity(newIntent)
+            goToContactChat(conversation.uuid)
+
         }
+    }
+
+    private fun initWalletActivityView() {
+        walletActivityAdapter = ActivityAdapter(
+            walletActivityViewModel?.tokensService,
+            walletActivityViewModel?.provideTransactionsInteract(),
+            walletActivityViewModel?.assetDefinitionService,
+            this
+        )
+
+        walletActivityRecyclerView.adapter = walletActivityAdapter
+    }
+
+    private fun initMeetingView() {
+        MainActivity.account?.accountId?.let {
+            MainActivity.scheduleMeetingViewModel.getScheduledNewMeetings(
+                it
+            )
+        }
+        meetingAdapter = ScheduledMeetingAdapter(this, emptyList())
+        meetingAdapter?.setOnStartMeetingClickListener(this)
+        MainActivity.scheduleMeetingViewModel.getScheduledMeetings().observe(this) { meetings ->
+            Log.d(TAG, "Scheduled Meetings Count : ${meetings.size}")
+            meetingAdapter?.updateList(meetings)
+        }
+        meetingRecyclerView.adapter = meetingAdapter
     }
 
     private fun initCallLogsView() {
         this.callLogAdapter = CallLogAdapter(this, this.callLogs, true)
+        callLogAdapter!!.setAudioClickListener(this)
+        callLogAdapter!!.setOnVideoClickListener(this)
+        callLogAdapter!!.setOnChatClickListener(this)
+        callLogAdapter!!.setOnInfoClickListener(this)
         this.callLogsRecyclerView.adapter = this.callLogAdapter
     }
 
@@ -311,7 +543,6 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
         homeBinding.appBarHome.middleWheelLayout.layoutParams.width = (0.7 * width).toInt()
         homeBinding.appBarHome.innerWheel.layoutParams.height = (0.33 * width).toInt()
         homeBinding.appBarHome.innerWheel.layoutParams.width = (0.33 * width).toInt()
-
         homeBinding.appBarHome.meetingIv.setOnClickListener {
             rotateOuterCircle(false, 1)
             circleIndex = 0
@@ -461,9 +692,6 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
         }
     }
 
-    override fun onConversationSelected(conversation: Conversation?) {
-        TODO("Not yet implemented")
-    }
 
     override fun onConversationUpdate() {
         runOnUiThread {
@@ -472,6 +700,95 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
         }
     }
 
+
+    private fun triggerRtpSession(conversation: Conversation, action: String) {
+        if (this.xmppConnectionService.getJingleConnectionManager().isBusy()) {
+            Toast.makeText(this, R.string.only_one_call_at_a_time, Toast.LENGTH_LONG)
+                .show()
+            return
+        }
+        val contact = conversation.contact
+        if (contact.presences.anySupport(Namespace.JINGLE_MESSAGE)) {
+            triggerRtpSession(contact.account, contact.jid.asBareJid(), action)
+        } else {
+            val capability: RtpCapability.Capability
+            capability = if (action == RtpSessionActivity.ACTION_MAKE_VIDEO_CALL) {
+                RtpCapability.Capability.VIDEO
+            } else {
+                RtpCapability.Capability.AUDIO
+            }
+            PresenceSelector.selectFullJidForDirectRtpConnection(
+                this, contact, capability
+            ) { fullJid: Jid ->
+                triggerRtpSession(
+                    contact.account,
+                    fullJid,
+                    action
+                )
+            }
+        }
+    }
+
+    private fun triggerRtpSession(account: Account, with: Jid, action: String) {
+        val intent = Intent(this, RtpSessionActivity::class.java)
+        intent.setAction(action)
+        intent.putExtra(EXTRA_ACCOUNT, account.jid.toEscapedString())
+        intent.putExtra(RtpSessionActivity.EXTRA_WITH, with.toEscapedString())
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+        startActivity(intent)
+    }
+
+    private fun goToContactChat(uuid: String) {
+        val newIntent = Intent(this@WooHomeActivity, ConversationActivity::class.java);
+        newIntent.putExtra(ConversationsActivity.EXTRA_CONVERSATION, uuid)
+        startActivity(newIntent)
+    }
+
+    override fun onAudioClick(message: Message) {
+        val conversation = message.conversation as Conversation
+        triggerRtpSession(conversation, RtpSessionActivity.ACTION_MAKE_VOICE_CALL)
+    }
+
+    override fun onVideoClick(message: Message) {
+        val conversation = message.conversation as Conversation
+        triggerRtpSession(conversation, RtpSessionActivity.ACTION_MAKE_VIDEO_CALL)
+    }
+
+    override fun onChatClick(message: Message) {
+        val conversation = message.conversation as Conversation
+        goToContactChat(conversation.uuid)
+    }
+
+    override fun onInfoClick(message: Message) {
+        val conversation = message.conversation as Conversation
+
+        val intent = Intent(this, CallLogsDetailActivity::class.java)
+        intent.putExtra(CallLogsDetailActivity.EXTRA_CONVERSATION, conversation.uuid)
+        startActivity(intent)
+    }
+
+    override fun onClick(v: View?) {
+    }
+
+    override fun fetchMoreData(latestDate: Long) {
+    }
+
+    override fun onStartMeetingClick(meeting: ScheduleMeetingModel) {
+        val intent = Intent(this, MeetingActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
+        intent.putExtra("email", MainActivity.account?.userEmail)
+        intent.putExtra("accountUniqueId", MainActivity.account?.accountId)
+        intent.putExtra("picture", MainActivity.account?.avatar)
+        intent.putExtra("username", MainActivity.account?.username)
+        intent.putExtra("camOn", false)
+        intent.putExtra("micOn", false)
+        intent.putExtra("meetingName", meeting.meetingName)
+        intent.putExtra("meetingId", meeting.meetingId)
+        intent.putExtra("joining", false)
+        startActivity(intent)
+
+    }
 
 }
 

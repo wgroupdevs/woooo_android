@@ -11,8 +11,11 @@ import eu.siacs.conversations.http.model.TextTranslateApiResponse;
 import eu.siacs.conversations.http.model.TextTranslateModel;
 import eu.siacs.conversations.http.model.UpdateUserLanguageModel;
 import eu.siacs.conversations.http.model.UserBasicInfo;
-import eu.siacs.conversations.http.model.requestmodels.GetWooContactsRequestParams;
+import eu.siacs.conversations.http.model.meeting.ScheduleMeetingAPIRes;
+import eu.siacs.conversations.http.model.meeting.ScheduleMeetingModel;
 import eu.siacs.conversations.http.model.requestmodels.EmailRequestModel;
+import eu.siacs.conversations.http.model.requestmodels.GetWooContactsRequestParams;
+import eu.siacs.conversations.http.model.requestmodels.LoginRequestParams;
 import eu.siacs.conversations.http.model.requestmodels.ResetPasswordRequestModel;
 import eu.siacs.conversations.http.model.requestmodels.SendMessageReqModel;
 import eu.siacs.conversations.http.model.wallet.BlockChainAPIModel;
@@ -24,9 +27,9 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
-import eu.siacs.conversations.http.model.requestmodels.LoginRequestParams;
 
 public interface WooService {
 
@@ -81,7 +84,14 @@ public interface WooService {
 
     @POST("/api/v1/Payment/CreatePayment")
     Call<BaseModelAPIResponse> createPayment(@Body PaymentReqModel payment);
+
     @POST("/api/v1/Chat/SendMessage")
     Call<BaseModelAPIResponse> sendMessage(@Body SendMessageReqModel messageReqModel);
+
+    @POST("/api/v1/MeetingSchedule")
+    Call<ScheduleMeetingAPIRes> scheduleMeeting(@Query("outputType") String outputType, @Body ScheduleMeetingModel scheduleMeetingModel);
+
+    @GET("/api/v1/MeetingSchedule/GetByUser/{id}")
+    Call<ScheduleMeetingAPIRes> getScheduledMeetings(@Path("id") String id, @Query("outputType") String outputType);
 
 }

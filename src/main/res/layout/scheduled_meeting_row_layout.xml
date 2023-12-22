@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/flexbox_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        app:flexDirection="column"
+        app:justifyContent="space_between">
+
+
+        <TextView
+            android:id="@+id/date_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scrollHorizontally="false"
+            android:singleLine="true"
+            android:text="Dec 18,10:27 AM"
+            android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+
+        <TextView
+            android:id="@+id/meeting_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Meeting with HR"
+            android:alpha="0.9"
+            android:textAppearance="@style/TextAppearance.Conversations.Body2" />
+
+        <TextView
+            android:id="@+id/meeting_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Duration ( 20 min)"
+            android:alpha="0.8"
+            android:textAppearance="@style/TextAppearance.Conversations.MiniCap" />
+
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+
+    <Button
+        android:id="@+id/start_meeting_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/_27sdp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/_5sdp"
+        android:background="@drawable/button"
+        android:text="Start"
+        android:textAllCaps="false"
+
+        />
+
+    <ImageView
+        android:id="@+id/ic_divider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/flexbox_container"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:src="@drawable/divider_ic" />
+
+
+</RelativeLayout>

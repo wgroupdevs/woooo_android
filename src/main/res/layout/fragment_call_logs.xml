@@ -13,7 +13,6 @@
             android:id="@+id/call_logs_recycler_view"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 
-
             />
 
         <!--        <androidx.recyclerview.widget.RecyclerView-->

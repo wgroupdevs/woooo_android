@@ -763,7 +763,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                     viewHolder.status_message.setText(activity.getString(R.string.outgoing_call_timestamp, UIHelper.readableTimeDifferenceFull(activity, message.getTimeSent())));
                 }
             }
-            viewHolder.indicatorReceived.setImageResource(RtpSessionStatus.getDrawable(received, rtpSessionStatus.successful, isDarkTheme));
+            viewHolder.indicatorReceived.setImageResource(RtpSessionStatus.getDrawable(received, rtpSessionStatus.successful));
             viewHolder.indicatorReceived.setAlpha(isDarkTheme ? 0.7f : 0.57f);
 //            viewHolder.message_box.setBackgroundResource(isDarkTheme ? R.drawable.date_bubble_grey : R.drawable.date_bubble_white);
             return view;

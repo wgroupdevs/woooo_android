@@ -22,6 +22,8 @@ import eu.siacs.conversations.http.model.TextTranslateApiResponse;
 import eu.siacs.conversations.http.model.TextTranslateModel;
 import eu.siacs.conversations.http.model.UpdateUserLanguageModel;
 import eu.siacs.conversations.http.model.UserBasicInfo;
+import eu.siacs.conversations.http.model.meeting.ScheduleMeetingModel;
+import eu.siacs.conversations.http.model.meeting.ScheduleMeetingAPIRes;
 import eu.siacs.conversations.http.model.requestmodels.GetWooContactsRequestParams;
 import eu.siacs.conversations.http.model.requestmodels.EmailRequestModel;
 import eu.siacs.conversations.http.model.requestmodels.ResetPasswordRequestModel;
@@ -283,6 +285,68 @@ public class WooAPIService {
 
             @Override
             public void onFailure(@NonNull Call<BaseModelAPIResponse> call, @NonNull Throwable throwable) {
+                Log.d(Config.LOGTAG, "Unable to query WoooService on " + Config.WOOOO_BASE_URL, throwable);
+            }
+        });
+    }
+
+    public void scheduleMeeting(ScheduleMeetingModel scheduleMeetingModel, OnScheduleMeetingApiResult listener) {
+        final Call<ScheduleMeetingAPIRes> scheduleMeetingCall = wooService.scheduleMeeting("Mobile", scheduleMeetingModel);
+        scheduleMeetingCall.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<ScheduleMeetingAPIRes> call, @NonNull Response<ScheduleMeetingAPIRes> response) {
+                try {
+                    final ScheduleMeetingAPIRes body = response.body();
+                    if (body == null) {
+                        try {
+                            assert response.errorBody() != null;
+                            String errorBodyFound = response.errorBody().byteString().utf8();
+                            listener.OnScheduleMeetingResultFound(parseErrorBody(errorBodyFound));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        listener.OnScheduleMeetingResultFound(body);
+                    }
+                    Log.d(TAG, "scheduleMeeting RESPONSE: " + body.getSuccess());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ScheduleMeetingAPIRes> call, @NonNull Throwable throwable) {
+                Log.d(Config.LOGTAG, "Unable to query WoooService on " + Config.WOOOO_BASE_URL, throwable);
+            }
+        });
+    }
+
+    public void getScheduledMeetings(String accountUUID, OnGetScheduledMeetingsApiResult listener) {
+        final Call<ScheduleMeetingAPIRes> scheduleMeetingCall = wooService.getScheduledMeetings(accountUUID, "Mobile");
+        scheduleMeetingCall.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<ScheduleMeetingAPIRes> call, @NonNull Response<ScheduleMeetingAPIRes> response) {
+                try {
+                    final ScheduleMeetingAPIRes body = response.body();
+                    if (body == null) {
+                        try {
+                            assert response.errorBody() != null;
+                            String errorBodyFound = response.errorBody().byteString().utf8();
+                            listener.OnGetScheduledMeetingsResultFound(parseErrorBody(errorBodyFound));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        listener.OnGetScheduledMeetingsResultFound(body);
+                    }
+                    Log.d(TAG, "getScheduledMeeting RESPONSE: " + body.getSuccess());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ScheduleMeetingAPIRes> call, @NonNull Throwable throwable) {
                 Log.d(Config.LOGTAG, "Unable to query WoooService on " + Config.WOOOO_BASE_URL, throwable);
             }
         });
@@ -626,6 +690,14 @@ public class WooAPIService {
 
     public interface OnUpdateAccountApiResult {
         <T> void OnUpdateAccountAPiResultFound(T result);
+    }
+
+    public interface OnScheduleMeetingApiResult {
+        <T> void OnScheduleMeetingResultFound(T result);
+    }
+
+    public interface OnGetScheduledMeetingsApiResult {
+        <T> void OnGetScheduledMeetingsResultFound(T result);
     }
 
     public interface OnGetBlockChainApiResult {

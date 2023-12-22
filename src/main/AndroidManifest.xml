@@ -31,7 +31,6 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
-
     <uses-permission
         android:name="android.permission.READ_PHONE_STATE"
         android:maxSdkVersion="22" />
@@ -51,8 +50,6 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
-
-
     <uses-feature
         android:name="android.hardware.camera"
         android:required="false" />
@@ -87,7 +84,7 @@
     </queries>
 
     <application
-        android:name="eu.siacs.conversations.WooApp"
+        android:name=".WooApp"
         android:allowBackup="false"
         android:appCategory="social"
         android:extractNativeLibs="true"
@@ -102,23 +99,25 @@
         tools:replace="android:label"
         tools:targetApi="q">
         <activity
-            android:name="eu.siacs.conversations.ui.MiningActivity"
-            android:exported="false" />
-
-        <activity
-            android:name="eu.siacs.conversations.ui.auth.OTPVerificationActivity"
+            android:name=".ui.CallLogsDetailActivity"
             android:exported="false" />
         <activity
-            android:name="eu.siacs.conversations.ui.auth.SignUpActivity"
+            android:name=".ui.MiningActivity"
             android:exported="false" />
         <activity
-            android:name="eu.siacs.conversations.ui.auth.ForgotPasswordActivity"
+            android:name=".ui.auth.OTPVerificationActivity"
             android:exported="false" />
         <activity
-            android:name="eu.siacs.conversations.ui.auth.ResetPasswordActivity"
+            android:name=".ui.auth.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name="eu.siacs.conversations.ui.WooHomeActivity"
+            android:name=".ui.auth.ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.auth.ResetPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.WooHomeActivity"
             android:exported="false"
             android:label="@string/title_activity_home"
             android:theme="@style/ConversationsTheme.NoActionBar" />
@@ -128,15 +127,14 @@
             android:resource="@xml/automotive_app_desc" />
 
         <service android:name=".services.XmppConnectionService" />
-
-        <service android:name="com.woooapp.meeting.lib.ScreenCaptureService"
-            android:foregroundServiceType="mediaProjection"
-            android:exported="false"
+        <service
+            android:name="com.woooapp.meeting.lib.ScreenCaptureService"
             android:enabled="true"
-            />
+            android:exported="false"
+            android:foregroundServiceType="mediaProjection" />
 
         <receiver
-            android:name="eu.siacs.conversations.services.EventReceiver"
+            android:name=".services.EventReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
@@ -146,7 +144,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name="eu.siacs.conversations.services.UnifiedPushDistributor"
+            android:name=".services.UnifiedPushDistributor"
             android:enabled="false"
             android:exported="true">
             <intent-filter>
@@ -164,48 +162,48 @@
         </receiver>
 
         <activity
-            android:name="eu.siacs.conversations.ui.MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/ConversationsTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="eu.siacs.conversations.ui.ShareLocationActivity"
+            android:name=".ui.ShareLocationActivity"
             android:label="@string/title_activity_share_location" />
         <activity
-            android:name="eu.siacs.conversations.ui.SearchActivity"
+            android:name=".ui.SearchActivity"
             android:label="@string/search_messages" />
         <activity
-            android:name="eu.siacs.conversations.ui.RecordingActivity"
+            android:name=".ui.RecordingActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/ConversationsTheme.Dialog" />
         <activity
-            android:name="eu.siacs.conversations.ui.ShowLocationActivity"
+            android:name=".ui.ShowLocationActivity"
             android:label="@string/title_activity_show_location" />
         <activity
-            android:name="eu.siacs.conversations.ui.ConversationActivity"
+            android:name=".ui.ConversationActivity"
             android:exported="true"
-            android:theme="@style/SplashTheme">
-        </activity>
+            android:theme="@style/SplashTheme"></activity>
         <activity
-            android:name="eu.siacs.conversations.ui.ConversationsActivity"
+            android:name=".ui.ConversationsActivity"
             android:label="@string/app_name"
             android:launchMode="singleTask"
             android:minWidth="300dp"
             android:minHeight="300dp"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="eu.siacs.conversations.ui.ScanActivity"
+            android:name=".ui.ScanActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ConversationsTheme.FullScreen"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="eu.siacs.conversations.ui.UriHandlerActivity"
+            android:name=".ui.UriHandlerActivity"
             android:exported="true"
             android:label="@string/app_name">
             <intent-filter>
@@ -245,7 +243,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="eu.siacs.conversations.ui.StartConversationActivity"
+            android:name=".ui.StartConversationActivity"
             android:exported="true"
             android:label="@string/title_activity_start_conversation"
             android:launchMode="singleTop">
@@ -254,7 +252,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="eu.siacs.conversations.ui.SettingsActivity"
+            android:name=".ui.SettingsActivity"
             android:exported="true"
             android:label="@string/title_activity_settings">
             <intent-filter>
@@ -264,16 +262,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="eu.siacs.conversations.ui.ChooseContactActivity"
+            android:name=".ui.ChooseContactActivity"
             android:label="@string/title_activity_choose_contact" />
         <activity
-            android:name="eu.siacs.conversations.ui.BlocklistActivity"
+            android:name=".ui.BlocklistActivity"
             android:label="@string/title_activity_block_list" />
         <activity
-            android:name="eu.siacs.conversations.ui.ChangePasswordActivity"
+            android:name=".ui.ChangePasswordActivity"
             android:label="@string/change_password_on_server" />
         <activity
-            android:name="eu.siacs.conversations.ui.ChooseAccountForProfilePictureActivity"
+            android:name=".ui.ChooseAccountForProfilePictureActivity"
             android:enabled="false"
             android:exported="true"
             android:label="@string/choose_account">
@@ -286,30 +284,30 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="eu.siacs.conversations.ui.ShareViaAccountActivity"
+            android:name=".ui.ShareViaAccountActivity"
             android:label="@string/title_activity_share_via_account"
             android:launchMode="singleTop" />
         <activity
-            android:name="eu.siacs.conversations.ui.EditAccountActivity"
+            android:name=".ui.EditAccountActivity"
             android:exported="false"
             android:launchMode="singleTop"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
-            android:name="eu.siacs.conversations.ui.ConferenceDetailsActivity"
+            android:name=".ui.ConferenceDetailsActivity"
             android:label="@string/action_muc_details"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="eu.siacs.conversations.ui.ContactDetailsActivity"
+            android:name=".ui.ContactDetailsActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="eu.siacs.conversations.ui.PublishProfilePictureActivity"
+            android:name=".ui.PublishProfilePictureActivity"
             android:label="@string/mgmt_account_publish_avatar"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name="eu.siacs.conversations.ui.PublishGroupChatProfilePictureActivity"
+            android:name=".ui.PublishGroupChatProfilePictureActivity"
             android:label="@string/group_chat_avatar" />
         <activity
-            android:name="eu.siacs.conversations.ui.ShareWithActivity"
+            android:name=".ui.ShareWithActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:launchMode="singleTop">
@@ -336,11 +334,11 @@
                 android:value="eu.siacs.conversations.services.ContactChooserTargetService" />
         </activity>
         <activity
-            android:name="eu.siacs.conversations.ui.TrustKeysActivity"
+            android:name=".ui.TrustKeysActivity"
             android:label="@string/trust_omemo_fingerprints"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name="eu.siacs.conversations.ui.AboutActivity"
+            android:name=".ui.AboutActivity"
             android:parentActivityName=".ui.SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -351,11 +349,11 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".ui.MemorizingActivity" />
         <activity
-            android:name="eu.siacs.conversations.ui.MediaBrowserActivity"
+            android:name=".ui.MediaBrowserActivity"
             android:label="@string/media_browser" />
 
-        <service android:name="eu.siacs.conversations.services.ExportBackupService" />
-        <service android:name="eu.siacs.conversations.services.ImportBackupService" />
+        <service android:name=".services.ExportBackupService" />
+        <service android:name=".services.ImportBackupService" />
         <service
             android:name=".services.ContactChooserTargetService"
             android:exported="true"
@@ -375,13 +373,13 @@
                 android:resource="@xml/file_paths" />
         </provider>
         <provider
-            android:name="eu.siacs.conversations.services.BarcodeProvider"
+            android:name=".services.BarcodeProvider"
             android:authorities="${applicationId}.barcodes"
             android:exported="false"
             android:grantUriPermissions="true" />
 
         <activity
-            android:name="eu.siacs.conversations.ui.ShortcutActivity"
+            android:name=".ui.ShortcutActivity"
             android:exported="true"
             android:label="@string/contact">
             <intent-filter>
@@ -389,34 +387,29 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="eu.siacs.conversations.ui.MucUsersActivity"
+            android:name=".ui.MucUsersActivity"
             android:label="@string/group_chat_members" />
         <activity
-            android:name="eu.siacs.conversations.ui.ChannelDiscoveryActivity"
+            android:name=".ui.ChannelDiscoveryActivity"
             android:label="@string/discover_channels" />
         <activity
-            android:name="eu.siacs.conversations.ui.RtpSessionActivity"
+            android:name=".ui.RtpSessionActivity"
             android:autoRemoveFromRecents="true"
             android:launchMode="singleInstance"
             android:supportsPictureInPicture="true" /> <!-- MEETING -->
-
         <activity
             android:name="com.woooapp.meeting.impl.views.MeetingActivity"
+            android:exported="true"
             android:label="Meeting"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:turnScreenOn="true"
-            android:exported="true">
+            android:turnScreenOn="true">
             <intent-filter>
                 <action android:name="COM.WOOAPP.MEETING.IMPL.VIEWS.MEETINGACTIVITY" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>
-
-
-
-        <!--        ALPHA-WALLET-ACTIVITIES STARTS FROM HERE-->
-
+        </activity> <!-- ALPHA-WALLET-ACTIVITIES STARTS FROM HERE -->
         <activity
             android:name="com.alphawallet.app.ui.WalletHomeActivity"
             android:exported="true"
@@ -424,11 +417,10 @@
             android:launchMode="singleTask"
             android:windowSoftInputMode="adjustPan">
 
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
 
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -444,6 +436,7 @@
             </intent-filter>
             <intent-filter>
                 <data android:scheme="wc" />
+
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -451,6 +444,7 @@
             </intent-filter>
             <intent-filter>
                 <data android:scheme="awallet" />
+
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -477,7 +471,6 @@
                 <data android:pathPattern="/.*\\..*\\..*\\.xml" />
             </intent-filter>
         </activity>
-
         <activity
             android:name="com.alphawallet.app.ui.ApiV1Activity"
             android:label="API V1 Activity"
@@ -496,7 +489,6 @@
         <activity
             android:name="com.alphawallet.app.ui.WalletsActivity"
             android:label="@string/title_account_list" />
-
         <activity
             android:name="com.alphawallet.app.ui.SplashActivity"
             android:theme="@style/ConversationsTheme" />
@@ -504,17 +496,16 @@
         <service
             android:name="com.alphawallet.app.service.WalletConnectService"
             android:enabled="true" />
-
         <service
             android:name="com.alphawallet.app.service.WalletConnectV2Service"
             android:enabled="true" />
-
         <service
             android:name="com.alphawallet.app.service.AlphaWalletFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
+
             <meta-data
                 android:name="com.google.firebase.messaging.default_notification_channel_id"
                 android:value="alphawallet" />
@@ -524,242 +515,187 @@
             android:name="com.alphawallet.app.ui.WalletConnectV2Activity"
             android:label="WalletConnectV2"
             android:launchMode="singleTop" />
-
         <activity
             android:name="com.alphawallet.app.ui.WalletConnectNotificationActivity"
             android:label="WalletConnectV2" />
-
         <activity
             android:name="com.alphawallet.app.ui.NameThisWalletActivity"
             android:label="@string/name_this_wallet"
             android:windowSoftInputMode="adjustResize" />
-
         <activity
             android:name="com.alphawallet.app.ui.ImportWalletActivity"
             android:label="@string/title_import"
             android:screenOrientation="sensor"
             android:windowSoftInputMode="stateAlwaysVisible|adjustResize" />
-
         <activity
             android:name="com.alphawallet.app.ui.TransactionDetailActivity"
             android:label="@string/title_transaction_details" />
         <activity
             android:name="com.alphawallet.app.ui.MyAddressActivity"
             android:label="@string/title_my_address" />
-
         <activity
             android:name="com.alphawallet.app.ui.SendActivity"
             android:label="@string/title_activity_send"
             android:windowSoftInputMode="adjustResize" />
-
         <activity
             android:name="com.alphawallet.app.ui.AddTokenActivity"
             android:label="@string/title_add_token" />
-
         <activity
             android:name="com.alphawallet.app.ui.AssetDisplayActivity"
             android:label="@string/title_use_token" />
-
         <activity
             android:name="com.alphawallet.app.ui.RedeemSignatureDisplayActivity"
             android:label="@string/title_use_token" />
-
         <activity
             android:name="com.alphawallet.app.ui.GasSettingsActivity"
             android:label="@string/title_send_settings" />
-
         <activity
             android:name="com.alphawallet.app.ui.SellDetailActivity"
             android:label="@string/action_sell"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
             android:name="com.alphawallet.app.ui.RedeemAssetSelectActivity"
             android:label="@string/title_redeem" />
-
         <activity
             android:name="com.alphawallet.app.ui.ImportTokenActivity"
             android:label="@string/title_import_token" />
-
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullSensor"
             tools:replace="screenOrientation" />
-
         <activity
             android:name="com.alphawallet.app.ui.TransferTicketDetailActivity"
             android:label="@string/label_transfer_ticket_detail" />
-
         <activity
             android:name="com.alphawallet.app.ui.TokenDetailActivity"
             android:hardwareAccelerated="true"
             android:label="@string/token_details" />
-
         <activity
             android:name="com.alphawallet.app.ui.Erc20DetailActivity"
             android:label="@string/erc20_details" />
-
         <activity
             android:name="com.alphawallet.app.ui.TokenFunctionActivity"
             android:hardwareAccelerated="true"
             android:label="@string/token_function" />
-
         <activity
             android:name="com.alphawallet.app.ui.FunctionActivity"
             android:hardwareAccelerated="true"
             android:label="@string/token_function" />
-
         <activity
             android:name="com.alphawallet.app.ui.WalletActionsActivity"
             android:label="Wallet Actions" />
-
         <activity
             android:name="com.alphawallet.app.ui.AddEditDappActivity"
             android:label="Add DApp" />
-
         <activity
             android:name="com.alphawallet.app.ui.NetworkChooserActivity"
             android:label="Select DApp Browser Network" />
-
         <activity
             android:name="com.alphawallet.app.ui.NetworkToggleActivity"
             android:label="Select Network Filters" />
-
         <activity
             android:name="com.alphawallet.app.ui.TokenManagementActivity"
             android:label="Manage Tokens" />
-
         <activity
             android:name="com.alphawallet.app.ui.SelectLocaleActivity"
             android:label="Select Language" />
-
         <activity
             android:name="com.alphawallet.app.ui.SelectCurrencyActivity"
             android:label="Select Currency" />
-
         <activity
             android:name="com.alphawallet.app.ui.ScammerWarningActivity"
             android:label="Scammer Warning"
             android:noHistory="true" />
-
         <activity
             android:name="com.alphawallet.app.ui.BackupKeyActivity"
             android:windowSoftInputMode="stateHidden|adjustResize" />
-
         <activity
             android:name="com.alphawallet.app.ui.SupportSettingsActivity"
             android:label="Support Settings" />
-
         <activity
             android:name="com.alphawallet.app.ui.AdvancedSettingsActivity"
             android:label="Advanced Settings" />
-
         <activity
             android:name="com.alphawallet.app.ui.StaticViewer"
             android:label="View Text" />
-
         <activity
             android:name="com.alphawallet.app.ui.TokenScriptManagementActivity"
             android:label="@string/tokenscript_management" />
-
         <activity
             android:name="com.alphawallet.app.ui.WalletConnectActivity"
             android:label="WalletConnect"
             android:launchMode="singleTop" />
-
         <activity
             android:name="com.alphawallet.app.ui.BackupFlowActivity"
             android:label="WalletConnect" />
-
         <activity
             android:name="com.alphawallet.app.ui.SignDetailActivity"
             android:label="Sign Details" />
-
         <activity
             android:name="com.alphawallet.app.ui.WalletConnectSessionActivity"
             android:label="WalletConnect Sessions" />
-
         <activity
             android:name="com.alphawallet.app.ui.TransactionSuccessActivity"
             android:label="Transaction Success" />
-
         <activity
             android:name="com.alphawallet.app.ui.SetPriceAlertActivity"
             android:label="Set New Alert"
             android:windowSoftInputMode="adjustResize" />
-
         <activity
             android:name="com.alphawallet.app.ui.AddCustomRPCNetworkActivity"
             android:label="@string/title_activity_add_custom_rpcnetwork" />
-
         <activity
             android:name="com.alphawallet.app.ui.NFTActivity"
             android:label="ERC721 Master Activity" />
-
         <activity
             android:name="com.alphawallet.app.ui.Erc1155AssetSelectActivity"
             android:label="ERC1155 Asset Selection" />
-
         <activity
             android:name="com.alphawallet.app.ui.NFTAssetDetailActivity"
             android:hardwareAccelerated="true"
             android:label="ERC1155 Asset Details" />
-
         <activity
             android:name="com.alphawallet.app.ui.Erc1155AssetListActivity"
             android:hardwareAccelerated="true"
             android:label="ERC1155 Asset Details" />
-
         <activity
             android:name="com.alphawallet.app.ui.TransferNFTActivity"
             android:label="NFT Transfer" />
-
         <activity
             android:name="com.alphawallet.app.ui.SelectThemeActivity"
             android:label="Select Mode" />
-
         <activity
             android:name="com.alphawallet.app.ui.SearchActivity"
             android:label="Search Tokens" />
-
         <activity
             android:name="com.alphawallet.app.ui.QRScanning.QRScannerActivity"
             android:hardwareAccelerated="true"
             android:label="@string/qr_scanner" />
-
         <activity
             android:name="com.alphawallet.app.ui.SwapActivity"
             android:label="Native Swap"
             android:windowSoftInputMode="adjustResize" />
-
         <activity
             android:name="com.alphawallet.app.ui.SelectRouteActivity"
             android:label="@string/title_select_route" />
-
         <activity
             android:name="com.alphawallet.app.ui.SelectSwapProvidersActivity"
             android:label="@string/title_select_exchanges" />
-
         <activity
             android:name="com.alphawallet.app.ui.NodeStatusActivity"
             android:label="@string/action_node_status" />
-
         <activity
             android:name="com.alphawallet.app.ui.CoinbasePayActivity"
             android:label="@string/title_buy_with_coinbase_pay" />
-
         <activity
             android:name="com.alphawallet.app.ui.WalletDiagnosticActivity"
             android:label="@string/key_diagnostic" />
-
         <activity
             android:name="com.alphawallet.app.ui.AnalyticsSettingsActivity"
             android:label="@string/settings_title_analytics" />
-
         <activity
             android:name="com.alphawallet.app.ui.CrashReportSettingsActivity"
             android:label="@string/settings_title_crash_reporting" />
-
         <activity
             android:name="com.alphawallet.app.ui.NotificationSettingsActivity"
             android:label="@string/title_notifications" />
@@ -769,8 +705,6 @@
             android:enabled="true"
             android:exported="false"
             android:stopWithTask="true" />
-
-
     </application>
 
 </manifest>

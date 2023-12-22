@@ -17,6 +17,7 @@ import com.skydoves.expandablelayout.ExpandableLayout;
 import java.util.List;
 
 import eu.siacs.conversations.R;
+import eu.siacs.conversations.entities.CallLog;
 import eu.siacs.conversations.entities.Message;
 import eu.siacs.conversations.entities.RtpSessionStatus;
 import eu.siacs.conversations.ui.XmppActivity;
@@ -26,14 +27,14 @@ import eu.siacs.conversations.utils.UIHelper;
 
 public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.ViewHolder> {
 
-    private List<Message> messageList;
+    private List<CallLog> callLogList;
     private XmppActivity activity;
     private String TAG = "CallLogAdapter_TAG";
     private boolean isFromHomePage = false;
 
-    public CallLogAdapter(XmppActivity activity, List<Message> messageList, boolean isFromHomePage) {
+    public CallLogAdapter(XmppActivity activity, List<CallLog> callLogList, boolean isFromHomePage) {
         this.activity = activity;
-        this.messageList = messageList;
+        this.callLogList = callLogList;
         this.isFromHomePage = isFromHomePage;
     }
 
@@ -46,42 +47,42 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Message message = messageList.get(position);
+        CallLog callLog = callLogList.get(position);
 
         final boolean isDarkTheme = activity.isDarkTheme();
-        final boolean received = message.getStatus() <= eu.siacs.conversations.entities.Message.STATUS_RECEIVED;
-        final RtpSessionStatus rtpSessionStatus = RtpSessionStatus.of(message.getBody());
+        final boolean received = callLog.getLastMessage().getStatus() <= eu.siacs.conversations.entities.Message.STATUS_RECEIVED;
+        final RtpSessionStatus rtpSessionStatus = RtpSessionStatus.of(callLog.getLastMessage().getBody());
         final long duration = rtpSessionStatus.duration;
 
         if (isFromHomePage) {
-            holder.callTime.setText("( " +TimeFrameUtils.resolve(activity, duration)+" ) "+UIHelper.readableTimeDifferenceFull(activity, message.getTimeSent()));
+            holder.callTime.setText("( " + TimeFrameUtils.resolve(activity, duration) + " ) " + UIHelper.readableTimeDifferenceFull(activity, callLog.getLastMessage().getTimeSent()));
         } else {
             if (received) {
                 if (duration > 0) {
-                    holder.callTime.setText(activity.getString(R.string.incoming_call_duration_timestamp, TimeFrameUtils.resolve(activity, duration), UIHelper.readableTimeDifferenceFull(activity, message.getTimeSent())));
+                    holder.callTime.setText(activity.getString(R.string.incoming_call_duration_timestamp, TimeFrameUtils.resolve(activity, duration), UIHelper.readableTimeDifferenceFull(activity, callLog.getLastMessage().getTimeSent())));
                 } else if (rtpSessionStatus.successful) {
                     holder.callTime.setText(R.string.incoming_call);
                 } else {
-                    holder.callTime.setText(activity.getString(R.string.missed_call_timestamp, UIHelper.readableTimeDifferenceFull(activity, message.getTimeSent())));
+                    holder.callTime.setText(activity.getString(R.string.missed_call_timestamp, UIHelper.readableTimeDifferenceFull(activity, callLog.getLastMessage().getTimeSent())));
                 }
             } else {
                 if (duration > 0) {
-                    holder.callTime.setText(activity.getString(R.string.outgoing_call_duration_timestamp, TimeFrameUtils.resolve(activity, duration), UIHelper.readableTimeDifferenceFull(activity, message.getTimeSent())));
+                    holder.callTime.setText(activity.getString(R.string.outgoing_call_duration_timestamp, TimeFrameUtils.resolve(activity, duration), UIHelper.readableTimeDifferenceFull(activity, callLog.getLastMessage().getTimeSent())));
                 } else {
-                    holder.callTime.setText(activity.getString(R.string.outgoing_call_timestamp, UIHelper.readableTimeDifferenceFull(activity, message.getTimeSent())));
+                    holder.callTime.setText(activity.getString(R.string.outgoing_call_timestamp, UIHelper.readableTimeDifferenceFull(activity, callLog.getLastMessage().getTimeSent())));
                 }
             }
         }
 
-        AvatarWorkerTask.loadAvatar(message.getContact(), holder.accountImage, R.dimen.avatar);
-        holder.callStatusIc.setImageResource(RtpSessionStatus.getDrawable(received, rtpSessionStatus.successful, isDarkTheme));
-        holder.displayName.setText(message.getContact().getDisplayName());
+        AvatarWorkerTask.loadAvatar(callLog.getLastMessage().getContact(), holder.accountImage, R.dimen.avatar);
+        holder.callStatusIc.setImageResource(RtpSessionStatus.getDrawable(received, rtpSessionStatus.successful));
+        holder.displayName.setText(callLog.getLastMessage().getContact().getDisplayName()+" ("+callLog.getItemCount()+")");
 
     }
 
     @Override
     public int getItemCount() {
-        return messageList.size();
+        return callLogList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -122,32 +123,32 @@ public class CallLogAdapter extends RecyclerView.Adapter<CallLogAdapter.ViewHold
             audioCallBtn.setOnClickListener(v -> {
                 if (onAudioCallBtnClickListener != null) {
                     int position = getBindingAdapterPosition();
-                    Message message = messageList.get(position);
-                    onAudioCallBtnClickListener.onAudioClick(message);
+                    CallLog callLog = callLogList.get(position);
+                    onAudioCallBtnClickListener.onAudioClick(callLog.getLastMessage());
                 }
             });
 
             videoCallBtn.setOnClickListener(v -> {
                 if (onVideoCallBtnClickListener != null) {
                     int position = getBindingAdapterPosition();
-                    Message message = messageList.get(position);
-                    onVideoCallBtnClickListener.onVideoClick(message);
+                    CallLog callLog = callLogList.get(position);
+                    onVideoCallBtnClickListener.onVideoClick(callLog.getLastMessage());
                 }
             });
 
             chatBtn.setOnClickListener(v -> {
                 if (onChatBtnClickListener != null) {
                     int position = getBindingAdapterPosition();
-                    Message message = messageList.get(position);
-                    onChatBtnClickListener.onChatClick(message);
+                    CallLog callLog = callLogList.get(position);
+                    onChatBtnClickListener.onChatClick(callLog.getLastMessage());
                 }
             });
 
             infoBtn.setOnClickListener(v -> {
                 if (onInfoBtnClickListener != null) {
                     int position = getBindingAdapterPosition();
-                    Message message = messageList.get(position);
-                    onInfoBtnClickListener.onInfoClick(message);
+                    CallLog callLog = callLogList.get(position);
+                    onInfoBtnClickListener.onInfoClick(callLog.getLastMessage());
                 }
             });
 

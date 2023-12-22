@@ -73,6 +73,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -101,6 +102,7 @@ import eu.siacs.conversations.crypto.axolotl.XmppAxolotlMessage;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.entities.Blockable;
 import eu.siacs.conversations.entities.Bookmark;
+import eu.siacs.conversations.entities.CallLog;
 import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.Conversational;
@@ -233,7 +235,7 @@ public class XmppConnectionService extends Service {
     private final NotificationService mNotificationService = new NotificationService(this);
     private final UnifiedPushBroker unifiedPushBroker = new UnifiedPushBroker(this);
     private final ChannelDiscoveryService mChannelDiscoveryService = new ChannelDiscoveryService(this);
-    private WooAPIService wooooAuthService;
+    private WooAPIService wooAPIService;
     private final ShortcutService mShortcutService = new ShortcutService(this);
     private final AtomicBoolean mInitialAddressbookSyncCompleted = new AtomicBoolean(false);
     private final AtomicBoolean mForceForegroundService = new AtomicBoolean(false);
@@ -976,54 +978,54 @@ public class XmppConnectionService extends Service {
 
 
     public void loginUserOnWoooo(boolean isLoginWithEmail, String email, String phone, String password, WooAPIService.OnLoginAPiResult onLoginAPiResult) {
-        if (wooooAuthService == null) {
-            wooooAuthService = WooAPIService.getInstance();
+        if (wooAPIService == null) {
+            wooAPIService = WooAPIService.getInstance();
         }
-        wooooAuthService.login(isLoginWithEmail, email, phone, password, onLoginAPiResult);
+        wooAPIService.login(isLoginWithEmail, email, phone, password, onLoginAPiResult);
     }
 
     private void sendMessageToBlockchain(SendMessageReqModel messageReqModel) {
-        if (wooooAuthService == null) {
-            wooooAuthService = WooAPIService.getInstance();
+        if (wooAPIService == null) {
+            wooAPIService = WooAPIService.getInstance();
         }
-        wooooAuthService.sendMessage(messageReqModel);
+        wooAPIService.sendMessage(messageReqModel);
     }
 
     public void updateProfile(UserBasicInfo user, WooAPIService.OnUpdateAccountApiResult listener) {
 
-        if (wooooAuthService == null) {
-            wooooAuthService = WooAPIService.getInstance();
+        if (wooAPIService == null) {
+            wooAPIService = WooAPIService.getInstance();
         }
-        wooooAuthService.updateProfile(user, listener);
+        wooAPIService.updateProfile(user, listener);
     }
 
     public void getAccountByJid(String jId, WooAPIService.OnGetAccountByJidAPiResult onGetAccountByJidAPiResult) {
-        wooooAuthService.getAccountByJidAccount(jId, onGetAccountByJidAPiResult);
+        wooAPIService.getAccountByJidAccount(jId, onGetAccountByJidAPiResult);
     }
 
     public void getWooContacts(GetWooContactsRequestParams params, WooAPIService.OnGetWooContactAPiResult onGetWooContactAPiResult) {
-        Log.d(TAG, "getWooContacts" + wooooAuthService);
-        if (wooooAuthService == null) {
-            wooooAuthService = WooAPIService.getInstance();
+        Log.d(TAG, "getWooContacts" + wooAPIService);
+        if (wooAPIService == null) {
+            wooAPIService = WooAPIService.getInstance();
         }
-        wooooAuthService.getWooContact(params, onGetWooContactAPiResult);
+        wooAPIService.getWooContact(params, onGetWooContactAPiResult);
 
     }
 
     public void updateUserLanguage(String accountId, String language, String languageCode, WooAPIService.OnUpdateUserLanguageApiResult onUpdateUserLanguageApiResult) {
-        Log.d(TAG, "getWooContacts" + wooooAuthService);
-        if (wooooAuthService == null) {
-            wooooAuthService = WooAPIService.getInstance();
+        Log.d(TAG, "getWooContacts" + wooAPIService);
+        if (wooAPIService == null) {
+            wooAPIService = WooAPIService.getInstance();
         }
-        wooooAuthService.updateUserLanguage(accountId, language, languageCode, onUpdateUserLanguageApiResult);
+        wooAPIService.updateUserLanguage(accountId, language, languageCode, onUpdateUserLanguageApiResult);
     }
 
     public void translateText(TextTranslateModel translateModel, WooAPIService.OnTextTranslateAPiResult listener) {
 
-        if (wooooAuthService == null) {
-            wooooAuthService = WooAPIService.getInstance();
+        if (wooAPIService == null) {
+            wooAPIService = WooAPIService.getInstance();
         }
-        wooooAuthService.translateText(translateModel, listener);
+        wooAPIService.translateText(translateModel, listener);
     }
 
 
@@ -1214,7 +1216,7 @@ public class XmppConnectionService extends Service {
             mNotificationService.initializeChannels();
         }
         mChannelDiscoveryService.initializeMuclumbusService();
-        wooooAuthService = WooAPIService.getInstance();
+        wooAPIService = WooAPIService.getInstance();
         mForceDuringOnCreate.set(Compatibility.runsAndTargetsTwentySix(this));
 //        toggleForegroundService();
         this.destroyed = false;
@@ -4407,18 +4409,28 @@ public class XmppConnectionService extends Service {
         return null;
     }
 
-    public void getRTPMessages(final List<Message> list) {
+    public void getRTPMessages(final List<CallLog> list) {
         list.clear();
-        Cursor cursor = databaseBackend.getRTPMessages();
+        for (Conversation c : getConversations()) {
+            List<Message> rtpMessageList = getRTPMessageByConversationUUID(c.getUuid());
+            if (!rtpMessageList.isEmpty()) {
+                list.add(new CallLog(rtpMessageList));
+            }
+        }
+        list.sort(Comparator.comparing(CallLog::getTimestamp).reversed());
+    }
+
+    public List<Message> getRTPMessageByConversationUUID(String uuid) {
+        List<Message> messageList = new ArrayList<>();
+        Cursor cursor = databaseBackend.getRTPMessageCount(uuid);
         CursorUtils.upgradeCursorWindowSize(cursor);
         while (cursor.moveToNext()) {
             try {
-                String uuid = cursor.getString(cursor.getColumnIndex(Message.CONVERSATION));
                 if (uuid != null) {
                     Conversation c = findConversationByUuid(uuid);
                     if (c != null) {
                         Message m = Message.fromCursor(cursor, c);
-                        list.add(m);
+                        messageList.add(m);
                     }
                 }
             } catch (Exception e) {
@@ -4426,7 +4438,7 @@ public class XmppConnectionService extends Service {
             }
         }
         cursor.close();
-
+        return messageList;
     }
 
 
