@@ -176,7 +176,13 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
                     activityItems
                 ).toTypedArray<ActivityMeta>()
             )
-//            showEmptyTx()
+            if (walletActivityAdapter?.isEmpty == true) {
+                homeBinding.appBarHome.homeBottomSheet.noTransactionFoundLabel.visibility =
+                    View.VISIBLE
+            } else {
+                homeBinding.appBarHome.homeBottomSheet.noTransactionFoundLabel.visibility =
+                    View.GONE
+            }
             for (am in activityItems) {
                 if (am is TransactionMeta && am.getTimeStampSeconds() > lastUpdateTime) lastUpdateTime =
                     am.getTimeStampSeconds() - 60
@@ -313,6 +319,20 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
         initWalletActivityView()
 
 
+        homeBinding.appBarHome.homeBottomSheet.homeSheetNavMeetingBtn.setOnClickListener {
+            goToActivity(1)
+        }
+        homeBinding.appBarHome.homeBottomSheet.homeSheetNavWalletBtn.setOnClickListener {
+            goToActivity(2)
+        }
+        homeBinding.appBarHome.homeBottomSheet.homeSheetNavCallBtn.setOnClickListener {
+            goToActivity(3)
+        }
+        homeBinding.appBarHome.homeBottomSheet.homeSheetNavChatBtn.setOnClickListener {
+            goToActivity(4)
+        }
+
+
         bottomSheetBehavior.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
 
@@ -338,13 +358,21 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
         })
     }
 
+    private fun hideBottomSheet() {
+        if (::bottomSheetBehavior.isInitialized) {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+            Log.d(TAG,"hideBottomSheet ..... ");
+
+        }
+    }
+
 
     private fun initConversationsView() {
         conversationsAdapter = ConversationAdapter(this, conversations, true)
         chatRecyclerView.adapter = conversationsAdapter;
         conversationsAdapter?.setConversationClickListener { view: View?, conversation: Conversation ->
             goToContactChat(conversation.uuid)
-
         }
     }
 
@@ -368,7 +396,11 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
         meetingAdapter = ScheduledMeetingAdapter(this, emptyList())
         meetingAdapter?.setOnStartMeetingClickListener(this)
         MainActivity.scheduleMeetingViewModel.getScheduledMeetings().observe(this) { meetings ->
-            Log.d(TAG, "Scheduled Meetings Count : ${meetings.size}")
+            if (meetings.isEmpty()) {
+                homeBinding.appBarHome.homeBottomSheet.noMeetingFoundLabel.visibility = View.VISIBLE
+            } else {
+                homeBinding.appBarHome.homeBottomSheet.noMeetingFoundLabel.visibility = View.GONE
+            }
             meetingAdapter?.updateList(meetings)
         }
         meetingRecyclerView.adapter = meetingAdapter
@@ -461,12 +493,26 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
 
     private fun fetchConversations() {
         this.xmppConnectionService.populateWithOrderedConversations(this.conversations)
+
+        if (this.conversations.isEmpty()) {
+            homeBinding.appBarHome.homeBottomSheet.noChatFoundLabel.visibility = View.VISIBLE
+        } else {
+            homeBinding.appBarHome.homeBottomSheet.noChatFoundLabel.visibility = View.GONE
+        }
+
         this.conversationsAdapter?.notifyDataSetChanged()
     }
 
     private fun fetchCallLogs() {
         this.xmppConnectionService.getRTPMessages(this.callLogs)
-        Log.d(TAG, "CALL LOGS COUNT : " + callLogs.size)
+
+        if (this.callLogs.isEmpty()) {
+            homeBinding.appBarHome.homeBottomSheet.noCallFoundLabel.visibility = View.VISIBLE
+        } else {
+            homeBinding.appBarHome.homeBottomSheet.noCallFoundLabel.visibility = View.GONE
+        }
+
+
         this.callLogAdapter?.notifyDataSetChanged()
     }
 
@@ -627,6 +673,8 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
 
 
     private fun goToActivity(index: Int) {
+        hideBottomSheet()
+
         var newIntent = Intent(this, ConversationActivity::class.java);
         if (index == 2) {
             newIntent = Intent(
@@ -636,6 +684,9 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
         }
         newIntent.putExtra(ConversationsActivity.EXTRA_CIRCLE_MENU_INDEX, index)
         startActivity(newIntent)
+
+
+
     }
 
 

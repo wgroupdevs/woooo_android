@@ -99,6 +99,7 @@ public class ActionSheetDialog extends ActionSheet implements StandardFunctionIn
     {
         super(activity);
         View view = View.inflate(getContext(), R.layout.dialog_action_sheet, null);
+        view.setBackgroundColor(activity.getResources().getColor(R.color.blue_primary300));
         setContentView(view);
 
         BottomSheetBehavior<View> behavior = BottomSheetBehavior.from((View) view.getParent());

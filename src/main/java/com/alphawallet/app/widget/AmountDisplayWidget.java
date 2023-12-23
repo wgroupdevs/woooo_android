@@ -2,6 +2,7 @@ package com.alphawallet.app.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,13 +28,14 @@ import java.util.Locale;
 import javax.annotation.Nullable;
 
 import eu.siacs.conversations.R;
+import eu.siacs.conversations.utils.WOOOO;
 import io.realm.Realm;
 
 ;
 
 /**
  * Created by Jenny Jingjing Li on 21/03/2021
- * */
+ */
 
 public class AmountDisplayWidget extends LinearLayout {
 
@@ -41,8 +43,7 @@ public class AmountDisplayWidget extends LinearLayout {
     private final TextView amount;
     private final RecyclerView tokensList;
 
-    public AmountDisplayWidget(Context context, @Nullable AttributeSet attrs)
-    {
+    public AmountDisplayWidget(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
 
         inflate(context, R.layout.item_amount_display, this);
@@ -50,19 +51,16 @@ public class AmountDisplayWidget extends LinearLayout {
         tokensList = findViewById(R.id.tokens_list);
     }
 
-    public void setAmountFromString(String displayStr)
-    {
+    public void setAmountFromString(String displayStr) {
         amount.setText(displayStr);
     }
 
-    public void setAmountFromBigInteger(BigInteger txAmount, String token)
-    {
+    public void setAmountFromBigInteger(BigInteger txAmount, String token) {
         NumberFormat decimalFormat = NumberFormat.getInstance(deviceSettingsLocale);
         setAmountFromString(decimalFormat.format(txAmount) + ' ' + token);
     }
 
-    public void setAmountFromAssetList(List<NFTAsset> assets)
-    {
+    public void setAmountFromAssetList(List<NFTAsset> assets) {
         amount.setVisibility(View.GONE);
         tokensList.setVisibility(View.VISIBLE);
 
@@ -71,36 +69,40 @@ public class AmountDisplayWidget extends LinearLayout {
         tokensList.setAdapter(adapter);
     }
 
-    private String getValueString(BigInteger amount, Token token, TokensService tokensService)
-    {
+    private String getValueString(BigInteger amount, Token token, TokensService tokensService) {
+        Log.d("AMOUNT_DISPLAY_TAG", "AMOUNT : " + amount);
+
         String formattedValue = BalanceUtils.getScaledValueMinimal(amount, token.tokenInfo.decimals);
+
+        Log.d("AMOUNT_DISPLAY_TAG", "FormattedValue : " + formattedValue);
+
+
         //fetch ticker if required
-        try (Realm realm = tokensService.getTickerRealmInstance())
-        {
+        try (Realm realm = tokensService.getTickerRealmInstance()) {
             RealmTokenTicker rtt = realm.where(RealmTokenTicker.class)
                     .equalTo("contract", TokensRealmSource.databaseKey(token.tokenInfo.chainId, token.isEthereum() ? "eth" : token.getAddress().toLowerCase()))
                     .findFirst();
 
-            if (rtt != null)
-            {
+            if (rtt != null) {
                 //calculate equivalent fiat
                 BigDecimal cryptoRate = new BigDecimal(rtt.getPrice());
+                cryptoRate = cryptoRate.multiply(BigDecimal.valueOf(WOOOO.DOLLAR_RATE));
                 BigDecimal cryptoAmount = BalanceUtils.subunitToBase(amount, token.tokenInfo.decimals);
+                Log.d("AMOUNT_DISPLAY_TAG", "CryptoRate : " + cryptoRate);
+                Log.d("AMOUNT_DISPLAY_TAG", "CryptoAmount : " + cryptoAmount);
+
                 return getContext().getString(R.string.fiat_format, formattedValue, token.getSymbol(),
                         TickerService.getCurrencyString(cryptoAmount.multiply(cryptoRate).doubleValue()),
                         rtt.getCurrencySymbol());
             }
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             //
         }
 
         return getContext().getString(R.string.total_cost, formattedValue, token.getSymbol());
     }
 
-    public void setAmountUsingToken(BigInteger amountValue, Token token, TokensService tokensService)
-    {
+    public void setAmountUsingToken(BigInteger amountValue, Token token, TokensService tokensService) {
         amount.setText(getValueString(amountValue, token, tokensService));
     }
 }

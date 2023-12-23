@@ -29,21 +29,41 @@
             android:paddingBottom="@dimen/tiny_8"
             android:progress="10" />
 
-        <EditText
+<!--        <EditText-->
+<!--            android:id="@+id/gas_price_entry"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_weight="1"-->
+<!--            android:background="@drawable/background_password_entry"-->
+<!--            android:gravity="end|center_vertical"-->
+<!--            android:inputType="numberDecimal"-->
+<!--            android:paddingEnd="@dimen/tiny_8"-->
+<!--            tools:text="20" />-->
+
+
+
+        <eu.siacs.conversations.ui.widget.TextInputEditText
             android:id="@+id/gas_price_entry"
-            style="@style/ConversationsTheme"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/background_password_entry"
+            style="@style/Widget.Conversations.EditText"
             android:gravity="end|center_vertical"
             android:inputType="numberDecimal"
             android:paddingEnd="@dimen/tiny_8"
-            tools:text="20" />
+            android:background="@drawable/textfield_background"
+            android:text="20"
+            android:textColor="@color/white" />
+
+
 
     </LinearLayout>
 
-    <View style="@style/Aw.Component.Separator" />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:src="@drawable/divider_ic" />
 
     <LinearLayout
         android:id="@+id/layout_priority_fee"
@@ -73,23 +93,29 @@
                 android:paddingBottom="@dimen/tiny_8"
                 android:progress="10" />
 
-        <EditText
-                android:id="@+id/priority_fee_entry"
-                style="@style/ConversationsTheme"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/background_password_entry"
-                android:gravity="end|center_vertical"
-                android:inputType="numberDecimal"
-                android:paddingEnd="@dimen/tiny_8"
-                tools:text="20" />
+
+        <eu.siacs.conversations.ui.widget.TextInputEditText
+            android:id="@+id/priority_fee_entry"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            style="@style/Widget.Conversations.EditText"
+            android:gravity="end|center_vertical"
+            android:inputType="numberDecimal"
+            android:paddingEnd="@dimen/tiny_8"
+            android:background="@drawable/textfield_background"
+            android:text="20"
+            android:textColor="@color/white" />
 
     </LinearLayout>
 
     </LinearLayout>
 
-    <View style="@style/Aw.Component.Separator" />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:src="@drawable/divider_ic" />
 
     <com.alphawallet.app.widget.StandardHeader
         android:layout_width="match_parent"
@@ -113,17 +139,20 @@
             android:paddingBottom="@dimen/tiny_8"
             android:progress="10" />
 
-        <EditText
+        <eu.siacs.conversations.ui.widget.TextInputEditText
             android:id="@+id/gas_limit_entry"
-            style="@style/ConversationsTheme"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@drawable/background_password_entry"
+            style="@style/Widget.Conversations.EditText"
             android:gravity="end|center_vertical"
             android:inputType="numberDecimal"
             android:paddingEnd="@dimen/tiny_8"
-            tools:text="21000" />
+            android:background="@drawable/textfield_background"
+            android:text="21000"
+            android:textColor="@color/white" />
+
+
 
     </LinearLayout>
 
@@ -144,17 +173,25 @@
 
     </FrameLayout>
 
-    <EditText
+
+
+
+    <eu.siacs.conversations.ui.widget.TextInputEditText
         android:id="@+id/nonce_entry"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="@dimen/small_12"
         android:layout_weight="1"
-        android:background="@drawable/background_password_entry"
+        style="@style/Widget.Conversations.EditText"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:background="@drawable/textfield_background"
         android:gravity="start|center_vertical"
         android:hint="@string/nonce_optional"
         android:inputType="number"
-        android:padding="@dimen/small_12" />
+        android:padding="@dimen/small_12"
+        android:textColor="@color/white" />
+
+
 
 
 </LinearLayout>

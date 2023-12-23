@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/pieChart_layout"
             android:layout_centerHorizontal="true"
-            android:layout_marginHorizontal="@dimen/_70sdp"
+            android:layout_marginHorizontal="@dimen/_60sdp"
             android:layout_marginTop="@dimen/_10sdp"
             android:background="@drawable/button"
             android:gravity="center"

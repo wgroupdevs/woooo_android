@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/bottomSheet"
     android:layout_width="match_parent"
@@ -66,7 +67,7 @@
 
 
                     <ImageView
-                        android:id="@+id/nav_chat_btn"
+                        android:id="@+id/home_sheet_nav_chat_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/baseline_arrow_forward_24" />
@@ -80,13 +81,29 @@
                     android:layout_marginTop="@dimen/_7sdp"
                     android:src="@drawable/divider_ic" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/home_bottom_sheet_chat_recycler_view"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/_3sdp"
-                    android:orientation="vertical"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
+                    android:layout_height="match_parent">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/home_bottom_sheet_chat_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:orientation="vertical"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
+
+
+                    <TextView
+                        android:id="@+id/no_chat_found_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="No Chat Found"
+                        android:textAppearance="@style/TextAppearance.Conversations.Subhead"
+                        android:visibility="gone" />
+
+                </RelativeLayout>
 
 
             </LinearLayout>
@@ -119,7 +136,7 @@
 
 
                     <ImageView
-                        android:id="@+id/nav_call_btn"
+                        android:id="@+id/home_sheet_nav_call_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/baseline_arrow_forward_24" />
@@ -133,13 +150,29 @@
                     android:layout_marginTop="@dimen/_7sdp"
                     android:src="@drawable/divider_ic" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/home_bottom_sheet_call_logs_recycler_view"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/_3sdp"
-                    android:orientation="vertical"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
+                    android:layout_height="match_parent">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/home_bottom_sheet_call_logs_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:orientation="vertical"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+
+                    <TextView
+                        android:id="@+id/no_call_found_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="No Recent Calls"
+                        android:textAppearance="@style/TextAppearance.Conversations.Subhead"
+                        android:visibility="gone" />
+
+                </RelativeLayout>
 
 
             </LinearLayout>
@@ -171,7 +204,7 @@
 
 
                     <ImageView
-                        android:id="@+id/nav_meeting_btn"
+                        android:id="@+id/home_sheet_nav_meeting_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/baseline_arrow_forward_24" />
@@ -185,13 +218,29 @@
                     android:layout_marginTop="@dimen/_10sdp"
                     android:src="@drawable/divider_ic" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/home_bottom_sheet_meetings_recycler_view"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/_3sdp"
-                    android:orientation="vertical"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
+                    android:layout_height="match_parent">
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/home_bottom_sheet_meetings_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:orientation="vertical"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                    <TextView
+                        android:id="@+id/no_meeting_found_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="No Meeting"
+                        android:textAppearance="@style/TextAppearance.Conversations.Subhead"
+                        android:visibility="gone" />
+
+                </RelativeLayout>
 
 
             </LinearLayout>
@@ -223,7 +272,7 @@
 
 
                     <ImageView
-                        android:id="@+id/nav_wallet_btn"
+                        android:id="@+id/home_sheet_nav_wallet_btn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/baseline_arrow_forward_24" />
@@ -237,13 +286,28 @@
                     android:layout_marginTop="@dimen/_7sdp"
                     android:src="@drawable/divider_ic" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/home_bottom_sheet_wallet_activity_recycler_view"
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/_3sdp"
-                    android:orientation="vertical"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
+                    android:layout_height="match_parent">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/home_bottom_sheet_wallet_activity_recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/_3sdp"
+                        android:orientation="vertical"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                    <TextView
+                        android:id="@+id/no_transaction_found_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:text="No Recent Transaction"
+                        android:textAppearance="@style/TextAppearance.Conversations.Subhead"
+                        android:visibility="gone" />
+
+                </RelativeLayout>
 
 
             </LinearLayout>

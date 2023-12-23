@@ -358,6 +358,7 @@ public class WalletFragment extends BaseFragment implements
         pieDataSet.setDrawValues(false);
         pieDataSet.setColors(pieChartColorList);
         PieData data = new PieData(pieDataSet);
+        pieDataSet.setSliceSpace(1);
         pieChart.setData(data);
         updatePiChart();
     }
@@ -691,7 +692,7 @@ public class WalletFragment extends BaseFragment implements
         pieChartColorList.add(color);
         float balance = Float.parseFloat(token.getStringBalanceForUI(2).replaceAll(",", ""));
         Log.d(TAG, "TOKEN_BALANCE : " + balance + " CHAIN-ID : " + token.getChain() + " COLOR-CODE : " + color);
-        pieChartEntries.add(new PieEntry(balance, "", token.getChain()));
+        pieChartEntries.add(new PieEntry(1, "", token.getChain()));
         if (token.getChain() == WOOOO.CHAIN_ID) {
             Log.d(TAG, "DEFAULT_TOKEN_FOUND...");
             currentCardMeta = token;

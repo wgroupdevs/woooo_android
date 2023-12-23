@@ -19,7 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.lifecycle.ViewModelProvider;
@@ -737,9 +736,9 @@ public class GasSettingsActivity extends BaseActivity implements GasSettingsCall
 
         warningType = Warning.OFF;
 
-        EditText gas_price_entry = findViewById(R.id.gas_price_entry);
-        gas_price_entry.setTextColor(getColor(R.color.text_secondary));
-        gas_price_entry.setBackground(AppCompatResources.getDrawable(this, R.drawable.background_password_entry));
+//        EditText gas_price_entry = findViewById(R.id.gas_price_entry);
+//        gas_price_entry.setTextColor(getColor(R.color.text_secondary));
+//        gas_price_entry.setBackground(AppCompatResources.getDrawable(this, R.drawable.background_password_entry));
     }
 
     private void checkInsufficientGas(BigDecimal txCost)
