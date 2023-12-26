@@ -19,6 +19,7 @@ public final class Config {
 
     //    private static final int ENCRYPTION_MASK = UNENCRYPTED | OPENPGP | OMEMO;
     private static final int ENCRYPTION_MASK = UNENCRYPTED;
+    public static final boolean QUICK_LOG = false;
 
     public static boolean supportUnencrypted() {
         return (ENCRYPTION_MASK & UNENCRYPTED) != 0;

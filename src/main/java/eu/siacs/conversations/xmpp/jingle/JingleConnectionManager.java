@@ -137,7 +137,19 @@ public class JingleConnectionManager extends AbstractConnectionManager {
     private boolean isUsingClearNet(final Account account) {
         return !account.isOnion() && !mXmppConnectionService.useTorToConnect();
     }
-
+    public boolean hasJingleRtpConnection(final Account account) {
+        for (AbstractJingleConnection connection : this.connections.values()) {
+            if (connection instanceof JingleRtpConnection rtpConnection) {
+                if (rtpConnection.isTerminated()) {
+                    continue;
+                }
+                if (rtpConnection.id.account == account) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     public boolean isBusy() {
         if (mXmppConnectionService.isPhoneInCall()) {
             return true;

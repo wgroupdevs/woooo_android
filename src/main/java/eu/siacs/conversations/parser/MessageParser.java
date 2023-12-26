@@ -422,6 +422,8 @@ public class MessageParser extends AbstractParser implements OnMessagePacketRece
         final Element forwarded = packet.findChild("forwarded", Namespace.FORWARD);
         final Element reply = packet.findChild("reply", Namespace.REPLY);
         final Element translation = packet.findChild("translation");
+
+
         final String oobUrl = oob != null ? oob.findChildContent("url") : null;
         final String replacementId = replaceElement == null ? null : replaceElement.getAttribute("id");
         final Element axolotlEncrypted = packet.findChildEnsureSingle(XmppAxolotlMessage.CONTAINERTAG, AxolotlService.PEP_PREFIX);

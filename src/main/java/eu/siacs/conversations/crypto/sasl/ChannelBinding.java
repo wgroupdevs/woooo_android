@@ -39,7 +39,7 @@ public enum ChannelBinding {
         Preconditions.checkArgument(
                 channelBinding == null
                         || ("sasl-channel-binding".equals(channelBinding.getName())
-                                && Namespace.CHANNEL_BINDING.equals(channelBinding.getNamespace())),
+                        && Namespace.CHANNEL_BINDING.equals(channelBinding.getNamespace())),
                 "pass null or a valid channel binding stream feature");
         return Collections2.filter(
                 Collections2.transform(
@@ -85,10 +85,10 @@ public enum ChannelBinding {
             return TLS_EXPORTER;
         } else if (bindings.contains(TLS_UNIQUE)
                 && Arrays.asList(
-                                SSLSockets.Version.TLS_1_0,
-                                SSLSockets.Version.TLS_1_1,
-                                SSLSockets.Version.TLS_1_2)
-                        .contains(sslVersion)) {
+                        SSLSockets.Version.TLS_1_0,
+                        SSLSockets.Version.TLS_1_1,
+                        SSLSockets.Version.TLS_1_2)
+                .contains(sslVersion)) {
             return TLS_UNIQUE;
         } else if (bindings.contains(TLS_SERVER_END_POINT)) {
             return TLS_SERVER_END_POINT;
@@ -115,6 +115,16 @@ public enum ChannelBinding {
                 return "NONE";
             default:
                 throw new AssertionError("Missing short name for " + channelBinding);
+        }
+    }
+
+    public static int priority(final ChannelBinding channelBinding) {
+        if (Arrays.asList(TLS_EXPORTER,TLS_UNIQUE).contains(channelBinding)) {
+            return 2;
+        } else if (channelBinding == ChannelBinding.TLS_SERVER_END_POINT) {
+            return 1;
+        } else {
+            return 0;
         }
     }
 }

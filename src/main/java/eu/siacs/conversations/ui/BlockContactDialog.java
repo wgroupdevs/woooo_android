@@ -14,29 +14,53 @@ import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.ui.util.JidDialog;
 
 public final class BlockContactDialog {
+
 	public static void show(final XmppActivity xmppActivity, final Blockable blockable) {
+		show(xmppActivity, blockable, null);
+	}
+	public static void show(final XmppActivity xmppActivity, final Blockable blockable, final String serverMsgId) {
 		final AlertDialog.Builder builder = new AlertDialog.Builder(xmppActivity);
 		final boolean isBlocked = blockable.isBlocked();
 		builder.setNegativeButton(R.string.cancel, null);
 		DialogBlockContactBinding binding = DataBindingUtil.inflate(xmppActivity.getLayoutInflater(), R.layout.dialog_block_contact, null, false);
 		final boolean reporting = blockable.getAccount().getXmppConnection().getFeatures().spamReporting();
-		binding.reportSpam.setVisibility(!isBlocked && reporting ? View.VISIBLE : View.GONE);
+		if (reporting && !isBlocked) {
+			binding.reportSpam.setVisibility(View.VISIBLE);
+			if (serverMsgId != null) {
+				binding.reportSpam.setChecked(true);
+				binding.reportSpam.setEnabled(false);
+			} else {
+				binding.reportSpam.setEnabled(true);
+			}
+		} else {
+			binding.reportSpam.setVisibility(View.GONE);
+		}
 		builder.setView(binding.getRoot());
 
 		final String value;
 		@StringRes int res;
 		if (blockable.getJid().isFullJid()) {
 			builder.setTitle(isBlocked ? R.string.action_unblock_participant : R.string.action_block_participant);
-			value = blockable.getJid().getLocal();
+			value = blockable.getJid().toEscapedString();
 			res = isBlocked ? R.string.unblock_contact_text : R.string.block_contact_text;
 		} else if (blockable.getJid().getLocal() == null || blockable.getAccount().isBlocked(blockable.getJid().getDomain())) {
 			builder.setTitle(isBlocked ? R.string.action_unblock_domain : R.string.action_block_domain);
 			value =blockable.getJid().getDomain().toEscapedString();
 			res = isBlocked ? R.string.unblock_domain_text : R.string.block_domain_text;
 		} else {
-			int resBlockAction = blockable instanceof Conversation && ((Conversation) blockable).isWithStranger() ? R.string.block_stranger : R.string.action_block_contact;
-			builder.setTitle(isBlocked ? R.string.action_unblock_contact : resBlockAction);
-			value = blockable.getJid().getLocal();
+			if (isBlocked) {
+				builder.setTitle(R.string.action_unblock_contact);
+			} else if (serverMsgId != null) {
+				builder.setTitle(R.string.report_spam_and_block);
+			} else {
+				final int resBlockAction =
+						blockable instanceof Conversation
+								&& ((Conversation) blockable).isWithStranger()
+								? R.string.block_stranger
+								: R.string.action_block_contact;
+				builder.setTitle(resBlockAction);
+			}
+			value = blockable.getJid().asBareJid().toEscapedString();
 			res = isBlocked ? R.string.unblock_contact_text : R.string.block_contact_text;
 		}
 		binding.text.setText(JidDialog.style(xmppActivity, res, value));
@@ -45,7 +69,7 @@ public final class BlockContactDialog {
 				xmppActivity.xmppConnectionService.sendUnblockRequest(blockable);
 			} else {
 				boolean toastShown = false;
-				if (xmppActivity.xmppConnectionService.sendBlockRequest(blockable, binding.reportSpam.isChecked())) {
+				if (xmppActivity.xmppConnectionService.sendBlockRequest(blockable, binding.reportSpam.isChecked(), serverMsgId)) {
 					Toast.makeText(xmppActivity, R.string.corresponding_conversations_closed, Toast.LENGTH_SHORT).show();
 					toastShown = true;
 				}

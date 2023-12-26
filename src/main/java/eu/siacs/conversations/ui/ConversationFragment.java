@@ -685,37 +685,41 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         }
     }
 
+
     private void attachLocationToConversation(Conversation conversation, Uri uri) {
         if (conversation == null) {
             return;
         }
+
         if (reply) {
             selectedMessage.setReply(true);
             this.binding.replyMessageBox.setVisibility(View.GONE);
             reply = false;
         }
-        activity.xmppConnectionService.attachLocationToConversation(selectedMessage, conversation, uri, new UiCallback<Message>() {
+        activity.xmppConnectionService.attachLocationToConversation(
+                conversation,
+                uri,
+                new UiCallback<Message>() {
 
-            @Override
-            public void success(Message message) {
-            }
+                    @Override
+                    public void success(Message message) {}
 
-            @Override
-            public void error(int errorCode, Message object) {
-                // TODO show possible pgp error
-            }
+                    @Override
+                    public void error(int errorCode, Message object) {
+                        // TODO show possible pgp error
+                    }
 
-            @Override
-            public void userInputRequired(PendingIntent pi, Message object) {
-            }
-        });
+                    @Override
+                    public void userInputRequired(PendingIntent pi, Message object) {}
+                });
     }
 
     private void attachFileToConversation(Conversation conversation, Uri uri, String type) {
         if (conversation == null) {
             return;
         }
-        final Toast prepareFileToast = Toast.makeText(getActivity(), getText(R.string.preparing_file), Toast.LENGTH_LONG);
+        final Toast prepareFileToast =
+                Toast.makeText(getActivity(), getText(R.string.preparing_file), Toast.LENGTH_LONG);
         prepareFileToast.show();
         activity.delegateUriPermissionsToService(uri);
 
@@ -724,31 +728,37 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             this.binding.replyMessageBox.setVisibility(View.GONE);
             reply = false;
         }
-        activity.xmppConnectionService.attachFileToConversation(selectedMessage, conversation, uri, type, new UiInformableCallback<Message>() {
-            @Override
-            public void inform(final String text) {
-                hidePrepareFileToast(prepareFileToast);
-                runOnUiThread(() -> activity.replaceToast(text));
-            }
+        activity.xmppConnectionService.attachFileToConversation(
+                conversation,
+                uri,
+                type,
+                new UiInformableCallback<Message>() {
+                    @Override
+                    public void inform(final String text) {
+                        hidePrepareFileToast(prepareFileToast);
+                        runOnUiThread(() -> activity.replaceToast(text));
+                    }
 
-            @Override
-            public void success(Message message) {
-                runOnUiThread(() -> activity.hideToast());
-                hidePrepareFileToast(prepareFileToast);
-            }
+                    @Override
+                    public void success(Message message) {
+                        runOnUiThread(() -> activity.hideToast());
+                        hidePrepareFileToast(prepareFileToast);
+                    }
 
-            @Override
-            public void error(final int errorCode, Message message) {
-                hidePrepareFileToast(prepareFileToast);
-                runOnUiThread(() -> activity.replaceToast(getString(errorCode)));
-            }
+                    @Override
+                    public void error(final int errorCode, Message message) {
+                        hidePrepareFileToast(prepareFileToast);
+                        runOnUiThread(() -> activity.replaceToast(getString(errorCode)));
+                    }
 
-            @Override
-            public void userInputRequired(PendingIntent pi, Message message) {
-                hidePrepareFileToast(prepareFileToast);
-            }
-        });
+                    @Override
+                    public void userInputRequired(PendingIntent pi, Message message) {
+                        hidePrepareFileToast(prepareFileToast);
+                    }
+                });
     }
+
+
 
     public void attachEditorContentToConversation(Uri uri) {
         mediaPreviewAdapter.addMediaPreviews(Attachment.of(getActivity(), uri, Attachment.Type.FILE));
@@ -759,7 +769,8 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
         if (conversation == null) {
             return;
         }
-        final Toast prepareFileToast = Toast.makeText(getActivity(), getText(R.string.preparing_image), Toast.LENGTH_LONG);
+        final Toast prepareFileToast =
+                Toast.makeText(getActivity(), getText(R.string.preparing_image), Toast.LENGTH_LONG);
         prepareFileToast.show();
         activity.delegateUriPermissionsToService(uri);
 
@@ -768,34 +779,34 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
             this.binding.replyMessageBox.setVisibility(View.GONE);
             reply = false;
         }
-        activity.xmppConnectionService.attachImageToConversation(selectedMessage, conversation, uri, type, new UiCallback<Message>() {
-            @Override
-            public void userInputRequired(PendingIntent pi, Message object) {
-                hidePrepareFileToast(prepareFileToast);
-            }
+        activity.xmppConnectionService.attachImageToConversation(
+                conversation,
+                uri,
+                type,
+                new UiCallback<Message>() {
 
-            @Override
-            public void success(Message message) {
+                    @Override
+                    public void userInputRequired(PendingIntent pi, Message object) {
+                        hidePrepareFileToast(prepareFileToast);
+                    }
 
+                    @Override
+                    public void success(Message message) {
+                        hidePrepareFileToast(prepareFileToast);
+                    }
 
-                Log.d(TAG,"AttachImageToConversation : " +uri);
-                Log.d(TAG,"AttachImageToConversation : " +message.getFileParams().url);
-
-
-                hidePrepareFileToast(prepareFileToast);
-            }
-
-            @Override
-            public void error(final int error, final Message message) {
-                hidePrepareFileToast(prepareFileToast);
-                final ConversationsActivity activity = ConversationFragment.this.activity;
-                if (activity == null) {
-                    return;
-                }
-                activity.runOnUiThread(() -> activity.replaceToast(getString(error)));
-            }
-        });
+                    @Override
+                    public void error(final int error, final Message message) {
+                        hidePrepareFileToast(prepareFileToast);
+                        final ConversationsActivity activity = ConversationFragment.this.activity;
+                        if (activity == null) {
+                            return;
+                        }
+                        activity.runOnUiThread(() -> activity.replaceToast(getString(error)));
+                    }
+                });
     }
+
 
     private void hidePrepareFileToast(final Toast prepareFileToast) {
         if (prepareFileToast != null && activity != null) {
@@ -804,6 +815,12 @@ public class ConversationFragment extends XmppFragment implements EditMessage.Ke
     }
 
     private void sendMessage() {
+
+        Log.d(TAG, "sendMessage Translation :"+translation);
+        Log.d(TAG, "sendMessage Reply :"+reply);
+
+
+
         if (mediaPreviewAdapter.hasAttachments()) {
             commitAttachments();
             return;

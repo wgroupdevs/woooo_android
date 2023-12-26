@@ -1904,7 +1904,6 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
                 final String password = binding.accountPassword.getText().toString();
                 loginAPIResponseJAVA = (LoginAPIResponseJAVA) result;
                 UserBasicInfo userBasicInfo = loginAPIResponseJAVA.getData().getUser();
-
                 if (!userBasicInfo.isVarified) {
                     Intent intent = new Intent(getApplicationContext(), OTPVerificationActivity.class);
                     intent.putExtra(OTPVerificationActivity.EMAIL, userBasicInfo.email);
