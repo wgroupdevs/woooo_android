@@ -57,6 +57,7 @@ import eu.siacs.conversations.ui.adapter.ConversationAdapter
 import eu.siacs.conversations.ui.adapter.ScheduledMeetingAdapter
 import eu.siacs.conversations.ui.util.AvatarWorkerTask
 import eu.siacs.conversations.ui.util.PresenceSelector
+import eu.siacs.conversations.ui.util.ShareUtil
 import eu.siacs.conversations.xml.Namespace
 import eu.siacs.conversations.xmpp.Jid
 import eu.siacs.conversations.xmpp.jingle.RtpCapability
@@ -362,7 +363,7 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
         if (::bottomSheetBehavior.isInitialized) {
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
-            Log.d(TAG,"hideBottomSheet ..... ");
+            Log.d(TAG, "hideBottomSheet ..... ");
 
         }
     }
@@ -539,6 +540,13 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
 
             val logoutButton =
                 headerLayout.findViewById<LinearLayout>(R.id.header_logout_bt)
+
+            val inviteFriendButton =
+                headerLayout.findViewById<LinearLayout>(R.id.header_invite_friend_bt)
+
+            val feedbackButton =
+                headerLayout.findViewById<LinearLayout>(R.id.header_help_bt)
+
             nameTextView.text = getDisplayName()
             emailTextView.text = "${mAccount?.userEmail}"
             AvatarWorkerTask.loadAvatar(
@@ -553,6 +561,17 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
                 intent.putExtra("jid", mAccount?.jid?.asBareJid().toString())
                 intent.putExtra("init", false)
                 startActivity(intent)
+            }
+
+
+
+            inviteFriendButton.setOnClickListener {
+                ShareUtil.shareAPPLink(this@WooHomeActivity)
+
+            }
+            feedbackButton.setOnClickListener {
+                ShareUtil.openMail(this@WooHomeActivity)
+
             }
 
             logoutButton.setOnClickListener {
@@ -684,7 +703,6 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
         }
         newIntent.putExtra(ConversationsActivity.EXTRA_CIRCLE_MENU_INDEX, index)
         startActivity(newIntent)
-
 
 
     }
@@ -837,6 +855,7 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
         intent.putExtra("meetingName", meeting.meetingName)
         intent.putExtra("meetingId", meeting.meetingId)
         intent.putExtra("joining", false)
+        intent.putExtra(MeetingActivity.EXTRA_MEETING_SCHEDULED, true)
         startActivity(intent)
 
     }

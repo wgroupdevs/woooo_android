@@ -223,6 +223,12 @@ public class ConversationsActivity extends XmppActivity implements OnConversatio
     }
 
     public static boolean isContactInfoSet(Contact contact) {
+
+
+        Log.d(TAG,"CONTACT_PRESENCE :" +contact.getOption(Contact.Options.FROM));
+        Log.d(TAG,"CONTACT_PRESENCE :" +contact.getOption(Contact.Options.PENDING_SUBSCRIPTION_REQUEST));
+        Log.d(TAG,"CONTACT_PRESENCE :" +contact.getAccount().isOnlineAndConnected());
+
         boolean status = true;
         String name = contact.getDisplayName();
         Pattern pattern = Pattern.compile("^[0-9+].*");

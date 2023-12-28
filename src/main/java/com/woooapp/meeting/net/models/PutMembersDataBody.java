@@ -22,6 +22,17 @@ public class PutMembersDataBody implements Serializable {
     private String socketId;
     private String language;
 
+    private boolean isScheduled = false;
+
+    public boolean isScheduled() {
+        return isScheduled;
+    }
+
+    public void setScheduled(boolean scheduled) {
+        this.isScheduled = scheduled;
+    }
+
+
     public String getAccountUniqueId() {
         return accountUniqueId;
     }
@@ -80,11 +91,11 @@ public class PutMembersDataBody implements Serializable {
                 ", picture='" + picture + '\'' +
                 ", socketId='" + socketId + '\'' +
                 ", language='" + language + '\'' +
+                ", isScheduled='" + isScheduled + '\'' +
                 '}';
     }
 
     /**
-     *
      * @return
      * @throws JsonProcessingException
      */
@@ -93,4 +104,6 @@ public class PutMembersDataBody implements Serializable {
         return Json.serailize(this);
     }
 
-} /** end class. */
+} /**
+ * end class.
+ */

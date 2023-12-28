@@ -85,36 +85,36 @@
         android:layout_marginTop="@dimen/_10sdp"
         android:src="@drawable/divider_ic" />
 
-    <!--    Settings-->
-    <LinearLayout
-        android:id="@+id/header_settings_bt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:background="@drawable/bg_border"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="@dimen/_10sdp">
-        <!--on below line we are creating an image button-->
-        <ImageButton
-            android:layout_width="@dimen/_24sdp"
-            android:layout_height="@dimen/_24sdp"
-            android:layout_marginRight="@dimen/_5sdp"
-            android:background="@drawable/ic_settings_white_24dp"
-            android:padding="10dp" />
-        <!--on below line we are creating a
-             text for our image button-->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clickable="false"
-            android:text="Settings"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
+<!--    &lt;!&ndash;    Settings&ndash;&gt;-->
+<!--    <LinearLayout-->
+<!--        android:id="@+id/header_settings_bt"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="@dimen/_10sdp"-->
+<!--        android:background="@drawable/bg_border"-->
+<!--        android:gravity="center_vertical"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:padding="@dimen/_10sdp">-->
+<!--        &lt;!&ndash;on below line we are creating an image button&ndash;&gt;-->
+<!--        <ImageButton-->
+<!--            android:layout_width="@dimen/_24sdp"-->
+<!--            android:layout_height="@dimen/_24sdp"-->
+<!--            android:layout_marginRight="@dimen/_5sdp"-->
+<!--            android:background="@drawable/ic_settings_white_24dp"-->
+<!--            android:padding="10dp" />-->
+<!--        &lt;!&ndash;on below line we are creating a-->
+<!--             text for our image button&ndash;&gt;-->
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:clickable="false"-->
+<!--            android:text="Settings"-->
+<!--            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textStyle="bold" />-->
 
 
-    </LinearLayout>
+<!--    </LinearLayout>-->
 
     <!--    Invite friend-->
     <LinearLayout

@@ -53,6 +53,7 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -304,7 +305,7 @@ public class ConversationsOverviewFragment extends XmppFragment {
         this.binding.noChatFound.setOnClickListener((view) -> StartConversationActivity.launch(getActivity()));
         Log.d(TAG, "TOTAL CONVERSATIONS : " + this.conversations.size());
 
-        this.conversationsAdapter = new ConversationAdapter(this.activity, this.conversations,false);
+        this.conversationsAdapter = new ConversationAdapter(this.activity, this.conversations, false);
 
         this.conversationsAdapter.setConversationClickListener((view, conversation) -> {
             if (activity instanceof OnConversationSelected) {
@@ -317,6 +318,13 @@ public class ConversationsOverviewFragment extends XmppFragment {
             }
         });
         this.binding.list.setAdapter(this.conversationsAdapter);
+
+
+        DividerItemDecoration divider = new DividerItemDecoration( this.binding.list.getContext(), DividerItemDecoration.VERTICAL);
+        divider.setDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.divider_ic));
+        this.binding.list.addItemDecoration(divider);
+
+
         this.binding.list.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         this.touchHelper = new ItemTouchHelper(this.callback);
         this.touchHelper.attachToRecyclerView(this.binding.list);
@@ -458,8 +466,6 @@ public class ConversationsOverviewFragment extends XmppFragment {
             this.binding.noChatFound.setVisibility(View.GONE);
         }
     }
-
-
 
 
     private void setScrollPosition(ScrollState scrollPosition) {

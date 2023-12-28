@@ -226,6 +226,7 @@ class ScheduleMeetingFragment : Fragment(),
         intent.putExtra("meetingName", meeting?.meetingName)
         intent.putExtra("meetingId", meeting?.meetingId)
         intent.putExtra("joining", false)
+        intent.putExtra(MeetingActivity.EXTRA_MEETING_SCHEDULED, true)
         startActivity(intent)
 
     }

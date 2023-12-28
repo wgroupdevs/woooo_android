@@ -126,6 +126,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private static final int PERMISSION_NOTIFICATION_CODE = 0x7e;
     private static final int MEETING_NOTIFICATION_ID = 0x9f;
     private static final int PERMISSION_CAPTURE_RESULT_CODE = 0x99;
+    public static final String EXTRA_MEETING_SCHEDULED = "meeting_scheduled";
     private MeetingClient mMeetingClient;
     private CreateMeetingResponse createMeetingResponse;
     private PutMembersDataResponse putMembersDataResponse;
@@ -133,6 +134,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private RoomOptions mOptions;
     private RoomStore mRoomStore;
     private boolean joining = false;
+    private boolean isMeetingScheduled = false;
     private String email;
     private String username;
     private String accountUniqueId;
@@ -491,6 +493,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             picture = "";
         }
         this.joining = getIntent().getBooleanExtra("joining", false);
+        this.isMeetingScheduled = getIntent().getBooleanExtra(EXTRA_MEETING_SCHEDULED, false);
         this.mMeetingId = getIntent().getStringExtra("meetingId");
         this.meetingName = getIntent().getStringExtra("meetingName");
         if (meetingName != null) {
@@ -971,6 +974,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         body.setUsername(this.username);
         body.setPicture(this.picture);
         body.setSocketId(mMeetingClient.getSocketId());
+        body.setScheduled(this.isMeetingScheduled);
         body.setLanguage(this.selectedLanguageCode);
 
         Log.d(TAG, "<< PUT Member >>> " + body.toString());
@@ -1429,7 +1433,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                         Log.d(TAG, "<< SERVICE DISCONNECTED >>>");
                     }
                 }, BIND_AUTO_CREATE);
-            }  else {
+            } else {
                 Log.w(TAG, "Capturer already exist ...");
                 mMeetingClient.shareScreen(true, capturer, dm);
             }

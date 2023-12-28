@@ -38,7 +38,7 @@ import eu.siacs.conversations.ui.util.MenuDoubleTabUtil;
 import eu.siacs.conversations.xmpp.Jid;
 import eu.siacs.conversations.xmpp.XmppConnection;
 
-public class ManageAccountActivity extends XmppActivity implements OnAccountUpdate, KeyChainAliasCallback, XmppConnectionService.OnAccountCreated, AccountAdapter.OnTglAccountState {
+public class ManageAccountActivity extends XmppActivity implements OnAccountUpdate, KeyChainAliasCallback, XmppConnectionService.OnAccountCreated, AccountAdapter.OnTglAccountState, AccountAdapter.OnDeleteAccountButtonClick {
 
     private final String STATE_SELECTED_ACCOUNT = "selected_account";
     private final String TAG = "ManageAccountActivity";
@@ -100,7 +100,7 @@ public class ManageAccountActivity extends XmppActivity implements OnAccountUpda
         accountListView.setOnItemClickListener((arg0, view, position, arg3) -> switchToAccount(accountList.get(position)));
         registerForContextMenu(accountListView);
 
-        Log.d(TAG,"onCreate called");
+        Log.d(TAG, "onCreate called");
     }
 
     @Override
@@ -255,7 +255,7 @@ public class ManageAccountActivity extends XmppActivity implements OnAccountUpda
     public boolean onNavigateUp() {
         if (xmppConnectionService.getConversations().size() == 0) {
 
-            Log.d(TAG,"onNavigateUp Called");
+            Log.d(TAG, "onNavigateUp Called");
             Intent contactsIntent = new Intent(this,
                     StartConversationActivity.class);
             contactsIntent.setFlags(
@@ -415,5 +415,10 @@ public class ManageAccountActivity extends XmppActivity implements OnAccountUpda
     @Override
     public void informUser(final int r) {
         runOnUiThread(() -> Toast.makeText(ManageAccountActivity.this, r, Toast.LENGTH_LONG).show());
+    }
+
+    @Override
+    public void onClickDeleteAccount(Account account) {
+        deleteAccount(account);
     }
 }

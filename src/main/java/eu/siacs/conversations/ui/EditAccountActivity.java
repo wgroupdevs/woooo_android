@@ -51,6 +51,7 @@ import com.alphawallet.app.viewmodel.CreateWalletViewModel;
 import com.alphawallet.app.viewmodel.CustomNetworkViewModel;
 import com.google.android.material.textfield.TextInputLayout;
 import com.hbb20.CountryCodePicker;
+import com.woooapp.meeting.impl.views.popups.WooProgressDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -201,6 +202,9 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         startActivity(intent);
     };
     private ProgressDialog progressDialog;
+
+    private WooProgressDialog wooProgressDialog;
+
 
     private CustomNetworkViewModel customNetworkViewModel;
     private CreateWalletViewModel createWalletViewModel;
@@ -875,6 +879,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         if (mInitMode) {
             isLoginWithEmail = false;
             binding.editProfileLayout.setVisibility(View.GONE);
+            binding.addRemoveIcon.setVisibility(View.GONE);
             binding.toolbarEditAccount.setVisibility(View.GONE);
             binding.countryCodetv.setVisibility(View.VISIBLE);
             binding.loginWithPhoneLayout.setVisibility(View.VISIBLE);
@@ -891,10 +896,10 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
         } else {
             binding.editProfileLayout.setVisibility(View.VISIBLE);
-            binding.menuButton.setVisibility(View.VISIBLE);
-            binding.menuButton.setOnClickListener(v -> {
-                showEditProfileMenu();
-            });
+//            binding.menuButton.setVisibility(View.VISIBLE);
+//            binding.menuButton.setOnClickListener(v -> {
+//                showEditProfileMenu();
+//            });
             binding.editProfileSaveBtn.setOnClickListener(v -> {
                 if (validateProfileFormData()) {
                     updateAccountInfo();
@@ -934,7 +939,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
 
     void showEditProfileMenu() {
 
-        PopupMenu popupMenu = new PopupMenu(EditAccountActivity.this, binding.menuButton);
+        PopupMenu popupMenu = new PopupMenu(EditAccountActivity.this, binding.accountJid);
         popupMenu.getMenuInflater().inflate(R.menu.edit_profile_menu, popupMenu.getMenu());
 
         popupMenu.setOnMenuItemClickListener(menuItem -> {
@@ -1688,6 +1693,11 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             final TextInputLayout errorLayout;
             if (this.mAccount.errorStatus()) {
                 if (this.mAccount.getStatus() == Account.State.UNAUTHORIZED || this.mAccount.getStatus() == Account.State.DOWNGRADE_ATTACK) {
+
+
+
+
+
                     errorLayout = this.binding.accountPasswordLayout;
                 }
 //                else if (mShowOptions && this.mAccount.getStatus() == Account.State.SERVER_NOT_FOUND && this.binding.hostname.getText().length() > 0) {

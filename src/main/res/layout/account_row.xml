@@ -11,11 +11,11 @@
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/account_image"
-            android:layout_width="@dimen/_100sdp"
-            android:layout_height="@dimen/_100sdp"
+            android:layout_width="@dimen/_160sdp"
+            android:layout_height="@dimen/_160sdp"
             android:background="@drawable/app_logo"
             android:contentDescription="@string/account_image_description"
-            app:riv_corner_radius="@dimen/_15sdp" />
+            app:riv_corner_radius="@dimen/_100sdp" />
 
 
         <TextView
@@ -23,9 +23,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
+            android:hint="Display Name"
             android:scrollHorizontally="false"
             android:singleLine="true"
             android:textAppearance="@style/TextAppearance.Conversations.Title" />
+
+        <TextView
+            android:id="@+id/phone_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:hint="xxx xxxxxxx"
+            android:scrollHorizontally="false"
+            android:singleLine="true"
+            android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
 
         <TextView
             android:id="@+id/account_status"
@@ -33,13 +44,22 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
             android:text="@string/account_status_unknown"
-            android:textAppearance="@style/TextAppearance.Conversations.Body2" />
+            android:textAppearance="@style/TextAppearance.Conversations.Body2"
+            android:textColor="@color/white87" />
+
+        <!--        Divider-->
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_20sdp"
+            android:src="@drawable/divider_ic" />
+
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/tgl_account_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_15sdp"
             android:background="@drawable/bg_border"
             android:focusable="false"
             android:padding="@dimen/_12sdp"
@@ -47,20 +67,39 @@
             android:textAppearance="@style/TextAppearance.Conversations.Subhead"
             android:textColor="@color/white" />
 
-<!--        <LinearLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="@dimen/_10sdp"-->
-<!--            android:background="@drawable/bg_border">-->
+        <!--        Divider-->
 
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:padding="@dimen/_12sdp"-->
-<!--                android:text="Delete account"-->
-<!--                android:textAppearance="@style/TextAppearance.Conversations.Subhead"-->
-<!--                android:textColor="@color/white" />-->
-<!--        </LinearLayout>-->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/_20sdp"
+            android:src="@drawable/divider_ic" />
+
+        <Button
+            android:id="@+id/delete_account_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:text="Delete Account"
+            android:textAllCaps="false"
+
+            />
+
+
+        <!--        <LinearLayout-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_marginTop="@dimen/_10sdp"-->
+        <!--            android:background="@drawable/bg_border">-->
+
+        <!--            <TextView-->
+        <!--                android:layout_width="wrap_content"-->
+        <!--                android:layout_height="wrap_content"-->
+        <!--                android:padding="@dimen/_12sdp"-->
+        <!--                android:text="Delete account"-->
+        <!--                android:textAppearance="@style/TextAppearance.Conversations.Subhead"-->
+        <!--                android:textColor="@color/white" />-->
+        <!--        </LinearLayout>-->
 
 
     </LinearLayout>

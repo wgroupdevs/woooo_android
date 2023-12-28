@@ -440,6 +440,7 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
         }
 
         binding.detailsContactjid.setText(contact.getDisplayName());
+        binding.detailsContactPhone.setText(contact.getPhoneNumber());
         String account;
         if (Config.DOMAIN_LOCK != null) {
             account = contact.getAccount().getJid().getEscapedLocal();
@@ -448,7 +449,8 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
         }
 //        binding.detailsAccount.setText(getString(R.string.using_account, account));
         AvatarWorkerTask.loadAvatar(contact, binding.detailsContactBadge, R.dimen.avatar_on_details_screen_size);
-        binding.detailsContactBadge.setOnClickListener(this::onBadgeClick);
+
+//        binding.detailsContactBadge.setOnClickListener(this::onBadgeClick);
 
 //        binding.detailsContactKeys.removeAllViews();
         boolean hasKeys = false;
@@ -615,12 +617,8 @@ public class ContactDetailsActivity extends OmemoActivity implements OnAccountUp
                         SearchAccountAPIResponse apiResponse = ((SearchAccountAPIResponse) searchAccount);
 
                         UserBasicInfo user = apiResponse.Data;
-
-
                         this.contact.setEmail(user.email);
                         this.contact.setPhoneNumber(user.phoneNumber);
-
-
                         Log.d("SEARCH_ACCOUNT_API ", " SearchAccountAPIResponse Called in EditActivity " + apiResponse.Message);
                         Log.d("SEARCH_ACCOUNT_API ", " SearchAccountAPIResponse Called in EditActivity " + user.jid);
                         Log.d("SEARCH_ACCOUNT_API ", " SearchAccountAPIResponse Called in EditActivity " + user.email);

@@ -110,7 +110,6 @@
                 android:text="---"
                 android:textAppearance="@style/TextAppearance.Conversations.Subhead"
                 android:textColor="@color/white"
-
                 />
         </LinearLayout>
 

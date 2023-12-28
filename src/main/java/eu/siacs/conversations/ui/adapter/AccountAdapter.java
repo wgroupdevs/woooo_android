@@ -47,12 +47,14 @@ public class AccountAdapter extends ArrayAdapter<Account> {
             viewHolder = (ViewHolder) view.getTag();
         }
         viewHolder.binding.displayName.setText(account.getDisplayName());
+        viewHolder.binding.phoneNumber.setText(account.getUserPhone());
+        viewHolder.binding.deleteAccountBtn.setOnClickListener(v -> ((OnDeleteAccountButtonClick) activity).onClickDeleteAccount(account));
 
         AvatarWorkerTask.loadAvatar(account, viewHolder.binding.accountImage, R.dimen.avatar);
         viewHolder.binding.accountStatus.setText(getContext().getString(account.getStatus().getReadableId()));
         switch (account.getStatus()) {
             case ONLINE:
-                viewHolder.binding.accountStatus.setTextColor(StyledAttributes.getColor(activity,android.R.attr.textColorPrimary ));
+                viewHolder.binding.accountStatus.setTextColor(StyledAttributes.getColor(activity, android.R.attr.textColorPrimary));
                 break;
             case DISABLED:
             case CONNECTING:
@@ -87,9 +89,12 @@ public class AccountAdapter extends ArrayAdapter<Account> {
     }
 
 
-
     public interface OnTglAccountState {
         void onClickTglAccountState(Account account, boolean state);
+    }
+
+    public interface OnDeleteAccountButtonClick {
+        void onClickDeleteAccount(Account account);
     }
 
 }
