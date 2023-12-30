@@ -72,6 +72,8 @@ import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.Message;
 import eu.siacs.conversations.entities.Presences;
+import eu.siacs.conversations.http.services.BaseModelAPIResponse;
+import eu.siacs.conversations.http.services.WooAPIService;
 import eu.siacs.conversations.services.AvatarService;
 import eu.siacs.conversations.services.BarcodeProvider;
 import eu.siacs.conversations.services.EmojiInitializationService;
@@ -91,7 +93,7 @@ import eu.siacs.conversations.xmpp.Jid;
 import eu.siacs.conversations.xmpp.OnKeyStatusUpdated;
 import eu.siacs.conversations.xmpp.OnUpdateBlocklist;
 
-public abstract class XmppActivity extends ActionBarActivity {
+public abstract class XmppActivity extends ActionBarActivity implements WooAPIService.OnDeleteAccountAPiResult {
 
     public static final String EXTRA_ACCOUNT = "account";
     protected static final int REQUEST_ANNOUNCE_PGP = 0x0101;
@@ -111,6 +113,8 @@ public abstract class XmppActivity extends ActionBarActivity {
     protected boolean mUsingEnterKey = false;
     protected boolean mUseTor = false;
     protected Toast mToast;
+    private AlertDialog deleteAccountDialog;
+    private Button deleteButton;
     public Runnable onOpenPGPKeyPublished = () -> Toast.makeText(XmppActivity.this, R.string.openpgp_has_been_published, Toast.LENGTH_SHORT).show();
     protected ConferenceInvite mPendingConferenceInvite = null;
     protected ServiceConnection mConnection = new ServiceConnection() {
@@ -162,7 +166,7 @@ public abstract class XmppActivity extends ActionBarActivity {
 
         if (bitmapWorkerTask != null) {
 
-            Log.d(TAG,"bitmapWorkerTask Found : " +bitmapWorkerTask.toString());
+            Log.d(TAG, "bitmapWorkerTask Found : " + bitmapWorkerTask.toString());
             final Message oldMessage = bitmapWorkerTask.message;
             if (oldMessage == null || message != oldMessage) {
                 bitmapWorkerTask.cancel(true);
@@ -316,51 +320,52 @@ public abstract class XmppActivity extends ActionBarActivity {
         builder.setTitle(R.string.mgmt_account_delete);
         builder.setPositiveButton(getString(R.string.delete), null);
         builder.setNegativeButton(getString(R.string.cancel), null);
-        final AlertDialog dialog = builder.create();
-        dialog.setOnShowListener(dialogInterface -> {
-            final Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-            button.setOnClickListener(v -> {
-                final boolean unregister = deleteFromServer.isChecked();
-                if (unregister) {
-                    if (account.isOnlineAndConnected()) {
-                        deleteFromServer.setEnabled(false);
-                        button.setText(R.string.please_wait);
-                        button.setEnabled(false);
-                        xmppConnectionService.unregisterAccount(account, result -> {
-                            if (result) {
-                                dialog.dismiss();
-                                if (postDelete != null) {
-                                    postDelete.run();
-                                }
-                                if (xmppConnectionService.getAccounts().size() == 0 && Config.MAGIC_CREATE_DOMAIN != null) {
-                                    final Intent intent = SignupUtils.getSignUpIntent(this);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
-                                }
-                            } else {
-                                deleteFromServer.setEnabled(true);
-                                button.setText(R.string.delete);
-                                button.setEnabled(true);
-                                Toast.makeText(this, R.string.could_not_delete_account_from_server, Toast.LENGTH_LONG).show();
-                            }
-                        });
-                    } else {
-                        Toast.makeText(this, R.string.not_connected_try_again, Toast.LENGTH_LONG).show();
-                    }
+        deleteAccountDialog = builder.create();
+        deleteAccountDialog.setOnShowListener(dialogInterface -> {
+            deleteButton = deleteAccountDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+            deleteButton.setOnClickListener(v -> {
+                if (account.isOnlineAndConnected()) {
+                    deleteFromServer.setEnabled(false);
+                    deleteButton.setText(R.string.please_wait);
+                    deleteButton.setEnabled(false);
+                    WooAPIService wooAPIService = WooAPIService.getInstance();
+                    wooAPIService.deleteAccount(account.getAccountId(), this);
                 } else {
-                    xmppConnectionService.deleteAccount(account);
-                    dialog.dismiss();
-                    if (xmppConnectionService.getAccounts().size() == 0 && Config.MAGIC_CREATE_DOMAIN != null) {
-                        final Intent intent = SignupUtils.getSignUpIntent(this);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                    } else if (postDelete != null) {
-                        postDelete.run();
-                    }
+                    Toast.makeText(this, R.string.not_connected_try_again, Toast.LENGTH_LONG).show();
                 }
+
             });
         });
-        dialog.show();
+        deleteAccountDialog.show();
+    }
+
+
+    @Override
+    public <T> void onDeleteAccountResultFound(T result) {
+
+        runOnUiThread(() -> {
+            if (result != null) {
+                BaseModelAPIResponse res = (BaseModelAPIResponse) result;
+                if (res.Success) {
+                    xmppConnectionService.unregisterAccount(MainActivity.Companion.getAccount(), callBack -> {
+                        if (callBack) {
+                            deleteAccountDialog.dismiss();
+                            if (xmppConnectionService.getAccounts().size() == 0 && Config.MAGIC_CREATE_DOMAIN != null) {
+                                final Intent intent = SignupUtils.getSignUpIntent(this);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(intent);
+                            }
+                        } else {
+                            deleteButton.setText(R.string.delete);
+                            deleteButton.setEnabled(true);
+                            Toast.makeText(this, R.string.could_not_delete_account_from_server, Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            }
+        });
+
+
     }
 
     abstract void onBackendConnected();
@@ -961,7 +966,7 @@ public abstract class XmppActivity extends ActionBarActivity {
             imageView.setImageBitmap(bm);
             imageView.setBackgroundColor(0x00000000);
 
-            Log.d(TAG,"Bitmap Found : " +bm.toString());
+            Log.d(TAG, "Bitmap Found : " + bm.toString());
 
         } else {
             if (cancelPotentialWork(message, imageView)) {
@@ -1082,4 +1087,6 @@ public abstract class XmppActivity extends ActionBarActivity {
         }
         return null;
     }
+
+
 }

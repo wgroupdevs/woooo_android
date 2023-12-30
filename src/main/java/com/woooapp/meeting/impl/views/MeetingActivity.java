@@ -134,7 +134,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private RoomOptions mOptions;
     private RoomStore mRoomStore;
     private boolean joining = false;
-    private boolean isMeetingScheduled = false;
+    private String scheduleUniqueId;
     private String email;
     private String username;
     private String accountUniqueId;
@@ -493,7 +493,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             picture = "";
         }
         this.joining = getIntent().getBooleanExtra("joining", false);
-        this.isMeetingScheduled = getIntent().getBooleanExtra(EXTRA_MEETING_SCHEDULED, false);
+        this.scheduleUniqueId = getIntent().getStringExtra(EXTRA_MEETING_SCHEDULED);
         this.mMeetingId = getIntent().getStringExtra("meetingId");
         this.meetingName = getIntent().getStringExtra("meetingName");
         if (meetingName != null) {
@@ -974,7 +974,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         body.setUsername(this.username);
         body.setPicture(this.picture);
         body.setSocketId(mMeetingClient.getSocketId());
-        body.setScheduled(this.isMeetingScheduled);
+        body.setScheduleUniqueId(this.scheduleUniqueId);
         body.setLanguage(this.selectedLanguageCode);
 
         Log.d(TAG, "<< PUT Member >>> " + body.toString());

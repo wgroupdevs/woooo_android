@@ -110,6 +110,34 @@ public class WooAPIService {
         });
     }
 
+    public void deleteAccount(String accountId, OnDeleteAccountAPiResult listener) {
+        Log.d(TAG, "deleteAccount Started " + accountId);
+
+        final Call<BaseModelAPIResponse> deleteAccountResultCall = wooService.deleteAccount(accountId);
+        deleteAccountResultCall.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<BaseModelAPIResponse> call, @NonNull Response<BaseModelAPIResponse> response) {
+                final BaseModelAPIResponse body = response.body();
+                if (body == null) {
+                    try {
+                        assert response.errorBody() != null;
+                        String errorBodyFound = response.errorBody().byteString().utf8();
+                        listener.onDeleteAccountResultFound(parseErrorBody(errorBodyFound));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    listener.onDeleteAccountResultFound(body);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<BaseModelAPIResponse> call, @NonNull Throwable throwable) {
+                Log.d(Config.LOGTAG, "Unable to query WoooService on " + Config.WOOOO_BASE_URL, throwable);
+            }
+        });
+    }
+
     public void signUp(SignUpRequestModel user, OnSignUpAPiResult listener) {
         final Call<SignUpModel> signUpResultCall = wooService.signUp(user);
         signUpResultCall.enqueue(new Callback<SignUpModel>() {
@@ -630,6 +658,10 @@ public class WooAPIService {
 
     public interface OnLoginAPiResult {
         <T> void onLoginApiResultFound(T result);
+    }
+
+    public interface OnDeleteAccountAPiResult {
+        <T> void onDeleteAccountResultFound(T result);
     }
 
     public interface OnSignUpAPiResult {

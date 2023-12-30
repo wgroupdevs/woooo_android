@@ -1371,7 +1371,6 @@ public class DatabaseBackend extends SQLiteOpenHelper {
         db.delete(Conversation.TABLENAME, null, null);
         db.delete(Message.TABLENAME, null, null);
         db.delete(SQLiteAxolotlStore.IDENTITIES_TABLENAME, null, null);
-
         deleteAllData();
     }
 

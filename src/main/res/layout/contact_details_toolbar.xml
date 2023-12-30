@@ -38,16 +38,19 @@
 
 <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/contact_detail_appBar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/contact_detail_appBar"
-    android:theme="@style/ConversationsTheme.AppBarOverlay">
+    android:elevation="0dp"
+    android:theme="@style/ConversationsTheme.AppBarOverlay"
+    app:elevation="0dp">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
+        android:elevation="0dp"
         app:popupTheme="@style/ConversationsTheme.PopupOverlay" />
 
 </com.google.android.material.appbar.AppBarLayout>

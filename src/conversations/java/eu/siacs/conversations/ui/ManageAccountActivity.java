@@ -12,7 +12,6 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -81,7 +80,7 @@ public class ManageAccountActivity extends XmppActivity implements OnAccountUpda
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_manage_accounts);
-        setSupportActionBar(findViewById(R.id.contact_detail_appBar));
+        setSupportActionBar(findViewById(R.id.toolbar));
         configureActionBar(getSupportActionBar());
         if (savedInstanceState != null) {
             String jid = savedInstanceState.getString(STATE_SELECTED_ACCOUNT);
@@ -152,27 +151,27 @@ public class ManageAccountActivity extends XmppActivity implements OnAccountUpda
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.manageaccounts, menu);
-        MenuItem enableAll = menu.findItem(R.id.action_enable_all);
-        MenuItem addAccount = menu.findItem(R.id.action_add_account);
-        MenuItem addAccountWithCertificate = menu.findItem(R.id.action_add_account_with_cert);
-
-        if (Config.X509_VERIFICATION) {
-            addAccount.setVisible(false);
-            addAccountWithCertificate.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        }
-
-        if (!accountsLeftToEnable()) {
-            enableAll.setVisible(false);
-        }
-        MenuItem disableAll = menu.findItem(R.id.action_disable_all);
-        if (!accountsLeftToDisable()) {
-            disableAll.setVisible(false);
-        }
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.manageaccounts, menu);
+//        MenuItem enableAll = menu.findItem(R.id.action_enable_all);
+//        MenuItem addAccount = menu.findItem(R.id.action_add_account);
+//        MenuItem addAccountWithCertificate = menu.findItem(R.id.action_add_account_with_cert);
+//
+//        if (Config.X509_VERIFICATION) {
+//            addAccount.setVisible(false);
+//            addAccountWithCertificate.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+//        }
+//
+//        if (!accountsLeftToEnable()) {
+//            enableAll.setVisible(false);
+//        }
+//        MenuItem disableAll = menu.findItem(R.id.action_disable_all);
+//        if (!accountsLeftToDisable()) {
+//            disableAll.setVisible(false);
+//        }
+//        return true;
+//    }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {

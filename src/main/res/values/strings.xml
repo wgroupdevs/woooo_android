@@ -16,7 +16,7 @@
     <string name="action_unblock_domain">Unblock domain</string>
     <string name="action_block_participant">Block participant</string>
     <string name="action_unblock_participant">Unblock participant</string>
-    <string name="title_activity_manage_accounts">Manage Accounts</string>
+    <string name="title_activity_manage_accounts">Manage Account</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_sharewith">Share with Conversation</string>
     <string name="title_activity_start_conversation">Start Conversation</string>

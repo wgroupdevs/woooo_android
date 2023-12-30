@@ -22,15 +22,17 @@ public class PutMembersDataBody implements Serializable {
     private String socketId;
     private String language;
 
-    private boolean isScheduled = false;
-
-    public boolean isScheduled() {
-        return isScheduled;
+    public String getScheduleUniqueId() {
+        return scheduleUniqueId;
     }
 
-    public void setScheduled(boolean scheduled) {
-        this.isScheduled = scheduled;
+    public void setScheduleUniqueId(String scheduleUniqueId) {
+        this.scheduleUniqueId = scheduleUniqueId;
     }
+
+    private String scheduleUniqueId;
+
+
 
 
     public String getAccountUniqueId() {
@@ -91,7 +93,7 @@ public class PutMembersDataBody implements Serializable {
                 ", picture='" + picture + '\'' +
                 ", socketId='" + socketId + '\'' +
                 ", language='" + language + '\'' +
-                ", isScheduled='" + isScheduled + '\'' +
+                ", scheduleUniqueId='" + scheduleUniqueId + '\'' +
                 '}';
     }
 

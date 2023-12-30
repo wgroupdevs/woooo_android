@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -31,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
@@ -42,7 +42,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AlertDialog.Builder;
-import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
@@ -201,7 +200,6 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         Intent intent = new Intent(this, ForgotPasswordActivity.class);
         startActivity(intent);
     };
-    private ProgressDialog progressDialog;
 
     private WooProgressDialog wooProgressDialog;
 
@@ -210,16 +208,13 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
     private CreateWalletViewModel createWalletViewModel;
 
     public void showProgressDialog(Context context) {
-        progressDialog = new ProgressDialog(context);
-//        progressDialog.setTitle("Loading...");
-        progressDialog.setMessage("Please wait");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
+        wooProgressDialog = WooProgressDialog.make(this, "Please wait ...");
+        wooProgressDialog.show();
     }
 
     public void hideProgressDialog() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
+        if (wooProgressDialog != null) {
+            wooProgressDialog.dismiss();
         }
     }
 
@@ -417,8 +412,8 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             return;
         }
 
+        hideKeyboard();
         showProgressDialog(this);
-        Log.d(phoneNumber, "cnasdjcnsadns");
         //Login User with credentials
         xmppConnectionService.loginUserOnWoooo(isLoginWithEmail, email, phoneNumber, password, EditAccountActivity.this);
 
@@ -801,7 +796,7 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         binding.accountJid.addTextChangedListener(this.mTextWatcher);
         binding.accountJid.setOnFocusChangeListener(this.mEditTextFocusListener);
         this.binding.accountPassword.addTextChangedListener(this.mTextWatcher);
-        this.binding.avater.setOnClickListener(this.mAvatarClickListener);
+        this.binding.addRemoveIcon.setOnClickListener(this.mAvatarClickListener);
 //        this.binding.hostname.addTextChangedListener(mTextWatcher);
 //        this.binding.hostname.setOnFocusChangeListener(mEditTextFocusListener);
 //        this.binding.clearDevices.setOnClickListener(v -> showWipePepDialog());
@@ -935,32 +930,6 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         }
 
 
-    }
-
-    void showEditProfileMenu() {
-
-        PopupMenu popupMenu = new PopupMenu(EditAccountActivity.this, binding.accountJid);
-        popupMenu.getMenuInflater().inflate(R.menu.edit_profile_menu, popupMenu.getMenu());
-
-        popupMenu.setOnMenuItemClickListener(menuItem -> {
-            // Handle menu item clicks here
-            switch (menuItem.getItemId()) {
-                case R.id.edit_profile_update_photo:
-                    // Handle Menu Item 1 click
-                    publishAvatar(mAccount);
-                    return true;
-                case R.id.edit_profile_delete_account:
-                    // Handle Menu Item 2 click
-                    deleteAccount(mAccount);
-
-                    return true;
-                // Add cases for other menu items if needed
-                default:
-                    return false;
-            }
-        });
-
-        popupMenu.show();
     }
 
     @SuppressLint("Range")
@@ -1141,6 +1110,15 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
             }
         }
         return true;
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        View view = getCurrentFocus();
+        if (view == null) {
+            view = new View(this);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     private void keyboardVisibilityChecker() {
@@ -1692,11 +1670,9 @@ public class EditAccountActivity extends OmemoActivity implements OnAccountUpdat
         } else {
             final TextInputLayout errorLayout;
             if (this.mAccount.errorStatus()) {
+                xmppConnectionService.databaseBackend.clearDatabase();
+                hideProgressDialog();
                 if (this.mAccount.getStatus() == Account.State.UNAUTHORIZED || this.mAccount.getStatus() == Account.State.DOWNGRADE_ATTACK) {
-
-
-
-
 
                     errorLayout = this.binding.accountPasswordLayout;
                 }

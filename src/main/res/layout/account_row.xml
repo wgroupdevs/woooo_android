@@ -11,8 +11,8 @@
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/account_image"
-            android:layout_width="@dimen/_160sdp"
-            android:layout_height="@dimen/_160sdp"
+            android:layout_width="@dimen/_150sdp"
+            android:layout_height="@dimen/_150sdp"
             android:background="@drawable/app_logo"
             android:contentDescription="@string/account_image_description"
             app:riv_corner_radius="@dimen/_100sdp" />
@@ -26,23 +26,26 @@
             android:hint="Display Name"
             android:scrollHorizontally="false"
             android:singleLine="true"
+            android:gravity="center"
             android:textAppearance="@style/TextAppearance.Conversations.Title" />
 
         <TextView
             android:id="@+id/phone_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_8sdp"
             android:hint="xxx xxxxxxx"
             android:scrollHorizontally="false"
             android:singleLine="true"
+            android:gravity="center"
+
             android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
 
         <TextView
             android:id="@+id/account_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_8sdp"
             android:text="@string/account_status_unknown"
             android:textAppearance="@style/TextAppearance.Conversations.Body2"
             android:textColor="@color/white87" />

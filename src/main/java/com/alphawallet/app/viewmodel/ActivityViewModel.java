@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.alphawallet.app.entity.ActivityMeta;
+import com.alphawallet.app.entity.ErrorEnvelope;
 import com.alphawallet.app.entity.Transaction;
 import com.alphawallet.app.entity.Wallet;
 import com.alphawallet.app.interact.FetchTransactionsInteract;
@@ -28,13 +29,11 @@ import io.realm.Realm;
  * Created by Ehsan on 01/11/2023.
  */
 @HiltViewModel
-public class ActivityViewModel extends BaseViewModel
-{
+public class ActivityViewModel extends BaseViewModel {
     private final int TRANSACTION_FETCH_LIMIT = 150;
 
     private final MutableLiveData<Wallet> wallet = new MutableLiveData<>();
     private final MutableLiveData<ActivityMeta[]> activityItems = new MutableLiveData<>();
-
     private final GenericWalletInteract genericWalletInteract;
     private final FetchTransactionsInteract fetchTransactionsInteract;
     private final AssetDefinitionService assetDefinitionService;
@@ -51,7 +50,10 @@ public class ActivityViewModel extends BaseViewModel
     public LiveData<Wallet> defaultWallet() {
         return wallet;
     }
-    public LiveData<ActivityMeta[]> activityItems() { return activityItems; }
+
+    public LiveData<ActivityMeta[]> activityItems() {
+        return activityItems;
+    }
 
     @Inject
     ActivityViewModel(
@@ -71,15 +73,20 @@ public class ActivityViewModel extends BaseViewModel
         setAnalyticsService(analyticsService);
     }
 
-    public void prepare()
-    {
+    public void prepare() {
         disposable = genericWalletInteract
                 .find()
                 .subscribe(this::onDefaultWallet, this::onError);
     }
 
-    private void onDefaultWallet(Wallet defaultWallet)
-    {
+
+    // Expose a LiveData for the activity to observe
+    public LiveData<ErrorEnvelope> onActivityError() {
+        return error;
+    }
+
+
+    private void onDefaultWallet(Wallet defaultWallet) {
         wallet.postValue(defaultWallet);
         disposable =
                 fetchTransactionsInteract.fetchTransactionMetas(defaultWallet, tokensService.getNetworkFilters(), 0, TRANSACTION_FETCH_LIMIT)
@@ -88,8 +95,7 @@ public class ActivityViewModel extends BaseViewModel
                         .subscribe(this::onActivityMetas, this::onError);
     }
 
-    private void onActivityMetas(ActivityMeta[] metas)
-    {
+    private void onActivityMetas(ActivityMeta[] metas) {
         activityItems.postValue(metas);
         disposable =
                 fetchTransactionsInteract.fetchEventMetas(wallet.getValue(), tokensService.getNetworkFilters())
@@ -98,8 +104,7 @@ public class ActivityViewModel extends BaseViewModel
                         .subscribe(activityItems::postValue, this::onError);
     }
 
-    public void fetchMoreTransactions(long startTime)
-    {
+    public void fetchMoreTransactions(long startTime) {
         disposable =
                 fetchTransactionsInteract.fetchTransactionMetas(wallet.getValue(), tokensService.getNetworkFilters(), startTime, TRANSACTION_FETCH_LIMIT)
                         .subscribeOn(Schedulers.io())
@@ -107,24 +112,19 @@ public class ActivityViewModel extends BaseViewModel
                         .subscribe(metas -> onMoreActivityMetas(metas, startTime), this::onError);
     }
 
-    private void onMoreActivityMetas(ActivityMeta[] activityMetas, long startTime)
-    {
-        if (activityMetas.length == 0)
-        {
+    private void onMoreActivityMetas(ActivityMeta[] activityMetas, long startTime) {
+        if (activityMetas.length == 0) {
             fetchTransactions = Observable.fromIterable(tokensService.getNetworkFilters())
                     .flatMap(chainId -> transactionsService.fetchAndStoreTransactions(chainId, startTime).toObservable())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(activityItems::postValue, this::onError);
-        }
-        else
-        {
+        } else {
             activityItems.postValue(activityMetas);
         }
     }
 
-    public void onDestroy()
-    {
+    public void onDestroy() {
         if (queryUnknownTokensDisposable != null && !queryUnknownTokensDisposable.isDisposed())
             queryUnknownTokensDisposable.dispose();
 
@@ -136,28 +136,23 @@ public class ActivityViewModel extends BaseViewModel
         fetchTransactions = null;
     }
 
-    public TokensService getTokensService()
-    {
+    public TokensService getTokensService() {
         return tokensService;
     }
 
-    public FetchTransactionsInteract provideTransactionsInteract()
-    {
+    public FetchTransactionsInteract provideTransactionsInteract() {
         return fetchTransactionsInteract;
     }
 
-    public Realm getRealmInstance()
-    {
+    public Realm getRealmInstance() {
         return realmManager.getRealmInstance(wallet.getValue());
     }
 
-    public Transaction getTransaction(String hash)
-    {
+    public Transaction getTransaction(String hash) {
         return fetchTransactionsInteract.fetchCached(wallet.getValue().address, hash);
     }
 
-    public AssetDefinitionService getAssetDefinitionService()
-    {
+    public AssetDefinitionService getAssetDefinitionService() {
         return assetDefinitionService;
     }
 }

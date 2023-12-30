@@ -55,6 +55,7 @@
                                     android:layout_alignParentTop="true"
                                     android:layout_centerHorizontal="true"
                                     android:scaleType="fitCenter"
+                                    android:src="@drawable/app_logo"
                                     app:riv_corner_radius="100dp" />
 
                                 <ImageView

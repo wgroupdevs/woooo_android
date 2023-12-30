@@ -223,10 +223,10 @@ class ScheduleMeetingFragment : Fragment(),
         intent.putExtra("username", MainActivity.account?.username)
         intent.putExtra("camOn", false)
         intent.putExtra("micOn", false)
-        intent.putExtra("meetingName", meeting?.meetingName)
-        intent.putExtra("meetingId", meeting?.meetingId)
+        intent.putExtra("meetingName", meeting.meetingName)
+        intent.putExtra("meetingId", meeting.meetingId)
         intent.putExtra("joining", false)
-        intent.putExtra(MeetingActivity.EXTRA_MEETING_SCHEDULED, true)
+        intent.putExtra(MeetingActivity.EXTRA_MEETING_SCHEDULED, meeting.scheduleUniqueId)
         startActivity(intent)
 
     }

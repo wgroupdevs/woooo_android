@@ -35,6 +35,8 @@ public interface WooService {
 
     @POST("/api/Auth/login")
     Call<LoginAPIResponseJAVA> login(@Query("isLoginWithEmail") boolean isLoginWithEmail, @Body LoginRequestParams user);
+    @POST("/api/v1/Account/DeleteAccount")
+    Call<BaseModelAPIResponse> deleteAccount(@Query("accountId") String accountId);
 
     @GET("/api/v1/Account/SearchAccount")
     Call<SearchAccountAPIResponse> searchAccount(@Query("value") String value, @Query("isEmail") boolean isEmail);

@@ -19,6 +19,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.addListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.alphawallet.app.C.ErrorCode.UNKNOWN
 import com.alphawallet.app.entity.ActivityMeta
 import com.alphawallet.app.entity.TransactionMeta
 import com.alphawallet.app.entity.Wallet
@@ -152,6 +153,14 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
         // Initialize ViewModel
         if (walletActivityViewModel == null) {
             walletActivityViewModel = ViewModelProvider(this)[ActivityViewModel::class.java]
+
+            walletActivityViewModel?.onActivityError()?.observe(this) {
+                if (it.code == UNKNOWN) {
+                    homeBinding.appBarHome.homeBottomSheet.noTransactionFoundLabel.visibility =
+                        View.VISIBLE
+                }
+
+            }
             walletActivityViewModel?.defaultWallet()?.observe(
                 this
             ) { wallet: Wallet? ->
@@ -170,6 +179,7 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
     }
 
     private fun onItemsLoaded(activityItems: Array<ActivityMeta>) {
+
         walletActivityViewModel?.getRealmInstance().use { realm ->
             walletActivityAdapter?.updateActivityItems(
                 buildTransactionList(
@@ -189,7 +199,7 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
                     am.getTimeStampSeconds() - 60
             }
         }
-        if (isVisible) startTxListener()
+//        if (isVisible) startTxListener()
     }
 
     private fun startTxListener() {
@@ -296,6 +306,10 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
 
 
     private fun onDefaultWallet(wallet: Wallet) {
+
+        Log.d(TAG, "onDefaultWallet : $wallet")
+
+
         walletActivityAdapter?.setDefaultWallet(wallet)
     }
 
@@ -343,9 +357,14 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
-                    BottomSheetBehavior.STATE_COLLAPSED -> {}
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        homeBinding.appBarHome.homeBottomSheet.tvTitle.text = "Slide up"
+                    }
 
-                    BottomSheetBehavior.STATE_EXPANDED -> {}
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        homeBinding.appBarHome.homeBottomSheet.tvTitle.text = "Slide down"
+
+                    }
 
                     BottomSheetBehavior.STATE_DRAGGING -> {}
 
@@ -855,7 +874,7 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
         intent.putExtra("meetingName", meeting.meetingName)
         intent.putExtra("meetingId", meeting.meetingId)
         intent.putExtra("joining", false)
-        intent.putExtra(MeetingActivity.EXTRA_MEETING_SCHEDULED, true)
+        intent.putExtra(MeetingActivity.EXTRA_MEETING_SCHEDULED, meeting.scheduleUniqueId)
         startActivity(intent)
 
     }
