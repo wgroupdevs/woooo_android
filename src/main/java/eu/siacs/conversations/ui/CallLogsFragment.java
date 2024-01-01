@@ -112,6 +112,13 @@ public class CallLogsFragment extends XmppFragment implements CallLogAdapter.OnA
         callLogAdapter.setOnChatClickListener(this);
         callLogAdapter.setOnInfoClickListener(this);
         binding.callLogsRecyclerView.setAdapter(callLogAdapter);
+
+        if (callLogAdapter.getItemCount() > 0) {
+            binding.noCallFoundLabel.setVisibility(View.GONE);
+        } else {
+            binding.noCallFoundLabel.setVisibility(View.VISIBLE);
+        }
+
         this.callLogAdapter.notifyDataSetChanged();
     }
 

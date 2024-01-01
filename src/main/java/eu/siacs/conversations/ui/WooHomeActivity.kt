@@ -55,6 +55,7 @@ import eu.siacs.conversations.ui.adapter.CallLogAdapter.OnChatClickListener
 import eu.siacs.conversations.ui.adapter.CallLogAdapter.OnInfoClickListener
 import eu.siacs.conversations.ui.adapter.CallLogAdapter.OnVideoClickListener
 import eu.siacs.conversations.ui.adapter.ConversationAdapter
+import eu.siacs.conversations.ui.adapter.MeetingHistoryAdapter
 import eu.siacs.conversations.ui.adapter.ScheduledMeetingAdapter
 import eu.siacs.conversations.ui.util.AvatarWorkerTask
 import eu.siacs.conversations.ui.util.PresenceSelector
@@ -82,7 +83,8 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
 
     private var conversationsAdapter: ConversationAdapter? = null
     private var callLogAdapter: CallLogAdapter? = null
-    private var meetingAdapter: ScheduledMeetingAdapter? = null
+    private var scheduledMeetingAdapter: ScheduledMeetingAdapter? = null
+    private var meetingHistoryAdapter: MeetingHistoryAdapter? = null
 
     private var conversations: List<Conversation> = java.util.ArrayList();
     private var callLogs: List<CallLog> = java.util.ArrayList();
@@ -408,22 +410,45 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
     }
 
     private fun initMeetingView() {
+
         MainActivity.account?.accountId?.let {
-            MainActivity.scheduleMeetingViewModel.getScheduledNewMeetings(
-                it
-            )
+            MainActivity.meetingViewModel.getScheduledNewMeetings(it)
+            MainActivity.meetingViewModel.getMeetingHistory(it)
         }
-        meetingAdapter = ScheduledMeetingAdapter(this, emptyList())
-        meetingAdapter?.setOnStartMeetingClickListener(this)
-        MainActivity.scheduleMeetingViewModel.getScheduledMeetings().observe(this) { meetings ->
+        scheduledMeetingAdapter = ScheduledMeetingAdapter(this, emptyList())
+        meetingHistoryAdapter = MeetingHistoryAdapter(this, emptyList())
+
+        scheduledMeetingAdapter?.setOnStartMeetingClickListener(this)
+        meetingRecyclerView.adapter = scheduledMeetingAdapter
+
+        MainActivity.meetingViewModel.getScheduledMeetings().observe(this) { meetings ->
+
+            if (meetings.isEmpty()) {
+                meetingRecyclerView.adapter = meetingHistoryAdapter
+
+            } else {
+                meetingRecyclerView.adapter = scheduledMeetingAdapter
+            }
+
+            scheduledMeetingAdapter?.updateList(meetings)
+        }
+
+        MainActivity.meetingViewModel.onMeetingHistory().observe(this) { meetings ->
             if (meetings.isEmpty()) {
                 homeBinding.appBarHome.homeBottomSheet.noMeetingFoundLabel.visibility = View.VISIBLE
             } else {
+                if (scheduledMeetingAdapter?.itemCount!! > 0) {
+                    meetingRecyclerView.adapter = scheduledMeetingAdapter
+                } else {
+                    meetingRecyclerView.adapter = meetingHistoryAdapter
+                }
+
                 homeBinding.appBarHome.homeBottomSheet.noMeetingFoundLabel.visibility = View.GONE
             }
-            meetingAdapter?.updateList(meetings)
+            meetingHistoryAdapter?.updateList(meetings)
         }
-        meetingRecyclerView.adapter = meetingAdapter
+
+
     }
 
     private fun initCallLogsView() {
@@ -875,6 +900,7 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
         intent.putExtra("meetingId", meeting.meetingId)
         intent.putExtra("joining", false)
         intent.putExtra(MeetingActivity.EXTRA_MEETING_SCHEDULED, meeting.scheduleUniqueId)
+        MainActivity.meetingViewModel.removeMeeting(meeting)
         startActivity(intent)
 
     }

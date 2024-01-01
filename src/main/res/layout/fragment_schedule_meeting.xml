@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.meeting.ScheduleMeetingFragment">
 
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:padding="@dimen/_10sdp"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="@dimen/_10sdp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/scheduledMeetingRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         <ImageButton
             android:id="@+id/schedule_meeting_btn"
@@ -26,6 +25,20 @@
             android:layout_margin="@dimen/_5sdp"
             android:background="@drawable/circular_drawable"
             android:src="@drawable/baseline_calendar_month_24" />
+
+
+        <TextView
+            android:id="@+id/no_scheduled_meeting_lable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/_100sdp"
+            android:gravity="center"
+            android:paddingHorizontal="@dimen/_10sdp"
+            android:text="There are currently no planned meetings. Feel free to arrange meetings for the coming days."
+
+            android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
+
 
     </RelativeLayout>
 

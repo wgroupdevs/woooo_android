@@ -1,5 +1,6 @@
 package eu.siacs.conversations.http.services;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import eu.siacs.conversations.http.model.GetWooContactsModel;
@@ -11,7 +12,8 @@ import eu.siacs.conversations.http.model.TextTranslateApiResponse;
 import eu.siacs.conversations.http.model.TextTranslateModel;
 import eu.siacs.conversations.http.model.UpdateUserLanguageModel;
 import eu.siacs.conversations.http.model.UserBasicInfo;
-import eu.siacs.conversations.http.model.meeting.ScheduleMeetingAPIRes;
+import eu.siacs.conversations.http.model.meeting.HistoryMeetingModel;
+import eu.siacs.conversations.http.model.meeting.MeetingAPIRes;
 import eu.siacs.conversations.http.model.meeting.ScheduleMeetingModel;
 import eu.siacs.conversations.http.model.requestmodels.EmailRequestModel;
 import eu.siacs.conversations.http.model.requestmodels.GetWooContactsRequestParams;
@@ -35,6 +37,7 @@ public interface WooService {
 
     @POST("/api/Auth/login")
     Call<LoginAPIResponseJAVA> login(@Query("isLoginWithEmail") boolean isLoginWithEmail, @Body LoginRequestParams user);
+
     @POST("/api/v1/Account/DeleteAccount")
     Call<BaseModelAPIResponse> deleteAccount(@Query("accountId") String accountId);
 
@@ -91,9 +94,12 @@ public interface WooService {
     Call<BaseModelAPIResponse> sendMessage(@Body SendMessageReqModel messageReqModel);
 
     @POST("/api/v1/MeetingSchedule")
-    Call<ScheduleMeetingAPIRes> scheduleMeeting(@Query("outputType") String outputType, @Body ScheduleMeetingModel scheduleMeetingModel);
+    Call<MeetingAPIRes<ArrayList<ScheduleMeetingModel>>> scheduleMeeting(@Query("outputType") String outputType, @Body ScheduleMeetingModel scheduleMeetingModel);
 
     @GET("/api/v1/MeetingSchedule/GetByUser/{id}")
-    Call<ScheduleMeetingAPIRes> getScheduledMeetings(@Path("id") String id, @Query("outputType") String outputType);
+    Call<MeetingAPIRes<ArrayList<ScheduleMeetingModel>>> getScheduledMeetings(@Path("id") String id, @Query("outputType") String outputType);
+
+    @GET("/api/v1/Meeting/GetMeetingByUser")
+    Call<MeetingAPIRes<ArrayList<HistoryMeetingModel>>> getMeetingHistory(@Query("uniqueId") String uniqueId, @Query("outputType") String outputType);
 
 }

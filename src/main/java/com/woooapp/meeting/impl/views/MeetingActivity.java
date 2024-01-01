@@ -107,6 +107,7 @@ import java.util.List;
 import eu.siacs.conversations.R;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.persistance.DatabaseBackend;
+import eu.siacs.conversations.ui.MainActivity;
 import okhttp3.Call;
 import okhttp3.Response;
 import pk.muneebahmad.lib.graphics.SP;
@@ -503,7 +504,6 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         } else {
             meetingName = Utils.getRandomString(4);
         }
-        meetingName = "WooooDroid-" + meetingName;
         Log.d(TAG, "<< MEETING ID [" + mMeetingId + "]");
         if (mMeetingId != null) {
             if (!joining) {
@@ -2547,6 +2547,13 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
             finish();
         }, 1000);
+
+        new Handler().postDelayed(() -> {
+            MainActivity.meetingViewModel.getMeetingHistory(this.accountUniqueId);
+            finish();
+        }, 500);
+
+
     }
 
     @Override

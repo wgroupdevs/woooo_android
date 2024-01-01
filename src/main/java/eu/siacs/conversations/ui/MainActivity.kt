@@ -9,7 +9,7 @@ import eu.siacs.conversations.entities.Account
 import eu.siacs.conversations.http.services.WooAPIService
 import eu.siacs.conversations.persistance.WOOPrefManager
 import eu.siacs.conversations.services.XmppConnectionService.OnAccountUpdate
-import eu.siacs.conversations.ui.meeting.ScheduleMeetingViewModel
+import eu.siacs.conversations.ui.meeting.MeetingViewModel
 import javax.inject.Inject
 
 
@@ -56,8 +56,8 @@ class MainActivity : XmppActivity(), OnAccountUpdate {
 
                 mAccount?.let {
                     account = mAccount!!
-                    scheduleMeetingViewModel =
-                        ViewModelProvider(this)[ScheduleMeetingViewModel::class.java]
+                    meetingViewModel =
+                        ViewModelProvider(this)[MeetingViewModel::class.java]
 
                 }
 
@@ -79,7 +79,7 @@ class MainActivity : XmppActivity(), OnAccountUpdate {
 
     companion object {
         var account: Account? = null
-        lateinit var scheduleMeetingViewModel: ScheduleMeetingViewModel
+        lateinit var meetingViewModel: MeetingViewModel
 
     }
 

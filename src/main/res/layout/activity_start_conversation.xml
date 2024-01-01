@@ -29,6 +29,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/tab_layout"
+            android:elevation="0dp"
+
             android:background="?attr/color_background_primary">
 
 

@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -22,8 +23,9 @@ import eu.siacs.conversations.http.model.TextTranslateApiResponse;
 import eu.siacs.conversations.http.model.TextTranslateModel;
 import eu.siacs.conversations.http.model.UpdateUserLanguageModel;
 import eu.siacs.conversations.http.model.UserBasicInfo;
+import eu.siacs.conversations.http.model.meeting.HistoryMeetingModel;
 import eu.siacs.conversations.http.model.meeting.ScheduleMeetingModel;
-import eu.siacs.conversations.http.model.meeting.ScheduleMeetingAPIRes;
+import eu.siacs.conversations.http.model.meeting.MeetingAPIRes;
 import eu.siacs.conversations.http.model.requestmodels.GetWooContactsRequestParams;
 import eu.siacs.conversations.http.model.requestmodels.EmailRequestModel;
 import eu.siacs.conversations.http.model.requestmodels.ResetPasswordRequestModel;
@@ -319,12 +321,12 @@ public class WooAPIService {
     }
 
     public void scheduleMeeting(ScheduleMeetingModel scheduleMeetingModel, OnScheduleMeetingApiResult listener) {
-        final Call<ScheduleMeetingAPIRes> scheduleMeetingCall = wooService.scheduleMeeting("Mobile", scheduleMeetingModel);
+        final Call<MeetingAPIRes<ArrayList<ScheduleMeetingModel>>> scheduleMeetingCall = wooService.scheduleMeeting("Mobile", scheduleMeetingModel);
         scheduleMeetingCall.enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<ScheduleMeetingAPIRes> call, @NonNull Response<ScheduleMeetingAPIRes> response) {
+            public void onResponse(@NonNull Call<MeetingAPIRes<ArrayList<ScheduleMeetingModel>>> call, @NonNull Response<MeetingAPIRes<ArrayList<ScheduleMeetingModel>>> response) {
                 try {
-                    final ScheduleMeetingAPIRes body = response.body();
+                    final MeetingAPIRes body = response.body();
                     if (body == null) {
                         try {
                             assert response.errorBody() != null;
@@ -343,19 +345,19 @@ public class WooAPIService {
             }
 
             @Override
-            public void onFailure(@NonNull Call<ScheduleMeetingAPIRes> call, @NonNull Throwable throwable) {
+            public void onFailure(@NonNull Call<MeetingAPIRes<ArrayList<ScheduleMeetingModel>>> call, @NonNull Throwable throwable) {
                 Log.d(Config.LOGTAG, "Unable to query WoooService on " + Config.WOOOO_BASE_URL, throwable);
             }
         });
     }
 
     public void getScheduledMeetings(String accountUUID, OnGetScheduledMeetingsApiResult listener) {
-        final Call<ScheduleMeetingAPIRes> scheduleMeetingCall = wooService.getScheduledMeetings(accountUUID, "Mobile");
+        final Call<MeetingAPIRes<ArrayList<ScheduleMeetingModel>>> scheduleMeetingCall = wooService.getScheduledMeetings(accountUUID, "Mobile");
         scheduleMeetingCall.enqueue(new Callback<>() {
             @Override
-            public void onResponse(@NonNull Call<ScheduleMeetingAPIRes> call, @NonNull Response<ScheduleMeetingAPIRes> response) {
+            public void onResponse(@NonNull Call<MeetingAPIRes<ArrayList<ScheduleMeetingModel>>> call, @NonNull Response<MeetingAPIRes<ArrayList<ScheduleMeetingModel>>> response) {
                 try {
-                    final ScheduleMeetingAPIRes body = response.body();
+                    final MeetingAPIRes body = response.body();
                     if (body == null) {
                         try {
                             assert response.errorBody() != null;
@@ -374,7 +376,38 @@ public class WooAPIService {
             }
 
             @Override
-            public void onFailure(@NonNull Call<ScheduleMeetingAPIRes> call, @NonNull Throwable throwable) {
+            public void onFailure(@NonNull Call<MeetingAPIRes<ArrayList<ScheduleMeetingModel>>> call, @NonNull Throwable throwable) {
+                Log.d(Config.LOGTAG, "Unable to query WoooService on " + Config.WOOOO_BASE_URL, throwable);
+            }
+        });
+    }
+
+    public void getMeetingsHistory(String accountUUID, OnGetMeetingHistoryApiResult listener) {
+        final Call<MeetingAPIRes<ArrayList<HistoryMeetingModel>>> scheduleMeetingCall = wooService.getMeetingHistory(accountUUID, "Mobile");
+        scheduleMeetingCall.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<MeetingAPIRes<ArrayList<HistoryMeetingModel>>> call, @NonNull Response<MeetingAPIRes<ArrayList<HistoryMeetingModel>>> response) {
+                try {
+                    final MeetingAPIRes body = response.body();
+                    if (body == null) {
+                        try {
+                            assert response.errorBody() != null;
+                            String errorBodyFound = response.errorBody().byteString().utf8();
+                            listener.OnGetMeetingHistoryResultFound(parseErrorBody(errorBodyFound));
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    } else {
+                        listener.OnGetMeetingHistoryResultFound(body);
+                    }
+                    Log.d(TAG, "getScheduledMeeting RESPONSE: " + body.getSuccess());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<MeetingAPIRes<ArrayList<HistoryMeetingModel>>> call, @NonNull Throwable throwable) {
                 Log.d(Config.LOGTAG, "Unable to query WoooService on " + Config.WOOOO_BASE_URL, throwable);
             }
         });
@@ -730,6 +763,10 @@ public class WooAPIService {
 
     public interface OnGetScheduledMeetingsApiResult {
         <T> void OnGetScheduledMeetingsResultFound(T result);
+    }
+
+    public interface OnGetMeetingHistoryApiResult {
+        <T> void OnGetMeetingHistoryResultFound(T result);
     }
 
     public interface OnGetBlockChainApiResult {

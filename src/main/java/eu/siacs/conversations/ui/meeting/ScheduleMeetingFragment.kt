@@ -24,7 +24,7 @@ import eu.siacs.conversations.R
 import eu.siacs.conversations.databinding.FragmentScheduleMeetingBinding
 import eu.siacs.conversations.http.model.meeting.ScheduleMeetingModel
 import eu.siacs.conversations.ui.MainActivity
-import eu.siacs.conversations.ui.MainActivity.Companion.scheduleMeetingViewModel
+import eu.siacs.conversations.ui.MainActivity.Companion.meetingViewModel
 import eu.siacs.conversations.ui.adapter.ScheduledMeetingAdapter
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -46,14 +46,21 @@ class ScheduleMeetingFragment : Fragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Initialize ViewModel
-        MainActivity.account?.accountId?.let { scheduleMeetingViewModel.getScheduledNewMeetings(it) }
+        MainActivity.account?.accountId?.let { meetingViewModel.getScheduledNewMeetings(it) }
         scheduledMeetingAdapter = ScheduledMeetingAdapter(requireContext(), emptyList())
         // Observe the LiveData in the UI
-        scheduleMeetingViewModel.getScheduledMeetings().observe(this) { meetings ->
+        meetingViewModel.getScheduledMeetings().observe(this) { meetings ->
             Log.d(TAG, "Scheduled Meetings Count : ${meetings.size}")
+
+            if (meetings.isEmpty()) {
+                binding.noScheduledMeetingLable.visibility = View.VISIBLE
+            } else {
+                binding.noScheduledMeetingLable.visibility = View.GONE
+            }
+
             scheduledMeetingAdapter.updateList(meetings)
         }
-        scheduleMeetingViewModel.onCreateScheduleMeeting().observe(this) { meeting ->
+        meetingViewModel.onCreateScheduleMeeting().observe(this) { meeting ->
             progressDialog?.dismiss()
             bottomSheetDialog?.dismiss()
         }
@@ -208,13 +215,14 @@ class ScheduleMeetingFragment : Fragment(),
             isDeleted = false
         )
 
-        scheduleMeetingViewModel.scheduleNewMeeting(scheduleMeetingModel)
+        meetingViewModel.scheduleNewMeeting(scheduleMeetingModel)
         progressDialog = WooProgressDialog.make(requireActivity(), "Scheduling ...")
         progressDialog?.show()
 
     }
 
     override fun onStartMeetingClick(meeting: ScheduleMeetingModel) {
+
         val intent = Intent(requireContext(), MeetingActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP
         intent.putExtra("email", MainActivity.account?.userEmail)
@@ -227,7 +235,9 @@ class ScheduleMeetingFragment : Fragment(),
         intent.putExtra("meetingId", meeting.meetingId)
         intent.putExtra("joining", false)
         intent.putExtra(MeetingActivity.EXTRA_MEETING_SCHEDULED, meeting.scheduleUniqueId)
+        meetingViewModel.removeMeeting(meeting)
         startActivity(intent)
+
 
     }
 
