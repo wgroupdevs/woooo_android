@@ -283,8 +283,21 @@ public class Contact implements ListItem, Blockable {
         return this.presences;
     }
 
+
     public void updatePresence(final String resource, final Presence presence) {
         this.presences.updatePresence(resource, presence);
+    }
+
+    public boolean onlineStatus() {
+        boolean online = false;
+        if (!this.presences.getPresences().isEmpty()) {
+            for (Presence pr : this.presences.getPresences()) {
+                if (pr.getStatus() == Presence.Status.ONLINE) {
+                    online = true;
+                }
+            }
+        }
+        return online;
     }
 
     public void removePresence(final String resource) {

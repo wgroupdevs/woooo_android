@@ -148,7 +148,7 @@ public class IqGenerator extends AbstractGenerator {
         final Element pubsub = packet.addChild("pubsub", Namespace.PUBSUB);
         final Element retract = pubsub.addChild("retract");
         retract.setAttribute("node", node);
-        retract.setAttribute("notify","true");
+        retract.setAttribute("notify", "true");
         retract.addChild("item").setAttribute("id", id);
         return packet;
     }
@@ -255,7 +255,7 @@ public class IqGenerator extends AbstractGenerator {
         if (nick != null) {
             conference.addChild("nick").setContent(nick);
         }
-        conference.setAttribute("autojoin",String.valueOf(autojoin));
+        conference.setAttribute("autojoin", String.valueOf(autojoin));
         return conference;
     }
 
@@ -451,13 +451,14 @@ public class IqGenerator extends AbstractGenerator {
         return register;
     }
 
-    public IqPacket pushTokenToAppServer(Jid appServer, String token, String deviceId) {
-        return pushTokenToAppServer(appServer, token, deviceId, null);
+    public IqPacket pushTokenToAppServer(Account account, Jid appServer, String token, String deviceId) {
+        return pushTokenToAppServer(account, appServer, token, deviceId, null);
     }
 
-    public IqPacket pushTokenToAppServer(Jid appServer, String token, String deviceId, Jid muc) {
+    public IqPacket pushTokenToAppServer(Account account, Jid appServer, String token, String deviceId, Jid muc) {
         final IqPacket packet = new IqPacket(IqPacket.TYPE.SET);
         packet.setTo(appServer);
+        packet.setFrom(account.getJid());
         final Element command = packet.addChild("command", Namespace.COMMANDS);
         command.setAttribute("node", "register-push-fcm");
         command.setAttribute("action", "execute");
@@ -565,14 +566,14 @@ public class IqGenerator extends AbstractGenerator {
     public IqPacket queryDiscoItems(Jid jid) {
         IqPacket packet = new IqPacket(IqPacket.TYPE.GET);
         packet.setTo(jid);
-        packet.addChild("query",Namespace.DISCO_ITEMS);
+        packet.addChild("query", Namespace.DISCO_ITEMS);
         return packet;
     }
 
     public IqPacket queryDiscoInfo(Jid jid) {
         IqPacket packet = new IqPacket(IqPacket.TYPE.GET);
         packet.setTo(jid);
-        packet.addChild("query",Namespace.DISCO_INFO);
+        packet.addChild("query", Namespace.DISCO_INFO);
         return packet;
     }
 }

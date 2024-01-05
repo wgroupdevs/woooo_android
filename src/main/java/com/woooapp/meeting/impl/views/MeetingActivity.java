@@ -56,6 +56,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.woooapp.meeting.device.Display;
+import com.woooapp.meeting.impl.utils.IncrementingTimer;
 import com.woooapp.meeting.impl.utils.VoiceDataSource;
 import com.woooapp.meeting.impl.utils.WDirector;
 import com.woooapp.meeting.impl.utils.WEvents;
@@ -117,7 +118,7 @@ import pk.muneebahmad.lib.graphics.SP;
  * Created On 6:36 pm 11/09/2023
  * <code>class</code> MeetingActivity.java
  */
-public class MeetingActivity extends AppCompatActivity implements Handler.Callback {
+public class MeetingActivity extends AppCompatActivity implements Handler.Callback, IncrementingTimer.TimerCallback {
     private static final String TAG = MeetingActivity.class.getSimpleName() + ".java";
     private static final int PERMISSIONS_REQ_CODE = 0x7b;
     private static final int PERMISSION_CAMERA_CODE = 0x7a;
@@ -127,6 +128,8 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private static final int PERMISSION_NOTIFICATION_CODE = 0x7e;
     private static final int MEETING_NOTIFICATION_ID = 0x9f;
     private static final int PERMISSION_CAPTURE_RESULT_CODE = 0x99;
+    private static final int MEETING_DURATION_UPDATE_INTERVAL = 333;
+
     public static final String EXTRA_MEETING_SCHEDULED = "meeting_scheduled";
     private MeetingClient mMeetingClient;
     private CreateMeetingResponse createMeetingResponse;
@@ -177,6 +180,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private RelativeLayout drawerLayout;
     private LinearLayout meetingBackground;
     private TextView tvMeetingId;
+    private TextView tvMeetingDuration;
     private ViewPager viewPager;
     private RelativeLayout mainContainer;
     private boolean langSelected = false;
@@ -209,6 +213,9 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     private ImageView buttonStopScreenShare;
     private RelativeLayout layoutPeerScreenShare;
 
+    private IncrementingTimer incrementingTimer;
+
+
     @SuppressWarnings("deprecation")
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -218,6 +225,7 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
         if (!isNewIntent) {
             this.uiManager = UIManager.getUIManager(this);
             WEvents.getInstance().addHandler(callbackHandler);
+            incrementingTimer = new IncrementingTimer(this);
             deviceWidthDp = Display.getDisplayWidth(this) - 50;
             deviceHeightDp = Display.getDisplayHeight(this);
             this.initComponents();
@@ -1483,6 +1491,9 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                                         txt = "Joined Meeting ";
                                     }
                                     if (!mSideMenuOpened) {
+
+                                        incrementingTimer.startTimer();
+
                                         showCommonPopup(txt + " with id " + mMeetingId, true, WooCommonPopup.VERTICAL_POSITION_TOP);
                                         try {
                                             notificationSound.play();
@@ -1490,13 +1501,13 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                                             e.printStackTrace();
                                         }
                                     }
-                                    WooAnimationUtil.hideView(tvMeetingId, new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            super.onAnimationEnd(animation);
-                                            tvMeetingId.setVisibility(View.GONE);
-                                        }
-                                    });
+//                                    WooAnimationUtil.hideView(tvMeetingId, new AnimatorListenerAdapter() {
+//                                        @Override
+//                                        public void onAnimationEnd(Animator animation) {
+//                                            super.onAnimationEnd(animation);
+////                                            tvMeetingId.setVisibility(View.GONE);
+//                                        }
+//                                    });
                                     WooAnimationUtil.showView(bottomBarMeeting, new AnimatorListenerAdapter() {
                                         @Override
                                         public void onAnimationEnd(Animator animation) {
@@ -2527,6 +2538,9 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
     }
 
     public void destroyMeeting() {
+        incrementingTimer.stopTimer();
+
+
         if (this.mMeetingClient != null) {
             this.mMeetingClient.close();
             this.mMeetingClient = null;
@@ -2604,6 +2618,13 @@ public class MeetingActivity extends AppCompatActivity implements Handler.Callba
                 moveTaskToBack(false);
                 sendBackgroundNotification();
             }
+        }
+    }
+
+    @Override
+    public void onTimerTick(String formattedTime) {
+        if (tvMeetingId != null) {
+            tvMeetingId.setText(formattedTime);
         }
     }
 

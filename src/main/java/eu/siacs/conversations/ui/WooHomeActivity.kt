@@ -2,6 +2,7 @@ package eu.siacs.conversations.ui
 
 import android.Manifest
 import android.animation.ObjectAnimator
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -10,7 +11,10 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -57,6 +61,7 @@ import eu.siacs.conversations.ui.adapter.CallLogAdapter.OnVideoClickListener
 import eu.siacs.conversations.ui.adapter.ConversationAdapter
 import eu.siacs.conversations.ui.adapter.MeetingHistoryAdapter
 import eu.siacs.conversations.ui.adapter.ScheduledMeetingAdapter
+import eu.siacs.conversations.ui.adapter.WooNotificationAdapter
 import eu.siacs.conversations.ui.util.AvatarWorkerTask
 import eu.siacs.conversations.ui.util.PresenceSelector
 import eu.siacs.conversations.ui.util.ShareUtil
@@ -141,6 +146,15 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
 
         populatePIChart()
 
+
+
+        homeBinding.appBarHome.toolbar.toolbarNotification.setOnClickListener {
+
+
+            Log.d(TAG, "Click on Notification Icon.....")
+            showPopupWindow()
+        }
+
     }
 
 //    override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -148,6 +162,34 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
 //        menuInflater.inflate(eu.siacs.conversations.R.menu.home, menu)
 //        return true
 //    }
+
+    private fun showPopupWindow() {
+
+        val notificationAdapter = WooNotificationAdapter(listOf(1, 2, 3, 4, 5, 6, 7))
+
+
+        val builder = AlertDialog.Builder(this, R.style.popup_dialog_theme)
+        // Inflate the custom layout
+        val inflater = LayoutInflater.from(this)
+        val customView: View = inflater.inflate(R.layout.notification_panel_view, null)
+
+
+        val recyclerView = customView.findViewById<RecyclerView>(R.id.notification_recycler_view)
+
+        recyclerView.adapter = notificationAdapter
+        builder.setView(customView)
+        val alertDialog = builder.create()
+        alertDialog.show()
+        val layoutParams = WindowManager.LayoutParams()
+
+        layoutParams.copyFrom(alertDialog.window!!.attributes)
+        layoutParams.gravity = Gravity.TOP or Gravity.RIGHT
+//        layoutParams.x = 100 // Horizontal offset
+//
+        layoutParams.y = 150 // Vertical offset
+
+        alertDialog.window!!.attributes = layoutParams
+    }
 
 
     private fun initWalletActivityViewModel() {
@@ -773,15 +815,17 @@ class WooHomeActivity : XmppActivity(), XmppConnectionService.OnAccountUpdate,
             Arrays.asList(
                 Manifest.permission.RECORD_AUDIO,
                 Manifest.permission.CAMERA,
-                Manifest.permission.BLUETOOTH_CONNECT
+                Manifest.permission.BLUETOOTH_CONNECT,
             )
         } else {
             Arrays.asList(Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA)
         }
 
+
         hasPermissions(REQUEST_CALL_Permission, permissions)
 
     }
+
 
     private fun hasPermissions(requestCode: Int, permissions: List<String>): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

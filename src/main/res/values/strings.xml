@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="default_notification_channel_id">com.wgroup.woooo.urgent</string>
+
     <string name="action_settings">Settings</string>
+    <string name="app_server">chat.woooo.world</string>
+<!--        <string name="app_server">up.conversations.im</string>-->
     <string name="action_accounts">Manage account</string>
     <string name="action_account">Manage account</string>
     <string name="action_contact_details">Contact details</string>

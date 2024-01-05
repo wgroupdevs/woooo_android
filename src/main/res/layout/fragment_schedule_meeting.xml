@@ -31,11 +31,11 @@
             android:id="@+id/no_scheduled_meeting_lable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/_100sdp"
+            android:layout_centerInParent="true"
             android:gravity="center"
             android:paddingHorizontal="@dimen/_10sdp"
-            android:text="There are currently no planned meetings. Feel free to arrange meetings for the coming days."
+            android:paddingBottom="@dimen/_50sdp"
+            android:text="There are currently no planned meetings."
 
             android:textAppearance="@style/TextAppearance.Conversations.Subhead" />
 

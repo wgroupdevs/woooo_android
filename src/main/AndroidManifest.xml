@@ -46,9 +46,6 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
 
-
-
-
     <uses-permission
         android:name="android.permission.READ_PHONE_STATE"
         android:maxSdkVersion="22" />
@@ -537,17 +534,18 @@
         <service
             android:name="com.alphawallet.app.service.WalletConnectV2Service"
             android:enabled="true" />
-        <service
-            android:name="com.alphawallet.app.service.AlphaWalletFirebaseMessagingService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
 
-            <meta-data
-                android:name="com.google.firebase.messaging.default_notification_channel_id"
-                android:value="alphawallet" />
-        </service>
+<!--        <service-->
+<!--            android:name="com.alphawallet.app.service.AlphaWalletFirebaseMessagingService"-->
+<!--            android:exported="false">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="com.google.firebase.MESSAGING_EVENT" />-->
+<!--            </intent-filter>-->
+
+<!--            <meta-data-->
+<!--                android:name="com.google.firebase.messaging.default_notification_channel_id"-->
+<!--                android:value="alphawallet" />-->
+<!--        </service>-->
 
         <activity
             android:name="com.alphawallet.app.ui.WalletConnectV2Activity"
@@ -743,6 +741,46 @@
             android:enabled="true"
             android:exported="false"
             android:stopWithTask="true" />
+
+
+        <!--        SERVICES FOR FCM-->
+
+
+        <receiver
+            android:name=".services.MaintenanceReceiver"
+            android:exported="true"
+            android:permission="android.permission.CHANGE_CONFIGURATION">
+            <intent-filter>
+                <action android:name="com.parse.push.intent.RECEIVE" />
+                <action android:name="com.parse.push.intent.DELETE" />
+                <action android:name="com.parse.push.intent.OPEN" />
+                <action android:name="eu.siacs.conversations.RENEW_INSTANCE_ID" />
+            </intent-filter>
+        </receiver>
+
+
+
+
+
+        <service
+            android:name=".services.PushMessageReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@mipmap/ic_launcher" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_notification_channel_id" />
+
+
     </application>
 
 </manifest>

@@ -234,6 +234,10 @@ public class ConversationAdapter
                             .getOngoingRtpConnection(conversation.getContact());
         }
 
+        if (conversation.getContact().onlineStatus()) {
+            viewHolder.binding.contactOnlineStatus.setVisibility(View.VISIBLE);
+        }
+
         if (ongoingCall.isPresent()) {
             viewHolder.binding.notificationStatus.setVisibility(View.VISIBLE);
             final int ic_ongoing_call =

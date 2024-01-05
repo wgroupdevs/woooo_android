@@ -97,6 +97,7 @@
             android:imeOptions="actionNext"
             android:paddingVertical="@dimen/_10sdp"
             android:paddingStart="@dimen/_5sdp"
+            android:inputType="numberDecimal"
             android:textColor="@color/white" />
 
 

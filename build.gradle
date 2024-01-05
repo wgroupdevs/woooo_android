@@ -76,7 +76,14 @@ repositories {
 }
 
 configurations {
+    playstoreImplementation
     freeImplementation
+    conversationsFreeImplementation
+    conversationsPlaystorImplementation
+    conversationsPlaystoreImplementation
+    quicksyPlaystoreImplementation
+    quicksyPlaystoreImplementation
+    quicksyFreeImplementation
     quicksyImplementation
 }
 
@@ -84,7 +91,11 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation fileTree(include: ['*.aar'], dir: 'libs')
     implementation 'androidx.viewpager:viewpager:1.0.0'
-//    implementation 'org.jetbrains:annotations:23.0.0'
+
+    conversationsPlaystoreImplementation("com.android.installreferrer:installreferrer:2.2")
+    quicksyPlaystoreImplementation 'com.google.android.gms:play-services-auth-api-phone:18.0.1'
+    quicksyImplementation 'io.michaelrocks:libphonenumber-android:8.13.17'
+
 
     implementation 'com.github.open-keychain.open-keychain:openpgp-api:v5.7.1'
     implementation("com.github.CanHub:Android-Image-Cropper:2.0.0")
@@ -131,7 +142,6 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:4.10.0'
     implementation "com.squareup.okhttp3:logging-interceptor:4.10.0"
     implementation group: 'com.google.guava', name: 'guava', version: '30.1.1-android'
-    quicksyImplementation 'io.michaelrocks:libphonenumber-android:8.12.49'
 //     implementation 'im.conversations.webrtc:webrtc-android:104.0.0'
 
     /// New dependencies
@@ -356,30 +366,74 @@ android {
         correctErrorTypes true
     }
 
-    flavorDimensions("mode", "distribution")
+    flavorDimensions += "mode"
+    flavorDimensions += "distribution"
+
+//    productFlavors {
+////
+//        quicksy {
+//            dimension "mode"
+//            applicationId = "im.quicksy.client"
+//            resValue "string", "applicationId", applicationId
+//            def appName = "Quicksy"
+//            resValue "string", "app_name", appName
+//            buildConfigField "String", "APP_NAME", "\"$appName\""
+//        }
+//////
+//        conversations {
+//            dimension "mode"
+//        }
+//
+////        playstore {
+////            dimension "distribution"
+////            versionNameSuffix "+playstore"
+////        }
+//        free {
+//            dimension "distribution"
+////            versionNameSuffix ""
+//        }
+//    }
+//
+//    sourceSets {
+//        quicksyFree {
+//            java {
+//                srcDir 'src/quicksyFree/java'
+//            }
+//        }
+//
+//        conversationsFree {
+//            java {
+//                srcDir 'src/conversationsFree/java'
+//            }
+//        }
+//
+//
+//    }
+
 
     productFlavors {
-//
+
         quicksy {
             dimension "mode"
             applicationId = "im.quicksy.client"
             resValue "string", "applicationId", applicationId
+
             def appName = "Quicksy"
             resValue "string", "app_name", appName
             buildConfigField "String", "APP_NAME", "\"$appName\""
         }
-////
+
         conversations {
             dimension "mode"
         }
 
-//        playstore {
-//            dimension "distribution"
-//            versionNameSuffix "+playstore"
-//        }
+        playstore {
+            dimension "distribution"
+            versionNameSuffix "+playstore"
+        }
         free {
             dimension "distribution"
-//            versionNameSuffix ""
+            versionNameSuffix "+free"
         }
     }
 
@@ -389,15 +443,29 @@ android {
                 srcDir 'src/quicksyFree/java'
             }
         }
-
+        quicksyPlaystore {
+            java {
+                srcDir 'src/quicksyPlaystore/java'
+            }
+            res {
+                srcDir 'src/quicksyPlaystore/res'
+            }
+        }
         conversationsFree {
             java {
                 srcDir 'src/conversationsFree/java'
             }
         }
-
-
+//        conversationsPlaystore {
+//            java {
+//                srcDir 'src/conversationsPlaystore/java'
+//            }
+//            res {
+//                srcDir 'src/conversationsPlaystore/res'
+//            }
+//        }
     }
+
 
     buildTypes {
         release {
@@ -450,7 +518,7 @@ android {
             useLegacyPackaging true
         }
         resources {
-            excludes += ['META-INF/NOTICE', 'META-INF/LICENSE', 'META-INF/LICENSE.md', 'META-INF/NOTICE.md', 'META-INF/LICENSE-notice.md', 'solidity/ens/build/*.bin', 'solidity/ens/*.sol', 'solidity/ens/build/*.abi', 'en-mnemonic-word-list.txt', 'solidity/*']
+            excludes += ['META-INF/BCKEY.DSA', 'META-INF/BCKEY.SF', 'META-INF/NOTICE', 'META-INF/LICENSE', 'META-INF/LICENSE.md', 'META-INF/NOTICE.md', 'META-INF/LICENSE-notice.md', 'solidity/ens/build/*.bin', 'solidity/ens/*.sol', 'solidity/ens/build/*.abi', 'en-mnemonic-word-list.txt', 'solidity/*']
         }
     }
 

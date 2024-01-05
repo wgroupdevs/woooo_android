@@ -32,12 +32,7 @@ class MainActivity : XmppActivity(), OnAccountUpdate {
     }
 
     override fun onBackendConnected() {
-
-        Log.d(TAG, "onBackendConnected....")
         xmppConnectionService?.let {
-            Log.d(TAG, "xmppConnectionService Initialized")
-            Log.d(TAG, "xmppConnectionService ACCOUNT :${it.accounts.size}")
-
             if (it.accounts.isNotEmpty()) {
                 mAccount = it.accounts.first()
             }

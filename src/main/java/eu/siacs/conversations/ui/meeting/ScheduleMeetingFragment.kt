@@ -133,6 +133,8 @@ class ScheduleMeetingFragment : Fragment(),
                 myCalendar[Calendar.MONTH],
                 myCalendar[Calendar.DAY_OF_MONTH]
             )
+            datePickerDialog.datePicker.minDate = System.currentTimeMillis() - 1000
+
             datePickerDialog.show()
             datePickerDialog.getButton(DatePickerDialog.BUTTON_NEGATIVE)
                 .setTextColor(resources.getColor(R.color.blue_primary300))
